@@ -133,11 +133,7 @@ jobs:
           key: gradle-cache-{{ checksum "versions.props" }}-{{ checksum "build.gradle" }}
       - attach_workspace:
           at: '.'
-      - deploy:
-          command: |
-            if [[ "${CIRCLE_TAG}" =~ [0-9]+(\.[0-9]+)+(-[a-zA-Z]+[0-9]*)* ]]; then
-              ./gradlew --stacktrace --continue publish
-            fi
+      - deploy: ./gradlew --stacktrace --continue publish
 
 workflows:
   version: 2
@@ -160,5 +156,5 @@ workflows:
             - py3
           filters:
             tags:
-              only: /.*/
+              only: /\d+\.\d+\.d+/
 
