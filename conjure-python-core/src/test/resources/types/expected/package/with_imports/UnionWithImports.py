@@ -1,6 +1,6 @@
 from ..product.AnyMapExample import AnyMapExample
-from conjure import ConjureFieldDefinition
-from conjure import ConjureUnionType
+from conjure_python_client import ConjureFieldDefinition
+from conjure_python_client import ConjureUnionType
 
 class UnionWithImports(ConjureUnionType):
 

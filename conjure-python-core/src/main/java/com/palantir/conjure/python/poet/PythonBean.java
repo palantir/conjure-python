@@ -29,8 +29,8 @@ import org.immutables.value.Value;
 public interface PythonBean extends PythonClass {
 
     ImmutableSet<PythonImport> DEFAULT_IMPORTS = ImmutableSet.of(
-            PythonImport.of(PythonClassName.of("conjure", "ConjureBeanType")),
-            PythonImport.of(PythonClassName.of("conjure", "ConjureFieldDefinition")));
+            PythonImport.of(PythonClassName.of("conjure_python_client", "ConjureBeanType")),
+            PythonImport.of(PythonClassName.of("conjure_python_client", "ConjureFieldDefinition")));
 
     @Override
     @Value.Default

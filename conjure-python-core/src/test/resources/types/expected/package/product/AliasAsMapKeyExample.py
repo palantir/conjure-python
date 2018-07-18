@@ -6,9 +6,9 @@ from .RidAliasExample import RidAliasExample
 from .SafeLongAliasExample import SafeLongAliasExample
 from .StringAliasExample import StringAliasExample
 from .UuidAliasExample import UuidAliasExample
-from conjure import ConjureBeanType
-from conjure import ConjureFieldDefinition
-from conjure import DictType
+from conjure_python_client import ConjureBeanType
+from conjure_python_client import ConjureFieldDefinition
+from conjure_python_client import DictType
 from typing import Dict
 
 class AliasAsMapKeyExample(ConjureBeanType):

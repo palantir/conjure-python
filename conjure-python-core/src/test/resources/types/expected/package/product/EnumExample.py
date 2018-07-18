@@ -1,4 +1,4 @@
-from conjure import ConjureEnumType
+from conjure_python_client import ConjureEnumType
 
 class EnumExample(ConjureEnumType):
     """This enumerates the numbers 1:2."""

@@ -25,9 +25,9 @@ import org.immutables.value.Value;
 public interface PythonService extends PythonClass {
 
     ImmutableSet<PythonImport> DEFAULT_IMPORTS = ImmutableSet.of(
-            PythonImport.of(PythonClassName.of("conjure", "ConjureEncoder")),
-            PythonImport.of(PythonClassName.of("conjure", "ConjureDecoder")),
-            PythonImport.of(PythonClassName.of("httpremoting", "Service")));
+            PythonImport.of(PythonClassName.of("conjure_python_client", "ConjureEncoder")),
+            PythonImport.of(PythonClassName.of("conjure_python_client", "ConjureDecoder")),
+            PythonImport.of(PythonClassName.of("conjure_python_client", "Service")));
 
     @Override
     @Value.Default

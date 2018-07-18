@@ -1,6 +1,6 @@
-from conjure import BinaryType
-from conjure import ConjureBeanType
-from conjure import ConjureFieldDefinition
+from conjure_python_client import BinaryType
+from conjure_python_client import ConjureBeanType
+from conjure_python_client import ConjureFieldDefinition
 
 class BinaryExample(ConjureBeanType):
 

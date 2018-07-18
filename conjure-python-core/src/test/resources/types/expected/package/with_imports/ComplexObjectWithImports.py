@@ -1,6 +1,6 @@
 from ..product.StringExample import StringExample
-from conjure import ConjureBeanType
-from conjure import ConjureFieldDefinition
+from conjure_python_client import ConjureBeanType
+from conjure_python_client import ConjureFieldDefinition
 
 class ComplexObjectWithImports(ConjureBeanType):
 

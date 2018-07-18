@@ -43,7 +43,7 @@ public final class ConjurePythonGeneratorTest {
                     .packageName("package")
                     .packageVersion("0.0.0")
                     .packageDescription("project description")
-                    .minConjureClientVersion("0.0.0")
+                    .minConjureClientVersion("1.0.0")
                     .shouldWriteCondaRecipe(true)
                     .build());
     private final InMemoryPythonFileWriter pythonFileWriter = new InMemoryPythonFileWriter();

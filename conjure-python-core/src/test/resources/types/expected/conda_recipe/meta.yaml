@@ -16,10 +16,10 @@ requirements:
         - setuptools
         - requests
         - typing
-        - conjure-client >=0.0.0,<1
+        - conjure-client >=1.0.0,<2
 
     run:
         - python
         - requests
         - typing
-        - conjure-client >=0.0.0,<1
+        - conjure-client >=1.0.0,<2
