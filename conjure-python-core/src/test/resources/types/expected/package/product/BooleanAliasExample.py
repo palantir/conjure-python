@@ -1,0 +1,3 @@
+
+BooleanAliasExample = bool
+

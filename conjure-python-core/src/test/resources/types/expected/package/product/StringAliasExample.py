@@ -1,0 +1,3 @@
+
+StringAliasExample = str
+

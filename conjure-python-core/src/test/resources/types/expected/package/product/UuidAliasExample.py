@@ -1,0 +1,3 @@
+
+UuidAliasExample = str
+

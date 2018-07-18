@@ -1,0 +1,3 @@
+
+DateTimeAliasExample = str
+

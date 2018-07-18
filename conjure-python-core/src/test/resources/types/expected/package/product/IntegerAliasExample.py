@@ -1,0 +1,3 @@
+
+IntegerAliasExample = int
+

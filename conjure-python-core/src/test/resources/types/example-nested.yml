@@ -1,0 +1,39 @@
+types:
+  definitions:
+    default-package: test.api.nested.service
+    objects:
+      SimpleObject:
+        fields:
+          string: string
+
+services:
+  SimpleNestedService:
+    name: Simple Nested Service
+    package: test.api.nested.service
+    base-path: /catalog
+    endpoints:
+      testEndpoint:
+        http: POST /testEndpoint
+        args:
+          string: string
+        returns: string
+  SimpleNestedService2:
+    name: Simple Nested Service 2
+    package: test.api.nested.service2
+    base-path: /catalog
+    endpoints:
+      testEndpoint:
+        http: POST /testEndpoint
+        args:
+          string: string
+        returns: string
+  DeeplyNestedService:
+      name: Deeply Nested Service
+      package: test.api.nested.deeply.nested.service
+      base-path: /catalog
+      endpoints:
+        testEndpoint:
+          http: POST /testEndpoint
+          args:
+            string: string
+          returns: string

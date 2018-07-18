@@ -1,0 +1,3 @@
+
+RidAliasExample = str
+

@@ -1,0 +1,38 @@
+client:
+  autoDeserialize:
+    receiveBearerTokenAliasExample: ['""']
+    receiveBearerTokenExample: ['{"value":" space"}', '{"value":"space "}', '{"value":"with
+        space"}', '{"value":""}', '{"value":"#"}', '{"value":" "}', '{"value":"("}',
+      '{"value":"="}', '{"value":"=a"}']
+    receiveDateTimeAliasExample: ['""']
+    receiveDateTimeExample: ['{"value":"4/3/2018"}', '{"value":"1523040070"}', '{"value":"2017-01-02T03:04:05.0000000000Z"}',
+      '{"value":"2017-01-02T04:04:05.000000000+01:00[Europe/Berlin][Another/Zone]"}']
+    receiveDoubleAliasExample: ['10']
+    receiveDoubleExample: ['{"value":13}', '{"value":"1.23"}', '{"value":"nan"}']
+    receiveIntegerAliasExample: ['0']
+    receiveIntegerExample: ['{"value":-2147483649}', '{"value":2147483648}']
+    receiveListExample: ['{}']
+    receiveMapExample: ['{}']
+    receiveOptionalExample: ['{}']
+    receiveRidAliasExample: ['""', '"badString"', '"ri.service.CAPLOCK.type.name"',
+      '"ri.service.instance.-123.name"', '"ri..instance.type.noService"', '"ri.service.instance.type."',
+      '"id.bad.id.class.b.name"', '"ri:service::instance:type:name"', '"ri.service.instance.type.name!@#"',
+      '"ri.service(name)..folder.foo"', '""']
+    receiveRidExample: ['{"value":""}', '{"value":"badString"}', '{"value":"ri.service.CAPLOCK.type.name"}',
+      '{"value":"ri.service.instance.-123.name"}', '{"value":"ri..instance.type.noService"}',
+      '{"value":"ri.service.instance.type."}', '{"value":"id.bad.id.class.b.name"}',
+      '{"value":"ri:service::instance:type:name"}', '{"value":"ri.service.instance.type.name!@#"}',
+      '{"value":"ri.service(name)..folder.foo"}']
+    receiveSafeLongAliasExample: ['-9007199254740992', '9007199254740992']
+    receiveSafeLongExample: ['{"value":null}', '{}', '{"value":-9007199254740992}',
+      '{"value":9007199254740992}']
+    receiveSetDoubleExample: ['{}']
+    receiveSetStringExample: ['{}', '{"value":["a","a"]}']
+    receiveUuidAliasExample: ['""', '"80e6dd13-5f42-4e33-ad18"']
+    receiveUuidExample: ['{"value":""}', '{"value":"80e6dd13-5f42-4e33-ad18"}']
+  singleHeaderService:
+    headerDouble: ['10.0']
+  singlePathParamService: {}
+  singleQueryService:
+    queryParamDouble: ['10.0']
+

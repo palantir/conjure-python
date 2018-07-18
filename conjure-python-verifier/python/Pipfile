@@ -1,0 +1,20 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+# TODO(forozco): inject version of conjure-client
+conjure-client = "==0.2.0"
+
+[dev-packages]
+setuptools = "*"
+tox = "*"
+rope = "*"
+pylint = "*"
+wheel = "*"
+pyyaml = "*"
+black = "==18.3a1"
+pycodestyle = "==2.4.0"
+pytest = "==3.2.5"
+mock = "==2.0.0"

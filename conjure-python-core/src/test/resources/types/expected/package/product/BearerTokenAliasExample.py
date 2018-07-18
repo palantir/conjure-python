@@ -1,0 +1,3 @@
+
+BearerTokenAliasExample = str
+
