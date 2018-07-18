@@ -133,7 +133,8 @@ jobs:
           key: gradle-cache-{{ checksum "versions.props" }}-{{ checksum "build.gradle" }}
       - attach_workspace:
           at: '.'
-      - deploy: ./gradlew --stacktrace --continue publish
+      - deploy:
+          command: ./gradlew --stacktrace --continue publish
 
 workflows:
   version: 2
