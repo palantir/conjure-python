@@ -145,7 +145,7 @@ public final class ConjurePythonGenerator {
                 .putOptions("name", config.packageName())
                 .putOptions("version", config.packageVersion())
                 .addInstallDependencies("requests", "typing")
-                .addInstallDependencies(String.format("conjure-client>=%s,<%s",
+                .addInstallDependencies(String.format("conjure-python-client>=%s,<%s",
                         config.minConjureClientVersion(), config.maxConjureClientVersion()));
         config.packageDescription().ifPresent(value -> builder.putOptions("description", value));
         config.packageUrl().ifPresent(value -> builder.putOptions("url", value));
@@ -163,7 +163,7 @@ public final class ConjurePythonGenerator {
                 .condaPackageName(config.packageName())
                 .packageVersion(config.packageVersion())
                 .addInstallDependencies("requests", "typing")
-                .addInstallDependencies(String.format("conjure-client >=%s,<%s",
+                .addInstallDependencies(String.format("conjure--python-client >=%s,<%s",
                         config.minConjureClientVersion(), config.maxConjureClientVersion()))
                 .build();
 
