@@ -21,7 +21,7 @@ setup(
     version="0.0.0",
     description="Test cases to verify wire compatibility of generated clients",
     # The project's main homepage.
-    url="https://github.com/palantir/conjure-python-client",
+    url="https://github.com/palantir/conjure-python",
     author="Palantir Technologies, Inc.",
     # You can just specify the packages manually here if your project is
     # simple. Or you can use find_packages().
