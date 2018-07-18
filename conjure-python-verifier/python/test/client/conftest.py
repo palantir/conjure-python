@@ -13,12 +13,13 @@ from ..generated.conjure_verification import (
 )
 
 TEST_CASES = path.dirname(__file__) + '/../../../build/test-cases/test-cases.json'
+VERIFICATION_API = path.dirname(__file__) + '/../../../build/test-cases/verification-api.json'
 
 
 @pytest.fixture(scope='module')
 def conjure_validation_server():
     verification_server = subprocess.Popen([
-        path.dirname(__file__) + '/../../../build/verification-server/server', TEST_CASES])
+        path.dirname(__file__) + '/../../../build/verification-server/server', TEST_CASES, VERIFICATION_API])
     yield verification_server
     verification_server.terminate()
 

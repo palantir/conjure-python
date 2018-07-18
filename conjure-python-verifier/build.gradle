@@ -27,9 +27,14 @@ task unpackVerificationServer(type: Sync) {
 }
 
 task copyTestCases(type: Sync) {
-    from configurations.testCases
+    from configurations.testCases {
+        // Renaming to ensure a consistent file name, originally it will look like e.g. 'test-cases-0.4.0.json'
+        rename { "test-cases.json" }
+    }
+    from configurations.verificationApi {
+        rename { "verification-api.json" }
+    }
     into "$buildDir/test-cases"
-    rename { "test-cases.json" }
 }
 
 task generateVerifierBindings(type: JavaExec, dependsOn: [copyTestCases, ':conjure-python:compileJava']) {
