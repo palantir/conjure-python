@@ -1,3 +1,5 @@
+rootProject.name = 'conjure-python'
+
 include 'conjure-python'
 include 'conjure-python-core'
 include 'conjure-python-verifier'
