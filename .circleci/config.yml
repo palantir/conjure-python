@@ -156,6 +156,8 @@ workflows:
             - py27
             - py3
           filters:
+            branches:
+              ignore: /.*/
             tags:
               only: /\d+\.\d+\.d+/
 
