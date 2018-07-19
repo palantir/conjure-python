@@ -41,8 +41,8 @@ task generateVerifierBindings(type: JavaExec, dependsOn: [copyTestCases, ':conju
             '--packageName', 'generated',
             '--packageVersion', '0.0.0'
 
-    inputs.file configurations.verificationApi.singleFile
-    doLast {delete "python/test/setup.py"}
+    inputs.files configurations.verificationApi
+    doLast { delete "python/test/setup.py" }
 }
 
 tasks.idea.dependsOn unpackVerificationServer, generateVerifierBindings
