@@ -4,9 +4,19 @@ client:
     receiveBearerTokenExample: ['{"value":" space"}', '{"value":"space "}', '{"value":"with
         space"}', '{"value":""}', '{"value":"#"}', '{"value":" "}', '{"value":"("}',
       '{"value":"="}', '{"value":"=a"}']
-    receiveDateTimeAliasExample: ['""']
-    receiveDateTimeExample: ['{"value":"4/3/2018"}', '{"value":"1523040070"}', '{"value":"2017-01-02T03:04:05.0000000000Z"}',
-      '{"value":"2017-01-02T04:04:05.000000000+01:00[Europe/Berlin][Another/Zone]"}']
+    receiveDateTimeAliasExample: [
+      '""',
+      '"4/3/2018"',
+      '"1523040070"',
+      '"2017-01-02T03:04:05.0000000000Z"',
+      '"2017-01-02T04:04:05.000000000+01:00[Europe/Berlin]"'
+    ]
+    receiveDateTimeExample: [
+      '{"value":"4/3/2018"}',
+      '{"value":"1523040070"}',
+      '{"value":"2017-01-02T03:04:05.0000000000Z"}',
+      '{"value":"2017-01-02T04:04:05.000000000+01:00[Europe/Berlin]"}'
+    ]
     receiveDoubleAliasExample: ['10']
     receiveDoubleExample: ['{"value":13}', '{"value":"1.23"}', '{"value":"nan"}']
     receiveIntegerAliasExample: ['0']
