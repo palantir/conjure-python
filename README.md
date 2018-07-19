@@ -21,10 +21,10 @@ conjure-python generates code that works on both Python 2 and Python 3.
 
 ## Generated services
 
-- [TestService](./conjure-python-core/src/test/resources/services/expected/package/another/__init__.py)
+- [TestService](./conjure-python-core/src/test/resources/services/expected/package/another/TestService.py)
 
 ```python
-from httpremoting import RequestsClient, ServiceConfiguration
+from conjure_python_client import RequestsClient, ServiceConfiguration
 
 config = ServiceConfiguration()
 config.uris = ["https://foo.com/api"]

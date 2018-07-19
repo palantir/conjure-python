@@ -28,8 +28,8 @@ import org.immutables.value.Value;
 public interface PythonUnionTypeDefinition extends PythonClass {
 
     ImmutableSet<PythonImport> DEFAULT_IMPORTS = ImmutableSet.of(
-            PythonImport.of(PythonClassName.of("conjure", "ConjureUnionType")),
-            PythonImport.of(PythonClassName.of("conjure", "ConjureFieldDefinition")));
+            PythonImport.of(PythonClassName.of("conjure_python_client", "ConjureUnionType")),
+            PythonImport.of(PythonClassName.of("conjure_python_client", "ConjureFieldDefinition")));
 
     @Override
     @Value.Default

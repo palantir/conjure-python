@@ -1,8 +1,8 @@
 from ..product.DateTimeAliasExample import DateTimeAliasExample
 from ..product.RidAliasExample import RidAliasExample
-from conjure import ConjureBeanType
-from conjure import ConjureFieldDefinition
-from conjure import DictType
+from conjure_python_client import ConjureBeanType
+from conjure_python_client import ConjureFieldDefinition
+from conjure_python_client import DictType
 from typing import Dict
 
 class ImportedAliasInMaps(ConjureBeanType):

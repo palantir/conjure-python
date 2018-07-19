@@ -1,7 +1,7 @@
 from .StringExample import StringExample
-from conjure import ConjureFieldDefinition
-from conjure import ConjureUnionType
-from conjure import ListType
+from conjure_python_client import ConjureFieldDefinition
+from conjure_python_client import ConjureUnionType
+from conjure_python_client import ListType
 from typing import Set
 
 class UnionTypeExample(ConjureUnionType):

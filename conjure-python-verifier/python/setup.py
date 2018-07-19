@@ -21,7 +21,7 @@ setup(
     version="0.0.0",
     description="Test cases to verify wire compatibility of generated clients",
     # The project's main homepage.
-    url="https://github.com/palantir/conjure-python-client",
+    url="https://github.com/palantir/conjure-python",
     author="Palantir Technologies, Inc.",
     # You can just specify the packages manually here if your project is
     # simple. Or you can use find_packages().
@@ -30,6 +30,6 @@ setup(
     # your project is installed. For an analysis of "install_requires" vs pip's
     # requirements files see:
     # https://packaging.python.org/en/latest/requirements.html
-    install_requires=["conjure-client", "pyyaml"],
+    install_requires=["conjure-python-client", "pyyaml"],
     tests_require=["pytest", "pyyaml"],
 )

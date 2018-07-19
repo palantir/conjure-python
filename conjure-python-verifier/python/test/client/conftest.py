@@ -1,7 +1,7 @@
 import pytest
 import subprocess
 import yaml
-from httpremoting import RequestsClient, ServiceConfiguration
+from conjure_python_client import RequestsClient, ServiceConfiguration
 from os import path
 
 from ..generated.conjure_verification import (

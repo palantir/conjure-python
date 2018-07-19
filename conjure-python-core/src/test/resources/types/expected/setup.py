@@ -9,6 +9,6 @@ setup(
     install_requires=[
         'requests',
         'typing',
-        'conjure-client>=0.0.0,<1',
+        'conjure-python-client>=1.0.0,<2',
     ],
 )

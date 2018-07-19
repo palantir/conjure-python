@@ -28,7 +28,7 @@ import org.immutables.value.Value;
 public interface PythonEnum extends PythonClass {
 
     ImmutableSet<PythonImport> DEFAULT_IMPORTS = ImmutableSet.of(
-            PythonImport.of(PythonClassName.of("conjure", "ConjureEnumType")));
+            PythonImport.of(PythonClassName.of("conjure_python_client", "ConjureEnumType")));
 
     @Override
     @Value.Default
