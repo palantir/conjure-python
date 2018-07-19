@@ -70,7 +70,7 @@ jobs:
           command: if [ ! -d ".tox" ]; then python -m tox -e py27 --notest; fi
 
       - save_cache:
-          key: tox-v2-py27-{{ checksum "tox.ini" }}-{{ checksum "setup.py"}}
+          key: tox-v2-py27-{{ checksum "tox.ini" }}-{{ checksum "setup.py" }}
           paths:
             - .tox
 
