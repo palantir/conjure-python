@@ -32,13 +32,6 @@ public interface PythonImport extends Emittable, Comparable<PythonImport> {
         return ImmutablePythonImport.builder().className(className).build();
     }
 
-    static PythonImport of(PythonClassName className, String relativeToPackage) {
-        PythonClassName relativizedClassName = PythonClassName.of(
-                relativePackage(relativeToPackage, className.conjurePackage()),
-                className.className());
-        return ImmutablePythonImport.builder().className(relativizedClassName).build();
-    }
-
     @Override
     default void emit(PythonPoetWriter poetWriter) {
         poetWriter.writeIndentedLine(String.format("from %s import %s",
@@ -48,15 +41,5 @@ public interface PythonImport extends Emittable, Comparable<PythonImport> {
     @Override
     default int compareTo(PythonImport other) {
         return className().compareTo(other.className());
-    }
-
-    static String relativePackage(String curPackage, String toPackage) {
-        if (curPackage.equals(toPackage)) {
-            return ".";
-        }
-        Path curPath = Paths.get(curPackage.replace(".", "/"));
-        Path toPath = Paths.get(toPackage.replace(".", "/"));
-        Path relativeImport = curPath.relativize(toPath);
-        return relativeImport.toString().replace("../", "..").replace("/", ".");
     }
 }
