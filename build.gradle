@@ -66,10 +66,14 @@ allprojects {
 }
 
 subprojects {
+    apply plugin: 'com.palantir.baseline-idea'
+    apply plugin: 'com.palantir.baseline-eclipse'
+    apply plugin: 'base'
+}
+
+configure(subprojects - project(':conjure-python-verifier')) {
     apply plugin: 'java-library'
     apply plugin: 'com.palantir.baseline-checkstyle'
-    apply plugin: 'com.palantir.baseline-eclipse'
-    apply plugin: 'com.palantir.baseline-idea'
     apply plugin: 'com.palantir.baseline-error-prone'
     apply plugin: 'org.inferred.processors'
 
