@@ -40,6 +40,11 @@ client:
     receiveSetStringExample: ['{}', '{"value":["a","a"]}']
     receiveUuidAliasExample: ['""', '"80e6dd13-5f42-4e33-ad18"']
     receiveUuidExample: ['{"value":""}', '{"value":"80e6dd13-5f42-4e33-ad18"}']
+    # TODO(forozco): fix passing wireFormat names instead of snake_cased names to constructor
+    receiveLongOptionalExample: [
+      '{}',
+      '{"someLongName":null}'
+    ]
   singleHeaderService:
     headerDouble: ['10.0']
   singlePathParamService: {}
