@@ -87,11 +87,15 @@ public final class ImportsVisitor implements Type.Visitor<Set<PythonImport>> {
                 .build();
     }
 
+    /**
+     * We actually import only the module, not the eponymous type definition inside it, in order to prevent recursive
+     * definitions from forming a circular dependency because python cannot resolve that.
+     */
     @Override
     public Set<PythonImport> visitReference(TypeName value) {
         Preconditions.checkState(knownTypes.containsKey(value), "Unknown TypeName %s", value);
         return ImmutableSet.of(PythonImport.of(
-                PythonClassName.of(getRelativePath(value), value.getName())));
+                PythonClassName.of(getRelativePath(value.getPackage()), value.getName())));
     }
 
     @Override
@@ -105,12 +109,16 @@ public final class ImportsVisitor implements Type.Visitor<Set<PythonImport>> {
         return Collections.emptySet();
     }
 
-    private String getRelativePath(TypeName targetType) {
-        if (targetType.getPackage().equals(currentType.getPackage())) {
-            return String.format(".%s", targetType.getName());
+    /**
+     * The relative path to the given packageName, to be used in the {@code package} part of a {@code from <package>
+     * import <name>}.
+     */
+    private String getRelativePath(String packageName) {
+        if (packageName.equals(currentType.getPackage())) {
+            return ".";
         } else {
-            String targetPackageName = packageNameProcessor.getPackageName(targetType.getPackage()).split("\\.")[1];
-            return String.format("..%s.%s", targetPackageName, targetType.getName());
+            String targetPackageName = packageNameProcessor.getPackageName(packageName).split("\\.")[1];
+            return String.format("..%s", targetPackageName);
         }
     }
 }
