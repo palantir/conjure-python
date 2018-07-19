@@ -1,4 +1,4 @@
-from .StringAliasExample import StringAliasExample
+from . import StringAliasExample
 from conjure_python_client import ConjureBeanType
 from conjure_python_client import ConjureFieldDefinition
 from conjure_python_client import DictType
@@ -22,7 +22,7 @@ class ManyFieldExample(ConjureBeanType):
             'items': ConjureFieldDefinition('items', ListType(str)),
             'set': ConjureFieldDefinition('set', ListType(str)),
             'map': ConjureFieldDefinition('map', DictType(str, str)),
-            'alias': ConjureFieldDefinition('alias', StringAliasExample)
+            'alias': ConjureFieldDefinition('alias', StringAliasExample.StringAliasExample)
         }
 
     _string = None # type: str

@@ -1,5 +1,5 @@
-from ..product.DateTimeAliasExample import DateTimeAliasExample
-from ..product.RidAliasExample import RidAliasExample
+from ..product import DateTimeAliasExample
+from ..product import RidAliasExample
 from conjure_python_client import ConjureBeanType
 from conjure_python_client import ConjureFieldDefinition
 from conjure_python_client import DictType
@@ -11,7 +11,7 @@ class ImportedAliasInMaps(ConjureBeanType):
     def _fields(cls):
         # type: () -> Dict[str, ConjureFieldDefinition]
         return {
-            'aliases': ConjureFieldDefinition('aliases', DictType(RidAliasExample, DateTimeAliasExample))
+            'aliases': ConjureFieldDefinition('aliases', DictType(RidAliasExample.RidAliasExample, DateTimeAliasExample.DateTimeAliasExample))
         }
 
     _aliases = None # type: Dict[RidAliasExample, DateTimeAliasExample]

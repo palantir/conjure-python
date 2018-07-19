@@ -1,4 +1,4 @@
-from ..product.AnyMapExample import AnyMapExample
+from ..product import AnyMapExample
 from conjure_python_client import ConjureFieldDefinition
 from conjure_python_client import ConjureUnionType
 
@@ -12,7 +12,7 @@ class UnionWithImports(ConjureUnionType):
         # type: () -> Dict[str, ConjureFieldDefinition]
         return {
             'string': ConjureFieldDefinition('string', str),
-            'imported': ConjureFieldDefinition('imported', AnyMapExample)
+            'imported': ConjureFieldDefinition('imported', AnyMapExample.AnyMapExample)
         }
 
     def __init__(self, string=None, imported=None):

@@ -1,4 +1,4 @@
-from .EnumExample import EnumExample
+from . import EnumExample
 from conjure_python_client import ConjureBeanType
 from conjure_python_client import ConjureFieldDefinition
 
@@ -8,7 +8,7 @@ class EnumFieldExample(ConjureBeanType):
     def _fields(cls):
         # type: () -> Dict[str, ConjureFieldDefinition]
         return {
-            'enum': ConjureFieldDefinition('enum', EnumExample)
+            'enum': ConjureFieldDefinition('enum', EnumExample.EnumExample)
         }
 
     _enum = None # type: EnumExample

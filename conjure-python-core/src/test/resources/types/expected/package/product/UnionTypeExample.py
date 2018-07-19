@@ -1,4 +1,4 @@
-from .StringExample import StringExample
+from . import StringExample
 from conjure_python_client import ConjureFieldDefinition
 from conjure_python_client import ConjureUnionType
 from conjure_python_client import ListType
@@ -19,7 +19,7 @@ class UnionTypeExample(ConjureUnionType):
     def _options(cls):
         # type: () -> Dict[str, ConjureFieldDefinition]
         return {
-            'string_example': ConjureFieldDefinition('stringExample', StringExample),
+            'string_example': ConjureFieldDefinition('stringExample', StringExample.StringExample),
             'set': ConjureFieldDefinition('set', ListType(str)),
             'this_field_is_an_integer': ConjureFieldDefinition('thisFieldIsAnInteger', int),
             'also_an_integer': ConjureFieldDefinition('alsoAnInteger', int),

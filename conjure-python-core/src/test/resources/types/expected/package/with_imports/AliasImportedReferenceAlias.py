@@ -1,4 +1,4 @@
-from ..product.ReferenceAliasExample import ReferenceAliasExample
+from ..product import ReferenceAliasExample
 
-AliasImportedReferenceAlias = ReferenceAliasExample
+AliasImportedReferenceAlias = ReferenceAliasExample.ReferenceAliasExample
 

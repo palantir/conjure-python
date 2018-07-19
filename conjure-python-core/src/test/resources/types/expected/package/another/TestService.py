@@ -1,6 +1,6 @@
-from ..product.CreateDatasetRequest import CreateDatasetRequest
-from ..product_datasets.BackingFileSystem import BackingFileSystem
-from ..product_datasets.Dataset import Dataset
+from ..product import CreateDatasetRequest
+from ..product_datasets import BackingFileSystem
+from ..product_datasets import Dataset
 from conjure_python_client import BinaryType
 from conjure_python_client import ConjureDecoder
 from conjure_python_client import ConjureEncoder
@@ -43,7 +43,7 @@ class TestService(Service):
             json=_json)
 
         _decoder = ConjureDecoder()
-        return _decoder.decode(_response.json(), DictType(str, BackingFileSystem))
+        return _decoder.decode(_response.json(), DictType(str, BackingFileSystem.BackingFileSystem))
 
     def create_dataset(self, auth_header, request, test_header_arg):
         # type: (str, CreateDatasetRequest, str) -> Dataset
@@ -74,7 +74,7 @@ class TestService(Service):
             json=_json)
 
         _decoder = ConjureDecoder()
-        return _decoder.decode(_response.json(), Dataset)
+        return _decoder.decode(_response.json(), Dataset.Dataset)
 
     def get_dataset(self, auth_header, dataset_rid):
         # type: (str, str) -> Optional[Dataset]
@@ -104,7 +104,7 @@ class TestService(Service):
             json=_json)
 
         _decoder = ConjureDecoder()
-        return _decoder.decode(_response.json(), OptionalType(Dataset))
+        return _decoder.decode(_response.json(), OptionalType(Dataset.Dataset))
 
     def get_raw_data(self, auth_header, dataset_rid):
         # type: (str, str) -> Any

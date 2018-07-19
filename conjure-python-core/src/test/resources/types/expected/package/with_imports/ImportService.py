@@ -1,5 +1,5 @@
-from ..product.StringExample import StringExample
-from ..product_datasets.BackingFileSystem import BackingFileSystem
+from ..product import StringExample
+from ..product_datasets import BackingFileSystem
 from conjure_python_client import ConjureDecoder
 from conjure_python_client import ConjureEncoder
 from conjure_python_client import Service
@@ -33,5 +33,5 @@ class ImportService(Service):
             json=_json)
 
         _decoder = ConjureDecoder()
-        return _decoder.decode(_response.json(), BackingFileSystem)
+        return _decoder.decode(_response.json(), BackingFileSystem.BackingFileSystem)
 
