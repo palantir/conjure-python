@@ -52,3 +52,10 @@ task generateVerifierBindings(type: JavaExec, dependsOn: [copyTestCases, ':conju
 
 tasks.idea.dependsOn unpackVerificationServer, generateVerifierBindings
 tasks.build.dependsOn unpackVerificationServer, generateVerifierBindings
+
+idea {
+    module {
+        sourceDirs += file('python')
+        testSourceDirs += file('python/test')
+    }
+}
