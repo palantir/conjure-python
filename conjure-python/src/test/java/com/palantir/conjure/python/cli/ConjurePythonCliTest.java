@@ -153,6 +153,6 @@ public class ConjurePythonCliTest {
 
     @Test
     public void loadBuildConfiguration() {
-        assertThat(BuildConfiguration.load().minConjureClientVersion()).isEqualTo("0.0.0");
+        assertThat(BuildConfiguration.load().minConjureClientVersion()).isEqualTo("1.0.0");
     }
 }

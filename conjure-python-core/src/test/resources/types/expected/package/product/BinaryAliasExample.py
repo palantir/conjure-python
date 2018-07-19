@@ -1,4 +1,4 @@
-from conjure import BinaryType
+from conjure_python_client import BinaryType
 
 BinaryAliasExample = BinaryType()
 

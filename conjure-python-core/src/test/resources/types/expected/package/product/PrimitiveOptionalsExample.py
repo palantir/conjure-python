@@ -1,6 +1,6 @@
-from conjure import ConjureBeanType
-from conjure import ConjureFieldDefinition
-from conjure import OptionalType
+from conjure_python_client import ConjureBeanType
+from conjure_python_client import ConjureFieldDefinition
+from conjure_python_client import OptionalType
 from typing import Optional
 
 class PrimitiveOptionalsExample(ConjureBeanType):

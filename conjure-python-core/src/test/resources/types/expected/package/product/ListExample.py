@@ -1,6 +1,6 @@
-from conjure import ConjureBeanType
-from conjure import ConjureFieldDefinition
-from conjure import ListType
+from conjure_python_client import ConjureBeanType
+from conjure_python_client import ConjureFieldDefinition
+from conjure_python_client import ListType
 from typing import List
 
 class ListExample(ConjureBeanType):

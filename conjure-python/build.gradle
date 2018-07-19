@@ -30,7 +30,7 @@ dependencies {
 
 task generateBuildConfiguration() {
     doLast {
-        def minConjureClientVersion = dependencyRecommendations.getRecommendedVersion('com.palantir.conjure.python', 'conjure-client')
+        def minConjureClientVersion = dependencyRecommendations.getRecommendedVersion('com.palantir.conjure.python', 'conjure-python-client')
         def props = new File("$projectDir/src/main/resources/buildConfiguration.yml")
         props.getParentFile().mkdirs()
         props.text = "minConjureClientVersion: $minConjureClientVersion"

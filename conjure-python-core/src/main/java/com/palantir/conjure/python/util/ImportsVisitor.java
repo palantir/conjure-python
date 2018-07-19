@@ -41,7 +41,7 @@ public final class ImportsVisitor implements Type.Visitor<Set<PythonImport>> {
         if (value.equals(PrimitiveType.ANY)) {
             return ImmutableSet.of(PythonImport.of(PythonClassName.of("typing", "Any")));
         } else if (value.equals(PrimitiveType.BINARY)) {
-            return ImmutableSet.of(PythonImport.of(PythonClassName.of("conjure", "BinaryType")));
+            return ImmutableSet.of(PythonImport.of(PythonClassName.of("conjure_python_client", "BinaryType")));
         }
         return Collections.emptySet();
     }
@@ -51,7 +51,7 @@ public final class ImportsVisitor implements Type.Visitor<Set<PythonImport>> {
         ImmutableSet.Builder<PythonImport> setBuilder = ImmutableSet.builder();
         return setBuilder
                 .add(PythonImport.of(PythonClassName.of("typing", "Optional")))
-                .add(PythonImport.of(PythonClassName.of("conjure", "OptionalType")))
+                .add(PythonImport.of(PythonClassName.of("conjure_python_client", "OptionalType")))
                 .addAll(value.getItemType().accept(this))
                 .build();
     }
@@ -61,7 +61,7 @@ public final class ImportsVisitor implements Type.Visitor<Set<PythonImport>> {
         ImmutableSet.Builder<PythonImport> setBuilder = ImmutableSet.builder();
         return setBuilder
                 .add(PythonImport.of(PythonClassName.of("typing", "List")))
-                .add(PythonImport.of(PythonClassName.of("conjure", "ListType")))
+                .add(PythonImport.of(PythonClassName.of("conjure_python_client", "ListType")))
                 .addAll(value.getItemType().accept(this))
                 .build();
     }
@@ -71,7 +71,7 @@ public final class ImportsVisitor implements Type.Visitor<Set<PythonImport>> {
         ImmutableSet.Builder<PythonImport> setBuilder = ImmutableSet.builder();
         return setBuilder
                 .add(PythonImport.of(PythonClassName.of("typing", "Set")))
-                .add(PythonImport.of(PythonClassName.of("conjure", "ListType")))
+                .add(PythonImport.of(PythonClassName.of("conjure_python_client", "ListType")))
                 .addAll(value.getItemType().accept(this))
                 .build();
     }
@@ -81,7 +81,7 @@ public final class ImportsVisitor implements Type.Visitor<Set<PythonImport>> {
         ImmutableSet.Builder<PythonImport> setBuilder = ImmutableSet.builder();
         return setBuilder
                 .add(PythonImport.of(PythonClassName.of("typing", "Dict")))
-                .add(PythonImport.of(PythonClassName.of("conjure", "DictType")))
+                .add(PythonImport.of(PythonClassName.of("conjure_python_client", "DictType")))
                 .addAll(value.getKeyType().accept(this))
                 .addAll(value.getValueType().accept(this))
                 .build();

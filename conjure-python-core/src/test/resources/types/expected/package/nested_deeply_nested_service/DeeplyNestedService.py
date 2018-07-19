@@ -1,6 +1,6 @@
-from conjure import ConjureDecoder
-from conjure import ConjureEncoder
-from httpremoting import Service
+from conjure_python_client import ConjureDecoder
+from conjure_python_client import ConjureEncoder
+from conjure_python_client import Service
 
 class DeeplyNestedService(Service):
 
