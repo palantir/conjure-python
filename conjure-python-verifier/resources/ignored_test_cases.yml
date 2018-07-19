@@ -25,7 +25,6 @@ client:
       '{"value":"2017-01-02T03:04:05.0000000000Z"}',
       '{"value":"2017-01-02T04:04:05.000000000+01:00[Europe/Berlin]"}'
     ]
-    # TODO(dsanduleac): pick up new conjure-python-client to fix these
     receiveDoubleExample: [
       '{"value":13}',
       '{"value":"1.23"}',
