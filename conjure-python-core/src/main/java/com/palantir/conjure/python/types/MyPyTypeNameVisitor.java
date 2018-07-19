@@ -78,11 +78,17 @@ public final class MyPyTypeNameVisitor implements Type.Visitor<String> {
         }
     }
 
+    /**
+     * We only import the module, not the eponymous type definition inside it, in order to prevent recursive
+     * definitions from forming a circular dependency because python cannot resolve that.
+     * Therefore, we have to grab the real type out of the module here, when we access it.
+     *
+     * @see com.palantir.conjure.python.util.ImportsVisitor#visitReference(TypeName)
+     */
     @Override
     public String visitReference(TypeName type) {
-        // Types without namespace are either defined locally in this conjure definition, or raw imports.
         if (types.contains(type)) {
-            return type.getName();
+            return String.format("%s.%s", type.getName(), type.getName());
         } else {
             throw new IllegalArgumentException("unknown type: " + type);
         }
