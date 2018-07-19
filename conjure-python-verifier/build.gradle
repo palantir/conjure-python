@@ -27,11 +27,11 @@ task unpackVerificationServer(type: Sync) {
 }
 
 task copyTestCases(type: Sync) {
-    from configurations.testCases {
+    from configurations.testCases, {
         // Renaming to ensure a consistent file name, originally it will look like e.g. 'test-cases-0.4.0.json'
         rename { "test-cases.json" }
     }
-    from configurations.verificationApi {
+    from configurations.verificationApi, {
         rename { "verification-api.json" }
     }
     into "$buildDir/test-cases"
@@ -46,8 +46,8 @@ task generateVerifierBindings(type: JavaExec, dependsOn: [copyTestCases, ':conju
             '--packageName', 'generated',
             '--packageVersion', '0.0.0'
 
-    inputs.file configurations.verificationApi.singleFile
-    doLast {delete "python/test/setup.py"}
+    inputs.files configurations.verificationApi
+    doLast { delete "python/test/setup.py" }
 }
 
 tasks.idea.dependsOn unpackVerificationServer, generateVerifierBindings
