@@ -63,14 +63,14 @@ jobs:
           command: pip install --user setuptools tox==2.9.1 tox-virtualenv-no-download
 
       - restore_cache:
-          key: tox-v2-py27-{{ checksum "tox.ini" }}
+          key: tox-v2-py27-{{ checksum "tox.ini" }}-{{ checksum "setup.py" }}
 
       - run:
           name: Install tox things
           command: if [ ! -d ".tox" ]; then python -m tox -e py27 --notest; fi
 
       - save_cache:
-          key: tox-v2-py27-{{ checksum "tox.ini" }}
+          key: tox-v2-py27-{{ checksum "tox.ini" }}-{{ checksum "setup.py" }}
           paths:
             - .tox
 
@@ -99,14 +99,14 @@ jobs:
           command: pip install --user setuptools tox==2.9.1 tox-virtualenv-no-download
 
       - restore_cache:
-          key: tox-v2-py3-{{ checksum "tox.ini" }}
+          key: tox-v2-py3-{{ checksum "tox.ini" }}-{{ checksum "setup.py" }}
 
       - run:
           name: Install tox things
           command: if [ ! -d ".tox" ]; then python -m tox -e py3 --notest; fi
 
       - save_cache:
-          key: tox-v2-py3-{{ checksum "tox.ini" }}
+          key: tox-v2-py3-{{ checksum "tox.ini" }}-{{ checksum "setup.py" }}
           paths:
             - .tox
 
@@ -127,13 +127,14 @@ jobs:
       - image: circleci/openjdk:8u171-jdk-node-browsers
     steps:
       - checkout
+      - restore_cache:
+          key: gradle-wrapper-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
+      - restore_cache:
+          key: gradle-cache-{{ checksum "versions.props" }}-{{ checksum "build.gradle" }}
       - attach_workspace:
           at: '.'
       - deploy:
-          command: |
-            if [[ "${CIRCLE_BRANCH}" == "develop" || "${CIRCLE_TAG}" =~ [0-9]+(\.[0-9]+)+(-[a-zA-Z]+[0-9]*)* ]]; then
-              ./gradlew --stacktrace --continue publish
-            fi
+          command: ./gradlew --stacktrace --continue publish
 
 workflows:
   version: 2
@@ -155,6 +156,8 @@ workflows:
             - py27
             - py3
           filters:
+            branches:
+              ignore: /.*/
             tags:
               only: /.*/
 
