@@ -7,7 +7,13 @@ client:
     receiveDateTimeAliasExample: ['""']
     receiveDateTimeExample: ['{"value":"4/3/2018"}', '{"value":"1523040070"}', '{"value":"2017-01-02T03:04:05.0000000000Z"}',
       '{"value":"2017-01-02T04:04:05.000000000+01:00[Europe/Berlin][Another/Zone]"}']
-    receiveDoubleExample: ['{"value":"nan"}']
+    receiveDoubleAliasExample: ['10']
+    receiveDoubleExample: ['{"value":13}', '{"value":"1.23"}', '{"value":"nan"}']
+    receiveIntegerAliasExample: ['0']
+    receiveIntegerExample: ['{"value":-2147483649}', '{"value":2147483648}']
+    receiveListExample: ['{}']
+    receiveMapExample: ['{}']
+    receiveOptionalExample: ['{}']
     receiveRidAliasExample: ['""', '"badString"', '"ri.service.CAPLOCK.type.name"',
       '"ri.service.instance.-123.name"', '"ri..instance.type.noService"', '"ri.service.instance.type."',
       '"id.bad.id.class.b.name"', '"ri:service::instance:type:name"', '"ri.service.instance.type.name!@#"',
