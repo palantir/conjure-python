@@ -26,16 +26,16 @@ class AliasAsMapKeyExample(ConjureBeanType):
             'uuids': ConjureFieldDefinition('uuids', DictType(UuidAliasExample.UuidAliasExample, ManyFieldExample.ManyFieldExample))
         }
 
-    _strings = None # type: Dict[StringAliasExample, ManyFieldExample]
-    _rids = None # type: Dict[RidAliasExample, ManyFieldExample]
-    _bearertokens = None # type: Dict[BearerTokenAliasExample, ManyFieldExample]
-    _integers = None # type: Dict[IntegerAliasExample, ManyFieldExample]
-    _safelongs = None # type: Dict[SafeLongAliasExample, ManyFieldExample]
-    _datetimes = None # type: Dict[DateTimeAliasExample, ManyFieldExample]
-    _uuids = None # type: Dict[UuidAliasExample, ManyFieldExample]
+    _strings = None # type: Dict[StringAliasExample.StringAliasExample, ManyFieldExample.ManyFieldExample]
+    _rids = None # type: Dict[RidAliasExample.RidAliasExample, ManyFieldExample.ManyFieldExample]
+    _bearertokens = None # type: Dict[BearerTokenAliasExample.BearerTokenAliasExample, ManyFieldExample.ManyFieldExample]
+    _integers = None # type: Dict[IntegerAliasExample.IntegerAliasExample, ManyFieldExample.ManyFieldExample]
+    _safelongs = None # type: Dict[SafeLongAliasExample.SafeLongAliasExample, ManyFieldExample.ManyFieldExample]
+    _datetimes = None # type: Dict[DateTimeAliasExample.DateTimeAliasExample, ManyFieldExample.ManyFieldExample]
+    _uuids = None # type: Dict[UuidAliasExample.UuidAliasExample, ManyFieldExample.ManyFieldExample]
 
     def __init__(self, strings, rids, bearertokens, integers, safelongs, datetimes, uuids):
-        # type: (Dict[StringAliasExample, ManyFieldExample], Dict[RidAliasExample, ManyFieldExample], Dict[BearerTokenAliasExample, ManyFieldExample], Dict[IntegerAliasExample, ManyFieldExample], Dict[SafeLongAliasExample, ManyFieldExample], Dict[DateTimeAliasExample, ManyFieldExample], Dict[UuidAliasExample, ManyFieldExample]) -> None
+        # type: (Dict[StringAliasExample.StringAliasExample, ManyFieldExample.ManyFieldExample], Dict[RidAliasExample.RidAliasExample, ManyFieldExample.ManyFieldExample], Dict[BearerTokenAliasExample.BearerTokenAliasExample, ManyFieldExample.ManyFieldExample], Dict[IntegerAliasExample.IntegerAliasExample, ManyFieldExample.ManyFieldExample], Dict[SafeLongAliasExample.SafeLongAliasExample, ManyFieldExample.ManyFieldExample], Dict[DateTimeAliasExample.DateTimeAliasExample, ManyFieldExample.ManyFieldExample], Dict[UuidAliasExample.UuidAliasExample, ManyFieldExample.ManyFieldExample]) -> None
         self._strings = strings
         self._rids = rids
         self._bearertokens = bearertokens
@@ -46,36 +46,36 @@ class AliasAsMapKeyExample(ConjureBeanType):
 
     @property
     def strings(self):
-        # type: () -> Dict[StringAliasExample, ManyFieldExample]
+        # type: () -> Dict[StringAliasExample.StringAliasExample, ManyFieldExample.ManyFieldExample]
         return self._strings
 
     @property
     def rids(self):
-        # type: () -> Dict[RidAliasExample, ManyFieldExample]
+        # type: () -> Dict[RidAliasExample.RidAliasExample, ManyFieldExample.ManyFieldExample]
         return self._rids
 
     @property
     def bearertokens(self):
-        # type: () -> Dict[BearerTokenAliasExample, ManyFieldExample]
+        # type: () -> Dict[BearerTokenAliasExample.BearerTokenAliasExample, ManyFieldExample.ManyFieldExample]
         return self._bearertokens
 
     @property
     def integers(self):
-        # type: () -> Dict[IntegerAliasExample, ManyFieldExample]
+        # type: () -> Dict[IntegerAliasExample.IntegerAliasExample, ManyFieldExample.ManyFieldExample]
         return self._integers
 
     @property
     def safelongs(self):
-        # type: () -> Dict[SafeLongAliasExample, ManyFieldExample]
+        # type: () -> Dict[SafeLongAliasExample.SafeLongAliasExample, ManyFieldExample.ManyFieldExample]
         return self._safelongs
 
     @property
     def datetimes(self):
-        # type: () -> Dict[DateTimeAliasExample, ManyFieldExample]
+        # type: () -> Dict[DateTimeAliasExample.DateTimeAliasExample, ManyFieldExample.ManyFieldExample]
         return self._datetimes
 
     @property
     def uuids(self):
-        # type: () -> Dict[UuidAliasExample, ManyFieldExample]
+        # type: () -> Dict[UuidAliasExample.UuidAliasExample, ManyFieldExample.ManyFieldExample]
         return self._uuids
 

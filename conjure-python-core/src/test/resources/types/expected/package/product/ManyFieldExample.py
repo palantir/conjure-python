@@ -32,10 +32,10 @@ class ManyFieldExample(ConjureBeanType):
     _items = None # type: List[str]
     _set = None # type: List[str]
     _map = None # type: Dict[str, str]
-    _alias = None # type: StringAliasExample
+    _alias = None # type: StringAliasExample.StringAliasExample
 
     def __init__(self, string, integer, double_value, optional_item, items, set, map, alias):
-        # type: (str, int, float, Optional[str], List[str], List[str], Dict[str, str], StringAliasExample) -> None
+        # type: (str, int, float, Optional[str], List[str], List[str], Dict[str, str], StringAliasExample.StringAliasExample) -> None
         self._string = string
         self._integer = integer
         self._double_value = double_value
@@ -89,7 +89,7 @@ class ManyFieldExample(ConjureBeanType):
 
     @property
     def alias(self):
-        # type: () -> StringAliasExample
+        # type: () -> StringAliasExample.StringAliasExample
         """docs for alias field"""
         return self._alias
 

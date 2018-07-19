@@ -16,7 +16,7 @@ class TestService(Service):
     """A Markdown description of the service."""
 
     def get_file_systems(self, auth_header):
-        # type: (str) -> Dict[str, BackingFileSystem]
+        # type: (str) -> Dict[str, BackingFileSystem.BackingFileSystem]
         """Returns a mapping from file system id to backing file system configuration."""
 
         _headers = {
@@ -46,7 +46,7 @@ class TestService(Service):
         return _decoder.decode(_response.json(), DictType(str, BackingFileSystem.BackingFileSystem))
 
     def create_dataset(self, auth_header, request, test_header_arg):
-        # type: (str, CreateDatasetRequest, str) -> Dataset
+        # type: (str, CreateDatasetRequest.CreateDatasetRequest, str) -> Dataset.Dataset
 
         _headers = {
             'Accept': 'application/json',
@@ -77,7 +77,7 @@ class TestService(Service):
         return _decoder.decode(_response.json(), Dataset.Dataset)
 
     def get_dataset(self, auth_header, dataset_rid):
-        # type: (str, str) -> Optional[Dataset]
+        # type: (str, str) -> Optional[Dataset.Dataset]
 
         _headers = {
             'Accept': 'application/json',

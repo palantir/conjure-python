@@ -7,7 +7,7 @@ from conjure_python_client import Service
 class ImportService(Service):
 
     def test_endpoint(self, imported_string):
-        # type: (StringExample) -> BackingFileSystem
+        # type: (StringExample.StringExample) -> BackingFileSystem.BackingFileSystem
 
         _headers = {
             'Accept': 'application/json',
