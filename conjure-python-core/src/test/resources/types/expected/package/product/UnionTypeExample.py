@@ -7,7 +7,7 @@ from typing import Set
 class UnionTypeExample(ConjureUnionType):
     """A type which can either be a StringExample, a set of strings, or an integer."""
 
-    _string_example = None # type: StringExample.StringExample
+    _string_example = None # type: StringExample
     _set = None # type: List[str]
     _this_field_is_an_integer = None # type: int
     _also_an_integer = None # type: int
@@ -56,7 +56,7 @@ class UnionTypeExample(ConjureUnionType):
 
     @property
     def string_example(self):
-        # type: () -> StringExample.StringExample
+        # type: () -> StringExample
         """Docs for when UnionTypeExample is of type StringExample."""
         return self._string_example
 

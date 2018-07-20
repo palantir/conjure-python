@@ -5,7 +5,7 @@ from conjure_python_client import ConjureUnionType
 class UnionWithImports(ConjureUnionType):
 
     _string = None # type: str
-    _imported = None # type: AnyMapExample.AnyMapExample
+    _imported = None # type: AnyMapExample
 
     @classmethod
     def _options(cls):
@@ -33,6 +33,6 @@ class UnionWithImports(ConjureUnionType):
 
     @property
     def imported(self):
-        # type: () -> AnyMapExample.AnyMapExample
+        # type: () -> AnyMapExample
         return self._imported
 

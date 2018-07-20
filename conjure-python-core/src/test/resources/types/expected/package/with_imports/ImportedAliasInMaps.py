@@ -14,14 +14,14 @@ class ImportedAliasInMaps(ConjureBeanType):
             'aliases': ConjureFieldDefinition('aliases', DictType(RidAliasExample.RidAliasExample, DateTimeAliasExample.DateTimeAliasExample))
         }
 
-    _aliases = None # type: Dict[RidAliasExample.RidAliasExample, DateTimeAliasExample.DateTimeAliasExample]
+    _aliases = None # type: Dict[RidAliasExample, DateTimeAliasExample]
 
     def __init__(self, aliases):
-        # type: (Dict[RidAliasExample.RidAliasExample, DateTimeAliasExample.DateTimeAliasExample]) -> None
+        # type: (Dict[RidAliasExample, DateTimeAliasExample]) -> None
         self._aliases = aliases
 
     @property
     def aliases(self):
-        # type: () -> Dict[RidAliasExample.RidAliasExample, DateTimeAliasExample.DateTimeAliasExample]
+        # type: () -> Dict[RidAliasExample, DateTimeAliasExample]
         return self._aliases
 

@@ -11,14 +11,14 @@ class EnumFieldExample(ConjureBeanType):
             'enum': ConjureFieldDefinition('enum', EnumExample.EnumExample)
         }
 
-    _enum = None # type: EnumExample.EnumExample
+    _enum = None # type: EnumExample
 
     def __init__(self, enum):
-        # type: (EnumExample.EnumExample) -> None
+        # type: (EnumExample) -> None
         self._enum = enum
 
     @property
     def enum(self):
-        # type: () -> EnumExample.EnumExample
+        # type: () -> EnumExample
         return self._enum
 
