@@ -19,6 +19,7 @@ package com.palantir.conjure.python.poet;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Stream;
 import org.immutables.value.Value;
 
 @Value.Immutable
@@ -36,24 +37,30 @@ public interface PythonFile extends Emittable {
 
     Set<PythonImport> imports();
 
+    /**
+     * Imports that should be put at the bottom, to avoid circular references.
+     * Note: these MUST be _module attribute_ imports as in 'from <module> import <attribute>',
+     * using 'from <package> import <module>' will not work.
+     * See: <a href=https://gist.github.com/datagrok/40bf84d5870c41a77dc6>Python circular imports edge cases</a>
+     */
+    Set<PythonImport> bottomImports();
+
     List<PythonClass> contents();
 
     @Override
     default void emit(PythonPoetWriter poetWriter) {
         poetWriter.maintainingIndent(() -> {
-            contents().stream()
-                    .map(PythonClass::requiredImports)
-                    .flatMap(Collection::stream)
+            Stream
+                    .concat(imports().stream(),
+                            contents().stream().map(PythonClass::requiredImports).flatMap(Collection::stream))
                     .distinct()
                     .sorted()
                     .forEach(poetWriter::emit);
 
             poetWriter.writeLine();
-            contents().stream().forEach(poetWriter::emit);
+            contents().forEach(poetWriter::emit);
 
-            poetWriter.writeLine();
-            // Put these at the bottom, to avoid circular references.
-            imports().stream().forEach(poetWriter::emit);
+            bottomImports().forEach(poetWriter::emit);
         });
     }
 

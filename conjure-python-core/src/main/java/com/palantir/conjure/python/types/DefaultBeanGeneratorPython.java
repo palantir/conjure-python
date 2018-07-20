@@ -16,6 +16,7 @@
 
 package com.palantir.conjure.python.types;
 
+import com.google.common.collect.Iterables;
 import com.palantir.conjure.python.PackageNameProcessor;
 import com.palantir.conjure.python.PythonFileGenerator;
 import com.palantir.conjure.python.poet.PythonAlias;
@@ -61,6 +62,10 @@ public final class DefaultBeanGeneratorPython implements PythonFileGenerator<Typ
         }
     }
 
+    private boolean isRelativeImport(PythonImport imp) {
+        return imp.className().conjurePackage().startsWith(".");
+    }
+
     private PythonFile generateObject(
             Map<TypeName, TypeDefinition> types,
             PackageNameProcessor packageNameProcessor,
@@ -90,7 +95,8 @@ public final class DefaultBeanGeneratorPython implements PythonFileGenerator<Typ
 
         return PythonFile.builder()
                 .fileName(String.format("%s.py", typeDef.getTypeName().getName()))
-                .imports(imports)
+                .imports(Iterables.filter(imports, imp -> !isRelativeImport(imp)))
+                .bottomImports(Iterables.filter(imports, this::isRelativeImport))
                 .packageName(packageName)
                 .addContents(PythonBean.builder()
                         .className(typeDef.getTypeName().getName())
@@ -132,7 +138,8 @@ public final class DefaultBeanGeneratorPython implements PythonFileGenerator<Typ
 
         return PythonFile.builder()
                 .fileName(String.format("%s.py", typeDef.getTypeName().getName()))
-                .imports(imports)
+                .imports(Iterables.filter(imports, imp -> !isRelativeImport(imp)))
+                .bottomImports(Iterables.filter(imports, this::isRelativeImport))
                 .packageName(packageName)
                 .addContents(
                         PythonUnionTypeDefinition.builder()
