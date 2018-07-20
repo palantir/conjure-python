@@ -107,6 +107,7 @@ public final class ConjurePythonCli {
     static GeneratorConfiguration resolveGeneratorConfiguration(CliConfiguration cliConfig,
             BuildConfiguration buildConfig) {
         return GeneratorConfiguration.builder()
+                .generatorVersion(buildConfig.generatorVersion())
                 .minConjureClientVersion(buildConfig.minConjureClientVersion())
                 .packageAuthor(cliConfig.packageAuthor())
                 .packageDescription(cliConfig.packageDescription())

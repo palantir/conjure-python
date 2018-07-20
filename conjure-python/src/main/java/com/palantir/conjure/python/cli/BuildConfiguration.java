@@ -18,6 +18,8 @@ public abstract class BuildConfiguration {
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper(new YAMLFactory());
 
+    abstract String generatorVersion();
+
     abstract String minConjureClientVersion();
 
     static BuildConfiguration load() {

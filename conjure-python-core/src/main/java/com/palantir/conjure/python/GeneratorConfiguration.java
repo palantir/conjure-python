@@ -22,6 +22,8 @@ public interface GeneratorConfiguration {
 
     Optional<String> packageAuthor();
 
+    String generatorVersion();
+
     String minConjureClientVersion();
 
     boolean shouldWriteCondaRecipe();

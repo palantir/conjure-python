@@ -138,6 +138,9 @@ public final class ConjurePythonGenerator {
                 .addContents(PythonLine.builder()
                         .text(String.format("__version__ = \"%s\"", config.packageVersion()))
                         .build())
+                .addContents(PythonLine.builder()
+                        .text(String.format("__conjure_generator_version__ = \"%s\"", config.generatorVersion()))
+                        .build())
                 .build();
     }
 
