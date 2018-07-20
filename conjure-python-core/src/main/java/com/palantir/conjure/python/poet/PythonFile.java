@@ -29,10 +29,7 @@ public interface PythonFile extends Emittable {
         return "";
     }
 
-    @Value.Default
-    default String fileName() {
-        return "__init__.py";
-    }
+    String fileName();
 
     Set<PythonImport> imports();
 

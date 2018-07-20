@@ -128,6 +128,7 @@ public final class ConjurePythonGenerator {
     private PythonFile buildRootInit(String packageName, Set<String> submodules) {
         return PythonFile.builder()
                 .packageName(packageName)
+                .fileName("__init__.py")
                 .addContents(PythonAll.builder()
                         .addAllContents(submodules.stream()
                                 .map(packagePath -> packagePath.substring(packageName.length() + 1))
