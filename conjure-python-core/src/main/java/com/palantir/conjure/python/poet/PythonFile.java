@@ -39,9 +39,10 @@ public interface PythonFile extends Emittable {
 
     /**
      * Imports that should be put at the bottom, to avoid circular references.
-     * Note: these MUST be _module attribute_ imports as in 'from <module> import <attribute>',
-     * using 'from <package> import <module>' will not work.
-     * See: <a href=https://gist.github.com/datagrok/40bf84d5870c41a77dc6>Python circular imports edge cases</a>
+     * Note: these MUST be _module attribute_ imports as in {@code from <module> import <attribute>},
+     * using {@code from <package> import <module>} will not work.
+     * <p>
+     * See: <a href="https://gist.github.com/datagrok/40bf84d5870c41a77dc6">Python circular imports edge cases</a>
      */
     Set<PythonImport> bottomImports();
 
