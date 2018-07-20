@@ -1,4 +1,4 @@
-from ..product import StringExample
+from ..product.StringExample import StringExample
 from conjure_python_client import ConjureBeanType
 from conjure_python_client import ConjureFieldDefinition
 
@@ -9,7 +9,7 @@ class ComplexObjectWithImports(ConjureBeanType):
         # type: () -> Dict[str, ConjureFieldDefinition]
         return {
             'string': ConjureFieldDefinition('string', str),
-            'imported': ConjureFieldDefinition('imported', StringExample.StringExample)
+            'imported': ConjureFieldDefinition('imported', StringExample)
         }
 
     _string = None # type: str

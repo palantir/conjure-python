@@ -1,4 +1,4 @@
-from ..product import StringAliasExample
+from ..product.StringAliasExample import StringAliasExample
 
-AliasImportedPrimitiveAlias = StringAliasExample.StringAliasExample
+AliasImportedPrimitiveAlias = StringAliasExample
 

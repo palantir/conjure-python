@@ -1,4 +1,4 @@
-from ..product import ManyFieldExample
+from ..product.ManyFieldExample import ManyFieldExample
 
-AliasImportedObject = ManyFieldExample.ManyFieldExample
+AliasImportedObject = ManyFieldExample
 

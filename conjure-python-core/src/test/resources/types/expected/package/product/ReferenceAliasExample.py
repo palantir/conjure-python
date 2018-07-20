@@ -1,4 +1,4 @@
-from . import AnyExample
+from .AnyExample import AnyExample
 
-ReferenceAliasExample = AnyExample.AnyExample
+ReferenceAliasExample = AnyExample
 

@@ -1,11 +1,11 @@
-from . import BearerTokenAliasExample
-from . import DateTimeAliasExample
-from . import IntegerAliasExample
-from . import ManyFieldExample
-from . import RidAliasExample
-from . import SafeLongAliasExample
-from . import StringAliasExample
-from . import UuidAliasExample
+from .BearerTokenAliasExample import BearerTokenAliasExample
+from .DateTimeAliasExample import DateTimeAliasExample
+from .IntegerAliasExample import IntegerAliasExample
+from .ManyFieldExample import ManyFieldExample
+from .RidAliasExample import RidAliasExample
+from .SafeLongAliasExample import SafeLongAliasExample
+from .StringAliasExample import StringAliasExample
+from .UuidAliasExample import UuidAliasExample
 from conjure_python_client import ConjureBeanType
 from conjure_python_client import ConjureFieldDefinition
 from conjure_python_client import DictType
@@ -17,13 +17,13 @@ class AliasAsMapKeyExample(ConjureBeanType):
     def _fields(cls):
         # type: () -> Dict[str, ConjureFieldDefinition]
         return {
-            'strings': ConjureFieldDefinition('strings', DictType(StringAliasExample.StringAliasExample, ManyFieldExample.ManyFieldExample)),
-            'rids': ConjureFieldDefinition('rids', DictType(RidAliasExample.RidAliasExample, ManyFieldExample.ManyFieldExample)),
-            'bearertokens': ConjureFieldDefinition('bearertokens', DictType(BearerTokenAliasExample.BearerTokenAliasExample, ManyFieldExample.ManyFieldExample)),
-            'integers': ConjureFieldDefinition('integers', DictType(IntegerAliasExample.IntegerAliasExample, ManyFieldExample.ManyFieldExample)),
-            'safelongs': ConjureFieldDefinition('safelongs', DictType(SafeLongAliasExample.SafeLongAliasExample, ManyFieldExample.ManyFieldExample)),
-            'datetimes': ConjureFieldDefinition('datetimes', DictType(DateTimeAliasExample.DateTimeAliasExample, ManyFieldExample.ManyFieldExample)),
-            'uuids': ConjureFieldDefinition('uuids', DictType(UuidAliasExample.UuidAliasExample, ManyFieldExample.ManyFieldExample))
+            'strings': ConjureFieldDefinition('strings', DictType(StringAliasExample, ManyFieldExample)),
+            'rids': ConjureFieldDefinition('rids', DictType(RidAliasExample, ManyFieldExample)),
+            'bearertokens': ConjureFieldDefinition('bearertokens', DictType(BearerTokenAliasExample, ManyFieldExample)),
+            'integers': ConjureFieldDefinition('integers', DictType(IntegerAliasExample, ManyFieldExample)),
+            'safelongs': ConjureFieldDefinition('safelongs', DictType(SafeLongAliasExample, ManyFieldExample)),
+            'datetimes': ConjureFieldDefinition('datetimes', DictType(DateTimeAliasExample, ManyFieldExample)),
+            'uuids': ConjureFieldDefinition('uuids', DictType(UuidAliasExample, ManyFieldExample))
         }
 
     _strings = None # type: Dict[StringAliasExample, ManyFieldExample]
