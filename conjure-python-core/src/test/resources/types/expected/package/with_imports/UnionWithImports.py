@@ -1,4 +1,3 @@
-from ..product.AnyMapExample import AnyMapExample
 from conjure_python_client import ConjureFieldDefinition
 from conjure_python_client import ConjureUnionType
 
@@ -36,3 +35,4 @@ class UnionWithImports(ConjureUnionType):
         # type: () -> AnyMapExample
         return self._imported
 
+from ..product.AnyMapExample import AnyMapExample

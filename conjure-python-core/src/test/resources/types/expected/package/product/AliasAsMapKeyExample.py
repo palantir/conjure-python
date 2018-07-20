@@ -1,11 +1,3 @@
-from .BearerTokenAliasExample import BearerTokenAliasExample
-from .DateTimeAliasExample import DateTimeAliasExample
-from .IntegerAliasExample import IntegerAliasExample
-from .ManyFieldExample import ManyFieldExample
-from .RidAliasExample import RidAliasExample
-from .SafeLongAliasExample import SafeLongAliasExample
-from .StringAliasExample import StringAliasExample
-from .UuidAliasExample import UuidAliasExample
 from conjure_python_client import ConjureBeanType
 from conjure_python_client import ConjureFieldDefinition
 from conjure_python_client import DictType
@@ -79,3 +71,11 @@ class AliasAsMapKeyExample(ConjureBeanType):
         # type: () -> Dict[UuidAliasExample, ManyFieldExample]
         return self._uuids
 
+from .RidAliasExample import RidAliasExample
+from .ManyFieldExample import ManyFieldExample
+from .IntegerAliasExample import IntegerAliasExample
+from .BearerTokenAliasExample import BearerTokenAliasExample
+from .DateTimeAliasExample import DateTimeAliasExample
+from .UuidAliasExample import UuidAliasExample
+from .SafeLongAliasExample import SafeLongAliasExample
+from .StringAliasExample import StringAliasExample
