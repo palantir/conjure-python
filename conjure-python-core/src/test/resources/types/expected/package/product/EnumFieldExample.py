@@ -1,4 +1,3 @@
-from .EnumExample import EnumExample
 from conjure_python_client import ConjureBeanType
 from conjure_python_client import ConjureFieldDefinition
 
@@ -22,3 +21,4 @@ class EnumFieldExample(ConjureBeanType):
         # type: () -> EnumExample
         return self._enum
 
+from .EnumExample import EnumExample

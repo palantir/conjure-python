@@ -1,4 +1,3 @@
-from .StringExample import StringExample
 from conjure_python_client import ConjureFieldDefinition
 from conjure_python_client import ConjureUnionType
 from conjure_python_client import ListType
@@ -90,3 +89,4 @@ class UnionTypeExample(ConjureUnionType):
         # type: () -> int
         return self._interface
 
+from .StringExample import StringExample

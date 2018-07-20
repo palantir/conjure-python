@@ -1,4 +1,3 @@
-from ..product.StringExample import StringExample
 from conjure_python_client import ConjureBeanType
 from conjure_python_client import ConjureFieldDefinition
 
@@ -30,3 +29,4 @@ class ComplexObjectWithImports(ConjureBeanType):
         # type: () -> StringExample
         return self._imported
 
+from ..product.StringExample import StringExample

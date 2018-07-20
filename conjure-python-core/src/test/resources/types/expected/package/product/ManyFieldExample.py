@@ -1,4 +1,3 @@
-from .StringAliasExample import StringAliasExample
 from conjure_python_client import ConjureBeanType
 from conjure_python_client import ConjureFieldDefinition
 from conjure_python_client import DictType
@@ -93,3 +92,4 @@ class ManyFieldExample(ConjureBeanType):
         """docs for alias field"""
         return self._alias
 
+from .StringAliasExample import StringAliasExample
