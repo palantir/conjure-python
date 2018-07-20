@@ -16,7 +16,7 @@
 
 package com.palantir.conjure.python.poet;
 
-import com.google.common.collect.Streams;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import org.immutables.value.Value;
@@ -41,14 +41,19 @@ public interface PythonFile extends Emittable {
     @Override
     default void emit(PythonPoetWriter poetWriter) {
         poetWriter.maintainingIndent(() -> {
-            Streams.concat(imports().stream(), contents().stream()
-                    .flatMap(pythonClass -> pythonClass.requiredImports().stream()))
+            contents().stream()
+                    .map(PythonClass::requiredImports)
+                    .flatMap(Collection::stream)
                     .distinct()
                     .sorted()
                     .forEach(poetWriter::emit);
 
             poetWriter.writeLine();
             contents().stream().forEach(poetWriter::emit);
+
+            poetWriter.writeLine();
+            // Put these at the bottom, to avoid circular references.
+            imports().stream().forEach(poetWriter::emit);
         });
     }
 
