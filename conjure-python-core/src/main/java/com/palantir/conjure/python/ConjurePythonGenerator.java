@@ -164,7 +164,7 @@ public final class ConjurePythonGenerator {
                 .condaPackageName(config.packageName())
                 .packageVersion(config.packageVersion())
                 .addInstallDependencies("requests", "typing")
-                .addInstallDependencies(String.format("conjure--python-client >=%s,<%s",
+                .addInstallDependencies(String.format("conjure-python-client >=%s,<%s",
                         config.minConjureClientVersion(), config.maxConjureClientVersion()))
                 .build();
 
