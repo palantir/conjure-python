@@ -1,3 +1,4 @@
+# this is package conda_recipe
 
 package:
     name: package

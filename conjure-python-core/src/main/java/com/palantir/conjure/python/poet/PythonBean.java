@@ -29,6 +29,11 @@ import org.immutables.value.Value;
 public interface PythonBean extends PythonClass {
 
     ImmutableSet<PythonImport> DEFAULT_IMPORTS = ImmutableSet.of(
+            PythonImport.of(PythonClassName.of("typing", "List")),
+            PythonImport.of(PythonClassName.of("typing", "Set")),
+            PythonImport.of(PythonClassName.of("typing", "Dict")),
+            PythonImport.of(PythonClassName.of("typing", "Tuple")),
+            PythonImport.of(PythonClassName.of("typing", "Optional")),
             PythonImport.of(PythonClassName.of("conjure_python_client", "ConjureBeanType")),
             PythonImport.of(PythonClassName.of("conjure_python_client", "ConjureFieldDefinition")));
 
@@ -37,6 +42,10 @@ public interface PythonBean extends PythonClass {
     default Set<PythonImport> requiredImports() {
         return DEFAULT_IMPORTS;
     }
+
+    String className();
+
+    Optional<Documentation> docs();
 
     List<PythonField> fields();
 

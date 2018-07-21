@@ -11,12 +11,6 @@ public interface PythonLine extends PythonClass {
     String text();
 
     @Override
-    @Value.Default
-    default String className() {
-        return "";
-    }
-
-    @Override
     default void emit(PythonPoetWriter poetWriter) {
         poetWriter.writeIndentedLine(text());
         poetWriter.writeLine();

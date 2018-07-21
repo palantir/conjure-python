@@ -14,14 +14,20 @@
  * limitations under the License.
  */
 
-package com.palantir.conjure.python.poet;
+package com.palantir.conjure.python.types;
 
-import java.util.Set;
+import com.palantir.conjure.python.PackageNameProcessor;
+import com.palantir.conjure.python.poet.PythonClass;
+import com.palantir.conjure.spec.TypeDefinition;
+import java.util.List;
 
-public interface PythonClass extends Emittable {
+public interface PythonBeanGenerator {
 
-    Set<PythonImport> requiredImports();
+    enum ExperimentalFeatures {}
 
-    String packageName();
+    PythonClass generateObject(
+            List<TypeDefinition> types,
+            PackageNameProcessor packageNameProvider,
+            TypeDefinition typeDef);
 
 }

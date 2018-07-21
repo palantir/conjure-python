@@ -1,3 +1,0 @@
-
-DoubleAliasExample = float
-

@@ -11,8 +11,8 @@ import org.immutables.value.Value;
 public interface PythonMetaYaml extends PythonClass {
 
     @Override
-    default String className() {
-        return "";
+    default String packageName() {
+        return "conda_recipe";
     }
 
     String condaPackageName();
