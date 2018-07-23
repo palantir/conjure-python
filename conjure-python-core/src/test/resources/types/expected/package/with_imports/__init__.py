@@ -46,6 +46,57 @@ class ComplexObjectWithImports(ConjureBeanType):
         # type: () -> StringExample
         return self._imported
 
+class ImportService(Service):
+
+    def test_endpoint(self, imported_string):
+        # type: (StringExample) -> BackingFileSystem
+
+        _headers = {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+        } # type: Dict[str, Any]
+
+        _params = {
+        } # type: Dict[str, Any]
+
+        _path_params = {
+        } # type: Dict[str, Any]
+
+        _json = ConjureEncoder().default(imported_string) # type: Any
+
+        _path = '/catalog/testEndpoint'
+        _path = _path.format(**_path_params)
+
+        _response = self._request( # type: ignore
+            'POST',
+            self._uri + _path,
+            params=_params,
+            headers=_headers,
+            json=_json)
+
+        _decoder = ConjureDecoder()
+        return _decoder.decode(_response.json(), BackingFileSystem)
+
+class ImportedAliasInMaps(ConjureBeanType):
+
+    @classmethod
+    def _fields(cls):
+        # type: () -> Dict[str, ConjureFieldDefinition]
+        return {
+            'aliases': ConjureFieldDefinition('aliases', DictType(RidAliasExample, DateTimeAliasExample))
+        }
+
+    _aliases = None # type: Dict[RidAliasExample, DateTimeAliasExample]
+
+    def __init__(self, aliases):
+        # type: (Dict[RidAliasExample, DateTimeAliasExample]) -> None
+        self._aliases = aliases
+
+    @property
+    def aliases(self):
+        # type: () -> Dict[RidAliasExample, DateTimeAliasExample]
+        return self._aliases
+
 class UnionWithImports(ConjureUnionType):
 
     _string = None # type: str
@@ -79,57 +130,6 @@ class UnionWithImports(ConjureUnionType):
     def imported(self):
         # type: () -> AnyMapExample
         return self._imported
-
-class ImportedAliasInMaps(ConjureBeanType):
-
-    @classmethod
-    def _fields(cls):
-        # type: () -> Dict[str, ConjureFieldDefinition]
-        return {
-            'aliases': ConjureFieldDefinition('aliases', DictType(RidAliasExample, DateTimeAliasExample))
-        }
-
-    _aliases = None # type: Dict[RidAliasExample, DateTimeAliasExample]
-
-    def __init__(self, aliases):
-        # type: (Dict[RidAliasExample, DateTimeAliasExample]) -> None
-        self._aliases = aliases
-
-    @property
-    def aliases(self):
-        # type: () -> Dict[RidAliasExample, DateTimeAliasExample]
-        return self._aliases
-
-class ImportService(Service):
-
-    def test_endpoint(self, imported_string):
-        # type: (StringExample) -> BackingFileSystem
-
-        _headers = {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-        } # type: Dict[str, Any]
-
-        _params = {
-        } # type: Dict[str, Any]
-
-        _path_params = {
-        } # type: Dict[str, Any]
-
-        _json = ConjureEncoder().default(imported_string) # type: Any
-
-        _path = '/catalog/testEndpoint'
-        _path = _path.format(**_path_params)
-
-        _response = self._request( # type: ignore
-            'POST',
-            self._uri + _path,
-            params=_params,
-            headers=_headers,
-            json=_json)
-
-        _decoder = ConjureDecoder()
-        return _decoder.decode(_response.json(), BackingFileSystem)
 
 AliasImportedObject = ManyFieldExample
 

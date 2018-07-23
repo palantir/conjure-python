@@ -35,8 +35,6 @@ public interface PythonEnum extends PythonClass {
         return DEFAULT_IMPORTS;
     }
 
-    String className();
-
     Optional<Documentation> docs();
 
     List<PythonEnumValue> values();

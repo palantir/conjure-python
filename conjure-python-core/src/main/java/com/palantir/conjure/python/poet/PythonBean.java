@@ -43,8 +43,6 @@ public interface PythonBean extends PythonClass {
         return DEFAULT_IMPORTS;
     }
 
-    String className();
-
     Optional<Documentation> docs();
 
     List<PythonField> fields();

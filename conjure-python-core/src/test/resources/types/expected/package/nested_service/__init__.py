@@ -10,26 +10,6 @@ from typing import Optional
 from typing import Set
 from typing import Tuple
 
-class SimpleObject(ConjureBeanType):
-
-    @classmethod
-    def _fields(cls):
-        # type: () -> Dict[str, ConjureFieldDefinition]
-        return {
-            'string': ConjureFieldDefinition('string', str)
-        }
-
-    _string = None # type: str
-
-    def __init__(self, string):
-        # type: (str) -> None
-        self._string = string
-
-    @property
-    def string(self):
-        # type: () -> str
-        return self._string
-
 class SimpleNestedService(Service):
 
     def test_endpoint(self, string):
@@ -60,4 +40,24 @@ class SimpleNestedService(Service):
 
         _decoder = ConjureDecoder()
         return _decoder.decode(_response.json(), str)
+
+class SimpleObject(ConjureBeanType):
+
+    @classmethod
+    def _fields(cls):
+        # type: () -> Dict[str, ConjureFieldDefinition]
+        return {
+            'string': ConjureFieldDefinition('string', str)
+        }
+
+    _string = None # type: str
+
+    def __init__(self, string):
+        # type: (str) -> None
+        self._string = string
+
+    @property
+    def string(self):
+        # type: () -> str
+        return self._string
 

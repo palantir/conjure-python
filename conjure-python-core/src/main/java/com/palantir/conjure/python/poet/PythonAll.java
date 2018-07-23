@@ -12,6 +12,11 @@ public interface PythonAll extends PythonClass {
     List<String> contents();
 
     @Override
+    default String className() {
+        return "__all__";
+    }
+
+    @Override
     default void emit(PythonPoetWriter poetWriter) {
         poetWriter.maintainingIndent(() -> {
             poetWriter.writeIndentedLine("__all__ = [");

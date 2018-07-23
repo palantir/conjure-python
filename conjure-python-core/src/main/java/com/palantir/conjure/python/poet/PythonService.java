@@ -42,8 +42,6 @@ public interface PythonService extends PythonClass {
         return DEFAULT_IMPORTS;
     }
 
-    String className();
-
     Optional<Documentation> docs();
 
     List<PythonEndpointDefinition> endpointDefinitions();

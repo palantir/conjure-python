@@ -177,7 +177,7 @@ public final class DefaultBeanGenerator implements PythonBeanGenerator {
                 .collect(Collectors.toSet());
 
         return PythonAlias.builder()
-                .aliasName(typeDef.getTypeName().getName())
+                .className(typeDef.getTypeName().getName())
                 .aliasTarget(mapper.getTypeName(typeDef.getAlias()))
                 .packageName(packageName)
                 .addAllRequiredImports(imports)

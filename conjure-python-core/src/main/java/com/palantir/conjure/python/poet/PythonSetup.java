@@ -24,6 +24,11 @@ public interface PythonSetup extends PythonClass {
     }
 
     @Override
+    default String className() {
+        return "";
+    }
+
+    @Override
     default String packageName() {
         return "";
     }

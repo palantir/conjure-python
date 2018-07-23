@@ -22,6 +22,8 @@ public interface PythonClass extends Emittable {
 
     Set<PythonImport> requiredImports();
 
+    String className();
+
     String packageName();
 
 }

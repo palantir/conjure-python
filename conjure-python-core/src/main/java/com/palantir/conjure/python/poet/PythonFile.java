@@ -66,7 +66,7 @@ public interface PythonFile extends Emittable {
             } else if (!(pc1 instanceof PythonAlias) && pc2 instanceof PythonAlias) {
                 return -1;
             } else {
-                return 0;
+                return Comparator.comparing(PythonClass::className).compare(pc1, pc2);
             }
         }
     }

@@ -20,12 +20,11 @@ import org.immutables.value.Value;
 
 @Value.Immutable
 public interface PythonAlias extends PythonClass {
-    String aliasName();
     String aliasTarget();
 
     @Override
     default void emit(PythonPoetWriter poetWriter) {
-        poetWriter.writeIndentedLine(String.format("%s = %s", aliasName(), aliasTarget()));
+        poetWriter.writeIndentedLine(String.format("%s = %s", className(), aliasTarget()));
         poetWriter.writeLine();
     }
 
