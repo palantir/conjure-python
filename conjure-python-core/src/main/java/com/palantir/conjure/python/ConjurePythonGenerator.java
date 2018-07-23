@@ -109,6 +109,7 @@ public final class ConjurePythonGenerator {
                 .map(f -> {
                     if (f.build().packageName().indexOf('.') < 0) {
                         f.addContents(versionAttribute(f.build().packageName()));
+                        f.addContents(generatorVersionAttribute(f.build().packageName()));
                     }
                     return f;
                 })
@@ -140,6 +141,13 @@ public final class ConjurePythonGenerator {
     private PythonClass versionAttribute(String packageName) {
         return PythonLine.builder()
                 .text(String.format("__version__ = \"%s\"", config.packageVersion()))
+                .packageName(packageName)
+                .build();
+    }
+
+    private PythonClass generatorVersionAttribute(String packageName) {
+        return PythonLine.builder()
+                .text(String.format("__conjure_generator_version__ = \"%s\"", config.generatorVersion()))
                 .packageName(packageName)
                 .build();
     }
