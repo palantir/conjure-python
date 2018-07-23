@@ -34,8 +34,7 @@ public interface PythonBean extends PythonClass {
             PythonImport.of(PythonClassName.of("typing", "Dict")),
             PythonImport.of(PythonClassName.of("typing", "Tuple")),
             PythonImport.of(PythonClassName.of("typing", "Optional")),
-            PythonImport.of(PythonClassName.of("conjure_python_client", "ConjureBeanType")),
-            PythonImport.of(PythonClassName.of("conjure_python_client", "ConjureFieldDefinition")));
+            PythonImport.of(PythonClassName.of("conjure_python_client", "*")));
 
     @Override
     @Value.Default
