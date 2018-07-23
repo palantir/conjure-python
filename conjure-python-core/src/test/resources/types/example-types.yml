@@ -156,3 +156,8 @@ types:
             type: string
           memoizedHashCode:
             type: integer
+      RecursiveObjectExample:
+        fields:
+          recursiveField: optional<RecursiveObjectAlias>
+      RecursiveObjectAlias:
+        alias: RecursiveObjectExample

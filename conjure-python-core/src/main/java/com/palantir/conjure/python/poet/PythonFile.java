@@ -60,7 +60,8 @@ public interface PythonFile extends Emittable {
     class PythonClassSerializationComparator implements Comparator<PythonClass> {
         @Override
         public int compare(PythonClass pc1, PythonClass pc2) {
-            // PythonAlias type objects should always go last
+            // PythonAliases need to occur last, since they potentially reference
+            // objects defined in the current module
             if (pc1 instanceof PythonAlias && !(pc2 instanceof PythonAlias)) {
                 return 1;
             } else if (!(pc1 instanceof PythonAlias) && pc2 instanceof PythonAlias) {

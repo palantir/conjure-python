@@ -533,6 +533,26 @@ class PrimitiveOptionalsExample(ConjureBeanType):
         # type: () -> Optional[str]
         return self._uuid
 
+class RecursiveObjectExample(ConjureBeanType):
+
+    @classmethod
+    def _fields(cls):
+        # type: () -> Dict[str, ConjureFieldDefinition]
+        return {
+            'recursive_field': ConjureFieldDefinition('recursiveField', OptionalType(RecursiveObjectAlias))
+        }
+
+    _recursive_field = None # type: Optional[RecursiveObjectAlias]
+
+    def __init__(self, recursive_field):
+        # type: (Optional[RecursiveObjectAlias]) -> None
+        self._recursive_field = recursive_field
+
+    @property
+    def recursive_field(self):
+        # type: () -> Optional[RecursiveObjectAlias]
+        return self._recursive_field
+
 class ReservedKeyExample(ConjureBeanType):
 
     @classmethod
@@ -784,6 +804,8 @@ DoubleAliasExample = float
 IntegerAliasExample = int
 
 MapAliasExample = DictType(str, object)
+
+RecursiveObjectAlias = RecursiveObjectExample
 
 ReferenceAliasExample = AnyExample
 

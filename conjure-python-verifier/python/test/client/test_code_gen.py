@@ -13,8 +13,9 @@
 # limitations under the License.
 
 
-def test_circular_import():
-    from ..generated.integration import ObjectExample, ObjectAlias
-    object_example = ObjectExample(None)
-    object_alias = ObjectAlias(None)
+# TODO(forozco): Once we split out code gen have more granular testing of code evaluation
+def test_code_gen_compiles():
+    from ..generated.product import RecursiveObjectExample, RecursiveObjectAlias
+    object_example = RecursiveObjectExample(None)
+    object_alias = RecursiveObjectAlias(None)
     assert object_alias == object_example

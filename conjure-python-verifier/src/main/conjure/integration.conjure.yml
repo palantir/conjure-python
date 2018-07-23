@@ -1,9 +1,0 @@
-types:
-  definitions:
-    default-package: com.palantir.integration
-    objects:
-      ObjectExample:
-        fields:
-          recursiveField: optional<ObjectAlias>
-      ObjectAlias:
-        alias: ObjectExample
