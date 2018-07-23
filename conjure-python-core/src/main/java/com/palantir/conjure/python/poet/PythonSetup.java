@@ -19,14 +19,18 @@ public interface PythonSetup extends PythonClass {
 
     @Override
     @Value.Default
+    default Set<PythonImport> requiredImports() {
+        return DEFAULT_IMPORTS;
+    }
+
+    @Override
     default String className() {
         return "";
     }
 
     @Override
-    @Value.Default
-    default Set<PythonImport> requiredImports() {
-        return DEFAULT_IMPORTS;
+    default String packageName() {
+        return "";
     }
 
     Map<String, String> options();

@@ -14,53 +14,50 @@
  * limitations under the License.
  */
 
-package com.palantir.conjure.python.service;
+package com.palantir.conjure.python.client;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableSet.Builder;
 import com.palantir.conjure.python.PackageNameProcessor;
-import com.palantir.conjure.python.PythonFileGenerator;
+import com.palantir.conjure.python.poet.PythonClass;
+import com.palantir.conjure.python.poet.PythonClassName;
 import com.palantir.conjure.python.poet.PythonEndpointDefinition;
 import com.palantir.conjure.python.poet.PythonEndpointDefinition.PythonEndpointParam;
-import com.palantir.conjure.python.poet.PythonFile;
 import com.palantir.conjure.python.poet.PythonImport;
 import com.palantir.conjure.python.poet.PythonService;
 import com.palantir.conjure.python.types.DefaultTypeNameVisitor;
 import com.palantir.conjure.python.types.MyPyTypeNameVisitor;
+import com.palantir.conjure.python.types.ReferencedTypeNameVisitor;
 import com.palantir.conjure.python.types.TypeMapper;
 import com.palantir.conjure.python.util.CaseConverter;
-import com.palantir.conjure.python.util.ImportsVisitor;
 import com.palantir.conjure.spec.PrimitiveType;
 import com.palantir.conjure.spec.ServiceDefinition;
-import com.palantir.conjure.spec.Type;
 import com.palantir.conjure.spec.TypeDefinition;
-import com.palantir.conjure.spec.TypeName;
 import com.palantir.conjure.visitor.TypeVisitor;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
-public final class ServiceGeneratorPython implements PythonFileGenerator<ServiceDefinition> {
+public final class ClientGenerator {
 
-    @Override
-    public PythonFile generateFile(
-            Map<TypeName, TypeDefinition> types,
-            PackageNameProcessor packageNameProcessor,
+    public PythonClass generateClient(
+            List<TypeDefinition> types,
+            PackageNameProcessor packageNameProvider,
             ServiceDefinition serviceDefinition) {
 
-        ImportsVisitor importsVisitor = new ImportsVisitor(
-                serviceDefinition.getServiceName(), packageNameProcessor, types);
-        TypeMapper mapper = new TypeMapper(new DefaultTypeNameVisitor(types.keySet()));
-        TypeMapper myPyMapper = new TypeMapper(new MyPyTypeNameVisitor(types.keySet()));
-        String packageName = packageNameProcessor.getPackageName(serviceDefinition.getServiceName().getPackage());
+        TypeMapper mapper = new TypeMapper(new DefaultTypeNameVisitor(types));
+        TypeMapper myPyMapper = new TypeMapper(new MyPyTypeNameVisitor(types));
+        ReferencedTypeNameVisitor referencedTypeNameVisitor = new ReferencedTypeNameVisitor(types, packageNameProvider);
 
-        Builder<Type> referencedTypesBuilder = ImmutableSet.builder();
+        Builder<PythonClassName> referencedTypesBuilder = ImmutableSet.builder();
 
         List<PythonEndpointDefinition> endpoints = serviceDefinition.getEndpoints()
                 .stream()
                 .map(ed -> {
-                    ed.getReturns().ifPresent(referencedTypesBuilder::add);
-                    ed.getArgs().forEach(arg -> referencedTypesBuilder.add(arg.getType()));
+                    ed.getReturns()
+                            .ifPresent(returnType -> referencedTypesBuilder.addAll(
+                                    returnType.accept(referencedTypeNameVisitor)));
+                    ed.getArgs().forEach(arg -> referencedTypesBuilder.addAll(
+                            arg.getType().accept(referencedTypeNameVisitor)));
 
                     List<PythonEndpointParam> params = ed.getArgs()
                             .stream()
@@ -94,20 +91,21 @@ public final class ServiceGeneratorPython implements PythonFileGenerator<Service
                 })
                 .collect(Collectors.toList());
 
+        String packageName =
+                packageNameProvider.getPackageName(serviceDefinition.getServiceName().getPackage());
         List<PythonImport> imports = referencedTypesBuilder.build()
                 .stream()
-                .flatMap(entry -> entry.accept(importsVisitor).stream())
+                .filter(entry -> !entry.conjurePackage().equals(packageName)) // don't need to import if in this file
+                .map(className -> PythonImport.of(className, packageName))
                 .collect(Collectors.toList());
 
-        return PythonFile.builder()
-                .fileName(String.format("%s.py", serviceDefinition.getServiceName().getName()))
+        return PythonService.builder()
                 .packageName(packageName)
-                .imports(imports)
-                .addContents(PythonService.builder()
-                        .className(serviceDefinition.getServiceName().getName())
-                        .docs(serviceDefinition.getDocs())
-                        .addAllEndpointDefinitions(endpoints)
-                        .build())
+                .addAllRequiredImports(PythonService.DEFAULT_IMPORTS)
+                .addAllRequiredImports(imports)
+                .className(serviceDefinition.getServiceName().getName())
+                .docs(serviceDefinition.getDocs())
+                .addAllEndpointDefinitions(endpoints)
                 .build();
     }
 }

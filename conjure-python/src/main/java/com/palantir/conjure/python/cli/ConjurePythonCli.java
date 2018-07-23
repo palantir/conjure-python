@@ -21,11 +21,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Throwables;
+import com.google.common.collect.ImmutableSet;
 import com.palantir.conjure.python.ConjurePythonGenerator;
 import com.palantir.conjure.python.DefaultPythonFileWriter;
 import com.palantir.conjure.python.GeneratorConfiguration;
-import com.palantir.conjure.python.service.ServiceGeneratorPython;
-import com.palantir.conjure.python.types.DefaultBeanGeneratorPython;
+import com.palantir.conjure.python.client.ClientGenerator;
+import com.palantir.conjure.python.types.DefaultBeanGenerator;
 import com.palantir.conjure.spec.ConjureDefinition;
 import java.io.File;
 import java.io.IOException;
@@ -122,8 +123,8 @@ public final class ConjurePythonCli {
         try {
             ConjureDefinition conjureDefinition = OBJECT_MAPPER.readValue(target, ConjureDefinition.class);
             ConjurePythonGenerator generator = new ConjurePythonGenerator(
-                    new DefaultBeanGeneratorPython(),
-                    new ServiceGeneratorPython(),
+                    new DefaultBeanGenerator(ImmutableSet.of()),
+                    new ClientGenerator(),
                     config);
             generator.write(conjureDefinition, new DefaultPythonFileWriter(outputDirectory.toPath()));
         } catch (IOException e) {

@@ -23,19 +23,24 @@ import com.palantir.conjure.spec.OptionalType;
 import com.palantir.conjure.spec.PrimitiveType;
 import com.palantir.conjure.spec.SetType;
 import com.palantir.conjure.spec.Type;
+import com.palantir.conjure.spec.TypeDefinition;
 import com.palantir.conjure.spec.TypeName;
+import com.palantir.conjure.visitor.TypeDefinitionVisitor;
 import com.palantir.conjure.visitor.TypeVisitor;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * The mypy type for the conjure type.
  */
 public final class MyPyTypeNameVisitor implements Type.Visitor<String> {
 
-    private Set<TypeName> types;
+    private final Set<TypeName> typesByName;
 
-    public MyPyTypeNameVisitor(Set<TypeName> types) {
-        this.types = types;
+    public MyPyTypeNameVisitor(List<TypeDefinition> types) {
+        this.typesByName = types.stream().map(type ->
+                type.accept(TypeDefinitionVisitor.TYPE_NAME)).collect(Collectors.toSet());
     }
 
     @Override
@@ -81,7 +86,7 @@ public final class MyPyTypeNameVisitor implements Type.Visitor<String> {
     @Override
     public String visitReference(TypeName type) {
         // Types without namespace are either defined locally in this conjure definition, or raw imports.
-        if (types.contains(type)) {
+        if (typesByName.contains(type)) {
             return type.getName();
         } else {
             throw new IllegalArgumentException("unknown type: " + type);

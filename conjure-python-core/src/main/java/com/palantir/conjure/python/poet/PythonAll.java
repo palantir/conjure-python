@@ -12,9 +12,8 @@ public interface PythonAll extends PythonClass {
     List<String> contents();
 
     @Override
-    @Value.Default
     default String className() {
-        return "";
+        return "__all__";
     }
 
     @Override
@@ -22,7 +21,7 @@ public interface PythonAll extends PythonClass {
         poetWriter.maintainingIndent(() -> {
             poetWriter.writeIndentedLine("__all__ = [");
             poetWriter.increaseIndent();
-            contents().stream().forEach(a -> poetWriter.writeIndentedLine("'%s',", a));
+            contents().forEach(a -> poetWriter.writeIndentedLine("'%s',", a));
             poetWriter.decreaseIndent();
             poetWriter.writeIndentedLine("]");
             poetWriter.writeLine();

@@ -16,7 +16,7 @@
 
 package com.palantir.conjure.python.poet;
 
-import com.google.common.collect.Streams;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import org.immutables.value.Value;
@@ -29,7 +29,10 @@ public interface PythonFile extends Emittable {
         return "";
     }
 
-    String fileName();
+    @Value.Default
+    default String fileName() {
+        return "__init__.py";
+    }
 
     Set<PythonImport> imports();
 
@@ -38,14 +41,13 @@ public interface PythonFile extends Emittable {
     @Override
     default void emit(PythonPoetWriter poetWriter) {
         poetWriter.maintainingIndent(() -> {
-            Streams.concat(imports().stream(), contents().stream()
-                    .flatMap(pythonClass -> pythonClass.requiredImports().stream()))
-                    .distinct()
-                    .sorted()
-                    .forEach(poetWriter::emit);
-
+            if (packageName().length() > 0) {
+                poetWriter.writeLine(String.format("# this is package %s", packageName()));
+            }
+            imports().stream().sorted().forEach(poetWriter::emit);
             poetWriter.writeLine();
-            contents().stream().forEach(poetWriter::emit);
+
+            contents().stream().sorted(new PythonClassSerializationComparator()).forEach(poetWriter::emit);
         });
     }
 
@@ -53,5 +55,20 @@ public interface PythonFile extends Emittable {
 
     static Builder builder() {
         return new Builder();
+    }
+
+    class PythonClassSerializationComparator implements Comparator<PythonClass> {
+        @Override
+        public int compare(PythonClass pc1, PythonClass pc2) {
+            // PythonAliases need to occur last, since they potentially reference
+            // objects defined in the current module
+            if (pc1 instanceof PythonAlias && !(pc2 instanceof PythonAlias)) {
+                return 1;
+            } else if (!(pc1 instanceof PythonAlias) && pc2 instanceof PythonAlias) {
+                return -1;
+            } else {
+                return Comparator.comparing(PythonClass::className).compare(pc1, pc2);
+            }
+        }
     }
 }

@@ -15,6 +15,11 @@ public interface PythonMetaYaml extends PythonClass {
         return "";
     }
 
+    @Override
+    default String packageName() {
+        return "conda_recipe";
+    }
+
     String condaPackageName();
 
     String packageVersion();

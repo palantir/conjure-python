@@ -4,6 +4,8 @@
 
 import static org.apache.tools.ant.taskdefs.condition.Os.*
 
+apply plugin: 'com.palantir.conjure'
+
 ext {
     osClassifier = isFamily(FAMILY_MAC) ? "osx" : "linux"
 }
@@ -50,5 +52,18 @@ task generateVerifierBindings(type: JavaExec, dependsOn: [copyTestCases, ':conju
     doLast { delete "python/test/setup.py" }
 }
 
-tasks.idea.dependsOn unpackVerificationServer, generateVerifierBindings
-tasks.build.dependsOn unpackVerificationServer, generateVerifierBindings
+task generateIntegrationTests(type: JavaExec, dependsOn: [compileIr, ':conjure-python:compileJava']) {
+    main = "com.palantir.conjure.python.cli.ConjurePythonCli"
+    classpath = project(':conjure-python').sourceSets.main.runtimeClasspath
+    args 'generate',
+            'build/conjure-ir/conjure-python-verifier.json',
+            'python/test',
+            '--packageName', 'generated',
+            '--packageVersion', '0.0.0'
+
+    inputs.files configurations.verificationApi
+    doLast { delete "python/test/setup.py" }
+}
+
+tasks.idea.dependsOn unpackVerificationServer, generateVerifierBindings, generateIntegrationTests
+tasks.build.dependsOn unpackVerificationServer, generateVerifierBindings, generateIntegrationTests
