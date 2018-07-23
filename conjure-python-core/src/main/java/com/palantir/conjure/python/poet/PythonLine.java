@@ -11,9 +11,8 @@ public interface PythonLine extends PythonClass {
     String text();
 
     @Override
-    @Value.Default
     default String className() {
-        return "";
+        return "__version__";
     }
 
     @Override

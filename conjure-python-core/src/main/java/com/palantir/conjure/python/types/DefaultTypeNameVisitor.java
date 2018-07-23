@@ -23,17 +23,22 @@ import com.palantir.conjure.spec.OptionalType;
 import com.palantir.conjure.spec.PrimitiveType;
 import com.palantir.conjure.spec.SetType;
 import com.palantir.conjure.spec.Type;
+import com.palantir.conjure.spec.TypeDefinition;
 import com.palantir.conjure.spec.TypeName;
+import com.palantir.conjure.visitor.TypeDefinitionVisitor;
 import com.palantir.conjure.visitor.TypeVisitor;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 
 public final class DefaultTypeNameVisitor implements Type.Visitor<String> {
 
-    private Set<TypeName> types;
+    private final Set<TypeName> typesByName;
 
-    public DefaultTypeNameVisitor(Set<TypeName> types) {
-        this.types = types;
+    public DefaultTypeNameVisitor(List<TypeDefinition> types) {
+        this.typesByName = types.stream().map(type ->
+                type.accept(TypeDefinitionVisitor.TYPE_NAME)).collect(Collectors.toSet());
     }
 
     @Override
@@ -79,7 +84,7 @@ public final class DefaultTypeNameVisitor implements Type.Visitor<String> {
 
     @Override
     public String visitReference(TypeName type) {
-        if (types.contains(type)) {
+        if (typesByName.contains(type)) {
             return type.getName();
         } else {
             throw new IllegalStateException("unknown type: " + type);

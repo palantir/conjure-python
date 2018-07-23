@@ -16,40 +16,35 @@
 
 package com.palantir.conjure.python;
 
-import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
+import com.palantir.conjure.python.client.ClientGenerator;
 import com.palantir.conjure.python.poet.PythonAll;
 import com.palantir.conjure.python.poet.PythonClass;
-import com.palantir.conjure.python.poet.PythonClassName;
 import com.palantir.conjure.python.poet.PythonFile;
-import com.palantir.conjure.python.poet.PythonImport;
 import com.palantir.conjure.python.poet.PythonLine;
 import com.palantir.conjure.python.poet.PythonMetaYaml;
 import com.palantir.conjure.python.poet.PythonSetup;
-import com.palantir.conjure.python.util.TypeNameVisitor;
+import com.palantir.conjure.python.types.PythonBeanGenerator;
 import com.palantir.conjure.spec.ConjureDefinition;
-import com.palantir.conjure.spec.ServiceDefinition;
 import com.palantir.conjure.spec.TypeDefinition;
-import com.palantir.conjure.spec.TypeName;
-import java.util.HashMap;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public final class ConjurePythonGenerator {
 
-    private PythonFileGenerator<TypeDefinition> beanGenerator;
-    private PythonFileGenerator<ServiceDefinition> serviceGenerator;
+    private final PythonBeanGenerator beanGenerator;
+    private final ClientGenerator clientGenerator;
     private final GeneratorConfiguration config;
 
-    public ConjurePythonGenerator(
-            PythonFileGenerator<TypeDefinition> beanGenerator,
-            PythonFileGenerator<ServiceDefinition> serviceGenerator,
+    public ConjurePythonGenerator(PythonBeanGenerator beanGenerator, ClientGenerator clientGenerator,
             GeneratorConfiguration config) {
         this.beanGenerator = beanGenerator;
-        this.serviceGenerator = serviceGenerator;
+        this.clientGenerator = clientGenerator;
         this.config = config;
     }
 
@@ -62,10 +57,7 @@ public final class ConjurePythonGenerator {
     }
 
     public List<PythonFile> generate(ConjureDefinition conjureDefinition) {
-        Map<TypeName, TypeDefinition> knownTypes = new HashMap<>();
-        TypeDefinition.Visitor<TypeName> indexingVisitor = new TypeNameVisitor();
-        conjureDefinition.getTypes()
-                .forEach(typeDefinition -> knownTypes.put(typeDefinition.accept(indexingVisitor), typeDefinition));
+        List<TypeDefinition> types = conjureDefinition.getTypes();
 
         String pythonicPackageName = config.packageName().replace('-', '_');
         PackageNameProcessor packageNameProcessor = PackageNameProcessor.builder()
@@ -74,70 +66,81 @@ public final class ConjurePythonGenerator {
                 .addProcessors(new TopLevelAddingPackageNameProcessor(pythonicPackageName))
                 .build();
 
-        List<PythonFile> beanClasses = knownTypes.values()
+        List<PythonClass> beanClasses = types
                 .stream()
-                .map(objectDefinition -> beanGenerator.generateFile(knownTypes, packageNameProcessor, objectDefinition))
+                .map(objectDefinition -> beanGenerator.generateObject(types, packageNameProcessor, objectDefinition))
                 .collect(Collectors.toList());
 
-        List<PythonFile> serviceClasses = conjureDefinition.getServices()
+        List<PythonClass> serviceClasses = conjureDefinition.getServices()
                 .stream()
-                .map(serviceDef -> serviceGenerator.generateFile(knownTypes, packageNameProcessor, serviceDef))
+                .map(serviceDef -> clientGenerator.generateClient(types, packageNameProcessor, serviceDef))
                 .collect(Collectors.toList());
 
-        Map<String, List<PythonFile>> filesByPackageName = Stream.concat(beanClasses.stream(), serviceClasses.stream())
-                .collect(Collectors.groupingBy(PythonFile::packageName));
+        Map<String, List<PythonClass>> classesByPackageName =
+                Stream.concat(beanClasses.stream(), serviceClasses.stream())
+                        .collect(Collectors.groupingBy(PythonClass::packageName));
 
-        List<PythonFile> moduleInitFiles = filesByPackageName.entrySet()
+        // group into files
+        List<PythonFile.Builder> pythonFiles = classesByPackageName.entrySet()
                 .stream()
-                .map(entry -> buildModuleInit(entry.getKey(), entry.getValue()))
+                .map(entry -> PythonFile.builder()
+                        .packageName(entry.getKey())
+                        .addAllImports(entry.getValue()
+                                .stream()
+                                .flatMap(pt -> pt.requiredImports().stream())
+                                .collect(Collectors.toSet()))
+                        .addAllContents(entry.getValue()))
                 .collect(Collectors.toList());
 
-        List<PythonFile> rootInit = ImmutableList.of(buildRootInit(pythonicPackageName, filesByPackageName.keySet()));
+        Map<Path, Set<Path>> initDefinitions = Maps.newHashMap();
+        pythonFiles.stream()
+                .flatMap(f -> getIntermediateInitPaths(f.build()).entrySet().stream())
+                .forEach(e -> initDefinitions.merge(e.getKey(), e.getValue(), (v1, v2) -> {
+                    Set<Path> combined = Sets.newHashSet(v1);
+                    combined.addAll(v2);
+                    return combined;
+                }));
+        List<PythonFile.Builder> initFiles = initDefinitions.entrySet().stream()
+                .map(e -> buildInitPythonFile(e.getKey(), e.getValue()))
+                .filter(f -> !classesByPackageName.keySet().contains(f.build().packageName()))
+                .collect(Collectors.toList());
 
-        return Stream.of(
-                beanClasses.stream(),
-                serviceClasses.stream(),
-                moduleInitFiles.stream(),
-                rootInit.stream())
-                .flatMap(Function.identity())
+        return Stream.concat(pythonFiles.stream(), initFiles.stream())
+                .map(f -> {
+                    if (f.build().packageName().indexOf('.') < 0) {
+                        f.addContents(versionAttribute(f.build().packageName()));
+                    }
+                    return f;
+                })
+                .map(PythonFile.Builder::build)
                 .collect(Collectors.toList());
     }
 
-    private PythonFile buildModuleInit(String packageName, List<PythonFile> moduleFiles) {
-        return PythonFile.builder()
+    private static Map<Path, Set<Path>> getIntermediateInitPaths(PythonFile pythonFile) {
+        Path filePath = PythonFileWriter.getPath(pythonFile).getParent();
+        Map<Path, Set<Path>> initFiles = Maps.newHashMap();
+        while (filePath.getParent() != null) {
+            initFiles.put(filePath.getParent(), Sets.newHashSet(filePath.getFileName()));
+            filePath = filePath.getParent();
+        }
+        return initFiles;
+    }
+
+    private PythonFile.Builder buildInitPythonFile(Path module, Set<Path> submodules) {
+        String packageName = module.toString().replace('/', '.');
+        PythonAll all = PythonAll.builder()
                 .packageName(packageName)
-                .fileName("__init__.py")
-                .imports(moduleFiles.stream()
-                        .flatMap(file -> file.contents().stream()
-                                .map(pythonClass -> PythonImport.of(
-                                        PythonClassName.of(
-                                                // File has a file extension .py
-                                                "." + file.fileName().substring(0, file.fileName().length() - 3),
-                                                pythonClass.className()))))
-                        .collect(Collectors.toList()))
-                .addContents(PythonAll.builder()
-                        .addAllContents(moduleFiles.stream()
-                                .flatMap(file -> file.contents().stream())
-                                .map(PythonClass::className)
-                                .sorted()
-                                .collect(Collectors.toList()))
-                        .build())
+                .addAllContents(submodules.stream().map(m -> m.toString()).sorted().collect(Collectors.toList()))
                 .build();
-    }
-
-    private PythonFile buildRootInit(String packageName, Set<String> submodules) {
         return PythonFile.builder()
                 .packageName(packageName)
-                .fileName("__init__.py")
-                .addContents(PythonAll.builder()
-                        .addAllContents(submodules.stream()
-                                .map(packagePath -> packagePath.substring(packageName.length() + 1))
-                                .sorted()
-                                .collect(Collectors.toList()))
-                        .build())
-                .addContents(PythonLine.builder()
-                        .text(String.format("__version__ = \"%s\"", config.packageVersion()))
-                        .build())
+                .addContents(all);
+    }
+
+    private PythonClass versionAttribute(String packageName) {
+        return PythonLine.builder()
+                .text(String.format("__version__ = \"%s\"", config.packageVersion()))
+                .packageName(packageName)
                 .build();
     }
 
@@ -155,6 +158,7 @@ public final class ConjurePythonGenerator {
 
         return PythonFile.builder()
                 .fileName("setup.py")
+                .addAllImports(setup.requiredImports())
                 .addContents(setup)
                 .build();
     }

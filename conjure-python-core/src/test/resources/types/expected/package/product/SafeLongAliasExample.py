@@ -1,3 +1,0 @@
-
-SafeLongAliasExample = int
-

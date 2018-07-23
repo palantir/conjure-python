@@ -28,13 +28,14 @@ import org.immutables.value.Value;
 public interface PythonEnum extends PythonClass {
 
     ImmutableSet<PythonImport> DEFAULT_IMPORTS = ImmutableSet.of(
-            PythonImport.of(PythonClassName.of("conjure_python_client", "ConjureEnumType")));
+            PythonImport.of(PythonClassName.of("conjure_python_client", "*")));
 
     @Override
-    @Value.Default
     default Set<PythonImport> requiredImports() {
         return DEFAULT_IMPORTS;
     }
+
+    Optional<Documentation> docs();
 
     List<PythonEnumValue> values();
 
