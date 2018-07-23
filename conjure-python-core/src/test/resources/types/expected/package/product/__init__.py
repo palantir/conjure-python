@@ -1,7 +1,5 @@
 # this is package package.product
 from conjure_python_client import *
-from conjure_python_client import ConjureBeanType
-from conjure_python_client import ConjureFieldDefinition
 from typing import Dict
 from typing import List
 from typing import Optional

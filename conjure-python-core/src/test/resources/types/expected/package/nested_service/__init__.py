@@ -1,8 +1,7 @@
 # this is package package.nested_service
-from conjure_python_client import ConjureBeanType
+from conjure_python_client import *
 from conjure_python_client import ConjureDecoder
 from conjure_python_client import ConjureEncoder
-from conjure_python_client import ConjureFieldDefinition
 from conjure_python_client import Service
 from typing import Dict
 from typing import List

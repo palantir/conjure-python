@@ -7,10 +7,9 @@ from ..product import RidAliasExample
 from ..product import StringAliasExample
 from ..product import StringExample
 from ..product_datasets import BackingFileSystem
-from conjure_python_client import ConjureBeanType
+from conjure_python_client import *
 from conjure_python_client import ConjureDecoder
 from conjure_python_client import ConjureEncoder
-from conjure_python_client import ConjureFieldDefinition
 from conjure_python_client import Service
 from typing import Dict
 from typing import List

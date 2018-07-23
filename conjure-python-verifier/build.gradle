@@ -52,7 +52,7 @@ task generateVerifierBindings(type: JavaExec, dependsOn: [copyTestCases, ':conju
     doLast { delete "python/test/setup.py" }
 }
 
-task generateIntegrationTests(type: JavaExec, dependsOn: [compileConjure, ':conjure-python:compileJava']) {
+task generateIntegrationTests(type: JavaExec, dependsOn: [compileIr, ':conjure-python:compileJava']) {
     main = "com.palantir.conjure.python.cli.ConjurePythonCli"
     classpath = project(':conjure-python').sourceSets.main.runtimeClasspath
     args 'generate',
