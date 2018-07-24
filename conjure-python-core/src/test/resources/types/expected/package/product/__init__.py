@@ -181,16 +181,19 @@ class CreateDatasetRequest(ConjureBeanType):
         # type: () -> Dict[str, ConjureFieldDefinition]
         return {
             'file_system_id': ConjureFieldDefinition('fileSystemId', str),
-            'path': ConjureFieldDefinition('path', str)
+            'path': ConjureFieldDefinition('path', str),
+            'favorite_color': ConjureFieldDefinition('favoriteColor', OptionalType(str))
         }
 
     _file_system_id = None # type: str
     _path = None # type: str
+    _favorite_color = None # type: Optional[str]
 
-    def __init__(self, file_system_id, path):
-        # type: (str, str) -> None
+    def __init__(self, file_system_id, path, favorite_color=None):
+        # type: (str, str, Optional[str]) -> None
         self._file_system_id = file_system_id
         self._path = path
+        self._favorite_color = favorite_color
 
     @property
     def file_system_id(self):
@@ -201,6 +204,11 @@ class CreateDatasetRequest(ConjureBeanType):
     def path(self):
         # type: () -> str
         return self._path
+
+    @property
+    def favorite_color(self):
+        # type: () -> Optional[str]
+        return self._favorite_color
 
 class DateTimeExample(ConjureBeanType):
 
@@ -366,7 +374,7 @@ class ManyFieldExample(ConjureBeanType):
     _map = None # type: Dict[str, str]
     _alias = None # type: StringAliasExample
 
-    def __init__(self, string, integer, double_value, optional_item, items, set, map, alias):
+    def __init__(self, string, integer, double_value, optional_item=None, items, set, map, alias):
         # type: (str, int, float, Optional[str], List[str], List[str], Dict[str, str], StringAliasExample) -> None
         self._string = string
         self._integer = integer
@@ -456,7 +464,7 @@ class OptionalExample(ConjureBeanType):
 
     _item = None # type: Optional[str]
 
-    def __init__(self, item):
+    def __init__(self, item=None):
         # type: (Optional[str]) -> None
         self._item = item
 
@@ -488,7 +496,7 @@ class PrimitiveOptionalsExample(ConjureBeanType):
     _bearertoken = None # type: Optional[str]
     _uuid = None # type: Optional[str]
 
-    def __init__(self, num, bool, integer, safelong, rid, bearertoken, uuid):
+    def __init__(self, num=None, bool=None, integer=None, safelong=None, rid=None, bearertoken=None, uuid=None):
         # type: (Optional[float], Optional[bool], Optional[int], Optional[int], Optional[str], Optional[str], Optional[str]) -> None
         self._num = num
         self._bool = bool
@@ -544,7 +552,7 @@ class RecursiveObjectExample(ConjureBeanType):
 
     _recursive_field = None # type: Optional[RecursiveObjectAlias]
 
-    def __init__(self, recursive_field):
+    def __init__(self, recursive_field=None):
         # type: (Optional[RecursiveObjectAlias]) -> None
         self._recursive_field = recursive_field
 

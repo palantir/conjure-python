@@ -73,17 +73,22 @@ public interface PythonEndpointDefinition extends Emittable {
                             .paramName("authHeader")
                             .pythonParamName("auth_header")
                             .myPyType("str")
+                            .isOptional(false)
                             .paramType(ParameterType.header(HeaderParameterType.of(ParameterId.of("Authorization"))))
                             .build())
                     .addAll(params())
                     .build() : params();
-            paramsWithHeader = paramsWithHeader.stream().collect(Collectors.toList());
 
             poetWriter.writeIndentedLine("def %s(self, %s):",
                     pythonMethodName(),
                     Joiner.on(", ").join(
                             paramsWithHeader.stream()
-                                    .map(PythonEndpointParam::pythonParamName)
+                                    .map(param -> {
+                                        if (param.isOptional()) {
+                                            return String.format("%s=None", param.pythonParamName());
+                                        }
+                                        return param.pythonParamName();
+                                    })
                                     .collect(Collectors.toList())));
             poetWriter.increaseIndent();
             poetWriter.writeIndentedLine("# type: (%s) -> %s",
@@ -210,6 +215,8 @@ public interface PythonEndpointDefinition extends Emittable {
         String myPyType();
 
         ParameterType paramType();
+
+        boolean isOptional();
 
         class Builder extends ImmutablePythonEndpointParam.Builder {}
 

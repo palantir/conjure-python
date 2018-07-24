@@ -88,8 +88,15 @@ public interface PythonBean extends PythonClass {
         if (!fields().isEmpty()) {
             poetWriter.writeIndentedLine(String.format("def __init__(self, %s):",
                     Joiner.on(", ").join(
-                            fields().stream().map(PythonField::attributeName)
-                                    .map(PythonIdentifierSanitizer::sanitize).collect(Collectors.toList()))));
+                            fields().stream()
+                                    .map(field -> {
+                                        String name = PythonIdentifierSanitizer.sanitize(field.attributeName());
+                                        if (field.isOptional()) {
+                                            return String.format("%s=None", name);
+                                        }
+                                        return name;
+                                    })
+                    .collect(Collectors.toList()))));
             poetWriter.increaseIndent();
             poetWriter.writeIndentedLine(String.format("# type: (%s) -> None",
                     Joiner.on(", ").join(fields().stream().map(PythonField::myPyType).collect(Collectors.toList()))));
@@ -144,6 +151,8 @@ public interface PythonBean extends PythonClass {
          * The mypy type for this type.
          */
         String myPyType();
+
+        boolean isOptional();
 
         Optional<Documentation> docs();
 

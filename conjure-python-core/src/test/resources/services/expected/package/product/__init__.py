@@ -13,16 +13,19 @@ class CreateDatasetRequest(ConjureBeanType):
         # type: () -> Dict[str, ConjureFieldDefinition]
         return {
             'file_system_id': ConjureFieldDefinition('fileSystemId', str),
-            'path': ConjureFieldDefinition('path', str)
+            'path': ConjureFieldDefinition('path', str),
+            'favorite_color': ConjureFieldDefinition('favoriteColor', OptionalType(str))
         }
 
     _file_system_id = None # type: str
     _path = None # type: str
+    _favorite_color = None # type: Optional[str]
 
-    def __init__(self, file_system_id, path):
-        # type: (str, str) -> None
+    def __init__(self, file_system_id, path, favorite_color=None):
+        # type: (str, str, Optional[str]) -> None
         self._file_system_id = file_system_id
         self._path = path
+        self._favorite_color = favorite_color
 
     @property
     def file_system_id(self):
@@ -33,4 +36,9 @@ class CreateDatasetRequest(ConjureBeanType):
     def path(self):
         # type: () -> str
         return self._path
+
+    @property
+    def favorite_color(self):
+        # type: () -> Optional[str]
+        return self._favorite_color
 
