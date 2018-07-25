@@ -29,7 +29,7 @@ class AliasAsMapKeyExample(ConjureBeanType):
     _datetimes = None # type: Dict[DateTimeAliasExample, ManyFieldExample]
     _uuids = None # type: Dict[UuidAliasExample, ManyFieldExample]
 
-    def __init__(self, strings, rids, bearertokens, integers, safelongs, datetimes, uuids):
+    def __init__(self, bearertokens, datetimes, integers, rids, safelongs, strings, uuids):
         # type: (Dict[StringAliasExample, ManyFieldExample], Dict[RidAliasExample, ManyFieldExample], Dict[BearerTokenAliasExample, ManyFieldExample], Dict[IntegerAliasExample, ManyFieldExample], Dict[SafeLongAliasExample, ManyFieldExample], Dict[DateTimeAliasExample, ManyFieldExample], Dict[UuidAliasExample, ManyFieldExample]) -> None
         self._strings = strings
         self._rids = rids
@@ -320,7 +320,7 @@ class ListExample(ConjureBeanType):
     _primitive_items = None # type: List[int]
     _double_items = None # type: List[float]
 
-    def __init__(self, items, primitive_items, double_items):
+    def __init__(self, double_items, items, primitive_items):
         # type: (List[str], List[int], List[float]) -> None
         self._items = items
         self._primitive_items = primitive_items
@@ -366,7 +366,7 @@ class ManyFieldExample(ConjureBeanType):
     _map = None # type: Dict[str, str]
     _alias = None # type: StringAliasExample
 
-    def __init__(self, string, integer, double_value, optional_item=None, items, set, map, alias):
+    def __init__(self, alias, double_value, integer, items, map, set, string, optional_item=None):
         # type: (str, int, float, Optional[str], List[str], List[str], Dict[str, str], StringAliasExample) -> None
         self._string = string
         self._integer = integer
@@ -488,7 +488,7 @@ class PrimitiveOptionalsExample(ConjureBeanType):
     _bearertoken = None # type: Optional[str]
     _uuid = None # type: Optional[str]
 
-    def __init__(self, num=None, bool=None, integer=None, safelong=None, rid=None, bearertoken=None, uuid=None):
+    def __init__(self, bearertoken=None, bool=None, integer=None, num=None, rid=None, safelong=None, uuid=None):
         # type: (Optional[float], Optional[bool], Optional[int], Optional[int], Optional[str], Optional[str], Optional[str]) -> None
         self._num = num
         self._bool = bool
@@ -570,7 +570,7 @@ class ReservedKeyExample(ConjureBeanType):
     _field_name_with_dashes = None # type: str
     _memoized_hash_code = None # type: int
 
-    def __init__(self, package, interface, field_name_with_dashes, memoized_hash_code):
+    def __init__(self, field_name_with_dashes, interface, memoized_hash_code, package):
         # type: (str, str, str, int) -> None
         self._package = package
         self._interface = interface
@@ -650,7 +650,7 @@ class SetExample(ConjureBeanType):
     _items = None # type: List[str]
     _double_items = None # type: List[float]
 
-    def __init__(self, items, double_items):
+    def __init__(self, double_items, items):
         # type: (List[str], List[float]) -> None
         self._items = items
         self._double_items = double_items

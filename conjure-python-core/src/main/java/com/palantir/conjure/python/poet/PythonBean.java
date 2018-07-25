@@ -19,6 +19,7 @@ package com.palantir.conjure.python.poet;
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableSet;
 import com.palantir.conjure.spec.Documentation;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -89,6 +90,7 @@ public interface PythonBean extends PythonClass {
             poetWriter.writeIndentedLine(String.format("def __init__(self, %s):",
                     Joiner.on(", ").join(
                             fields().stream()
+                                    .sorted(new PythonFieldComparator())
                                     .map(field -> {
                                         String name = PythonIdentifierSanitizer.sanitize(field.attributeName());
                                         if (field.isOptional()) {
@@ -162,6 +164,20 @@ public interface PythonBean extends PythonClass {
             return new Builder();
         }
 
+    }
+
+
+    class PythonFieldComparator implements Comparator<PythonField> {
+        @Override
+        public int compare(PythonField o1, PythonField o2) {
+            if (o1.isOptional() && !o2.isOptional()) {
+                return 1;
+            }
+            if (!o1.isOptional() && o2.isOptional()) {
+                return -1;
+            }
+            return o1.attributeName().compareTo(o2.attributeName());
+        }
     }
 
 }

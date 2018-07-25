@@ -21,7 +21,7 @@ class BackingFileSystem(ConjureBeanType):
     _base_uri = None # type: str
     _configuration = None # type: Dict[str, str]
 
-    def __init__(self, file_system_id, base_uri, configuration):
+    def __init__(self, base_uri, configuration, file_system_id):
         # type: (str, str, Dict[str, str]) -> None
         self._file_system_id = file_system_id
         self._base_uri = base_uri
