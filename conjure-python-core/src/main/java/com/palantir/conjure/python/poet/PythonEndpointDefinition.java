@@ -29,6 +29,7 @@ import com.palantir.conjure.spec.ParameterId;
 import com.palantir.conjure.spec.ParameterType;
 import com.palantir.conjure.visitor.AuthTypeVisitor;
 import com.palantir.conjure.visitor.ParameterTypeVisitor;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -83,6 +84,7 @@ public interface PythonEndpointDefinition extends Emittable {
                     pythonMethodName(),
                     Joiner.on(", ").join(
                             paramsWithHeader.stream()
+                                    .sorted(new PythonEndpointParamComparator())
                                     .map(param -> {
                                         if (param.isOptional()) {
                                             return String.format("%s=None", param.pythonParamName());
@@ -225,4 +227,18 @@ public interface PythonEndpointDefinition extends Emittable {
         }
 
     }
+
+    class PythonEndpointParamComparator implements Comparator<PythonEndpointParam> {
+        @Override
+        public int compare(PythonEndpointParam o1, PythonEndpointParam o2) {
+            if (o1.isOptional() && !o2.isOptional()) {
+                return 1;
+            }
+            if (!o1.isOptional() && o2.isOptional()) {
+                return -1;
+            }
+            return o1.pythonParamName().compareTo(o2.pythonParamName());
+        }
+    }
+
 }

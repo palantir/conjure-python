@@ -196,7 +196,7 @@ class TestService(Service):
 
         return
 
-    def get_branches(self, auth_header, dataset_rid, page_size=None, message=None):
+    def get_branches(self, auth_header, dataset_rid, message=None, page_size=None):
         # type: (str, str, Optional[int], Optional[str]) -> List[str]
 
         _headers = {
@@ -259,7 +259,7 @@ class TestService(Service):
         _decoder = ConjureDecoder()
         return _decoder.decode(_response.json(), ListType(str))
 
-    def resolve_branch(self, auth_header, dataset_rid, branch):
+    def resolve_branch(self, auth_header, branch, dataset_rid):
         # type: (str, str, str) -> Optional[str]
 
         _headers = {
@@ -320,7 +320,7 @@ class TestService(Service):
         _decoder = ConjureDecoder()
         return _decoder.decode(_response.json(), OptionalType(str))
 
-    def test_query_params(self, auth_header, something, implicit):
+    def test_query_params(self, auth_header, implicit, something):
         # type: (str, str, str) -> int
 
         _headers = {
