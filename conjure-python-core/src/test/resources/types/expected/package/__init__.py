@@ -1,4 +1,11 @@
 # this is package package
+from . import another
+from . import nested_deeply_nested_service
+from . import nested_service
+from . import nested_service2
+from . import product
+from . import product_datasets
+from . import with_imports
 
 __all__ = [
     'another',

@@ -1,4 +1,7 @@
 # this is package package
+from . import another
+from . import product
+from . import product_datasets
 
 __all__ = [
     'another',
