@@ -21,7 +21,9 @@ import com.google.common.collect.Sets;
 import com.palantir.conjure.python.client.ClientGenerator;
 import com.palantir.conjure.python.poet.PythonAll;
 import com.palantir.conjure.python.poet.PythonClass;
+import com.palantir.conjure.python.poet.PythonClassName;
 import com.palantir.conjure.python.poet.PythonFile;
+import com.palantir.conjure.python.poet.PythonImport;
 import com.palantir.conjure.python.poet.PythonLine;
 import com.palantir.conjure.python.poet.PythonMetaYaml;
 import com.palantir.conjure.python.poet.PythonSetup;
@@ -131,10 +133,14 @@ public final class ConjurePythonGenerator {
         String packageName = module.toString().replace('/', '.');
         PythonAll all = PythonAll.builder()
                 .packageName(packageName)
-                .addAllContents(submodules.stream().map(m -> m.toString()).sorted().collect(Collectors.toList()))
+                .addAllContents(submodules.stream().map(Path::toString).sorted().collect(Collectors.toList()))
                 .build();
+        Iterable<PythonImport> submoduleImports = submodules.stream().map(m ->
+                        PythonImport.of(PythonClassName.of(".", m.toString()))
+        ).collect(Collectors.toList());
         return PythonFile.builder()
                 .packageName(packageName)
+                .addAllImports(submoduleImports)
                 .addContents(all);
     }
 
