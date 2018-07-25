@@ -196,18 +196,17 @@ class TestService(Service):
 
         return
 
-    def get_branches(self, auth_header, dataset_rid, page_size=None, filters=None, mappings=None):
-        # type: (str, str, Optional[int], Optional[List[int]], Optional[Dict[str, int]]) -> List[str]
+    def get_branches(self, auth_header, dataset_rid, page_size=None, message=None):
+        # type: (str, str, Optional[int], Optional[str]) -> List[str]
 
         _headers = {
             'Accept': 'application/json',
             'Authorization': auth_header,
+            'Special-Message': message,
         } # type: Dict[str, Any]
 
         _params = {
             'pageSize': page_size,
-            'filters': filters,
-            'mappings': mappings,
         } # type: Dict[str, Any]
 
         _path_params = {

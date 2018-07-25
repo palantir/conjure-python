@@ -121,18 +121,12 @@ services:
             param-type: query
             markers:
               - Safe
-          filters:
+          message:
             docs: |
-              List of strings to filter on.
-            type: optional<list<integer>>
-            param-type: query
-            markers:
-              - Safe
-          mappings:
-            docs: |
-              A useless map.
-            type: optional<map<string, integer>>
-            param-type: query
+              Optionally use this field to send the server a complement.
+            type: optional<string>
+            param-id: Special-Message
+            param-type: header
             markers:
               - Safe
         returns: set<string>
