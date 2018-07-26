@@ -74,10 +74,6 @@ def run_test_with_argument(index, is_blacklisted, service, method_name, value):
 
     run_test(True, is_blacklisted, lambda: target_method(**kwargs))
 
-    # If the argspec has a default tuple then this must be for the only optional argument, call without argument.
-    if (target_argspec.defaults == (None,)):
-        run_test(True, is_blacklisted, lambda: target_method(index))
-
 
 @pytest.mark.parametrize('endpoint_name,method_name,index,case,should_pass', generate_auto_deserialize_tests())
 def test_body(
