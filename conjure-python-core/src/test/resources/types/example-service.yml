@@ -114,7 +114,23 @@ services:
               A valid dataset resource identifier.
             markers:
              - Safe
+          pageSize:
+            docs: |
+              Size of the page of results being requested.
+            type: optional<integer>
+            param-type: query
+            markers:
+              - Safe
+          message:
+            docs: |
+              Optionally use this field to send the server a complement.
+            type: optional<string>
+            param-id: Special-Message
+            param-type: header
+            markers:
+              - Safe
         returns: set<string>
+
       getBranchesDeprecated:
         http: GET /datasets/{datasetRid}/branchesDeprecated
         args:

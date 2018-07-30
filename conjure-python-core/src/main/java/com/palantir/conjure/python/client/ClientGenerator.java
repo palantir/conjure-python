@@ -68,6 +68,7 @@ public final class ClientGenerator {
                                             argEntry.getArgName().get(), CaseConverter.Case.SNAKE_CASE))
                                     .paramType(argEntry.getParamType())
                                     .myPyType(myPyMapper.getTypeName(argEntry.getType()))
+                                    .isOptional(argEntry.getType().accept(TypeVisitor.IS_OPTIONAL))
                                     .build())
                             .collect(Collectors.toList());
 

@@ -30,7 +30,7 @@ class ComplexObjectWithImports(ConjureBeanType):
     _string = None # type: str
     _imported = None # type: StringExample
 
-    def __init__(self, string, imported):
+    def __init__(self, imported, string):
         # type: (str, StringExample) -> None
         self._string = string
         self._imported = imported

@@ -19,6 +19,7 @@ package com.palantir.conjure.python.poet;
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableSet;
 import com.palantir.conjure.spec.Documentation;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -88,8 +89,16 @@ public interface PythonBean extends PythonClass {
         if (!fields().isEmpty()) {
             poetWriter.writeIndentedLine(String.format("def __init__(self, %s):",
                     Joiner.on(", ").join(
-                            fields().stream().map(PythonField::attributeName)
-                                    .map(PythonIdentifierSanitizer::sanitize).collect(Collectors.toList()))));
+                            fields().stream()
+                                    .sorted(new PythonFieldComparator())
+                                    .map(field -> {
+                                        String name = PythonIdentifierSanitizer.sanitize(field.attributeName());
+                                        if (field.isOptional()) {
+                                            return String.format("%s=None", name);
+                                        }
+                                        return name;
+                                    })
+                    .collect(Collectors.toList()))));
             poetWriter.increaseIndent();
             poetWriter.writeIndentedLine(String.format("# type: (%s) -> None",
                     Joiner.on(", ").join(fields().stream().map(PythonField::myPyType).collect(Collectors.toList()))));
@@ -145,6 +154,8 @@ public interface PythonBean extends PythonClass {
          */
         String myPyType();
 
+        boolean isOptional();
+
         Optional<Documentation> docs();
 
         class Builder extends ImmutablePythonField.Builder {}
@@ -153,6 +164,20 @@ public interface PythonBean extends PythonClass {
             return new Builder();
         }
 
+    }
+
+
+    class PythonFieldComparator implements Comparator<PythonField> {
+        @Override
+        public int compare(PythonField o1, PythonField o2) {
+            if (o1.isOptional() && !o2.isOptional()) {
+                return 1;
+            }
+            if (!o1.isOptional() && o2.isOptional()) {
+                return -1;
+            }
+            return o1.attributeName().compareTo(o2.attributeName());
+        }
     }
 
 }

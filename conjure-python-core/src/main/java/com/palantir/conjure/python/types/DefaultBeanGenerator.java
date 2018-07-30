@@ -34,6 +34,7 @@ import com.palantir.conjure.spec.Type;
 import com.palantir.conjure.spec.TypeDefinition;
 import com.palantir.conjure.spec.UnionDefinition;
 import com.palantir.conjure.visitor.TypeDefinitionVisitor;
+import com.palantir.conjure.visitor.TypeVisitor;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -88,6 +89,7 @@ public final class DefaultBeanGenerator implements PythonBeanGenerator {
                             .jsonIdentifier(unionMember.getFieldName().get())
                             .myPyType(myPyMapper.getTypeName(conjureType))
                             .pythonType(mapper.getTypeName(conjureType))
+                            .isOptional(unionMember.getType().accept(TypeVisitor.IS_OPTIONAL))
                             .build();
                 })
                 .collect(Collectors.toList());
@@ -156,6 +158,7 @@ public final class DefaultBeanGenerator implements PythonBeanGenerator {
                                 .docs(entry.getDocs())
                                 .pythonType(mapper.getTypeName(entry.getType()))
                                 .myPyType(myPyMapper.getTypeName(entry.getType()))
+                                .isOptional(entry.getType().accept(TypeVisitor.IS_OPTIONAL))
                                 .build())
                         .collect(Collectors.toList()))
                 .build();

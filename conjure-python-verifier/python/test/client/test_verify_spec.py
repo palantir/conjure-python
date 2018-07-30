@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import inspect
 import json
 import pytest
 import re
@@ -63,6 +64,17 @@ def run_test(should_pass, is_blacklisted, runnable):
         pytest.skip("Blacklisted")
 
 
+def run_test_with_argument(index, is_blacklisted, service, method_name, value):
+    target_method = getattr(service, method_name)
+    target_argspec = inspect.getargspec(target_method)
+    target_param = [e
+                    for e in target_argspec.args
+                    if e not in ('self', 'index')][0]
+    kwargs = {'index': index, target_param: json.loads(value)}
+
+    run_test(True, is_blacklisted, lambda: target_method(**kwargs))
+
+
 @pytest.mark.parametrize('endpoint_name,method_name,index,case,should_pass', generate_auto_deserialize_tests())
 def test_body(
         conjure_validation_server,
@@ -80,7 +92,7 @@ def test_body(
     if should_pass:
         run_test(True,
                  is_blacklisted,
-                 lambda: confirm_service.confirm(endpoint_name, index, getattr(body_service, method_name)(index)))
+                 lambda: confirm_service.confirm(getattr(body_service, method_name)(index), endpoint_name, index))
     else:
         run_test(False, is_blacklisted, lambda: getattr(body_service, method_name)(index))
 
@@ -89,20 +101,18 @@ def test_body(
 def test_header(conjure_validation_server, test_black_list, header_service, endpoint_name, method_name, index, value):
     header_black_list = test_black_list['singleHeaderService']
     is_blacklisted = endpoint_name in header_black_list and value in header_black_list[endpoint_name]
-
-    run_test(True, is_blacklisted, lambda: getattr(header_service, method_name)(index, json.loads(value)))
+    run_test_with_argument(index, is_blacklisted, header_service, method_name, value)
 
 
 @pytest.mark.parametrize('endpoint_name,method_name,index,value', generate_param_tests('singlePathParamService'))
 def test_path(conjure_validation_server, test_black_list, path_service, endpoint_name, method_name, index, value):
     header_black_list = test_black_list['singlePathParamService']
     is_blacklisted = endpoint_name in header_black_list and value in header_black_list[endpoint_name]
-
-    run_test(True, is_blacklisted, lambda: getattr(path_service, method_name)(index, json.loads(value)))
+    run_test_with_argument(index, is_blacklisted, path_service, method_name, value)
 
 
 @pytest.mark.parametrize('endpoint_name,method_name,index,value', generate_param_tests('singleQueryParamService'))
 def test_query(conjure_validation_server, test_black_list, query_service, endpoint_name, method_name, index, value):
     query_black_list = test_black_list['singleQueryService']
     is_blacklisted = endpoint_name in query_black_list and value in query_black_list[endpoint_name]
-    run_test(True, is_blacklisted, lambda: getattr(query_service, method_name)(index, json.loads(value)))
+    run_test_with_argument(index, is_blacklisted, query_service, method_name, value)
