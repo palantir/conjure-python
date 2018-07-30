@@ -15,6 +15,7 @@
 #!/usr/bin/env python
 
 from setuptools import find_packages, setup
+import os
 
 setup(
     name="conjure-python-verifier",
@@ -30,6 +31,9 @@ setup(
     # your project is installed. For an analysis of "install_requires" vs pip's
     # requirements files see:
     # https://packaging.python.org/en/latest/requirements.html
-    install_requires=["conjure-python-client", "pyyaml"],
+    install_requires=[
+        "conjure-python-client=={}".format(os.environ.get('CONJURE_PYTHON_CLIENT_VERSION')),
+        "pyyaml"
+    ],
     tests_require=["pytest", "pyyaml"],
 )
