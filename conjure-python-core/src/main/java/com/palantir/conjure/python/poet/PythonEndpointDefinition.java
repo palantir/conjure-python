@@ -53,6 +53,8 @@ public interface PythonEndpointDefinition extends Emittable {
 
     boolean isBinary();
 
+    boolean isOptionalReturnType();
+
     Optional<String> pythonReturnType();
 
     Optional<String> myPyReturnType();
@@ -63,6 +65,7 @@ public interface PythonEndpointDefinition extends Emittable {
                 "expected both return types or neither");
     }
 
+    @SuppressWarnings("checkstyle:CyclomaticComplexity")
     @Override
     default void emit(PythonPoetWriter poetWriter) {
         poetWriter.maintainingIndent(() -> {
@@ -192,7 +195,14 @@ public interface PythonEndpointDefinition extends Emittable {
                 poetWriter.writeIndentedLine("return _raw");
             } else if (pythonReturnType().isPresent()) {
                 poetWriter.writeIndentedLine("_decoder = ConjureDecoder()");
-                poetWriter.writeIndentedLine("return _decoder.decode(_response.json(), %s)", pythonReturnType().get());
+                if (isOptionalReturnType()) {
+                    poetWriter.writeIndentedLine(
+                            "return None if _response.status_code == 204 else _decoder.decode(_response.json(), %s)",
+                            pythonReturnType().get());
+                } else {
+                    poetWriter.writeIndentedLine("return _decoder.decode(_response.json(), %s)",
+                            pythonReturnType().get());
+                }
             } else {
                 poetWriter.writeIndentedLine("return");
             }

@@ -88,6 +88,9 @@ public final class ClientGenerator {
                                 }
                                 return false;
                             }).orElse(false))
+                            .isOptionalReturnType(ed.getReturns()
+                                    .map(rt -> rt.accept(TypeVisitor.IS_OPTIONAL))
+                                    .orElse(false))
                             .build();
                 })
                 .collect(Collectors.toList());
