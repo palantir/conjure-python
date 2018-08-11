@@ -47,6 +47,7 @@ public final class ConjurePythonGeneratorTest {
                     .minConjureClientVersion("1.0.0")
                     .generatorVersion("0.0.0")
                     .shouldWriteCondaRecipe(true)
+                    .generateRawSource(false)
                     .build());
     private final InMemoryPythonFileWriter pythonFileWriter = new InMemoryPythonFileWriter();
 

@@ -21,7 +21,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.io.File;
 import java.io.IOException;
-import org.apache.commons.cli.MissingOptionException;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -85,21 +84,6 @@ public class ConjurePythonCliTest {
         assertThatThrownBy(() -> ConjurePythonCli.resolveCliConfiguration(args))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Output must exist and be a directory");
-    }
-    @Test
-    public void throwsWhenPackageNameDoesNotExist() {
-        String[] args = {ConjurePythonCli.GENERATE_COMMAND, targetFile.getAbsolutePath(),
-                         String.format("--%s=0.0.0", CliConfiguration.PACKAGE_VERSION), "bar"};
-        assertThatThrownBy(() -> ConjurePythonCli.resolveCliConfiguration(args))
-                .hasCauseInstanceOf(MissingOptionException.class);
-    }
-
-    @Test
-    public void throwsWhenPackageVersionDoesNotExist() {
-        String[] args = {ConjurePythonCli.GENERATE_COMMAND, targetFile.getAbsolutePath(),
-                         String.format("--%s=package-name", CliConfiguration.PACKAGE_NAME), "bar"};
-        assertThatThrownBy(() -> ConjurePythonCli.resolveCliConfiguration(args))
-                .hasCauseInstanceOf(MissingOptionException.class);
     }
 
     @Test

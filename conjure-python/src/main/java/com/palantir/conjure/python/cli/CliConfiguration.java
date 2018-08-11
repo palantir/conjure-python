@@ -94,6 +94,7 @@ public abstract class CliConfiguration {
                     break;
                 case RAW_SOURCE:
                     builder.generateRawSource(true);
+                    break;
                 default:
                     break;
             }
