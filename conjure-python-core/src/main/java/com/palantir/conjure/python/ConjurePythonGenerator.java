@@ -16,6 +16,7 @@
 
 package com.palantir.conjure.python;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.palantir.conjure.python.client.ClientGenerator;
@@ -43,6 +44,11 @@ public final class ConjurePythonGenerator {
 
     public ConjurePythonGenerator(PythonBeanGenerator beanGenerator, ClientGenerator clientGenerator,
             GeneratorConfiguration config) {
+        Preconditions.checkArgument(
+                config.generateRawSource() || (config.packageName().isPresent() && config.packageVersion().isPresent()),
+                "If generateRawSource is not set, packageName and packageVersion must be present");
+        Preconditions.checkArgument(config.generateRawSource() ^ config.shouldWriteCondaRecipe() || !config.generateRawSource(),
+                "If generateRawSource is set, shouldWriteCondaRecipe must not be set");
         this.beanGenerator = beanGenerator;
         this.clientGenerator = clientGenerator;
         this.config = config;
@@ -50,7 +56,9 @@ public final class ConjurePythonGenerator {
 
     public void write(ConjureDefinition conjureDefinition, PythonFileWriter writer) {
         generate(conjureDefinition).forEach(writer::writePythonFile);
-        writer.writePythonFile(buildPythonSetupFile());
+        if (!config.generateRawSource()) {
+            writer.writePythonFile(buildPythonSetupFile());
+        }
         if (config.shouldWriteCondaRecipe()) {
             writer.writePythonFile(buildCondaMetaYamlFile());
         }
@@ -59,12 +67,14 @@ public final class ConjurePythonGenerator {
     public List<PythonFile> generate(ConjureDefinition conjureDefinition) {
         List<TypeDefinition> types = conjureDefinition.getTypes();
 
-        String pythonicPackageName = config.packageName().replace('-', '_');
-        PackageNameProcessor packageNameProcessor = PackageNameProcessor.builder()
+        PackageNameProcessor.Builder packageNameProcessorBuilder = PackageNameProcessor.builder()
                 .addProcessors(new TwoComponentStrippingPackageNameProcessor())
-                .addProcessors(new FlatteningPackageNameProcessor())
-                .addProcessors(new TopLevelAddingPackageNameProcessor(pythonicPackageName))
-                .build();
+                .addProcessors(new FlatteningPackageNameProcessor());
+        if (config.packageName().isPresent()) {
+            String pythonicPackageName = config.packageName().get().replace('-', '_');
+            packageNameProcessorBuilder.addProcessors(new TopLevelAddingPackageNameProcessor(pythonicPackageName));
+        }
+        PackageNameProcessor packageNameProcessor = packageNameProcessorBuilder.build();
 
         List<PythonClass> beanClasses = types
                 .stream()
@@ -154,8 +164,8 @@ public final class ConjurePythonGenerator {
 
     private PythonFile buildPythonSetupFile() {
         PythonSetup.Builder builder = PythonSetup.builder()
-                .putOptions("name", config.packageName())
-                .putOptions("version", config.packageVersion())
+                .putOptions("name", config.packageName().get())
+                .putOptions("version", config.packageVersion().get())
                 .addInstallDependencies("requests", "typing")
                 .addInstallDependencies(String.format("conjure-python-client>=%s,<%s",
                         config.minConjureClientVersion(), config.maxConjureClientVersion()));
@@ -173,8 +183,8 @@ public final class ConjurePythonGenerator {
 
     private PythonFile buildCondaMetaYamlFile() {
         PythonMetaYaml metaYaml = PythonMetaYaml.builder()
-                .condaPackageName(config.packageName())
-                .packageVersion(config.packageVersion())
+                .condaPackageName(config.packageName().get())
+                .packageVersion(config.packageVersion().get())
                 .addInstallDependencies("requests", "typing")
                 .addInstallDependencies(String.format("conjure-python-client >=%s,<%s",
                         config.minConjureClientVersion(), config.maxConjureClientVersion()))
