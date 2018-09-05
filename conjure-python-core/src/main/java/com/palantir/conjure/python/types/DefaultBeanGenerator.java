@@ -33,10 +33,12 @@ import com.palantir.conjure.spec.ObjectDefinition;
 import com.palantir.conjure.spec.Type;
 import com.palantir.conjure.spec.TypeDefinition;
 import com.palantir.conjure.spec.UnionDefinition;
+import com.palantir.conjure.visitor.DealiasingTypeVisitor;
 import com.palantir.conjure.visitor.TypeDefinitionVisitor;
 import com.palantir.conjure.visitor.TypeVisitor;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public final class DefaultBeanGenerator implements PythonBeanGenerator {
@@ -73,6 +75,8 @@ public final class DefaultBeanGenerator implements PythonBeanGenerator {
         TypeMapper mapper = new TypeMapper(new DefaultTypeNameVisitor(types));
         TypeMapper myPyMapper = new TypeMapper(new MyPyTypeNameVisitor(types));
 
+        DealiasingTypeVisitor dealiasingTypeVisitor = new DealiasingTypeVisitor(types.stream()
+                .collect(Collectors.toMap(type -> type.accept(TypeDefinitionVisitor.TYPE_NAME), Function.identity())));
         ReferencedTypeNameVisitor referencedTypeNameVisitor = new ReferencedTypeNameVisitor(
                 types, packageNameProcessor);
 
@@ -89,7 +93,9 @@ public final class DefaultBeanGenerator implements PythonBeanGenerator {
                             .jsonIdentifier(unionMember.getFieldName().get())
                             .myPyType(myPyMapper.getTypeName(conjureType))
                             .pythonType(mapper.getTypeName(conjureType))
-                            .isOptional(unionMember.getType().accept(TypeVisitor.IS_OPTIONAL))
+                            .isOptional(dealiasingTypeVisitor.dealias(unionMember.getType()).fold(
+                                    typeDefinition -> false,
+                                    type -> type.accept(TypeVisitor.IS_OPTIONAL)))
                             .build();
                 })
                 .collect(Collectors.toList());
@@ -131,6 +137,9 @@ public final class DefaultBeanGenerator implements PythonBeanGenerator {
 
         TypeMapper mapper = new TypeMapper(new DefaultTypeNameVisitor(types));
         TypeMapper myPyMapper = new TypeMapper(new MyPyTypeNameVisitor(types));
+
+        DealiasingTypeVisitor dealiasingTypeVisitor = new DealiasingTypeVisitor(types.stream()
+                .collect(Collectors.toMap(type -> type.accept(TypeDefinitionVisitor.TYPE_NAME), Function.identity())));
         ReferencedTypeNameVisitor referencedTypeNameVisitor = new ReferencedTypeNameVisitor(
                 types, packageNameProcessor);
 
@@ -158,7 +167,9 @@ public final class DefaultBeanGenerator implements PythonBeanGenerator {
                                 .docs(entry.getDocs())
                                 .pythonType(mapper.getTypeName(entry.getType()))
                                 .myPyType(myPyMapper.getTypeName(entry.getType()))
-                                .isOptional(entry.getType().accept(TypeVisitor.IS_OPTIONAL))
+                                .isOptional(dealiasingTypeVisitor.dealias(entry.getType()).fold(
+                                        typeDefinition -> false,
+                                        type -> type.accept(TypeVisitor.IS_OPTIONAL)))
                                 .build())
                         .collect(Collectors.toList()))
                 .build();
