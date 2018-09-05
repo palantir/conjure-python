@@ -75,7 +75,7 @@ services:
         http: GET /datasets/{datasetRid}
         args:
           datasetRid:
-            type: ResourceIdentifier
+            type: rid
             markers:
              - Safe
         returns: optional<Dataset>
@@ -84,7 +84,7 @@ services:
         http: GET /datasets/{datasetRid}/raw
         args:
           datasetRid:
-            type: ResourceIdentifier
+            type: rid
             markers:
              - Safe
         returns: binary
@@ -93,7 +93,7 @@ services:
         http: GET /datasets/{datasetRid}/raw-maybe
         args:
           datasetRid:
-            type: ResourceIdentifier
+            type: rid
             markers:
              - Safe
         returns: optional<binary>
@@ -109,7 +109,7 @@ services:
         http: GET /datasets/{datasetRid}/branches
         args:
           datasetRid:
-            type: ResourceIdentifier
+            type: rid
             docs: |
               A valid dataset resource identifier.
             markers:
@@ -135,7 +135,7 @@ services:
         http: GET /datasets/{datasetRid}/branchesDeprecated
         args:
           datasetRid:
-            type: ResourceIdentifier
+            type: rid
             docs: |
               A valid dataset resource identifier.
             markers:
@@ -149,7 +149,7 @@ services:
         http: GET /datasets/{datasetRid}/branches/{branch:.+}/resolve
         args:
           datasetRid:
-            type: ResourceIdentifier
+            type: rid
             markers:
              - Safe
           branch: string
@@ -159,7 +159,7 @@ services:
         http: GET /datasets/{datasetRid}/testParam
         args:
           datasetRid:
-            type: ResourceIdentifier
+            type: rid
             param-id: datasetRid
             param-type: path
         returns: optional<string>
@@ -168,11 +168,11 @@ services:
         http: GET /test-query-params
         args:
           something:
-            type: ResourceIdentifier
+            type: rid
             param-id: different
             param-type: query
           implicit:
-            type: ResourceIdentifier
+            type: rid
             param-type: query
         returns: integer
 
