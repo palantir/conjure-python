@@ -103,7 +103,7 @@ class TestService(Service):
             json=_json)
 
         _decoder = ConjureDecoder()
-        return _decoder.decode(_response.json(), OptionalType(Dataset))
+        return None if _response.status_code == 204 else _decoder.decode(_response.json(), OptionalType(Dataset))
 
     def get_raw_data(self, auth_header, dataset_rid):
         # type: (str, str) -> Any
@@ -165,7 +165,7 @@ class TestService(Service):
             json=_json)
 
         _decoder = ConjureDecoder()
-        return _decoder.decode(_response.json(), OptionalType(BinaryType()))
+        return None if _response.status_code == 204 else _decoder.decode(_response.json(), OptionalType(BinaryType()))
 
     def upload_raw_data(self, auth_header, input):
         # type: (str, Any) -> None
@@ -288,7 +288,7 @@ class TestService(Service):
             json=_json)
 
         _decoder = ConjureDecoder()
-        return _decoder.decode(_response.json(), OptionalType(str))
+        return None if _response.status_code == 204 else _decoder.decode(_response.json(), OptionalType(str))
 
     def test_param(self, auth_header, dataset_rid):
         # type: (str, str) -> Optional[str]
@@ -318,7 +318,7 @@ class TestService(Service):
             json=_json)
 
         _decoder = ConjureDecoder()
-        return _decoder.decode(_response.json(), OptionalType(str))
+        return None if _response.status_code == 204 else _decoder.decode(_response.json(), OptionalType(str))
 
     def test_query_params(self, auth_header, implicit, something):
         # type: (str, str, str) -> int

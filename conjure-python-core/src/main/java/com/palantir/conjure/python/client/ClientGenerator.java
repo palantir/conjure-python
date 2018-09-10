@@ -33,8 +33,11 @@ import com.palantir.conjure.python.util.CaseConverter;
 import com.palantir.conjure.spec.PrimitiveType;
 import com.palantir.conjure.spec.ServiceDefinition;
 import com.palantir.conjure.spec.TypeDefinition;
+import com.palantir.conjure.visitor.DealiasingTypeVisitor;
+import com.palantir.conjure.visitor.TypeDefinitionVisitor;
 import com.palantir.conjure.visitor.TypeVisitor;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public final class ClientGenerator {
@@ -46,6 +49,9 @@ public final class ClientGenerator {
 
         TypeMapper mapper = new TypeMapper(new DefaultTypeNameVisitor(types));
         TypeMapper myPyMapper = new TypeMapper(new MyPyTypeNameVisitor(types));
+
+        DealiasingTypeVisitor dealiasingTypeVisitor = new DealiasingTypeVisitor(types.stream()
+                .collect(Collectors.toMap(type -> type.accept(TypeDefinitionVisitor.TYPE_NAME), Function.identity())));
         ReferencedTypeNameVisitor referencedTypeNameVisitor = new ReferencedTypeNameVisitor(types, packageNameProvider);
 
         Builder<PythonClassName> referencedTypesBuilder = ImmutableSet.builder();
@@ -68,7 +74,9 @@ public final class ClientGenerator {
                                             argEntry.getArgName().get(), CaseConverter.Case.SNAKE_CASE))
                                     .paramType(argEntry.getParamType())
                                     .myPyType(myPyMapper.getTypeName(argEntry.getType()))
-                                    .isOptional(argEntry.getType().accept(TypeVisitor.IS_OPTIONAL))
+                                    .isOptional(dealiasingTypeVisitor.dealias(argEntry.getType()).fold(
+                                            typeDefinition -> false,
+                                            type -> type.accept(TypeVisitor.IS_OPTIONAL)))
                                     .build())
                             .collect(Collectors.toList());
 
@@ -88,6 +96,11 @@ public final class ClientGenerator {
                                 }
                                 return false;
                             }).orElse(false))
+                            .isOptionalReturnType(ed.getReturns()
+                                    .map(rt -> dealiasingTypeVisitor.dealias(rt).fold(
+                                            typeDefinition -> false,
+                                            type -> type.accept(TypeVisitor.IS_OPTIONAL)))
+                                    .orElse(false))
                             .build();
                 })
                 .collect(Collectors.toList());
