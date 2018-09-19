@@ -46,8 +46,9 @@ public interface PythonMetaYaml extends PythonClass {
 
             poetWriter.writeIndentedLine("build:");
             poetWriter.increaseIndent();
-            poetWriter.writeIndentedLine("noarch_python: True");
-            poetWriter.writeIndentedLine("script: python setup.py install");
+            poetWriter.writeIndentedLine("noarch: python");
+            poetWriter.writeIndentedLine("script: python setup.py install "
+                    + "--single-version-externally-managed --record=record.txt");
             poetWriter.decreaseIndent();
 
             poetWriter.writeLine();
