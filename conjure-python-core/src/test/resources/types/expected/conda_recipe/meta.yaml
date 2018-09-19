@@ -8,8 +8,8 @@ source:
     path: ../
 
 build:
-    noarch_python: True
-    script: python setup.py install
+    noarch: python
+    script: python setup.py install --single-version-externally-managed --record=record.txt
 
 requirements:
     build:
