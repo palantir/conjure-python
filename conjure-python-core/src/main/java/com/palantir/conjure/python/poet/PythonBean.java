@@ -101,7 +101,8 @@ public interface PythonBean extends PythonClass {
                     .collect(Collectors.toList()))));
             poetWriter.increaseIndent();
             poetWriter.writeIndentedLine(String.format("# type: (%s) -> None",
-                    Joiner.on(", ").join(fields().stream().map(PythonField::myPyType).collect(Collectors.toList()))));
+                    Joiner.on(", ").join(fields().stream().sorted(new PythonFieldComparator())
+                            .map(PythonField::myPyType).collect(Collectors.toList()))));
             fields().forEach(field -> {
                 poetWriter.writeIndentedLine(
                         String.format("self._%s = %s", field.attributeName(),
