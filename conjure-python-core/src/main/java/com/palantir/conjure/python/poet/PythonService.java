@@ -27,6 +27,7 @@ import org.immutables.value.Value;
 public interface PythonService extends PythonClass {
 
     ImmutableSet<PythonImport> DEFAULT_IMPORTS = ImmutableSet.of(
+            PythonImport.of(PythonClassName.of("typing", "Any")),
             PythonImport.of(PythonClassName.of("typing", "List")),
             PythonImport.of(PythonClassName.of("typing", "Set")),
             PythonImport.of(PythonClassName.of("typing", "Dict")),
