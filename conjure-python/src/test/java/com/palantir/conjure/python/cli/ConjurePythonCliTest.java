@@ -102,6 +102,20 @@ public class ConjurePythonCliTest {
     }
 
     @Test
+    public void generatesRawSource() throws IOException {
+        File outputDirectory = folder.newFolder();
+        CliConfiguration cliConfig = CliConfiguration.builder()
+                .target(new File("src/test/resources/conjure-api.json"))
+                .outputDirectory(outputDirectory)
+                .generateRawSource(true)
+                .build();
+        BuildConfiguration buildConfig = BuildConfiguration.load();
+        ConjurePythonCli.generate(cliConfig.target(), cliConfig.outputDirectory(),
+                ConjurePythonCli.resolveGeneratorConfiguration(cliConfig, buildConfig));
+        assertThat(new File(outputDirectory, "conjure_spec/__init__.py").isFile()).isTrue();
+    }
+
+    @Test
     public void throwsWhenInvalidDefinition() throws Exception {
         CliConfiguration cliConfig = CliConfiguration.builder()
                 .target(folder.newFile())

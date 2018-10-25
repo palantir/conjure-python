@@ -118,7 +118,7 @@ public final class ConjurePythonGenerator {
 
         return Stream.concat(pythonFiles.stream(), initFiles.stream())
                 .map(f -> {
-                    if (f.build().packageName().indexOf('.') < 0) {
+                    if (!config.generateRawSource() && f.build().packageName().indexOf('.') < 0) {
                         f.addContents(versionAttribute(f.build().packageName()));
                         f.addContents(generatorVersionAttribute(f.build().packageName()));
                     }
