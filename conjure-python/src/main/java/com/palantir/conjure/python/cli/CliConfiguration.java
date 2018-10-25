@@ -20,23 +20,14 @@ import com.google.common.base.Preconditions;
 import com.palantir.tokens.auth.ImmutablesStyle;
 import java.io.File;
 import java.util.Optional;
-import org.apache.commons.cli.Option;
 import org.immutables.value.Value;
 
 @Value.Immutable
 @ImmutablesStyle
 public abstract class CliConfiguration {
-    static final String RAW_SOURCE = "rawSource";
-    static final String PACKAGE_NAME = "packageName";
-    static final String PACKAGE_VERSION = "packageVersion";
-    static final String PACKAGE_DESCRIPTION = "packageDescription";
-    static final String PACKAGE_URL = "packageUrl";
-    static final String PACKAGE_AUTHOR = "packageAuthor";
-    static final String WRITE_CONDA_RECIPE = "writeCondaRecipe";
+    abstract File input();
 
-    abstract File target();
-
-    abstract File outputDirectory();
+    abstract File output();
 
     abstract Optional<String> packageName();
 
@@ -63,43 +54,8 @@ public abstract class CliConfiguration {
 
     @Value.Check
     final void check() {
-        Preconditions.checkArgument(target().isFile(), "Target must exist and be a file");
-        Preconditions.checkArgument(outputDirectory().isDirectory(), "Output must exist and be a directory");
-    }
-
-    static CliConfiguration of(String target, String outputDirectory, Option[] options) {
-        Builder builder = new Builder()
-                .target(new File(target))
-                .outputDirectory(new File(outputDirectory));
-        for (Option option : options) {
-            switch (option.getLongOpt()) {
-                case PACKAGE_NAME:
-                    builder.packageName(option.getValue());
-                    break;
-                case PACKAGE_VERSION:
-                    String pythonicVersion = option.getValue().replace('-', '_');
-                    builder.packageVersion(pythonicVersion);
-                    break;
-                case PACKAGE_DESCRIPTION:
-                    builder.packageDescription(option.getValue());
-                    break;
-                case PACKAGE_URL:
-                    builder.packageUrl(option.getValue());
-                    break;
-                case PACKAGE_AUTHOR:
-                    builder.packageAuthor(option.getValue());
-                    break;
-                case WRITE_CONDA_RECIPE:
-                    builder.shouldWriteCondaRecipe(true);
-                    break;
-                case RAW_SOURCE:
-                    builder.generateRawSource(true);
-                    break;
-                default:
-                    break;
-            }
-        }
-        return builder.build();
+        Preconditions.checkArgument(input().isFile(), "Target must exist and be a file");
+        Preconditions.checkArgument(output().isDirectory(), "Output must exist and be a directory");
     }
 
     static Builder builder() {

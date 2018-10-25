@@ -19,8 +19,7 @@ package com.palantir.conjure.python.cli;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
-import com.google.common.base.Preconditions;
-import com.google.common.base.Throwables;
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableSet;
 import com.palantir.conjure.python.ConjurePythonGenerator;
 import com.palantir.conjure.python.DefaultPythonFileWriter;
@@ -30,108 +29,110 @@ import com.palantir.conjure.python.types.DefaultBeanGenerator;
 import com.palantir.conjure.spec.ConjureDefinition;
 import java.io.File;
 import java.io.IOException;
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.DefaultParser;
-import org.apache.commons.cli.HelpFormatter;
-import org.apache.commons.cli.Option;
-import org.apache.commons.cli.Options;
-import org.apache.commons.cli.ParseException;
+import java.nio.file.Paths;
+import java.util.Optional;
+import picocli.CommandLine;
 
-public final class ConjurePythonCli {
-    public static final String GENERATE_COMMAND = "generate";
-    private static final String CLI_NAME = "conjure-python";
-    private static final String USAGE = String.format("%s %s <target> <output>", CLI_NAME, GENERATE_COMMAND);
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper()
-            .registerModule(new Jdk8Module())
-            .setSerializationInclusion(JsonInclude.Include.NON_ABSENT);
-
-    private ConjurePythonCli() {}
-
+@CommandLine.Command(
+        name = "conjure-python",
+        description = "CLI to generate Python Classes and interfaces from Conjure API definitions.",
+        mixinStandardHelpOptions = true,
+        subcommands = {ConjurePythonCli.GenerateCommand.class})
+public final class ConjurePythonCli implements Runnable {
     public static void main(String[] args) {
-        CliConfiguration cliConfig = resolveCliConfiguration(args);
-        BuildConfiguration buildConfig = BuildConfiguration.load();
-        generate(cliConfig.target(), cliConfig.outputDirectory(),
-                resolveGeneratorConfiguration(cliConfig, buildConfig));
+        CommandLine.run(new ConjurePythonCli(), args);
     }
 
-    static CliConfiguration resolveCliConfiguration(String[] args) {
-        CommandLineParser parser = new DefaultParser();
-        HelpFormatter hf = new HelpFormatter();
+    @Override
+    public void run() {
+        CommandLine.usage(this, System.out);
+    }
 
-        Options options = new Options();
-        options.addOption(Option.builder().hasArg()
-                .desc("Package name")
-                .longOpt(CliConfiguration.PACKAGE_NAME)
-                .argName("name").build());
-        options.addOption(Option.builder().hasArg()
-                .desc("Semantic version of generated code")
-                .longOpt(CliConfiguration.PACKAGE_VERSION)
-                .argName("version").build());
-        options.addOption(Option.builder()
-                .desc("Only generate the plain source code")
-                .longOpt(CliConfiguration.RAW_SOURCE)
-                .build());
-        options.addOption(Option.builder().hasArg()
-                .longOpt(CliConfiguration.PACKAGE_DESCRIPTION)
-                .argName("description").build());
-        options.addOption(Option.builder().hasArg()
-                .longOpt(CliConfiguration.PACKAGE_URL)
-                .argName("url").build());
-        options.addOption(Option.builder().hasArg()
-                .longOpt(CliConfiguration.PACKAGE_AUTHOR)
-                .argName("author").build());
-        options.addOption(Option.builder()
-                .desc("write conda_recipe")
-                .longOpt(CliConfiguration.WRITE_CONDA_RECIPE).build());
+    @CommandLine.Command(name = "generate",
+            description = "Generate Python bindings for a Conjure API",
+            mixinStandardHelpOptions = true,
+            usageHelpWidth = 120)
+    public static final class GenerateCommand implements Runnable {
+        private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper()
+                .registerModule(new Jdk8Module())
+                .setSerializationInclusion(JsonInclude.Include.NON_ABSENT);
 
-        options.addOption(Option.builder("h")
-                .longOpt("help")
-                .desc("display this help message")
-                .build());
+        @CommandLine.Parameters(paramLabel = "<input>",
+                description = "Path to the input IR file",
+                index = "0")
+        private String input;
 
-        try {
-            CommandLine cmd = parser.parse(options, args, false);
-            if (cmd.hasOption('h')) {
-                hf.printHelp(USAGE, options, true);
-                System.exit(0);
+        @CommandLine.Parameters(paramLabel = "<output>",
+                description = "Output directory for generated source",
+                index = "1")
+        private String output;
+
+        @CommandLine.Option(names = "--packageName", description = "The name of the package to generate.")
+        private String packageName;
+
+        @CommandLine.Option(names = "--packageVersion", description = "The version of the package to generate.")
+        private String packageVersion;
+
+        @CommandLine.Option(names = "--packageDescription", description = "The description of the package to generate.")
+        private String packageDescription;
+
+        @CommandLine.Option(names = "--packageUrl", description = "The url of the package to generate")
+        private String packageUrl;
+
+        @CommandLine.Option(names = "--rawSource",
+                defaultValue = "false",
+                description = "Only generate the plain source without any package metadata")
+        private boolean rawSource;
+
+        @CommandLine.Option(names = "--writeCondaRecipe",
+                defaultValue = "false",
+                description = "Only generate the plain source without any package metadata")
+        private boolean writeCondaRecipe;
+
+        @Override
+        public void run() {
+            CliConfiguration cliConfig = getConfiguration();
+            GeneratorConfiguration generatorConfig =
+                    resolveGeneratorConfiguration(cliConfig, BuildConfiguration.load());
+            try {
+                ConjureDefinition conjureDefinition = OBJECT_MAPPER.readValue(new File(input), ConjureDefinition.class);
+                ConjurePythonGenerator generator = new ConjurePythonGenerator(
+                        new DefaultBeanGenerator(ImmutableSet.of()),
+                        new ClientGenerator(),
+                        generatorConfig);
+                generator.write(conjureDefinition, new DefaultPythonFileWriter(Paths.get(output)));
+            } catch (IOException e) {
+                throw new RuntimeException(String.format("Error parsing definition: %s", e.toString()));
             }
-            String[] parsedArgs = cmd.getArgs();
-            Preconditions.checkArgument(parsedArgs.length == 3 && GENERATE_COMMAND.equals(args[0]));
-
-            return CliConfiguration.of(parsedArgs[1], parsedArgs[2], cmd.getOptions());
-        } catch (ParseException | IllegalArgumentException e) {
-            hf.printHelp(USAGE, options, true);
-            Throwables.throwIfUnchecked(e);
-            throw new RuntimeException(e);
         }
-    }
 
-    static GeneratorConfiguration resolveGeneratorConfiguration(CliConfiguration cliConfig,
-            BuildConfiguration buildConfig) {
-        return GeneratorConfiguration.builder()
-                .generatorVersion(buildConfig.generatorVersion())
-                .minConjureClientVersion(buildConfig.minConjureClientVersion())
-                .packageAuthor(cliConfig.packageAuthor())
-                .packageDescription(cliConfig.packageDescription())
-                .packageName(cliConfig.packageName())
-                .packageVersion(cliConfig.packageVersion())
-                .packageUrl(cliConfig.packageUrl())
-                .shouldWriteCondaRecipe(cliConfig.shouldWriteCondaRecipe())
-                .generateRawSource(cliConfig.generateRawSource())
-                .build();
-    }
+        @VisibleForTesting
+        CliConfiguration getConfiguration() {
+            return CliConfiguration.builder()
+                    .input(new File(input))
+                    .output(new File(output))
+                    .packageName(Optional.ofNullable(packageName))
+                    .packageVersion(Optional.ofNullable(packageVersion).map(version -> version.replace('-', '_')))
+                    .packageDescription(Optional.ofNullable(packageDescription))
+                    .packageUrl(Optional.ofNullable(packageUrl))
+                    .generateRawSource(rawSource)
+                    .shouldWriteCondaRecipe(writeCondaRecipe)
+                    .build();
+        }
 
-    static void generate(File target, File outputDirectory, GeneratorConfiguration config) {
-        try {
-            ConjureDefinition conjureDefinition = OBJECT_MAPPER.readValue(target, ConjureDefinition.class);
-            ConjurePythonGenerator generator = new ConjurePythonGenerator(
-                    new DefaultBeanGenerator(ImmutableSet.of()),
-                    new ClientGenerator(),
-                    config);
-            generator.write(conjureDefinition, new DefaultPythonFileWriter(outputDirectory.toPath()));
-        } catch (IOException e) {
-            throw new RuntimeException(String.format("Error parsing definition: %s", e.toString()));
+        static GeneratorConfiguration resolveGeneratorConfiguration(CliConfiguration cliConfig,
+                BuildConfiguration buildConfig) {
+            return GeneratorConfiguration.builder()
+                    .generatorVersion(buildConfig.generatorVersion())
+                    .minConjureClientVersion(buildConfig.minConjureClientVersion())
+                    .packageAuthor(cliConfig.packageAuthor())
+                    .packageDescription(cliConfig.packageDescription())
+                    .packageName(cliConfig.packageName())
+                    .packageVersion(cliConfig.packageVersion())
+                    .packageUrl(cliConfig.packageUrl())
+                    .shouldWriteCondaRecipe(cliConfig.shouldWriteCondaRecipe())
+                    .generateRawSource(cliConfig.generateRawSource())
+                    .build();
         }
     }
 }
