@@ -47,8 +47,7 @@ public final class ConjurePythonGenerator {
         Preconditions.checkArgument(
                 config.generateRawSource() || (config.packageName().isPresent() && config.packageVersion().isPresent()),
                 "If generateRawSource is not set, packageName and packageVersion must be present");
-        Preconditions.checkArgument(
-                (config.generateRawSource() ^ config.shouldWriteCondaRecipe()) || !config.generateRawSource(),
+        Preconditions.checkArgument(!(config.generateRawSource() && config.shouldWriteCondaRecipe()),
                 "If generateRawSource is set, shouldWriteCondaRecipe must not be set");
         this.beanGenerator = beanGenerator;
         this.clientGenerator = clientGenerator;
