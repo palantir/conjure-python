@@ -20,7 +20,7 @@ mainClassName = 'com.palantir.conjure.python.cli.ConjurePythonCli'
 
 dependencies {
     compile project(':conjure-python-core')
-    compile 'commons-cli:commons-cli'
+    compile 'info.picocli:picocli'
     runtime 'org.slf4j:slf4j-simple'
 
     testCompile 'junit:junit'
