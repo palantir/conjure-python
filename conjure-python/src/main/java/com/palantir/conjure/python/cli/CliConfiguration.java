@@ -26,6 +26,7 @@ import org.immutables.value.Value;
 @Value.Immutable
 @ImmutablesStyle
 public abstract class CliConfiguration {
+    static final String RAW_SOURCE = "rawSource";
     static final String PACKAGE_NAME = "packageName";
     static final String PACKAGE_VERSION = "packageVersion";
     static final String PACKAGE_DESCRIPTION = "packageDescription";
@@ -37,9 +38,9 @@ public abstract class CliConfiguration {
 
     abstract File outputDirectory();
 
-    abstract String packageName();
+    abstract Optional<String> packageName();
 
-    abstract String packageVersion();
+    abstract Optional<String> packageVersion();
 
     abstract Optional<String> packageDescription();
 
@@ -49,9 +50,16 @@ public abstract class CliConfiguration {
 
     @Value.Default
     @SuppressWarnings("DesignForExtension")
+    boolean generateRawSource() {
+        return false;
+    }
+
+    @Value.Default
+    @SuppressWarnings("DesignForExtension")
     boolean shouldWriteCondaRecipe() {
         return false;
     }
+
 
     @Value.Check
     final void check() {
@@ -83,6 +91,9 @@ public abstract class CliConfiguration {
                     break;
                 case WRITE_CONDA_RECIPE:
                     builder.shouldWriteCondaRecipe(true);
+                    break;
+                case RAW_SOURCE:
+                    builder.generateRawSource(true);
                     break;
                 default:
                     break;

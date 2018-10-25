@@ -21,7 +21,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.io.File;
 import java.io.IOException;
-import org.apache.commons.cli.MissingOptionException;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -86,21 +85,6 @@ public class ConjurePythonCliTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Output must exist and be a directory");
     }
-    @Test
-    public void throwsWhenPackageNameDoesNotExist() {
-        String[] args = {ConjurePythonCli.GENERATE_COMMAND, targetFile.getAbsolutePath(),
-                         String.format("--%s=0.0.0", CliConfiguration.PACKAGE_VERSION), "bar"};
-        assertThatThrownBy(() -> ConjurePythonCli.resolveCliConfiguration(args))
-                .hasCauseInstanceOf(MissingOptionException.class);
-    }
-
-    @Test
-    public void throwsWhenPackageVersionDoesNotExist() {
-        String[] args = {ConjurePythonCli.GENERATE_COMMAND, targetFile.getAbsolutePath(),
-                         String.format("--%s=package-name", CliConfiguration.PACKAGE_NAME), "bar"};
-        assertThatThrownBy(() -> ConjurePythonCli.resolveCliConfiguration(args))
-                .hasCauseInstanceOf(MissingOptionException.class);
-    }
 
     @Test
     public void generatesCode() throws Exception {
@@ -115,6 +99,20 @@ public class ConjurePythonCliTest {
         ConjurePythonCli.generate(cliConfig.target(), cliConfig.outputDirectory(),
                 ConjurePythonCli.resolveGeneratorConfiguration(cliConfig, buildConfig));
         assertThat(new File(outputDirectory, "conjure/conjure_spec/__init__.py").isFile()).isTrue();
+    }
+
+    @Test
+    public void generatesRawSource() throws IOException {
+        File outputDirectory = folder.newFolder();
+        CliConfiguration cliConfig = CliConfiguration.builder()
+                .target(new File("src/test/resources/conjure-api.json"))
+                .outputDirectory(outputDirectory)
+                .generateRawSource(true)
+                .build();
+        BuildConfiguration buildConfig = BuildConfiguration.load();
+        ConjurePythonCli.generate(cliConfig.target(), cliConfig.outputDirectory(),
+                ConjurePythonCli.resolveGeneratorConfiguration(cliConfig, buildConfig));
+        assertThat(new File(outputDirectory, "conjure_spec/__init__.py").isFile()).isTrue();
     }
 
     @Test

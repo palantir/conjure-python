@@ -12,9 +12,9 @@ import org.immutables.value.Value;
 @ImmutablesStyle
 public interface GeneratorConfiguration {
 
-    String packageName();
+    Optional<String> packageName();
 
-    String packageVersion();
+    Optional<String> packageVersion();
 
     Optional<String> packageDescription();
 
@@ -27,6 +27,8 @@ public interface GeneratorConfiguration {
     String minConjureClientVersion();
 
     boolean shouldWriteCondaRecipe();
+
+    boolean generateRawSource();
 
     @Value.Default
     default String maxConjureClientVersion() {

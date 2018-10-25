@@ -61,15 +61,17 @@ public final class ConjurePythonCli {
 
         Options options = new Options();
         options.addOption(Option.builder().hasArg()
-                .desc("package name")
+                .desc("Package name")
                 .longOpt(CliConfiguration.PACKAGE_NAME)
-                .required()
                 .argName("name").build());
         options.addOption(Option.builder().hasArg()
-                .desc("semantic version of generated code")
+                .desc("Semantic version of generated code")
                 .longOpt(CliConfiguration.PACKAGE_VERSION)
-                .required()
                 .argName("version").build());
+        options.addOption(Option.builder()
+                .desc("Only generate the plain source code")
+                .longOpt(CliConfiguration.RAW_SOURCE)
+                .build());
         options.addOption(Option.builder().hasArg()
                 .longOpt(CliConfiguration.PACKAGE_DESCRIPTION)
                 .argName("description").build());
@@ -116,6 +118,7 @@ public final class ConjurePythonCli {
                 .packageVersion(cliConfig.packageVersion())
                 .packageUrl(cliConfig.packageUrl())
                 .shouldWriteCondaRecipe(cliConfig.shouldWriteCondaRecipe())
+                .generateRawSource(cliConfig.generateRawSource())
                 .build();
     }
 
