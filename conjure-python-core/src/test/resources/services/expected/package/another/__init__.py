@@ -198,7 +198,7 @@ class TestService(Service):
         return
 
     def get_branches(self, auth_header, dataset_rid, message=None, page_size=None):
-        # type: (str, str, Optional[int], Optional[str]) -> List[str]
+        # type: (str, str, Optional[str], Optional[int]) -> List[str]
 
         _headers = {
             'Accept': 'application/json',

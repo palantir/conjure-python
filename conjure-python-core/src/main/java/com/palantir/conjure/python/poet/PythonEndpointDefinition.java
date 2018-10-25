@@ -99,6 +99,7 @@ public interface PythonEndpointDefinition extends Emittable {
             poetWriter.writeIndentedLine("# type: (%s) -> %s",
                     Joiner.on(", ").join(
                             paramsWithHeader.stream()
+                                    .sorted(new PythonEndpointParamComparator())
                                     .map(PythonEndpointParam::myPyType)
                                     .collect(Collectors.toList())),
                     myPyReturnType().orElse("None"));
