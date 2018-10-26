@@ -4,7 +4,6 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-# TODO(forozco): inject version of conjure-client
 conjure-python-client = "==1.1.2"
 
 [dev-packages]

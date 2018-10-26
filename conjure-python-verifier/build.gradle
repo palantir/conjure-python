@@ -17,8 +17,8 @@ configurations {
 }
 
 dependencies {
-    testCases 'com.palantir.conjure.verification:test-cases'
-    verificationApi 'com.palantir.conjure.verification:verification-api'
+    testCases 'com.palantir.conjure.verification:verification-server-test-cases'
+    verificationApi 'com.palantir.conjure.verification:verification-server-api'
     verificationServer "com.palantir.conjure.verification:verification-server::${osClassifier}@tgz"
 }
 
@@ -65,5 +65,24 @@ task generateIntegrationTests(type: JavaExec, dependsOn: [compileIr, ':conjure-p
     doLast { delete "python/test/setup.py" }
 }
 
-tasks.idea.dependsOn unpackVerificationServer, generateVerifierBindings, generateIntegrationTests
-tasks.build.dependsOn unpackVerificationServer, generateVerifierBindings, generateIntegrationTests
+task generate() {
+    dependsOn generateVerifierBindings, generateIntegrationTests
+}
+
+task checkPipFile() {
+    doLast {
+        def clientVersion = dependencyRecommendations.getRecommendedVersion('com.palantir.conjure.python', 'conjure-python-client')
+        assert file("python/Pipfile").text.contains("conjure-python-client = \"==${clientVersion}\"")
+    }
+}
+
+task checkToxIni() {
+    doLast {
+        def clientVersion = dependencyRecommendations.getRecommendedVersion('com.palantir.conjure.python', 'conjure-python-client')
+        assert file("python/tox.ini").text.contains("CONJURE_PYTHON_CLIENT_VERSION = ${clientVersion}")
+    }
+}
+
+tasks.check.dependsOn checkPipFile, checkToxIni
+tasks.idea.dependsOn unpackVerificationServer, generate
+tasks.build.dependsOn unpackVerificationServer, generate

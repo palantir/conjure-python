@@ -16,7 +16,7 @@ The team welcomes contributions! To make changes:
 - [pipenv](https://github.com/pypa/pipenv) (`pip3 install pipenv`)
 
 
-_We recommend the free [VSCode](https://code.visualstudio.com/) editor to work on python projects 
+_We recommend the free [VSCode](https://code.visualstudio.com/) editor to work on python projects
 and [Intellij IDEA Community Edition](https://www.jetbrains.com/idea/) for Java projects._
 
 ### One-time setup for development
@@ -24,9 +24,13 @@ and [Intellij IDEA Community Edition](https://www.jetbrains.com/idea/) for Java 
 1. Fork the repository
 1. Generate the IDE configuration: `./gradlew idea`
 1. Open projects in Intellij: `open *.ipr`
-1. Generate integration test bindings: `./gradlew generateVerifierBindings`
-1. In `conjure-python-verification/python` create the virtual environment `PIPENV_VENV_IN_PROJECT=1 pipenv --python 3 shell`
-1. In `conjure-python-verification/python` install all dependencies `pipenv install --dev`
+1. Generate integration test bindings: `./gradlew generate`
+1. In `conjure-python-verification/python`:
+
+    ```shell
+    $ PIPENV_VENV_IN_PROJECT=1 pipenv --python 3 shell # create the virtual environment
+    $ pipenv install --dev # install all dependencies
+    ```
 
 ### Development tips
 
