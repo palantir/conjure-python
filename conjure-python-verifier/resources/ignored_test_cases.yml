@@ -77,6 +77,16 @@ client:
       '{"value":""}',
       '{"value":"80e6dd13-5f42-4e33-ad18"}'
     ]
+    receiveDoubleAliasExample:
+      - '"nan"'
+      - '"NAN"'
+      - '"infinity"'
+      - '"-infinity"'
+      - '"+Infinity"'
+    receiveRawOptionalExample:
+      - 'null'
+      - '1'
+
   singleHeaderService: {}
   singlePathParamService:
     pathParamBoolean:
