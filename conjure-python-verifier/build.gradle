@@ -17,8 +17,8 @@ configurations {
 }
 
 dependencies {
-    testCases 'com.palantir.conjure.verification:test-cases'
-    verificationApi 'com.palantir.conjure.verification:verification-api'
+    testCases 'com.palantir.conjure.verification:verification-server-test-cases'
+    verificationApi 'com.palantir.conjure.verification:verification-server-api'
     verificationServer "com.palantir.conjure.verification:verification-server::${osClassifier}@tgz"
 }
 
@@ -65,5 +65,9 @@ task generateIntegrationTests(type: JavaExec, dependsOn: [compileIr, ':conjure-p
     doLast { delete "python/test/setup.py" }
 }
 
-tasks.idea.dependsOn unpackVerificationServer, generateVerifierBindings, generateIntegrationTests
-tasks.build.dependsOn unpackVerificationServer, generateVerifierBindings, generateIntegrationTests
+task generate() {
+    dependsOn: unpackVerificationServer, generateVerifierBindings, generateIntegrationTests
+}
+
+tasks.idea.dependsOn generate
+tasks.build.dependsOn generate
