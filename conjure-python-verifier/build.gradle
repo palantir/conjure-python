@@ -66,8 +66,8 @@ task generateIntegrationTests(type: JavaExec, dependsOn: [compileIr, ':conjure-p
 }
 
 task generate() {
-    dependsOn unpackVerificationServer, generateVerifierBindings, generateIntegrationTests
+    dependsOn generateVerifierBindings, generateIntegrationTests
 }
 
-tasks.idea.dependsOn generate
-tasks.build.dependsOn generate
+tasks.idea.dependsOn unpackVerificationServer, generate
+tasks.build.dependsOn unpackVerificationServer, generate
