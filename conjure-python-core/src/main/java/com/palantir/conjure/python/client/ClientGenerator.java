@@ -17,7 +17,6 @@
 package com.palantir.conjure.python.client;
 
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.ImmutableSet.Builder;
 import com.palantir.conjure.python.PackageNameProcessor;
 import com.palantir.conjure.python.poet.PythonClass;
 import com.palantir.conjure.python.poet.PythonClassName;
@@ -54,7 +53,7 @@ public final class ClientGenerator {
                 .collect(Collectors.toMap(type -> type.accept(TypeDefinitionVisitor.TYPE_NAME), Function.identity())));
         ReferencedTypeNameVisitor referencedTypeNameVisitor = new ReferencedTypeNameVisitor(types, packageNameProvider);
 
-        Builder<PythonClassName> referencedTypesBuilder = ImmutableSet.builder();
+        ImmutableSet.Builder<PythonClassName> referencedTypesBuilder = ImmutableSet.builder();
 
         List<PythonEndpointDefinition> endpoints = serviceDefinition.getEndpoints()
                 .stream()

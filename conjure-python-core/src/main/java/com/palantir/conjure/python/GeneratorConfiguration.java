@@ -4,6 +4,7 @@
 
 package com.palantir.conjure.python;
 
+import com.google.common.base.Splitter;
 import com.palantir.tokens.auth.ImmutablesStyle;
 import java.util.Optional;
 import org.immutables.value.Value;
@@ -32,7 +33,8 @@ public interface GeneratorConfiguration {
 
     @Value.Default
     default String maxConjureClientVersion() {
-        return String.valueOf(Integer.parseInt(minConjureClientVersion().split("[.]")[0]) + 1);
+        String majorVersion = Splitter.on('.').splitToList(minConjureClientVersion()).get(0);
+        return String.valueOf(Integer.parseInt(majorVersion) + 1);
     }
 
     final class Builder extends ImmutableGeneratorConfiguration.Builder {}

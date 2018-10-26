@@ -109,7 +109,7 @@ public final class MyPyTypeNameVisitor implements Type.Visitor<String> {
 
     @Override
     public String visitSet(SetType type) {
-        // TODO (bduffield): real sets
+        // TODO(#27): real sets
         return Type.list(ListType.of(type.getItemType())).accept(this);
     }
 
