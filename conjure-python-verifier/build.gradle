@@ -69,5 +69,20 @@ task generate() {
     dependsOn generateVerifierBindings, generateIntegrationTests
 }
 
+task checkPipFile() {
+    doLast {
+        def clientVersion = dependencyRecommendations.getRecommendedVersion('com.palantir.conjure.python', 'conjure-python-client')
+        assert file("python/Pipfile").text.contains("conjure-python-client = \"==${clientVersion}\"")
+    }
+}
+
+task checkToxIni() {
+    doLast {
+        def clientVersion = dependencyRecommendations.getRecommendedVersion('com.palantir.conjure.python', 'conjure-python-client')
+        assert file("python/tox.ini").text.contains("CONJURE_PYTHON_CLIENT_VERSION = ${clientVersion}")
+    }
+}
+
+tasks.check.dependsOn checkPipFile, checkToxIni
 tasks.idea.dependsOn unpackVerificationServer, generate
 tasks.build.dependsOn unpackVerificationServer, generate
