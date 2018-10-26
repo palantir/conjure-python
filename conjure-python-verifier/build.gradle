@@ -56,7 +56,7 @@ task generateIntegrationTests(type: JavaExec, dependsOn: [compileIr, ':conjure-p
     main = "com.palantir.conjure.python.cli.ConjurePythonCli"
     classpath = project(':conjure-python').sourceSets.main.runtimeClasspath
     args 'generate',
-            'build/conjure-ir/conjure-python-verifier.json',
+            'build/conjure-ir/conjure-python-verifier.conjure.json',
             'python/test',
             '--packageName', 'generated',
             '--packageVersion', '0.0.0'
