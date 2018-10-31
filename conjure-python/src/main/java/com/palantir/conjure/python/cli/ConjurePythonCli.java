@@ -30,6 +30,7 @@ import com.palantir.conjure.spec.ConjureDefinition;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.Optional;
 import picocli.CommandLine;
 
@@ -88,6 +89,9 @@ public final class ConjurePythonCli implements Runnable {
                 defaultValue = "false",
                 description = "Only generate the plain source without any package metadata")
         private boolean writeCondaRecipe;
+
+        @CommandLine.Unmatched
+        private List<String> unmatchedOptions;
 
         @Override
         public void run() {
