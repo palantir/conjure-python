@@ -4,8 +4,7 @@ _CLI to generate Python classes from [Conjure API definitions](https://github.co
 
 ## Overview
 
-The generated clients provide a simple interface for 
-executing statically typed remote procedure calls from the Python 2 or 3.
+The generated clients provide a simple interface for executing statically typed remote procedure calls from Python 2 or 3.
 
 ## Usage
 
@@ -30,8 +29,6 @@ The recommended way to use conjure-python is via a build tool like [gradle-conju
 
 - **Conjure union: [UnionTypeExample](https://github.com/palantir/conjure-python/blob/develop/conjure-python-core/src/test/resources/types/expected/package/product/__init__.py#L689)**
 
-    Union types can be one of a few variants. 
-
     ```python
     stringVariant = UnionTypeExample(string_example="foo")
     ```
@@ -45,7 +42,7 @@ The recommended way to use conjure-python is via a build tool like [gradle-conju
 
 - **Conjure alias: [StringAliasExample](https://github.com/palantir/conjure-python/blob/develop/conjure-python-core/src/test/resources/types/expected/package/product/__init__.py#L817)**
 
-  Python uses structural (duck-typing) so aliases are currently elided.
+  Python uses structural (duck-typing) so aliases are currently transparent.
 
 ## Example Client interfaces
 Example service interface: [TestService](./conjure-python-core/src/test/resources/services/expected/package/another/__init__.py)
