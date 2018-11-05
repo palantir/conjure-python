@@ -1,6 +1,10 @@
-# Conjure-Python
+# Conjure-Python ![Bintray](https://img.shields.io/bintray/v/palantir/releases/conjure-python.svg) [![License](https://img.shields.io/badge/License-Apache%202.0-lightgrey.svg)](https://opensource.org/licenses/Apache-2.0)
 
-_Generate python classes for interacting with [Conjure](https://github.com/palantir/conjure) defined APIs._
+_CLI to generate Python classes from [Conjure API definitions](https://github.com/palantir/conjure)._
+
+## Overview
+
+The generated clients provide a simple interface for executing statically typed remote procedure calls from Python 2 or 3.
 
 ## Usage
 
@@ -15,13 +19,64 @@ The recommended way to use conjure-python is via a build tool like [gradle-conju
         --packageAuthor       author that will appear in setup.py
         --writeCondaRecipe    use this boolean option to generate a `conda_recipe/meta.yaml`
 
-## Python 2 and 3 compatible
+## Example generated objects
 
-conjure-python generates code that works on both Python 2 and Python 3.
+- **Conjure object: [ManyFieldExample](https://github.com/palantir/conjure-python/blob/develop/conjure-python-core/src/test/resources/types/expected/package/product/__init__.py#L345)**
 
-## Generated services
+    ```python
+    example = ManyFieldExample('alias', 1.0, 1, [], {}, [])
+    ```
 
-- [TestService](./conjure-python-core/src/test/resources/services/expected/package/another/TestService.py)
+- **Conjure union: [UnionTypeExample](https://github.com/palantir/conjure-python/blob/develop/conjure-python-core/src/test/resources/types/expected/package/product/__init__.py#L689)**
+
+    ```python
+    stringVariant = UnionTypeExample(string_example="foo")
+    ```
+
+- **Conjure enum: [EnumExample](https://github.com/palantir/conjure-python/blob/develop/conjure-python-core/src/test/resources/types/expected/package/product/__init__.py#L256)**
+
+  ```python
+  one = EnumExample.ONE;
+  print(one); // prints: 'ONE'
+  ```
+
+- **Conjure alias: [StringAliasExample](https://github.com/palantir/conjure-python/blob/develop/conjure-python-core/src/test/resources/types/expected/package/product/__init__.py#L817)**
+
+  Python uses structural (duck-typing) so aliases are currently transparent.
+
+## Example Client interfaces
+Example service interface: [TestService](./conjure-python-core/src/test/resources/services/expected/package/another/__init__.py)
+
+```python
+class TestService(Service):
+    """A Markdown description of the service."""
+
+    def get_file_systems(self, auth_header):
+        # type: (str) -> Dict[str, BackingFileSystem]
+        """Returns a mapping from file system id to backing file system configuration."""
+
+        _headers = {
+            'Accept': 'application/json',
+            'Authorization': auth_header,
+        } # type: Dict[str, Any]
+
+        _path = '/catalog/fileSystems'
+
+        _response = self._request( # type: ignore
+            'GET',
+            self._uri + _path,
+            params=_params,
+            headers=_headers,
+            json=_json)
+
+        _decoder = ConjureDecoder()
+        return _decoder.decode(_response.json(), DictType(str, BackingFileSystem))
+
+```
+
+## Constructing clients
+
+Use [conjure-python-client](https://github.com/palantir/conjure-python-client) which leverages [requests](http://docs.python-requests.org/en/master/):
 
 ```python
 from conjure_python_client import RequestsClient, ServiceConfiguration
