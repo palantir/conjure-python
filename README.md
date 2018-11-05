@@ -1,6 +1,11 @@
-# Conjure-Python
+# Conjure-Python ![Bintray](https://img.shields.io/bintray/v/palantir/releases/conjure-python.svg) [![License](https://img.shields.io/badge/License-Apache%202.0-lightgrey.svg)](https://opensource.org/licenses/Apache-2.0)
 
-_Generate python classes for interacting with [Conjure](https://github.com/palantir/conjure) defined APIs._
+_CLI to generate Python classes from [Conjure API definitions](https://github.com/palantir/conjure)._
+
+## Overview
+
+The generated clients provide a simple [requests](http://docs.python-requests.org/en/master/) based interface for 
+executing statically typed remote procedure calls from the Python 2 or 3.
 
 ## Usage
 
@@ -15,9 +20,32 @@ The recommended way to use conjure-python is via a build tool like [gradle-conju
         --packageAuthor       author that will appear in setup.py
         --writeCondaRecipe    use this boolean option to generate a `conda_recipe/meta.yaml`
 
-## Python 2 and 3 compatible
+## Example generated objects
 
-conjure-python generates code that works on both Python 2 and Python 3.
+- **Conjure object: [ManyFieldExample](https://github.com/palantir/conjure-python/blob/develop/conjure-python-core/src/test/resources/types/expected/package/product/__init__.py#L345)**
+
+    ```python
+    example = ManyFieldExample('alias', 1.0, 1, [], {}, [])
+    ```
+
+- **Conjure union: [UnionTypeExample](https://github.com/palantir/conjure-python/blob/develop/conjure-python-core/src/test/resources/types/expected/package/product/__init__.py#L689)**
+
+    Union types can be one of a few variants. 
+
+    ```python
+    stringVariant = UnionTypeExample(string_example="foo")
+    ```
+
+- **Conjure enum: [EnumExample](https://github.com/palantir/conjure-python/blob/develop/conjure-python-core/src/test/resources/types/expected/package/product/__init__.py#L256)**
+
+  ```java
+  one = EnumExample.ONE;
+  print(one); // prints: 'ONE'
+  ```
+
+- **Conjure alias: [StringAliasExample](./conjure-java-core/src/integrationInput/java/com/palantir/product/StringAliasExample.java)**
+
+  Python uses structural (duck-typing) so aliases are currently elided.
 
 ## Generated services
 
