@@ -4,7 +4,7 @@ _CLI to generate Python classes from [Conjure API definitions](https://github.co
 
 ## Overview
 
-The generated clients provide a simple [requests](http://docs.python-requests.org/en/master/) based interface for 
+The generated clients provide a simple interface for 
 executing statically typed remote procedure calls from the Python 2 or 3.
 
 ## Usage
@@ -38,18 +38,48 @@ The recommended way to use conjure-python is via a build tool like [gradle-conju
 
 - **Conjure enum: [EnumExample](https://github.com/palantir/conjure-python/blob/develop/conjure-python-core/src/test/resources/types/expected/package/product/__init__.py#L256)**
 
-  ```java
+  ```python
   one = EnumExample.ONE;
   print(one); // prints: 'ONE'
   ```
 
-- **Conjure alias: [StringAliasExample](./conjure-java-core/src/integrationInput/java/com/palantir/product/StringAliasExample.java)**
+- **Conjure alias: [StringAliasExample](https://github.com/palantir/conjure-python/blob/develop/conjure-python-core/src/test/resources/types/expected/package/product/__init__.py#L817)**
 
   Python uses structural (duck-typing) so aliases are currently elided.
 
-## Generated services
+## Example Client interfaces
+Example service interface: [TestService](./conjure-python-core/src/test/resources/services/expected/package/another/__init__.py)
 
-- [TestService](./conjure-python-core/src/test/resources/services/expected/package/another/TestService.py)
+```python
+class TestService(Service):
+    """A Markdown description of the service."""
+
+    def get_file_systems(self, auth_header):
+        # type: (str) -> Dict[str, BackingFileSystem]
+        """Returns a mapping from file system id to backing file system configuration."""
+
+        _headers = {
+            'Accept': 'application/json',
+            'Authorization': auth_header,
+        } # type: Dict[str, Any]
+
+        _path = '/catalog/fileSystems'
+
+        _response = self._request( # type: ignore
+            'GET',
+            self._uri + _path,
+            params=_params,
+            headers=_headers,
+            json=_json)
+
+        _decoder = ConjureDecoder()
+        return _decoder.decode(_response.json(), DictType(str, BackingFileSystem))
+
+```
+
+## Constructing clients
+
+Use [conjure-python-client](https://github.com/palantir/conjure-python-client) which leverages [requests](http://docs.python-requests.org/en/master/):
 
 ```python
 from conjure_python_client import RequestsClient, ServiceConfiguration
