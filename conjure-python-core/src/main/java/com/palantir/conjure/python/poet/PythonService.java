@@ -33,9 +33,7 @@ public interface PythonService extends PythonClass {
             PythonImport.of(PythonClassName.of("typing", "Dict")),
             PythonImport.of(PythonClassName.of("typing", "Tuple")),
             PythonImport.of(PythonClassName.of("typing", "Optional")),
-            PythonImport.of(PythonClassName.of("conjure_python_client", "ConjureEncoder")),
-            PythonImport.of(PythonClassName.of("conjure_python_client", "ConjureDecoder")),
-            PythonImport.of(PythonClassName.of("conjure_python_client", "Service")));
+            PythonImport.of(PythonClassName.of("conjure_python_client", "*")));
 
     @Override
     @Value.Default
