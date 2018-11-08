@@ -774,7 +774,9 @@ class UnionTypeExample(ConjureUnionType):
 
     def accept(self, visitor):
         # type: (UnionTypeExampleVisitor) -> Any
-        return getattr(visitor, '_{}'.format(case.to_snake_case(self.type)))(getattr(self, case.to_snake_case(self.type)))
+        visitor_method = getattr(visitor, '_{}'.format(case.to_snake_case(self.type)))
+        value = getattr(self, case.to_snake_case(self.type))
+        return visitor_method(value)
 
 
 class UnionTypeExampleVisitor(ABCMeta('ABC', (object,), {})):

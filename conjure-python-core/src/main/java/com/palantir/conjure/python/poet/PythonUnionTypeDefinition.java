@@ -18,7 +18,6 @@ package com.palantir.conjure.python.poet;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableSet;
-import com.palantir.conjure.CaseConverter;
 import com.palantir.conjure.python.poet.PythonBean.PythonField;
 import com.palantir.conjure.spec.Documentation;
 import java.util.List;
@@ -141,7 +140,9 @@ public interface PythonUnionTypeDefinition extends PythonClass {
         poetWriter.writeIndentedLine("def accept(self, visitor):");
         poetWriter.increaseIndent();
         poetWriter.writeIndentedLine("# type: (%sVisitor) -> Any", className());
-        poetWriter.writeIndentedLine("return getattr(visitor, '_{}'.format(case.to_snake_case(self.type)))(getattr(self, case.to_snake_case(self.type)))");
+        poetWriter.writeIndentedLine("visitor_method = getattr(visitor, '_{}'.format(case.to_snake_case(self.type)))");
+        poetWriter.writeIndentedLine("value = getattr(self, case.to_snake_case(self.type))");
+        poetWriter.writeIndentedLine("return visitor_method(value)");
         poetWriter.decreaseIndent();
         poetWriter.decreaseIndent();
         poetWriter.writeLine();
