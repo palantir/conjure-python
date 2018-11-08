@@ -130,11 +130,12 @@ class UnionWithImports(ConjureUnionType):
 
     def accept(self, visitor):
         # type: (UnionWithImportsVisitor) -> Any
+        if not isinstance(visitor, UnionWithImportsVisitor):
+            raise ValueError('{} is not an instance of UnionWithImportsVisitor'.format(visitor.__class__.__name__))
         if self.type == 'string':
             return visitor._string(self.string)
         if self.type == 'imported':
             return visitor._imported(self.imported)
-        raise ValueError('{} is not an allowed type'.format(object_set.__class__.__name__))
 
 
 class UnionWithImportsVisitor(ABCMeta('ABC', (object,), {})):

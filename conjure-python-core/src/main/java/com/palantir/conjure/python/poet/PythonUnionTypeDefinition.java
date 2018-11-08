@@ -139,6 +139,12 @@ public interface PythonUnionTypeDefinition extends PythonClass {
         poetWriter.writeIndentedLine("def accept(self, visitor):");
         poetWriter.increaseIndent();
         poetWriter.writeIndentedLine("# type: (%sVisitor) -> Any", className());
+        poetWriter.writeIndentedLine("if not isinstance(visitor, %sVisitor):", className());
+        poetWriter.increaseIndent();
+        poetWriter.writeIndentedLine(
+                "raise ValueError('{} is not an instance of %sVisitor'.format(visitor.__class__.__name__))",
+                className());
+        poetWriter.decreaseIndent();
         options().forEach(option -> {
             poetWriter.writeIndentedLine("if self.type == '%s':", option.jsonIdentifier());
             poetWriter.increaseIndent();
@@ -146,8 +152,6 @@ public interface PythonUnionTypeDefinition extends PythonClass {
                     PythonIdentifierSanitizer.sanitize(option.attributeName()));
             poetWriter.decreaseIndent();
         });
-        poetWriter.writeIndentedLine(
-                "raise ValueError('{} is not an allowed type'.format(object_set.__class__.__name__))");
         poetWriter.decreaseIndent();
         poetWriter.decreaseIndent();
         poetWriter.writeLine();

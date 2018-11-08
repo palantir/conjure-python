@@ -774,6 +774,8 @@ class UnionTypeExample(ConjureUnionType):
 
     def accept(self, visitor):
         # type: (UnionTypeExampleVisitor) -> Any
+        if not isinstance(visitor, UnionTypeExampleVisitor):
+            raise ValueError('{} is not an instance of UnionTypeExampleVisitor'.format(visitor.__class__.__name__))
         if self.type == 'stringExample':
             return visitor._string_example(self.string_example)
         if self.type == 'set':
@@ -788,7 +790,6 @@ class UnionTypeExample(ConjureUnionType):
             return visitor._new(self.new)
         if self.type == 'interface':
             return visitor._interface(self.interface)
-        raise ValueError('{} is not an allowed type'.format(object_set.__class__.__name__))
 
 
 class UnionTypeExampleVisitor(ABCMeta('ABC', (object,), {})):
