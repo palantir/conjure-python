@@ -130,7 +130,7 @@ class UnionWithImports(ConjureUnionType):
 
     def accept(self, visitor):
         # type: (UnionWithImportsVisitor) -> Any
-        return getattr(visitor, '_{}'.format(self.type))(getattr(self, self.type))
+        return getattr(visitor, '_{}'.format(case.to_snake_case(self.type)))(getattr(self, case.to_snake_case(self.type)))
 
 
 class UnionWithImportsVisitor(ABCMeta('ABC', (object,), {})):
