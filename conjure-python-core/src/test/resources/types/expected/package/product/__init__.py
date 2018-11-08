@@ -772,6 +772,49 @@ class UnionTypeExample(ConjureUnionType):
         # type: () -> int
         return self._interface
 
+    def accept(self, visitor):
+        # type: (UnionTypeExampleVisitor) -> Any
+        return getattr(visitor, '_{}'.format(self.type))(getattr(self, self.type))
+
+
+class UnionTypeExampleVisitor(ABCMeta('ABC', (object,), {})):
+
+    @abstractmethod
+    def _string_example(self, string_example):
+        # type: (StringExample) -> Any
+        pass
+
+    @abstractmethod
+    def _set(self, set):
+        # type: (List[str]) -> Any
+        pass
+
+    @abstractmethod
+    def _this_field_is_an_integer(self, this_field_is_an_integer):
+        # type: (int) -> Any
+        pass
+
+    @abstractmethod
+    def _also_an_integer(self, also_an_integer):
+        # type: (int) -> Any
+        pass
+
+    @abstractmethod
+    def _if(self, if_):
+        # type: (int) -> Any
+        pass
+
+    @abstractmethod
+    def _new(self, new):
+        # type: (int) -> Any
+        pass
+
+    @abstractmethod
+    def _interface(self, interface):
+        # type: (int) -> Any
+        pass
+
+
 class UuidExample(ConjureBeanType):
 
     @classmethod

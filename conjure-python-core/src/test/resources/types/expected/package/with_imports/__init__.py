@@ -128,6 +128,24 @@ class UnionWithImports(ConjureUnionType):
         # type: () -> AnyMapExample
         return self._imported
 
+    def accept(self, visitor):
+        # type: (UnionWithImportsVisitor) -> Any
+        return getattr(visitor, '_{}'.format(self.type))(getattr(self, self.type))
+
+
+class UnionWithImportsVisitor(ABCMeta('ABC', (object,), {})):
+
+    @abstractmethod
+    def _string(self, string):
+        # type: (str) -> Any
+        pass
+
+    @abstractmethod
+    def _imported(self, imported):
+        # type: (AnyMapExample) -> Any
+        pass
+
+
 AliasImportedObject = ManyFieldExample
 
 AliasImportedPrimitiveAlias = StringAliasExample

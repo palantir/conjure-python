@@ -18,6 +18,7 @@ package com.palantir.conjure.python.poet;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableSet;
+import com.palantir.conjure.CaseConverter;
 import com.palantir.conjure.python.poet.PythonBean.PythonField;
 import com.palantir.conjure.spec.Documentation;
 import java.util.List;
@@ -30,6 +31,8 @@ import org.immutables.value.Value;
 public interface PythonUnionTypeDefinition extends PythonClass {
 
     ImmutableSet<PythonImport> DEFAULT_IMPORTS = ImmutableSet.of(
+            PythonImport.of(PythonClassName.of("abc", "ABCMeta")),
+            PythonImport.of(PythonClassName.of("abc", "abstractmethod")),
             PythonImport.of(PythonClassName.of("typing", "List")),
             PythonImport.of(PythonClassName.of("typing", "Set")),
             PythonImport.of(PythonClassName.of("typing", "Dict")),
@@ -133,7 +136,30 @@ public interface PythonUnionTypeDefinition extends PythonClass {
             poetWriter.decreaseIndent();
         });
 
+        poetWriter.writeLine();
+        poetWriter.writeIndentedLine("def accept(self, visitor):");
+        poetWriter.increaseIndent();
+        poetWriter.writeIndentedLine("# type: (%sVisitor) -> Any", className());
+        poetWriter.writeIndentedLine("return getattr(visitor, '_{}'.format(self.type))(getattr(self, self.type))");
         poetWriter.decreaseIndent();
+        poetWriter.decreaseIndent();
+        poetWriter.writeLine();
+        poetWriter.writeLine();
+
+        poetWriter.writeIndentedLine(String.format("class %sVisitor(ABCMeta('ABC', (object,), {})):", className()));
+        poetWriter.increaseIndent();
+        options().forEach(option -> {
+            poetWriter.writeLine();
+            poetWriter.writeIndentedLine("@abstractmethod");
+            poetWriter.writeIndentedLine("def _%s(self, %s):", option.attributeName(),
+                    PythonIdentifierSanitizer.sanitize(option.attributeName()));
+            poetWriter.increaseIndent();
+            poetWriter.writeIndentedLine("# type: (%s) -> Any", option.myPyType());
+            poetWriter.writeIndentedLine("pass");
+            poetWriter.decreaseIndent();
+        });
+        poetWriter.decreaseIndent();
+        poetWriter.writeLine();
         poetWriter.writeLine();
     }
 
