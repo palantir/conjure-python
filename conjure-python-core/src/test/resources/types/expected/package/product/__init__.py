@@ -774,9 +774,21 @@ class UnionTypeExample(ConjureUnionType):
 
     def accept(self, visitor):
         # type: (UnionTypeExampleVisitor) -> Any
-        visitor_method = getattr(visitor, '_{}'.format(case.to_snake_case(self.type)))
-        value = getattr(self, case.to_snake_case(self.type))
-        return visitor_method(value)
+        if self.type == 'stringExample':
+            return visitor._string_example(self.string_example)
+        if self.type == 'set':
+            return visitor._set(self.set)
+        if self.type == 'thisFieldIsAnInteger':
+            return visitor._this_field_is_an_integer(self.this_field_is_an_integer)
+        if self.type == 'alsoAnInteger':
+            return visitor._also_an_integer(self.also_an_integer)
+        if self.type == 'if':
+            return visitor._if(self.if_)
+        if self.type == 'new':
+            return visitor._new(self.new)
+        if self.type == 'interface':
+            return visitor._interface(self.interface)
+        raise ValueError('{} is not an allowed type'.format(object_set.__class__.__name__))
 
 
 class UnionTypeExampleVisitor(ABCMeta('ABC', (object,), {})):

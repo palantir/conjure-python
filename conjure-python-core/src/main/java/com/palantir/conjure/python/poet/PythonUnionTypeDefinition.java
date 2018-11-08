@@ -37,8 +37,7 @@ public interface PythonUnionTypeDefinition extends PythonClass {
             PythonImport.of(PythonClassName.of("typing", "Dict")),
             PythonImport.of(PythonClassName.of("typing", "Tuple")),
             PythonImport.of(PythonClassName.of("typing", "Optional")),
-            PythonImport.of(PythonClassName.of("conjure_python_client", "*")),
-            PythonImport.of(PythonClassName.of("conjure_python_client._lib", "case")));
+            PythonImport.of(PythonClassName.of("conjure_python_client", "*")));
 
 
     @Override
@@ -140,9 +139,15 @@ public interface PythonUnionTypeDefinition extends PythonClass {
         poetWriter.writeIndentedLine("def accept(self, visitor):");
         poetWriter.increaseIndent();
         poetWriter.writeIndentedLine("# type: (%sVisitor) -> Any", className());
-        poetWriter.writeIndentedLine("visitor_method = getattr(visitor, '_{}'.format(case.to_snake_case(self.type)))");
-        poetWriter.writeIndentedLine("value = getattr(self, case.to_snake_case(self.type))");
-        poetWriter.writeIndentedLine("return visitor_method(value)");
+        options().forEach(option -> {
+            poetWriter.writeIndentedLine("if self.type == '%s':", option.jsonIdentifier());
+            poetWriter.increaseIndent();
+            poetWriter.writeIndentedLine("return visitor._%s(self.%s)", option.attributeName(),
+                    PythonIdentifierSanitizer.sanitize(option.attributeName()));
+            poetWriter.decreaseIndent();
+        });
+        poetWriter.writeIndentedLine(
+                "raise ValueError('{} is not an allowed type'.format(object_set.__class__.__name__))");
         poetWriter.decreaseIndent();
         poetWriter.decreaseIndent();
         poetWriter.writeLine();
