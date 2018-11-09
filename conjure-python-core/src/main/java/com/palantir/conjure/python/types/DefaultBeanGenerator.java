@@ -112,6 +112,7 @@ public final class DefaultBeanGenerator implements PythonBeanGenerator {
                 .className(typeDef.getTypeName().getName())
                 .docs(typeDef.getDocs())
                 .addAllOptions(options)
+                .addAllRequiredImports(PythonUnionTypeDefinition.DEFAULT_IMPORTS)
                 .addAllRequiredImports(imports)
                 .build();
     }

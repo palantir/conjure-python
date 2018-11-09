@@ -1,4 +1,6 @@
 # this is package package.product
+from abc import ABCMeta
+from abc import abstractmethod
 from conjure_python_client import *
 from typing import Any
 from typing import Dict

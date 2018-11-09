@@ -25,7 +25,7 @@ and [Intellij IDEA Community Edition](https://www.jetbrains.com/idea/) for Java 
 1. Generate the IDE configuration: `./gradlew idea`
 1. Open projects in Intellij: `open *.ipr`
 1. Generate integration test bindings: `./gradlew generate`
-1. In `conjure-python-verification/python`:
+1. In `conjure-python-verifier/python`:
 
     ```shell
     $ PIPENV_VENV_IN_PROJECT=1 pipenv --python 3 shell # create the virtual environment
@@ -35,5 +35,5 @@ and [Intellij IDEA Community Edition](https://www.jetbrains.com/idea/) for Java 
 ### Development tips
 
 - run `./gradlew checkstyleMain checkstyleTest` locally to make sure your code conforms to the code-style.
-- Use `tox` in `conjure-python-verification/python` to run all tests using both python 2 and 3
+- Use `tox` in `conjure-python-verifier/python` to run all tests using both python 2 and 3
 
