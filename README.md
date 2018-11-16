@@ -105,3 +105,6 @@ Generated code has [mypy](http://mypy-lang.org/) comments for optional static ty
 ## Contributing
 
 See the [CONTRIBUTING.md](./CONTRIBUTING.md) document.
+
+## License
+This project is made available under the [Apache 2.0 License](/LICENSE).
