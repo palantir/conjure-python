@@ -45,12 +45,12 @@ public interface PythonFile extends Emittable {
                                     .collect(Collectors.toSet())));
 
             imports.entrySet().stream()
-                .sorted(Comparator.comparing(Map.Entry::getKey))
-                .forEach((entry) -> PythonImport.builder()
-                    .moduleSpecifier(entry.getKey())
-                    .namedImports(entry.getValue())
-                    .build()
-                    .emit(poetWriter));
+                    .sorted(Comparator.comparing(Map.Entry::getKey))
+                    .forEach(entry -> PythonImport.builder()
+                            .moduleSpecifier(entry.getKey())
+                            .namedImports(entry.getValue())
+                            .build()
+                            .emit(poetWriter));
             if (imports.size() > 0) {
                 poetWriter.writeLine();
             }
