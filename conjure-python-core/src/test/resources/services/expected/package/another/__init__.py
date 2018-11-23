@@ -1,7 +1,7 @@
 from ..product import CreateDatasetRequest
 from ..product_datasets import BackingFileSystem, Dataset
-from conjure_client import ConjureEncoder, BinaryType, DictType, Service, ConjureDecoder
-from typing import Set, Optional
+from conjure_client import BinaryType, ConjureDecoder, ConjureEncoder, DictType, Service
+from typing import Optional, Set
 
 class TestService(Service):
     """A Markdown description of the service."""

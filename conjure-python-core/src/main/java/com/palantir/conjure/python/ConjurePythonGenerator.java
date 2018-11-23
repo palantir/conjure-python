@@ -38,8 +38,6 @@ import com.palantir.conjure.spec.TypeDefinition;
 import com.palantir.conjure.spec.UnionDefinition;
 import com.palantir.conjure.visitor.DealiasingTypeVisitor;
 import com.palantir.conjure.visitor.TypeDefinitionVisitor;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.List;
 import java.util.function.Function;

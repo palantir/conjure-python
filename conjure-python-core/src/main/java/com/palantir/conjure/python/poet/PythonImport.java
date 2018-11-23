@@ -17,6 +17,7 @@
 package com.palantir.conjure.python.poet;
 
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.immutables.value.Value;
 
 @Value.Immutable
@@ -35,7 +36,7 @@ public interface PythonImport extends Emittable {
     @Override
     default void emit(PythonPoetWriter poetWriter) {
         poetWriter.writeIndentedLine(String.format("from %s import %s",
-                moduleSpecifier(), String.join(", ", namedImports())));
+                moduleSpecifier(), namedImports().stream().sorted().collect(Collectors.joining(", "))));
     }
 
     class Builder extends ImmutablePythonImport.Builder {}

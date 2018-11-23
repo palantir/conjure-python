@@ -1,4 +1,4 @@
-from conjure_client import ConjureBeanType, ConjureEncoder, Service, ConjureFieldDefinition, ConjureDecoder
+from conjure_client import ConjureBeanType, ConjureDecoder, ConjureEncoder, ConjureFieldDefinition, Service
 
 class SimpleNestedService(Service):
 
