@@ -115,4 +115,3 @@ public interface BeanSnippet extends PythonSnippet {
         return new Builder();
     }
 }
-
