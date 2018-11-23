@@ -27,8 +27,6 @@ public interface PythonBeanGenerator {
     PythonSnippet generateType(
             TypeDefinition typeDef,
             Function<TypeName, ImportTypeVisitor> importTypeVisitorFactory,
-            DealiasingTypeVisitor dealiasingTypeVisitor,
-            TypeMapper typeMapper,
-            TypeMapper myPyMapper);
+            DealiasingTypeVisitor dealiasingTypeVisitor);
 
 }

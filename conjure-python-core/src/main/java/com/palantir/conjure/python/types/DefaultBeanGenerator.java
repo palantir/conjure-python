@@ -47,27 +47,21 @@ public final class DefaultBeanGenerator implements PythonBeanGenerator {
     public PythonSnippet generateType(
             TypeDefinition typeDef,
             Function<TypeName, ImportTypeVisitor> importTypeVisitorFactory,
-            DealiasingTypeVisitor dealiasingTypeVisitor,
-            TypeMapper mapper,
-            TypeMapper myPyMapper) {
+            DealiasingTypeVisitor dealiasingTypeVisitor) {
         if (typeDef.accept(TypeDefinitionVisitor.IS_OBJECT)) {
             return generateBean(
                     typeDef.accept(TypeDefinitionVisitor.OBJECT),
                     importTypeVisitorFactory,
-                    dealiasingTypeVisitor,
-                    mapper,
-                    myPyMapper);
+                    dealiasingTypeVisitor);
         } else if (typeDef.accept(TypeDefinitionVisitor.IS_ENUM)) {
             return generateEnum(typeDef.accept(TypeDefinitionVisitor.ENUM));
         } else if (typeDef.accept(TypeDefinitionVisitor.IS_UNION)) {
             return generateUnion(
                     typeDef.accept(TypeDefinitionVisitor.UNION),
                     importTypeVisitorFactory,
-                    dealiasingTypeVisitor,
-                    mapper,
-                    myPyMapper);
+                    dealiasingTypeVisitor);
         } else if (typeDef.accept(TypeDefinitionVisitor.IS_ALIAS)) {
-            return generateAlias(typeDef.accept(TypeDefinitionVisitor.ALIAS), importTypeVisitorFactory, mapper);
+            return generateAlias(typeDef.accept(TypeDefinitionVisitor.ALIAS), importTypeVisitorFactory);
         } else {
             throw new UnsupportedOperationException("cannot generate type for type def: " + typeDef);
         }
@@ -76,9 +70,7 @@ public final class DefaultBeanGenerator implements PythonBeanGenerator {
     private BeanSnippet generateBean(
             ObjectDefinition typeDef,
             Function<TypeName, ImportTypeVisitor> importTypeVisitorFactory,
-            DealiasingTypeVisitor dealiasingTypeVisitor,
-            TypeMapper mapper,
-            TypeMapper myPyMapper) {
+            DealiasingTypeVisitor dealiasingTypeVisitor) {
         ImportTypeVisitor importVisitor = importTypeVisitorFactory.apply(typeDef.getTypeName());
 
         Set<PythonImport> imports = typeDef.getFields()
@@ -93,8 +85,8 @@ public final class DefaultBeanGenerator implements PythonBeanGenerator {
                                 entry.getFieldName().get(), CaseConverter.Case.SNAKE_CASE))
                         .jsonIdentifier(entry.getFieldName().get())
                         .docs(entry.getDocs())
-                        .pythonType(mapper.getTypeName(entry.getType()))
-                        .myPyType(myPyMapper.getTypeName(entry.getType()))
+                        .pythonType(entry.getType().accept(PythonTypeVisitor.PYTHON_TYPE))
+                        .myPyType(entry.getType().accept(PythonTypeVisitor.MY_PY_TYPE))
                         .isOptional(dealiasingTypeVisitor.dealias(entry.getType()).fold(
                                 typeDefinition -> false,
                                 type -> type.accept(TypeVisitor.IS_OPTIONAL)))
@@ -124,9 +116,7 @@ public final class DefaultBeanGenerator implements PythonBeanGenerator {
     private UnionSnippet generateUnion(
             UnionDefinition typeDef,
             Function<TypeName, ImportTypeVisitor> importTypeVisitorFactory,
-            DealiasingTypeVisitor dealiasingTypeVisitor,
-            TypeMapper mapper,
-            TypeMapper myPyMapper) {
+            DealiasingTypeVisitor dealiasingTypeVisitor) {
         ImportTypeVisitor importVisitor = importTypeVisitorFactory.apply(typeDef.getTypeName());
 
         Set<PythonImport> imports = typeDef.getUnion()
@@ -143,8 +133,8 @@ public final class DefaultBeanGenerator implements PythonBeanGenerator {
                                     unionMember.getFieldName().get(), CaseConverter.Case.SNAKE_CASE))
                             .docs(unionMember.getDocs())
                             .jsonIdentifier(unionMember.getFieldName().get())
-                            .myPyType(myPyMapper.getTypeName(conjureType))
-                            .pythonType(mapper.getTypeName(conjureType))
+                            .myPyType(conjureType.accept(PythonTypeVisitor.PYTHON_TYPE))
+                            .pythonType(conjureType.accept(PythonTypeVisitor.MY_PY_TYPE))
                             .isOptional(dealiasingTypeVisitor.dealias(unionMember.getType()).fold(
                                     typeDefinition -> false,
                                     type -> type.accept(TypeVisitor.IS_OPTIONAL)))
@@ -162,13 +152,11 @@ public final class DefaultBeanGenerator implements PythonBeanGenerator {
     }
 
     private AliasSnippet generateAlias(
-            AliasDefinition typeDef,
-            Function<TypeName, ImportTypeVisitor> importTypeVisitorFactory,
-            TypeMapper mapper) {
+            AliasDefinition typeDef, Function<TypeName, ImportTypeVisitor> importTypeVisitorFactory) {
         ImportTypeVisitor importVisitor = importTypeVisitorFactory.apply(typeDef.getTypeName());
         return AliasSnippet.builder()
                 .name(typeDef.getTypeName().getName())
-                .aliasName(mapper.getTypeName(typeDef.getAlias()))
+                .aliasName(typeDef.getAlias().accept(PythonTypeVisitor.PYTHON_TYPE))
                 .imports(new HashSet<>(typeDef.getAlias().accept(importVisitor)))
                 .build();
     }

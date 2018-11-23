@@ -28,11 +28,8 @@ import com.palantir.conjure.python.poet.PythonLine;
 import com.palantir.conjure.python.poet.PythonMetaYaml;
 import com.palantir.conjure.python.poet.PythonSetup;
 import com.palantir.conjure.python.poet.PythonSnippet;
-import com.palantir.conjure.python.types.DefaultTypeNameVisitor;
 import com.palantir.conjure.python.types.ImportTypeVisitor;
-import com.palantir.conjure.python.types.MyPyTypeNameVisitor;
 import com.palantir.conjure.python.types.PythonBeanGenerator;
-import com.palantir.conjure.python.types.TypeMapper;
 import com.palantir.conjure.spec.AliasDefinition;
 import com.palantir.conjure.spec.ConjureDefinition;
 import com.palantir.conjure.spec.EnumDefinition;
@@ -93,8 +90,6 @@ public final class ConjurePythonGenerator {
                         .stream()
                         .collect(Collectors.toMap(type -> type.accept(TypeDefinitionVisitor.TYPE_NAME),
                                 Function.identity())));
-        TypeMapper mapper = new TypeMapper(new DefaultTypeNameVisitor(conjureDefinition.getTypes()));
-        TypeMapper myPyMapper = new TypeMapper(new MyPyTypeNameVisitor(conjureDefinition.getTypes()));
 
         Multimap<String, PythonSnippet> snippets = HashMultimap.create();
         conjureDefinition.getTypes().forEach(typeDefinition ->
@@ -102,15 +97,13 @@ public final class ConjurePythonGenerator {
                         beanGenerator.generateType(
                                 typeDefinition,
                                 typeName -> new ImportTypeVisitor(typeName, packageNameProcessor),
-                                dealiasingTypeVisitor,
-                                mapper,
-                                myPyMapper)));
+                                dealiasingTypeVisitor)));
         conjureDefinition.getServices().forEach(serviceDefinition ->
                 snippets.put(serviceDefinition.getServiceName().getPackage(),
                         clientGenerator.generateClient(
                                 serviceDefinition,
                                 typeName -> new ImportTypeVisitor(typeName, packageNameProcessor),
-                                dealiasingTypeVisitor, mapper, myPyMapper)));
+                                dealiasingTypeVisitor)));
 
         ImmutableList.Builder<PythonFile> allFiles = ImmutableList.builder();
         allFiles.addAll(snippets.asMap().entrySet()

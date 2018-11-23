@@ -23,7 +23,7 @@ import com.palantir.conjure.python.poet.PythonImport;
 import com.palantir.conjure.python.poet.PythonService;
 import com.palantir.conjure.python.poet.PythonSnippet;
 import com.palantir.conjure.python.types.ImportTypeVisitor;
-import com.palantir.conjure.python.types.TypeMapper;
+import com.palantir.conjure.python.types.PythonTypeVisitor;
 import com.palantir.conjure.python.util.CaseConverter;
 import com.palantir.conjure.spec.EndpointDefinition;
 import com.palantir.conjure.spec.PrimitiveType;
@@ -41,16 +41,13 @@ public final class ClientGenerator {
     public PythonSnippet generateClient(
             ServiceDefinition serviceDef,
             Function<TypeName, ImportTypeVisitor> importTypeVisitorFactory,
-            DealiasingTypeVisitor dealiasingTypeVisitor,
-            TypeMapper mapper,
-            TypeMapper myPyMapper) {
+            DealiasingTypeVisitor dealiasingTypeVisitor) {
         ImportTypeVisitor importTypeVisitor = importTypeVisitorFactory.apply(serviceDef.getServiceName());
         ImmutableSet.Builder<Type> referencedTypesBuilder = ImmutableSet.builder();
 
         List<PythonEndpointDefinition> endpoints = serviceDef.getEndpoints()
                 .stream()
-                .map(endpointDef -> generateEndpoint(endpointDef, referencedTypesBuilder, dealiasingTypeVisitor, mapper,
-                        myPyMapper))
+                .map(endpointDef -> generateEndpoint(endpointDef, referencedTypesBuilder, dealiasingTypeVisitor))
                 .collect(Collectors.toList());
 
         List<PythonImport> imports = referencedTypesBuilder.build()
@@ -70,9 +67,7 @@ public final class ClientGenerator {
     private PythonEndpointDefinition generateEndpoint(
             EndpointDefinition endpointDef,
             ImmutableSet.Builder<Type> referencedTypesBuilder,
-            DealiasingTypeVisitor dealiasingTypeVisitor,
-            TypeMapper mapper,
-            TypeMapper myPyMapper) {
+            DealiasingTypeVisitor dealiasingTypeVisitor) {
 
         endpointDef.getReturns().ifPresent(referencedTypesBuilder::add);
         endpointDef.getArgs().forEach(arg -> referencedTypesBuilder.add(arg.getType()));
@@ -85,7 +80,7 @@ public final class ClientGenerator {
                         .pythonParamName(CaseConverter.toCase(
                                 argEntry.getArgName().get(), CaseConverter.Case.SNAKE_CASE))
                         .paramType(argEntry.getParamType())
-                        .myPyType(myPyMapper.getTypeName(argEntry.getType()))
+                        .myPyType(argEntry.getType().accept(PythonTypeVisitor.MY_PY_TYPE))
                         .isOptional(dealiasingTypeVisitor.dealias(argEntry.getType()).fold(
                                 typeDefinition -> false,
                                 type -> type.accept(TypeVisitor.IS_OPTIONAL)))
@@ -100,8 +95,8 @@ public final class ClientGenerator {
                 .auth(endpointDef.getAuth())
                 .docs(endpointDef.getDocs())
                 .params(params)
-                .pythonReturnType(endpointDef.getReturns().map(mapper::getTypeName))
-                .myPyReturnType(endpointDef.getReturns().map(myPyMapper::getTypeName))
+                .pythonReturnType(endpointDef.getReturns().map(type -> type.accept(PythonTypeVisitor.PYTHON_TYPE)))
+                .myPyReturnType(endpointDef.getReturns().map(type -> type.accept(PythonTypeVisitor.MY_PY_TYPE)))
                 .isBinary(endpointDef.getReturns()
                         .map(rt -> rt.accept(TypeVisitor.IS_PRIMITIVE)
                                 && rt.accept(TypeVisitor.PRIMITIVE).get() == PrimitiveType.Value.BINARY)
