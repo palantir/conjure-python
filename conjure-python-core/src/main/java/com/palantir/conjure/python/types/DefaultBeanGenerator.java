@@ -16,6 +16,7 @@
 
 package com.palantir.conjure.python.types;
 
+import com.palantir.conjure.CaseConverter;
 import com.palantir.conjure.python.poet.AliasSnippet;
 import com.palantir.conjure.python.poet.BeanSnippet;
 import com.palantir.conjure.python.poet.EnumSnippet;
@@ -24,7 +25,6 @@ import com.palantir.conjure.python.poet.PythonField;
 import com.palantir.conjure.python.poet.PythonImport;
 import com.palantir.conjure.python.poet.PythonSnippet;
 import com.palantir.conjure.python.poet.UnionSnippet;
-import com.palantir.conjure.python.util.CaseConverter;
 import com.palantir.conjure.spec.AliasDefinition;
 import com.palantir.conjure.spec.EnumDefinition;
 import com.palantir.conjure.spec.ObjectDefinition;

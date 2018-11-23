@@ -17,6 +17,7 @@
 package com.palantir.conjure.python.client;
 
 import com.google.common.collect.ImmutableSet;
+import com.palantir.conjure.CaseConverter;
 import com.palantir.conjure.python.poet.PythonEndpointDefinition;
 import com.palantir.conjure.python.poet.PythonEndpointDefinition.PythonEndpointParam;
 import com.palantir.conjure.python.poet.PythonImport;
@@ -24,7 +25,6 @@ import com.palantir.conjure.python.poet.PythonService;
 import com.palantir.conjure.python.poet.PythonSnippet;
 import com.palantir.conjure.python.types.ImportTypeVisitor;
 import com.palantir.conjure.python.types.PythonTypeVisitor;
-import com.palantir.conjure.python.util.CaseConverter;
 import com.palantir.conjure.spec.EndpointDefinition;
 import com.palantir.conjure.spec.PrimitiveType;
 import com.palantir.conjure.spec.ServiceDefinition;
