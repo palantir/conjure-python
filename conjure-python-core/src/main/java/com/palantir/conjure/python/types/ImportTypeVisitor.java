@@ -64,6 +64,7 @@ public final class ImportTypeVisitor implements Type.Visitor<Set<PythonImport>> 
     public Set<PythonImport> visitList(ListType value) {
         return ImmutableSet.<PythonImport>builder()
                 .add(PythonImport.of("typing", "List"))
+                .add(PythonImport.of("conjure_python_client", "ListType"))
                 .addAll(value.getItemType().accept(this))
                 .build();
     }
