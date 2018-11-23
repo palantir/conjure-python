@@ -1,14 +1,7 @@
-# this is package package.another
 from ..product import CreateDatasetRequest
-from ..product_datasets import BackingFileSystem
-from ..product_datasets import Dataset
-from conjure_python_client import *
-from typing import Any
-from typing import Dict
-from typing import List
-from typing import Optional
-from typing import Set
-from typing import Tuple
+from ..product_datasets import BackingFileSystem, Dataset
+from conjure_client import ConjureEncoder, BinaryType, DictType, Service, ConjureDecoder
+from typing import Set, Optional
 
 class TestService(Service):
     """A Markdown description of the service."""

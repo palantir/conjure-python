@@ -1,11 +1,4 @@
-# this is package package.nested_deeply_nested_service
-from conjure_python_client import *
-from typing import Any
-from typing import Dict
-from typing import List
-from typing import Optional
-from typing import Set
-from typing import Tuple
+from conjure_client import Service, ConjureEncoder, ConjureDecoder
 
 class DeeplyNestedService(Service):
 

@@ -133,8 +133,8 @@ public final class DefaultBeanGenerator implements PythonBeanGenerator {
                                     unionMember.getFieldName().get(), CaseConverter.Case.SNAKE_CASE))
                             .docs(unionMember.getDocs())
                             .jsonIdentifier(unionMember.getFieldName().get())
-                            .myPyType(conjureType.accept(PythonTypeVisitor.PYTHON_TYPE))
-                            .pythonType(conjureType.accept(PythonTypeVisitor.MY_PY_TYPE))
+                            .myPyType(conjureType.accept(PythonTypeVisitor.MY_PY_TYPE))
+                            .pythonType(conjureType.accept(PythonTypeVisitor.PYTHON_TYPE))
                             .isOptional(dealiasingTypeVisitor.dealias(unionMember.getType()).fold(
                                     typeDefinition -> false,
                                     type -> type.accept(TypeVisitor.IS_OPTIONAL)))

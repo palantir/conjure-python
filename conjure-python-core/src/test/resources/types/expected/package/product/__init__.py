@@ -1,11 +1,5 @@
-# this is package package.product
-from conjure_python_client import *
-from typing import Any
-from typing import Dict
-from typing import List
-from typing import Optional
-from typing import Set
-from typing import Tuple
+from conjure_client import ConjureBeanType, ConjureEnumType, BinaryType, DictType, ConjureFieldDefinition, ConjureUnionType
+from typing import Set, Optional, List, Any
 
 class AliasAsMapKeyExample(ConjureBeanType):
 
