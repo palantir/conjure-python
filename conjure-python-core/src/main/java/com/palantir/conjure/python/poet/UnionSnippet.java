@@ -26,7 +26,7 @@ import org.immutables.value.Value;
 @Value.Immutable
 public interface UnionSnippet extends PythonSnippet {
     PythonImport CONJURE_IMPORT = PythonImport.builder()
-            .moduleSpecifier("conjure_client")
+            .moduleSpecifier("conjure_python_client")
             .addNamedImports("ConjureUnionType", "ConjureFieldDefinition")
             .build();
 

@@ -44,9 +44,11 @@ public interface PythonFile extends Emittable {
                             (strings, strings2) -> Stream.concat(strings.stream(), strings2.stream())
                                     .collect(Collectors.toSet())));
 
-            imports.forEach((moduleSpecifier, namedImports) -> PythonImport.builder()
-                    .moduleSpecifier(moduleSpecifier)
-                    .namedImports(namedImports)
+            imports.entrySet().stream()
+                .sorted(Comparator.comparing(Map.Entry::getKey))
+                .forEach((entry) -> PythonImport.builder()
+                    .moduleSpecifier(entry.getKey())
+                    .namedImports(entry.getValue())
                     .build()
                     .emit(poetWriter));
             if (imports.size() > 0) {

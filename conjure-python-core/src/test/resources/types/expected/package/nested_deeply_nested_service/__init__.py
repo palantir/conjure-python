@@ -1,4 +1,4 @@
-from conjure_client import ConjureDecoder, ConjureEncoder, Service
+from conjure_python_client import ConjureDecoder, ConjureEncoder, Service
 
 class DeeplyNestedService(Service):
 

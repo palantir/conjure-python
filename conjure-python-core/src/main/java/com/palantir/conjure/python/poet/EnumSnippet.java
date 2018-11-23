@@ -25,7 +25,7 @@ import org.immutables.value.Value;
 @Value.Immutable
 public interface EnumSnippet extends PythonSnippet {
     PythonImport CONJURE_IMPORT = PythonImport.builder()
-            .moduleSpecifier("conjure_client")
+            .moduleSpecifier("conjure_python_client")
             .addNamedImports("ConjureEnumType")
             .build();
     Optional<Documentation> docs();

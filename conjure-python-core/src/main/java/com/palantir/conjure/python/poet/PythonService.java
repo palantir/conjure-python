@@ -24,7 +24,7 @@ import org.immutables.value.Value;
 @Value.Immutable
 public interface PythonService extends PythonSnippet {
     PythonImport CONJURE_IMPORT = PythonImport.builder()
-            .moduleSpecifier("conjure_client")
+            .moduleSpecifier("conjure_python_client")
             .addNamedImports("Service", "ConjureEncoder", "ConjureDecoder")
             .build();
 

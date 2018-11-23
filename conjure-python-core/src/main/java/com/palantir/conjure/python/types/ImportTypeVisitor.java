@@ -46,7 +46,7 @@ public final class ImportTypeVisitor implements Type.Visitor<Set<PythonImport>> 
         if (value.get() == PrimitiveType.Value.ANY) {
             return ImmutableSet.of(PythonImport.of("typing", "Any"));
         } else if (value.get() ==  PrimitiveType.Value.BINARY) {
-            return ImmutableSet.of(PythonImport.of("conjure_client", "BinaryType"));
+            return ImmutableSet.of(PythonImport.of("conjure_python_client", "BinaryType"));
         }
         return ImmutableSet.of();
     }
@@ -78,7 +78,7 @@ public final class ImportTypeVisitor implements Type.Visitor<Set<PythonImport>> 
     @Override
     public Set<PythonImport> visitMap(MapType value) {
         return ImmutableSet.<PythonImport>builder()
-                .add(PythonImport.of("conjure_client", "DictType"))
+                .add(PythonImport.of("conjure_python_client", "DictType"))
                 .addAll(value.getKeyType().accept(this))
                 .addAll(value.getValueType().accept(this))
                 .build();

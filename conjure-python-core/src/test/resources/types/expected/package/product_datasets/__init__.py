@@ -1,4 +1,4 @@
-from conjure_client import ConjureBeanType, ConjureFieldDefinition, DictType
+from conjure_python_client import ConjureBeanType, ConjureFieldDefinition, DictType
 
 class BackingFileSystem(ConjureBeanType):
 

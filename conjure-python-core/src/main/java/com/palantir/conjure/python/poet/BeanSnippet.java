@@ -14,7 +14,7 @@ import org.immutables.value.Value;
 @Value.Immutable
 public interface BeanSnippet extends PythonSnippet {
     PythonImport CONJURE_IMPORT = PythonImport.builder()
-            .moduleSpecifier("conjure_client")
+            .moduleSpecifier("conjure_python_client")
             .addNamedImports("ConjureBeanType", "ConjureFieldDefinition")
             .build();
 

@@ -1,4 +1,4 @@
-from conjure_client import ConjureBeanType, ConjureFieldDefinition
+from conjure_python_client import ConjureBeanType, ConjureFieldDefinition
 
 class CreateDatasetRequest(ConjureBeanType):
 

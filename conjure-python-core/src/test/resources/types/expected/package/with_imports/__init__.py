@@ -1,6 +1,6 @@
 from ..product import AnyMapExample, DateTimeAliasExample, ManyFieldExample, ReferenceAliasExample, RidAliasExample, StringAliasExample, StringExample
 from ..product_datasets import BackingFileSystem
-from conjure_client import ConjureBeanType, ConjureDecoder, ConjureEncoder, ConjureFieldDefinition, ConjureUnionType, DictType, Service
+from conjure_python_client import ConjureBeanType, ConjureDecoder, ConjureEncoder, ConjureFieldDefinition, ConjureUnionType, DictType, Service
 
 class ComplexObjectWithImports(ConjureBeanType):
 
