@@ -8,16 +8,10 @@ import java.util.List;
 import org.immutables.value.Value;
 
 @Value.Immutable
-public interface PythonMetaYaml extends PythonClass {
-
+public interface PythonMetaYaml extends PythonSnippet {
     @Override
-    default String className() {
+    default String name() {
         return "";
-    }
-
-    @Override
-    default String packageName() {
-        return "conda_recipe";
     }
 
     String condaPackageName();

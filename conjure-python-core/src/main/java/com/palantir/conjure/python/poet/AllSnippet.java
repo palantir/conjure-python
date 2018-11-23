@@ -8,13 +8,13 @@ import java.util.List;
 import org.immutables.value.Value;
 
 @Value.Immutable
-public interface PythonAll extends PythonClass {
-    List<String> contents();
-
+public interface AllSnippet extends PythonSnippet {
     @Override
-    default String className() {
+    default String name() {
         return "__all__";
     }
+
+    List<String> contents();
 
     @Override
     default void emit(PythonPoetWriter poetWriter) {
@@ -28,7 +28,7 @@ public interface PythonAll extends PythonClass {
         });
     }
 
-    class Builder extends ImmutablePythonAll.Builder {}
+    class Builder extends ImmutableAllSnippet.Builder {}
 
     static Builder builder() {
         return new Builder();

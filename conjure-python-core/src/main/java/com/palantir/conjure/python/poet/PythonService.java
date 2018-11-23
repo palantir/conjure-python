@@ -16,30 +16,17 @@
 
 package com.palantir.conjure.python.poet;
 
-import com.google.common.collect.ImmutableSet;
 import com.palantir.conjure.spec.Documentation;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import org.immutables.value.Value;
 
 @Value.Immutable
-public interface PythonService extends PythonClass {
-
-    ImmutableSet<PythonImport> DEFAULT_IMPORTS = ImmutableSet.of(
-            PythonImport.of(PythonClassName.of("typing", "Any")),
-            PythonImport.of(PythonClassName.of("typing", "List")),
-            PythonImport.of(PythonClassName.of("typing", "Set")),
-            PythonImport.of(PythonClassName.of("typing", "Dict")),
-            PythonImport.of(PythonClassName.of("typing", "Tuple")),
-            PythonImport.of(PythonClassName.of("typing", "Optional")),
-            PythonImport.of(PythonClassName.of("conjure_python_client", "*")));
-
-    @Override
-    @Value.Default
-    default Set<PythonImport> requiredImports() {
-        return DEFAULT_IMPORTS;
-    }
+public interface PythonService extends PythonSnippet {
+    PythonImport CONJURE_IMPORT = PythonImport.builder()
+            .moduleSpecifier("conjure_client")
+            .addNamedImports("Service", "ConjureEncoder", "ConjureDecoder")
+            .build();
 
     Optional<Documentation> docs();
 
@@ -48,7 +35,7 @@ public interface PythonService extends PythonClass {
     @Override
     default void emit(PythonPoetWriter poetWriter) {
         poetWriter.maintainingIndent(() -> {
-            poetWriter.writeIndentedLine(String.format("class %s(Service):", className()));
+            poetWriter.writeIndentedLine(String.format("class %s(Service):", name()));
             poetWriter.increaseIndent();
             docs().ifPresent(docs -> poetWriter.writeIndentedLine(String.format("\"\"\"%s\"\"\"", docs.get().trim())));
 

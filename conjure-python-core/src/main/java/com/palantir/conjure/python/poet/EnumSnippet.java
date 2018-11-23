@@ -17,24 +17,17 @@
 package com.palantir.conjure.python.poet;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
 import com.palantir.conjure.spec.Documentation;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import org.immutables.value.Value;
 
 @Value.Immutable
-public interface PythonEnum extends PythonClass {
-
-    ImmutableSet<PythonImport> DEFAULT_IMPORTS = ImmutableSet.of(
-            PythonImport.of(PythonClassName.of("conjure_python_client", "*")));
-
-    @Override
-    default Set<PythonImport> requiredImports() {
-        return DEFAULT_IMPORTS;
-    }
-
+public interface EnumSnippet extends PythonSnippet {
+    PythonImport CONJURE_IMPORT = PythonImport.builder()
+            .moduleSpecifier("conjure_client")
+            .addNamedImports("ConjureEnumType")
+            .build();
     Optional<Documentation> docs();
 
     List<PythonEnumValue> values();
@@ -42,7 +35,7 @@ public interface PythonEnum extends PythonClass {
     @Override
     default void emit(PythonPoetWriter poetWriter) {
         poetWriter.maintainingIndent(() -> {
-            poetWriter.writeIndentedLine(String.format("class %s(ConjureEnumType):", className()));
+            poetWriter.writeIndentedLine(String.format("class %s(ConjureEnumType):", name()));
             poetWriter.increaseIndent();
             docs().ifPresent(docs -> poetWriter.writeIndentedLine(String.format("\"\"\"%s\"\"\"", docs.get().trim())));
 
@@ -69,14 +62,14 @@ public interface PythonEnum extends PythonClass {
         });
     }
 
-    class Builder extends ImmutablePythonEnum.Builder {}
+    class Builder extends ImmutableEnumSnippet.Builder {}
 
     static Builder builder() {
         return new Builder();
     }
 
     @Value.Immutable
-    public interface PythonEnumValue {
+    interface PythonEnumValue {
 
         String name();
 

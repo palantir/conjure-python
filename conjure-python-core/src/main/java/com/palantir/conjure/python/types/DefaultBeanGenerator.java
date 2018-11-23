@@ -16,26 +16,26 @@
 
 package com.palantir.conjure.python.types;
 
-import com.google.common.collect.ImmutableSet;
-import com.palantir.conjure.python.PackageNameProcessor;
-import com.palantir.conjure.python.poet.PythonAlias;
-import com.palantir.conjure.python.poet.PythonBean;
-import com.palantir.conjure.python.poet.PythonBean.PythonField;
-import com.palantir.conjure.python.poet.PythonClass;
-import com.palantir.conjure.python.poet.PythonEnum;
-import com.palantir.conjure.python.poet.PythonEnum.PythonEnumValue;
+import com.palantir.conjure.python.poet.AliasSnippet;
+import com.palantir.conjure.python.poet.BeanSnippet;
+import com.palantir.conjure.python.poet.EnumSnippet;
+import com.palantir.conjure.python.poet.EnumSnippet.PythonEnumValue;
+import com.palantir.conjure.python.poet.PythonField;
 import com.palantir.conjure.python.poet.PythonImport;
-import com.palantir.conjure.python.poet.PythonUnionTypeDefinition;
+import com.palantir.conjure.python.poet.PythonSnippet;
+import com.palantir.conjure.python.poet.UnionSnippet;
 import com.palantir.conjure.python.util.CaseConverter;
 import com.palantir.conjure.spec.AliasDefinition;
 import com.palantir.conjure.spec.EnumDefinition;
 import com.palantir.conjure.spec.ObjectDefinition;
 import com.palantir.conjure.spec.Type;
 import com.palantir.conjure.spec.TypeDefinition;
+import com.palantir.conjure.spec.TypeName;
 import com.palantir.conjure.spec.UnionDefinition;
 import com.palantir.conjure.visitor.DealiasingTypeVisitor;
 import com.palantir.conjure.visitor.TypeDefinitionVisitor;
 import com.palantir.conjure.visitor.TypeVisitor;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
@@ -43,44 +43,96 @@ import java.util.stream.Collectors;
 
 public final class DefaultBeanGenerator implements PythonBeanGenerator {
 
-    // TODO(qchen): remove?
-    private final Set<ExperimentalFeatures> enabledExperimentalFeatures;
-
-    public DefaultBeanGenerator(Set<ExperimentalFeatures> enabledExperimentalFeatures) {
-        this.enabledExperimentalFeatures = ImmutableSet.copyOf(enabledExperimentalFeatures);
-    }
-
     @Override
-    public PythonClass generateObject(List<TypeDefinition> types,
-            PackageNameProcessor packageNameProcessor,
-            TypeDefinition typeDef) {
+    public PythonSnippet generateType(
+            TypeDefinition typeDef,
+            Function<TypeName, ImportTypeVisitor> importTypeVisitorFactory,
+            DealiasingTypeVisitor dealiasingTypeVisitor,
+            TypeMapper mapper,
+            TypeMapper myPyMapper) {
         if (typeDef.accept(TypeDefinitionVisitor.IS_OBJECT)) {
-            return generateObject(types, packageNameProcessor, typeDef.accept(TypeDefinitionVisitor.OBJECT));
+            return generateBean(
+                    typeDef.accept(TypeDefinitionVisitor.OBJECT),
+                    importTypeVisitorFactory,
+                    dealiasingTypeVisitor,
+                    mapper,
+                    myPyMapper);
         } else if (typeDef.accept(TypeDefinitionVisitor.IS_ENUM)) {
-            return generateObject(packageNameProcessor, typeDef.accept(TypeDefinitionVisitor.ENUM));
+            return generateEnum(typeDef.accept(TypeDefinitionVisitor.ENUM));
         } else if (typeDef.accept(TypeDefinitionVisitor.IS_UNION)) {
-            return generateObject(types, packageNameProcessor, typeDef.accept(TypeDefinitionVisitor.UNION));
+            return generateUnion(
+                    typeDef.accept(TypeDefinitionVisitor.UNION),
+                    importTypeVisitorFactory,
+                    dealiasingTypeVisitor,
+                    mapper,
+                    myPyMapper);
         } else if (typeDef.accept(TypeDefinitionVisitor.IS_ALIAS)) {
-            return generateObject(types, packageNameProcessor, typeDef.accept(TypeDefinitionVisitor.ALIAS));
+            return generateAlias(typeDef.accept(TypeDefinitionVisitor.ALIAS), importTypeVisitorFactory, mapper);
         } else {
             throw new UnsupportedOperationException("cannot generate type for type def: " + typeDef);
         }
     }
 
-    private PythonClass generateObject(
-            List<TypeDefinition> types,
-            PackageNameProcessor packageNameProcessor,
-            UnionDefinition typeDef) {
+    private BeanSnippet generateBean(
+            ObjectDefinition typeDef,
+            Function<TypeName, ImportTypeVisitor> importTypeVisitorFactory,
+            DealiasingTypeVisitor dealiasingTypeVisitor,
+            TypeMapper mapper,
+            TypeMapper myPyMapper) {
+        ImportTypeVisitor importVisitor = importTypeVisitorFactory.apply(typeDef.getTypeName());
 
-        TypeMapper mapper = new TypeMapper(new DefaultTypeNameVisitor(types));
-        TypeMapper myPyMapper = new TypeMapper(new MyPyTypeNameVisitor(types));
+        Set<PythonImport> imports = typeDef.getFields()
+                .stream()
+                .flatMap(entry -> entry.getType().accept(importVisitor).stream())
+                .collect(Collectors.toSet());
 
-        DealiasingTypeVisitor dealiasingTypeVisitor = new DealiasingTypeVisitor(types.stream()
-                .collect(Collectors.toMap(type -> type.accept(TypeDefinitionVisitor.TYPE_NAME), Function.identity())));
-        ReferencedTypeNameVisitor referencedTypeNameVisitor = new ReferencedTypeNameVisitor(
-                types, packageNameProcessor);
+        List<PythonField> fields = typeDef.getFields()
+                .stream()
+                .map(entry -> PythonField.builder()
+                        .attributeName(CaseConverter.toCase(
+                                entry.getFieldName().get(), CaseConverter.Case.SNAKE_CASE))
+                        .jsonIdentifier(entry.getFieldName().get())
+                        .docs(entry.getDocs())
+                        .pythonType(mapper.getTypeName(entry.getType()))
+                        .myPyType(myPyMapper.getTypeName(entry.getType()))
+                        .isOptional(dealiasingTypeVisitor.dealias(entry.getType()).fold(
+                                typeDefinition -> false,
+                                type -> type.accept(TypeVisitor.IS_OPTIONAL)))
+                        .build())
+                .collect(Collectors.toList());
 
-        String packageName = packageNameProcessor.getPackageName(typeDef.getTypeName().getPackage());
+        return BeanSnippet.builder()
+                .name(typeDef.getTypeName().getName())
+                .addImports(BeanSnippet.CONJURE_IMPORT)
+                .addAllImports(imports)
+                .docs(typeDef.getDocs())
+                .fields(fields)
+                .build();
+    }
+
+    private EnumSnippet generateEnum(EnumDefinition typeDef) {
+        return EnumSnippet.builder()
+                .name(typeDef.getTypeName().getName())
+                .addImports(EnumSnippet.CONJURE_IMPORT)
+                .docs(typeDef.getDocs())
+                .values(typeDef.getValues().stream()
+                        .map(value -> PythonEnumValue.of(value.getValue(), value.getDocs()))
+                        .collect(Collectors.toList()))
+                .build();
+    }
+
+    private UnionSnippet generateUnion(
+            UnionDefinition typeDef,
+            Function<TypeName, ImportTypeVisitor> importTypeVisitorFactory,
+            DealiasingTypeVisitor dealiasingTypeVisitor,
+            TypeMapper mapper,
+            TypeMapper myPyMapper) {
+        ImportTypeVisitor importVisitor = importTypeVisitorFactory.apply(typeDef.getTypeName());
+
+        Set<PythonImport> imports = typeDef.getUnion()
+                .stream()
+                .flatMap(fieldDefinition -> fieldDefinition.getType().accept(importVisitor).stream())
+                .collect(Collectors.toSet());
 
         List<PythonField> options = typeDef.getUnion()
                 .stream()
@@ -100,101 +152,24 @@ public final class DefaultBeanGenerator implements PythonBeanGenerator {
                 })
                 .collect(Collectors.toList());
 
-        Set<PythonImport> imports = typeDef.getUnion()
-                .stream()
-                .flatMap(entry -> entry.getType().accept(referencedTypeNameVisitor).stream())
-                .filter(entry -> !entry.conjurePackage().equals(packageName)) // don't need to import if in this file
-                .map(referencedClassName -> PythonImport.of(referencedClassName, packageName))
-                .collect(Collectors.toSet());
-
-        return PythonUnionTypeDefinition.builder()
-                .packageName(packageName)
-                .className(typeDef.getTypeName().getName())
+        return UnionSnippet.builder()
+                .name(typeDef.getTypeName().getName())
+                .addImports(UnionSnippet.CONJURE_IMPORT)
+                .addAllImports(imports)
                 .docs(typeDef.getDocs())
-                .addAllOptions(options)
-                .addAllRequiredImports(imports)
+                .options(options)
                 .build();
     }
 
-    private PythonEnum generateObject(PackageNameProcessor packageNameProcessor, EnumDefinition typeDef) {
-
-        String packageName = packageNameProcessor.getPackageName(typeDef.getTypeName().getPackage());
-
-        return PythonEnum.builder()
-                .packageName(packageName)
-                .className(typeDef.getTypeName().getName())
-                .docs(typeDef.getDocs())
-                .values(typeDef.getValues().stream()
-                        .map(value -> PythonEnumValue.of(value.getValue(), value.getDocs()))
-                        .collect(Collectors.toList()))
-                .build();
-    }
-
-    private PythonBean generateObject(
-            List<TypeDefinition> types,
-            PackageNameProcessor packageNameProcessor,
-            ObjectDefinition typeDef) {
-
-        TypeMapper mapper = new TypeMapper(new DefaultTypeNameVisitor(types));
-        TypeMapper myPyMapper = new TypeMapper(new MyPyTypeNameVisitor(types));
-
-        DealiasingTypeVisitor dealiasingTypeVisitor = new DealiasingTypeVisitor(types.stream()
-                .collect(Collectors.toMap(type -> type.accept(TypeDefinitionVisitor.TYPE_NAME), Function.identity())));
-        ReferencedTypeNameVisitor referencedTypeNameVisitor = new ReferencedTypeNameVisitor(
-                types, packageNameProcessor);
-
-        String packageName = packageNameProcessor.getPackageName(typeDef.getTypeName().getPackage());
-
-        Set<PythonImport> imports = typeDef.getFields()
-                .stream()
-                .flatMap(entry -> entry.getType().accept(referencedTypeNameVisitor).stream())
-                .filter(entry -> !entry.conjurePackage().equals(packageName)) // don't need to import if in this file
-                .map(referencedClassName -> PythonImport.of(referencedClassName, packageName))
-                .collect(Collectors.toSet());
-
-        return PythonBean.builder()
-                .packageName(packageName)
-                .addAllRequiredImports(PythonBean.DEFAULT_IMPORTS)
-                .addAllRequiredImports(imports)
-                .className(typeDef.getTypeName().getName())
-                .docs(typeDef.getDocs())
-                .fields(typeDef.getFields()
-                        .stream()
-                        .map(entry -> PythonField.builder()
-                                .attributeName(CaseConverter.toCase(
-                                        entry.getFieldName().get(), CaseConverter.Case.SNAKE_CASE))
-                                .jsonIdentifier(entry.getFieldName().get())
-                                .docs(entry.getDocs())
-                                .pythonType(mapper.getTypeName(entry.getType()))
-                                .myPyType(myPyMapper.getTypeName(entry.getType()))
-                                .isOptional(dealiasingTypeVisitor.dealias(entry.getType()).fold(
-                                        typeDefinition -> false,
-                                        type -> type.accept(TypeVisitor.IS_OPTIONAL)))
-                                .build())
-                        .collect(Collectors.toList()))
-                .build();
-    }
-
-    private PythonAlias generateObject(
-            List<TypeDefinition> types,
-            PackageNameProcessor packageNameProcessor,
-            AliasDefinition typeDef) {
-        TypeMapper mapper = new TypeMapper(new DefaultTypeNameVisitor(types));
-        ReferencedTypeNameVisitor referencedTypeNameVisitor = new ReferencedTypeNameVisitor(
-                types, packageNameProcessor);
-        String packageName = packageNameProcessor.getPackageName(typeDef.getTypeName().getPackage());
-
-        Set<PythonImport> imports = typeDef.getAlias().accept(referencedTypeNameVisitor)
-                .stream()
-                .filter(entry -> !entry.conjurePackage().equals(packageName)) // don't need to import if in this file
-                .map(referencedClassName -> PythonImport.of(referencedClassName, packageName))
-                .collect(Collectors.toSet());
-
-        return PythonAlias.builder()
-                .className(typeDef.getTypeName().getName())
-                .aliasTarget(mapper.getTypeName(typeDef.getAlias()))
-                .packageName(packageName)
-                .addAllRequiredImports(imports)
+    private AliasSnippet generateAlias(
+            AliasDefinition typeDef,
+            Function<TypeName, ImportTypeVisitor> importTypeVisitorFactory,
+            TypeMapper mapper) {
+        ImportTypeVisitor importVisitor = importTypeVisitorFactory.apply(typeDef.getTypeName());
+        return AliasSnippet.builder()
+                .name(typeDef.getTypeName().getName())
+                .aliasName(mapper.getTypeName(typeDef.getAlias()))
+                .imports(new HashSet<>(typeDef.getAlias().accept(importVisitor)))
                 .build();
     }
 

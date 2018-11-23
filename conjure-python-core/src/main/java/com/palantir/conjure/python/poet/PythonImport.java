@@ -16,47 +16,31 @@
 
 package com.palantir.conjure.python.poet;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Optional;
+import java.util.Set;
 import org.immutables.value.Value;
 
 @Value.Immutable
-public interface PythonImport extends Emittable, Comparable<PythonImport> {
+public interface PythonImport extends Emittable {
+    String moduleSpecifier();
 
-    PythonClassName className();
+    Set<String> namedImports();
 
-    Optional<String> relativeToPackage();
-
-    static PythonImport of(PythonClassName className) {
-        return ImmutablePythonImport.builder().className(className).build();
-    }
-
-    static PythonImport of(PythonClassName className, String relativeToPackage) {
-        PythonClassName relativizedClassName = PythonClassName.of(
-                relativePackage(relativeToPackage, className.conjurePackage()),
-                className.className());
-        return ImmutablePythonImport.builder().className(relativizedClassName).build();
+    static PythonImport of(String moduleSpecifier, String namedImport) {
+        return builder()
+                .moduleSpecifier(moduleSpecifier)
+                .addNamedImports(namedImport)
+                .build();
     }
 
     @Override
     default void emit(PythonPoetWriter poetWriter) {
         poetWriter.writeIndentedLine(String.format("from %s import %s",
-                className().conjurePackage(), className().className()));
+                moduleSpecifier(), String.join(", ", namedImports())));
     }
 
-    @Override
-    default int compareTo(PythonImport other) {
-        return className().compareTo(other.className());
-    }
+    class Builder extends ImmutablePythonImport.Builder {}
 
-    static String relativePackage(String curPackage, String toPackage) {
-        if (curPackage.equals(toPackage)) {
-            return ".";
-        }
-        Path curPath = Paths.get(curPackage.replace(".", "/"));
-        Path toPath = Paths.get(toPackage.replace(".", "/"));
-        Path relativeImport = curPath.relativize(toPath);
-        return relativeImport.toString().replace("../", "..").replace("/", ".");
+    static Builder builder() {
+        return new Builder();
     }
 }

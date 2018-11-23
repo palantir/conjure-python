@@ -17,43 +17,27 @@
 package com.palantir.conjure.python.poet;
 
 import com.google.common.base.Joiner;
-import com.google.common.collect.ImmutableSet;
-import com.palantir.conjure.python.poet.PythonBean.PythonField;
 import com.palantir.conjure.spec.Documentation;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 import org.immutables.value.Value;
 
 @Value.Immutable
-public interface PythonUnionTypeDefinition extends PythonClass {
-
-    ImmutableSet<PythonImport> DEFAULT_IMPORTS = ImmutableSet.of(
-            PythonImport.of(PythonClassName.of("typing", "List")),
-            PythonImport.of(PythonClassName.of("typing", "Set")),
-            PythonImport.of(PythonClassName.of("typing", "Dict")),
-            PythonImport.of(PythonClassName.of("typing", "Tuple")),
-            PythonImport.of(PythonClassName.of("typing", "Optional")),
-            PythonImport.of(PythonClassName.of("conjure_python_client", "*")));
-
-
-    @Override
-    @Value.Default
-    default Set<PythonImport> requiredImports() {
-        return DEFAULT_IMPORTS;
-    }
+public interface UnionSnippet extends PythonSnippet {
+    PythonImport CONJURE_IMPORT = PythonImport.builder()
+            .moduleSpecifier("conjure_client")
+            .addNamedImports("ConjureUnionType", "ConjureFieldDefinition")
+            .build();
 
     Optional<Documentation> docs();
 
-    /**
-     * The options in the union.
-     */
+    /* The options in the union. */
     List<PythonField> options();
 
     @Override
     default void emit(PythonPoetWriter poetWriter) {
-        poetWriter.writeIndentedLine(String.format("class %s(ConjureUnionType):", className()));
+        poetWriter.writeIndentedLine(String.format("class %s(ConjureUnionType):", name()));
         poetWriter.increaseIndent();
         docs().ifPresent(docs -> poetWriter.writeIndentedLine(String.format("\"\"\"%s\"\"\"", docs.get().trim())));
 
@@ -137,7 +121,7 @@ public interface PythonUnionTypeDefinition extends PythonClass {
         poetWriter.writeLine();
     }
 
-    class Builder extends ImmutablePythonUnionTypeDefinition.Builder {}
+    class Builder extends ImmutableUnionSnippet.Builder {}
 
     static Builder builder() {
         return new Builder();

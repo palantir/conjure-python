@@ -18,36 +18,42 @@ package com.palantir.conjure.python.poet;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.immutables.value.Value;
 
 @Value.Immutable
 public interface PythonFile extends Emittable {
 
-    @Value.Default
-    default String packageName() {
-        return "";
-    }
+    String packageName();
 
-    @Value.Default
-    default String fileName() {
-        return "__init__.py";
-    }
+    String fileName();
 
-    Set<PythonImport> imports();
-
-    List<PythonClass> contents();
+    List<PythonSnippet> contents();
 
     @Override
     default void emit(PythonPoetWriter poetWriter) {
         poetWriter.maintainingIndent(() -> {
-            if (packageName().length() > 0) {
-                poetWriter.writeLine(String.format("# this is package %s", packageName()));
-            }
-            imports().stream().sorted().forEach(poetWriter::emit);
-            poetWriter.writeLine();
+            Map<String, Set<String>> imports = contents().stream()
+                    .flatMap(pythonSnippet -> pythonSnippet.imports().stream())
+                    .collect(Collectors.toMap(
+                            PythonImport::moduleSpecifier,
+                            PythonImport::namedImports,
+                            (strings, strings2) -> Stream.concat(strings.stream(), strings2.stream())
+                                    .collect(Collectors.toSet())));
 
-            contents().stream().sorted(new PythonClassSerializationComparator()).forEach(poetWriter::emit);
+            imports.forEach((moduleSpecifier, namedImports) -> PythonImport.builder()
+                    .moduleSpecifier(moduleSpecifier)
+                    .namedImports(namedImports)
+                    .build()
+                    .emit(poetWriter));
+            if (imports.size() > 0) {
+                poetWriter.writeLine();
+            }
+
+            contents().stream().sorted(new PythonFileComparator()).forEach(poetWriter::emit);
         });
     }
 
@@ -57,17 +63,17 @@ public interface PythonFile extends Emittable {
         return new Builder();
     }
 
-    class PythonClassSerializationComparator implements Comparator<PythonClass> {
+    class PythonFileComparator implements Comparator<PythonSnippet> {
         @Override
-        public int compare(PythonClass pc1, PythonClass pc2) {
+        public int compare(PythonSnippet pc1, PythonSnippet pc2) {
             // PythonAliases need to occur last, since they potentially reference
             // objects defined in the current module
-            if (pc1 instanceof PythonAlias && !(pc2 instanceof PythonAlias)) {
+            if (pc1 instanceof AliasSnippet && !(pc2 instanceof AliasSnippet)) {
                 return 1;
-            } else if (!(pc1 instanceof PythonAlias) && pc2 instanceof PythonAlias) {
+            } else if (!(pc1 instanceof AliasSnippet) && pc2 instanceof AliasSnippet) {
                 return -1;
             } else {
-                return Comparator.comparing(PythonClass::className).compare(pc1, pc2);
+                return Comparator.comparing(PythonSnippet::name).compare(pc1, pc2);
             }
         }
     }
