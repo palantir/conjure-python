@@ -55,6 +55,7 @@ public final class ImportTypeVisitor implements Type.Visitor<Set<PythonImport>> 
     public Set<PythonImport> visitOptional(OptionalType value) {
         return ImmutableSet.<PythonImport>builder()
                 .add(PythonImport.of("typing", "Optional"))
+                .add(PythonImport.of("conjure_python_client", "OptionalType"))
                 .addAll(value.getItemType().accept(this))
                 .build();
     }

@@ -1,4 +1,4 @@
-from conjure_python_client import BinaryType, ConjureBeanType, ConjureEnumType, ConjureFieldDefinition, ConjureUnionType, DictType
+from conjure_python_client import BinaryType, ConjureBeanType, ConjureEnumType, ConjureFieldDefinition, ConjureUnionType, DictType, OptionalType
 from typing import Any, List, Optional, Set
 
 class AliasAsMapKeyExample(ConjureBeanType):

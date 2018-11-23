@@ -84,5 +84,5 @@ task checkToxIni() {
 }
 
 tasks.check.dependsOn checkPipFile, checkToxIni
-//tasks.idea.dependsOn unpackVerificationServer, generate
+tasks.idea.dependsOn unpackVerificationServer, generate
 tasks.build.dependsOn unpackVerificationServer, generate
