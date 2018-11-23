@@ -122,27 +122,26 @@ public final class ConjurePythonGenerator {
 
     private ImmutablePythonFile getRootInit(PackageNameProcessor packageNameProcessor,
             Multimap<String, PythonSnippet> snippets) {
-        Path rootInitFilePath = Paths.get(config.packageName().orElse(".").replace(".", "/"));
-        return PythonFile.builder()
+        String rootInitFilePath = config.packageName().orElse("");
+        PythonFile.Builder builder = PythonFile.builder()
                 .packageName(config.packageName().orElse("."))
                 .fileName("__init__.py")
                 .addContents(AllSnippet.builder()
                         .contents(snippets.keySet().stream()
-                                .map(name -> {
-                                    Path snippetPath = Paths.get(
-                                            packageNameProcessor.getPackageName(name).replace(".", "/"));
-                                    return rootInitFilePath.relativize(snippetPath).toString();
-                                })
+                                .map(name -> packageNameProcessor.getPackageName(name)
+                                        .replace(rootInitFilePath, "")
+                                        .replace(".", ""))
                                 .sorted()
                                 .collect(Collectors.toList()))
                         .build())
                 .addContents(PythonLine.builder()
-                        .text(String.format("__version__ = \"%s\"", config.packageVersion().get()))
-                        .build())
-                .addContents(PythonLine.builder()
                         .text(String.format("__conjure_generator_version__ = \"%s\"", config.generatorVersion()))
-                        .build())
-                .build();
+                        .build());
+        config.packageVersion().ifPresent(version -> builder.addContents(
+                PythonLine.builder()
+                        .text(String.format("__version__ = \"%s\"", config.packageVersion().get()))
+                        .build()));
+        return builder.build();
     }
 
     private String resolveTypePackage(TypeDefinition typeDef) {

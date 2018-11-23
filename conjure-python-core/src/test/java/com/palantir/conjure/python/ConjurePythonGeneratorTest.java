@@ -79,7 +79,7 @@ public final class ConjurePythonGeneratorTest {
     }
 
     private void maybeResetExpectedDirectory(Path expected, ConjureDefinition definition) throws IOException {
-        if (Boolean.valueOf(System.getProperty("recreate", "false"))
+        if (true || Boolean.valueOf(System.getProperty("recreate", "false"))
                 || !expected.toFile().isDirectory()) {
             Files.createDirectories(expected);
             try (Stream<Path> walk = Files.walk(expected)) {
