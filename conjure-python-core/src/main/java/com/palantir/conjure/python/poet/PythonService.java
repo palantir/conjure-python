@@ -16,6 +16,7 @@
 
 package com.palantir.conjure.python.poet;
 
+import com.palantir.conjure.python.types.ImportTypeVisitor;
 import com.palantir.conjure.spec.Documentation;
 import java.util.List;
 import java.util.Optional;
@@ -24,9 +25,15 @@ import org.immutables.value.Value;
 @Value.Immutable
 public interface PythonService extends PythonSnippet {
     PythonImport CONJURE_IMPORT = PythonImport.builder()
-            .moduleSpecifier("conjure_python_client")
+            .moduleSpecifier(ImportTypeVisitor.CONJURE_PYTHON_CLIENT)
             .addNamedImports("Service", "ConjureEncoder", "ConjureDecoder")
             .build();
+
+    @Override
+    @Value.Default
+    default String idForSorting() {
+        return className();
+    }
 
     String className();
 

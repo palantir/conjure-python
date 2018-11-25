@@ -16,6 +16,7 @@
 
 package com.palantir.conjure.python.types;
 
+import com.google.common.collect.ImmutableSet;
 import com.palantir.conjure.CaseConverter;
 import com.palantir.conjure.python.poet.AliasSnippet;
 import com.palantir.conjure.python.poet.BeanSnippet;
@@ -34,7 +35,6 @@ import com.palantir.conjure.spec.TypeName;
 import com.palantir.conjure.spec.UnionDefinition;
 import com.palantir.conjure.visitor.DealiasingTypeVisitor;
 import com.palantir.conjure.visitor.TypeVisitor;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
@@ -102,7 +102,7 @@ public final class DefaultBeanGenerator implements PythonBeanGenerator {
                 .collect(Collectors.toList());
 
         return BeanSnippet.builder()
-                .name(typeDef.getTypeName().getName())
+                .className(typeDef.getTypeName().getName())
                 .addImports(BeanSnippet.CONJURE_IMPORT)
                 .addAllImports(imports)
                 .docs(typeDef.getDocs())
@@ -112,7 +112,7 @@ public final class DefaultBeanGenerator implements PythonBeanGenerator {
 
     private EnumSnippet generateEnum(EnumDefinition typeDef) {
         return EnumSnippet.builder()
-                .name(typeDef.getTypeName().getName())
+                .className(typeDef.getTypeName().getName())
                 .addImports(EnumSnippet.CONJURE_IMPORT)
                 .docs(typeDef.getDocs())
                 .values(typeDef.getValues().stream()
@@ -151,7 +151,7 @@ public final class DefaultBeanGenerator implements PythonBeanGenerator {
                 .collect(Collectors.toList());
 
         return UnionSnippet.builder()
-                .name(typeDef.getTypeName().getName())
+                .className(typeDef.getTypeName().getName())
                 .addImports(UnionSnippet.CONJURE_IMPORT)
                 .addAllImports(imports)
                 .docs(typeDef.getDocs())
@@ -163,9 +163,9 @@ public final class DefaultBeanGenerator implements PythonBeanGenerator {
             AliasDefinition typeDef, Function<TypeName, ImportTypeVisitor> importTypeVisitorFactory) {
         ImportTypeVisitor importVisitor = importTypeVisitorFactory.apply(typeDef.getTypeName());
         return AliasSnippet.builder()
-                .name(typeDef.getTypeName().getName())
+                .className(typeDef.getTypeName().getName())
                 .aliasName(typeDef.getAlias().accept(PythonTypeVisitor.PYTHON_TYPE))
-                .imports(new HashSet<>(typeDef.getAlias().accept(importVisitor)))
+                .imports(ImmutableSet.copyOf(typeDef.getAlias().accept(importVisitor)))
                 .build();
     }
 

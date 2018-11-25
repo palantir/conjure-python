@@ -11,6 +11,12 @@ import org.immutables.value.Value;
 @ImmutablesStyle
 public interface AliasSnippet extends PythonSnippet {
 
+    @Override
+    @Value.Default
+    default String idForSorting() {
+        return className();
+    }
+
     String className();
 
     String aliasName();
