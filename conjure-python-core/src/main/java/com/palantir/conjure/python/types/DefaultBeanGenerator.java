@@ -33,7 +33,6 @@ import com.palantir.conjure.spec.TypeDefinition;
 import com.palantir.conjure.spec.TypeName;
 import com.palantir.conjure.spec.UnionDefinition;
 import com.palantir.conjure.visitor.DealiasingTypeVisitor;
-import com.palantir.conjure.visitor.TypeDefinitionVisitor;
 import com.palantir.conjure.visitor.TypeVisitor;
 import java.util.HashSet;
 import java.util.List;
@@ -48,23 +47,32 @@ public final class DefaultBeanGenerator implements PythonBeanGenerator {
             TypeDefinition typeDef,
             Function<TypeName, ImportTypeVisitor> importTypeVisitorFactory,
             DealiasingTypeVisitor dealiasingTypeVisitor) {
-        if (typeDef.accept(TypeDefinitionVisitor.IS_OBJECT)) {
-            return generateBean(
-                    typeDef.accept(TypeDefinitionVisitor.OBJECT),
-                    importTypeVisitorFactory,
-                    dealiasingTypeVisitor);
-        } else if (typeDef.accept(TypeDefinitionVisitor.IS_ENUM)) {
-            return generateEnum(typeDef.accept(TypeDefinitionVisitor.ENUM));
-        } else if (typeDef.accept(TypeDefinitionVisitor.IS_UNION)) {
-            return generateUnion(
-                    typeDef.accept(TypeDefinitionVisitor.UNION),
-                    importTypeVisitorFactory,
-                    dealiasingTypeVisitor);
-        } else if (typeDef.accept(TypeDefinitionVisitor.IS_ALIAS)) {
-            return generateAlias(typeDef.accept(TypeDefinitionVisitor.ALIAS), importTypeVisitorFactory);
-        } else {
-            throw new UnsupportedOperationException("cannot generate type for type def: " + typeDef);
-        }
+        return typeDef.accept(new TypeDefinition.Visitor<PythonSnippet>(){
+            @Override
+            public PythonSnippet visitAlias(AliasDefinition value) {
+                return generateAlias(value, importTypeVisitorFactory);
+            }
+
+            @Override
+            public PythonSnippet visitEnum(EnumDefinition value) {
+                return generateEnum(value);
+            }
+
+            @Override
+            public PythonSnippet visitObject(ObjectDefinition value) {
+                return generateBean(value, importTypeVisitorFactory, dealiasingTypeVisitor);
+            }
+
+            @Override
+            public PythonSnippet visitUnion(UnionDefinition value) {
+                return generateUnion(value, importTypeVisitorFactory, dealiasingTypeVisitor);
+            }
+
+            @Override
+            public PythonSnippet visitUnknown(String unknownType) {
+                throw new UnsupportedOperationException("cannot generate type for type def: " + unknownType);
+            }
+        });
     }
 
     private BeanSnippet generateBean(
