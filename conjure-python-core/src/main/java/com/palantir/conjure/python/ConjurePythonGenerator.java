@@ -22,7 +22,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Multimap;
 import com.palantir.conjure.python.client.ClientGenerator;
 import com.palantir.conjure.python.poet.AllSnippet;
-import com.palantir.conjure.python.poet.ImmutablePythonFile;
 import com.palantir.conjure.python.poet.PythonFile;
 import com.palantir.conjure.python.poet.PythonLine;
 import com.palantir.conjure.python.poet.PythonMetaYaml;
