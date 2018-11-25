@@ -28,6 +28,9 @@ public interface EnumSnippet extends PythonSnippet {
             .moduleSpecifier("conjure_python_client")
             .addNamedImports("ConjureEnumType")
             .build();
+
+    String className();
+
     Optional<Documentation> docs();
 
     List<PythonEnumValue> values();
@@ -35,7 +38,7 @@ public interface EnumSnippet extends PythonSnippet {
     @Override
     default void emit(PythonPoetWriter poetWriter) {
         poetWriter.maintainingIndent(() -> {
-            poetWriter.writeIndentedLine(String.format("class %s(ConjureEnumType):", name()));
+            poetWriter.writeIndentedLine(String.format("class %s(ConjureEnumType):", className()));
             poetWriter.increaseIndent();
             docs().ifPresent(docs -> poetWriter.writeIndentedLine(String.format("\"\"\"%s\"\"\"", docs.get().trim())));
 

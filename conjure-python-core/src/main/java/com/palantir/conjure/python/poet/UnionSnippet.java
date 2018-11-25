@@ -30,14 +30,15 @@ public interface UnionSnippet extends PythonSnippet {
             .addNamedImports("ConjureUnionType", "ConjureFieldDefinition")
             .build();
 
+    String className();
+
     Optional<Documentation> docs();
 
-    /* The options in the union. */
     List<PythonField> options();
 
     @Override
     default void emit(PythonPoetWriter poetWriter) {
-        poetWriter.writeIndentedLine(String.format("class %s(ConjureUnionType):", name()));
+        poetWriter.writeIndentedLine(String.format("class %s(ConjureUnionType):", className()));
         poetWriter.increaseIndent();
         docs().ifPresent(docs -> poetWriter.writeIndentedLine(String.format("\"\"\"%s\"\"\"", docs.get().trim())));
 

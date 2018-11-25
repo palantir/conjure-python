@@ -28,6 +28,8 @@ public interface PythonService extends PythonSnippet {
             .addNamedImports("Service", "ConjureEncoder", "ConjureDecoder")
             .build();
 
+    String className();
+
     Optional<Documentation> docs();
 
     List<PythonEndpointDefinition> endpointDefinitions();
@@ -35,7 +37,7 @@ public interface PythonService extends PythonSnippet {
     @Override
     default void emit(PythonPoetWriter poetWriter) {
         poetWriter.maintainingIndent(() -> {
-            poetWriter.writeIndentedLine(String.format("class %s(Service):", name()));
+            poetWriter.writeIndentedLine(String.format("class %s(Service):", className()));
             poetWriter.increaseIndent();
             docs().ifPresent(docs -> poetWriter.writeIndentedLine(String.format("\"\"\"%s\"\"\"", docs.get().trim())));
 

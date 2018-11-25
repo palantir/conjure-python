@@ -98,6 +98,7 @@ public final class ClientGenerator {
                 .pythonReturnType(endpointDef.getReturns().map(type -> type.accept(PythonTypeVisitor.PYTHON_TYPE)))
                 .myPyReturnType(endpointDef.getReturns().map(type -> type.accept(PythonTypeVisitor.MY_PY_TYPE)))
                 .isBinary(endpointDef.getReturns()
+                        // We do not need to handle alias of binary since they are treated differently over the wire
                         .map(rt -> rt.accept(TypeVisitor.IS_PRIMITIVE)
                                 && rt.accept(TypeVisitor.PRIMITIVE).get() == PrimitiveType.Value.BINARY)
                         .orElse(false))

@@ -18,15 +18,15 @@ public interface BeanSnippet extends PythonSnippet {
             .addNamedImports("ConjureBeanType", "ConjureFieldDefinition")
             .build();
 
-    /* Documentation about the class */
+    String className();
+
     Optional<Documentation> docs();
 
-    /* The fields the class exposes */
     List<PythonField> fields();
 
     @Override
     default void emit(PythonPoetWriter poetWriter) {
-        poetWriter.writeIndentedLine(String.format("class %s(ConjureBeanType):", name()));
+        poetWriter.writeIndentedLine(String.format("class %s(ConjureBeanType):", className()));
         poetWriter.increaseIndent();
         docs().ifPresent(docs -> poetWriter.writeIndentedLine(String.format("\"\"\"%s\"\"\"", docs.get().trim())));
 

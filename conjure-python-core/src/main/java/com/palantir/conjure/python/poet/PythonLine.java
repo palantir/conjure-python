@@ -10,7 +10,7 @@ import org.immutables.value.Value;
 public interface PythonLine extends PythonSnippet {
 
     @Override
-    default String name() {
+    default String idForSorting() {
         return text();
     }
 

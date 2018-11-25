@@ -10,7 +10,7 @@ import org.immutables.value.Value;
 @Value.Immutable
 public interface AllSnippet extends PythonSnippet {
     @Override
-    default String name() {
+    default String idForSorting() {
         return "__all__";
     }
 

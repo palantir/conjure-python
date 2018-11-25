@@ -10,8 +10,8 @@ import org.immutables.value.Value;
 @Value.Immutable
 public interface PythonMetaYaml extends PythonSnippet {
     @Override
-    default String name() {
-        return "";
+    default String idForSorting() {
+        return "metaYaml";
     }
 
     String condaPackageName();

@@ -55,7 +55,7 @@ public interface PythonFile extends Emittable {
                 poetWriter.writeLine();
             }
 
-            contents().stream().sorted(new PythonFileComparator()).forEach(poetWriter::emit);
+            contents().stream().sorted(new PythonSnippetComparator()).forEach(poetWriter::emit);
         });
     }
 
@@ -65,7 +65,7 @@ public interface PythonFile extends Emittable {
         return new Builder();
     }
 
-    class PythonFileComparator implements Comparator<PythonSnippet> {
+    class PythonSnippetComparator implements Comparator<PythonSnippet> {
         @Override
         public int compare(PythonSnippet pc1, PythonSnippet pc2) {
             // PythonAliases need to occur last, since they potentially reference
@@ -75,7 +75,7 @@ public interface PythonFile extends Emittable {
             } else if (!(pc1 instanceof AliasSnippet) && pc2 instanceof AliasSnippet) {
                 return -1;
             } else {
-                return Comparator.comparing(PythonSnippet::name).compare(pc1, pc2);
+                return Comparator.comparing(PythonSnippet::idForSorting).compare(pc1, pc2);
             }
         }
     }

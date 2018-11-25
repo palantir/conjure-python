@@ -40,6 +40,7 @@ import com.palantir.conjure.visitor.DealiasingTypeVisitor;
 import com.palantir.conjure.visitor.TypeDefinitionVisitor;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -113,19 +114,19 @@ public final class ConjurePythonGenerator {
                         .build())
                 .collect(Collectors.toList()));
 
-        allFiles.add(getRootInit(packageNameProcessor, snippets));
+        allFiles.add(getRootInit(packageNameProcessor, snippets.keySet()));
 
         return allFiles.build();
     }
 
-    private ImmutablePythonFile getRootInit(PackageNameProcessor packageNameProcessor,
-            Multimap<String, PythonSnippet> snippets) {
+    private PythonFile getRootInit(PackageNameProcessor packageNameProcessor,
+            Set<String> packageNames) {
         String rootInitFilePath = config.packageName().orElse("");
         PythonFile.Builder builder = PythonFile.builder()
                 .packageName(config.packageName().orElse("."))
                 .fileName("__init__.py")
                 .addContents(AllSnippet.builder()
-                        .contents(snippets.keySet().stream()
+                        .contents(packageNames.stream()
                                 .map(name -> packageNameProcessor.getPackageName(name)
                                         .replace(rootInitFilePath, "")
                                         .replace(".", ""))

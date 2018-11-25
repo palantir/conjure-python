@@ -19,7 +19,7 @@ public interface PythonSetup extends PythonSnippet {
 
     @Override
     @Value.Default
-    default String name() {
+    default String idForSorting() {
         return "setup";
     }
 

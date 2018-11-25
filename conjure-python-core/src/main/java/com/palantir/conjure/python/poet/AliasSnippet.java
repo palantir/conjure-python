@@ -10,12 +10,14 @@ import org.immutables.value.Value;
 @Value.Immutable
 @ImmutablesStyle
 public interface AliasSnippet extends PythonSnippet {
-    /* The name of the type being aliased */
+
+    String className();
+
     String aliasName();
 
     @Override
     default void emit(PythonPoetWriter poetWriter) {
-        poetWriter.writeIndentedLine(String.format("%s = %s", name(), aliasName()));
+        poetWriter.writeIndentedLine(String.format("%s = %s", className(), aliasName()));
         poetWriter.writeLine();
     }
 
