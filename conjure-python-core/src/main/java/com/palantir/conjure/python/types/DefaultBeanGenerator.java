@@ -152,11 +152,6 @@ public final class DefaultBeanGenerator implements PythonBeanGenerator {
                 })
                 .collect(Collectors.toList());
 
-        UnionVisitorSnippet unionVisitorSnippet = UnionVisitorSnippet.builder()
-                .className(String.format("%sVisitor", typeDef.getTypeName().getName()))
-                .options(options)
-                .build();
-
         return UnionSnippet.builder()
                 .className(typeDef.getTypeName().getName())
                 .addImports(UnionSnippet.CONJURE_IMPORT)
@@ -164,7 +159,6 @@ public final class DefaultBeanGenerator implements PythonBeanGenerator {
                 .addAllImports(imports)
                 .docs(typeDef.getDocs())
                 .options(options)
-                .addVisitors(unionVisitorSnippet)
                 .build();
     }
 

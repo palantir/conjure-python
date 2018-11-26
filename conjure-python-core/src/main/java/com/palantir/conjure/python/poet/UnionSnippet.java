@@ -43,8 +43,6 @@ public interface UnionSnippet extends PythonSnippet {
 
     List<PythonField> options();
 
-    List<PythonSnippet> visitors();
-
     @Override
     default void emit(PythonPoetWriter poetWriter) {
         poetWriter.writeIndentedLine(String.format("class %s(ConjureUnionType):", className()));
@@ -149,7 +147,11 @@ public interface UnionSnippet extends PythonSnippet {
         poetWriter.writeLine();
         poetWriter.writeLine();
 
-        visitors().forEach(visitor -> visitor.emit(poetWriter));
+        UnionVisitorSnippet.builder()
+                .className(String.format("%sVisitor", className()))
+                .options(options())
+                .build()
+                .emit(poetWriter);
     }
 
     class Builder extends ImmutableUnionSnippet.Builder {}
