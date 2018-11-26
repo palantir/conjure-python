@@ -30,6 +30,10 @@ public interface UnionSnippet extends PythonSnippet {
             .moduleSpecifier(ImportTypeVisitor.CONJURE_PYTHON_CLIENT)
             .addNamedImports("ConjureUnionType", "ConjureFieldDefinition")
             .build();
+    PythonImport ABC_IMPORT = PythonImport.builder()
+            .moduleSpecifier("abc")
+            .addNamedImports("ABCMeta", "abstractmethod")
+            .build();
 
     @Override
     @Value.Default
@@ -147,6 +151,10 @@ public interface UnionSnippet extends PythonSnippet {
         poetWriter.writeLine();
         poetWriter.writeLine();
 
+        emitVisitor(poetWriter);
+    }
+
+    default void emitVisitor(PythonPoetWriter poetWriter) {
         poetWriter.writeIndentedLine(String.format("class %sVisitor(ABCMeta('ABC', (object,), {})):", className()));
         poetWriter.increaseIndent();
         options().forEach(option -> {
