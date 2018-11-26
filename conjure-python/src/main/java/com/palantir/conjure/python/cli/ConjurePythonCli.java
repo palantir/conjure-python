@@ -20,7 +20,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.ImmutableSet;
 import com.palantir.conjure.python.ConjurePythonGenerator;
 import com.palantir.conjure.python.DefaultPythonFileWriter;
 import com.palantir.conjure.python.GeneratorConfiguration;
@@ -101,7 +100,7 @@ public final class ConjurePythonCli implements Runnable {
             try {
                 ConjureDefinition conjureDefinition = OBJECT_MAPPER.readValue(new File(input), ConjureDefinition.class);
                 ConjurePythonGenerator generator = new ConjurePythonGenerator(
-                        new DefaultBeanGenerator(ImmutableSet.of()),
+                        new DefaultBeanGenerator(),
                         new ClientGenerator(),
                         generatorConfig);
                 generator.write(conjureDefinition, new DefaultPythonFileWriter(Paths.get(output)));

@@ -17,23 +17,26 @@
 package com.palantir.conjure.python.poet;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
+import com.palantir.conjure.python.types.ImportTypeVisitor;
 import com.palantir.conjure.spec.Documentation;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import org.immutables.value.Value;
 
 @Value.Immutable
-public interface PythonEnum extends PythonClass {
-
-    ImmutableSet<PythonImport> DEFAULT_IMPORTS = ImmutableSet.of(
-            PythonImport.of(PythonClassName.of("conjure_python_client", "*")));
+public interface EnumSnippet extends PythonSnippet {
+    PythonImport CONJURE_IMPORT = PythonImport.builder()
+            .moduleSpecifier(ImportTypeVisitor.CONJURE_PYTHON_CLIENT)
+            .addNamedImports("ConjureEnumType")
+            .build();
 
     @Override
-    default Set<PythonImport> requiredImports() {
-        return DEFAULT_IMPORTS;
+    @Value.Default
+    default String idForSorting() {
+        return className();
     }
+
+    String className();
 
     Optional<Documentation> docs();
 
@@ -69,14 +72,14 @@ public interface PythonEnum extends PythonClass {
         });
     }
 
-    class Builder extends ImmutablePythonEnum.Builder {}
+    class Builder extends ImmutableEnumSnippet.Builder {}
 
     static Builder builder() {
         return new Builder();
     }
 
     @Value.Immutable
-    public interface PythonEnumValue {
+    interface PythonEnumValue {
 
         String name();
 

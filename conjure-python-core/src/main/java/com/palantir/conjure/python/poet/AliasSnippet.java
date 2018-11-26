@@ -4,25 +4,30 @@
 
 package com.palantir.conjure.python.poet;
 
+import com.palantir.tokens.auth.ImmutablesStyle;
 import org.immutables.value.Value;
 
 @Value.Immutable
-public interface PythonLine extends PythonSnippet {
+@ImmutablesStyle
+public interface AliasSnippet extends PythonSnippet {
 
     @Override
+    @Value.Default
     default String idForSorting() {
-        return text();
+        return className();
     }
 
-    String text();
+    String className();
+
+    String aliasName();
 
     @Override
     default void emit(PythonPoetWriter poetWriter) {
-        poetWriter.writeIndentedLine(text());
+        poetWriter.writeIndentedLine(String.format("%s = %s", className(), aliasName()));
         poetWriter.writeLine();
     }
 
-    class Builder extends ImmutablePythonLine.Builder {}
+    class Builder extends ImmutableAliasSnippet.Builder {}
 
     static Builder builder() {
         return new Builder();

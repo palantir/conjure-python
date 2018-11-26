@@ -17,23 +17,20 @@
 package com.palantir.conjure.python.client;
 
 import com.google.common.collect.ImmutableSet;
-import com.palantir.conjure.python.PackageNameProcessor;
-import com.palantir.conjure.python.poet.PythonClass;
-import com.palantir.conjure.python.poet.PythonClassName;
+import com.palantir.conjure.CaseConverter;
 import com.palantir.conjure.python.poet.PythonEndpointDefinition;
 import com.palantir.conjure.python.poet.PythonEndpointDefinition.PythonEndpointParam;
 import com.palantir.conjure.python.poet.PythonImport;
 import com.palantir.conjure.python.poet.PythonService;
-import com.palantir.conjure.python.types.DefaultTypeNameVisitor;
-import com.palantir.conjure.python.types.MyPyTypeNameVisitor;
-import com.palantir.conjure.python.types.ReferencedTypeNameVisitor;
-import com.palantir.conjure.python.types.TypeMapper;
-import com.palantir.conjure.python.util.CaseConverter;
+import com.palantir.conjure.python.poet.PythonSnippet;
+import com.palantir.conjure.python.types.ImportTypeVisitor;
+import com.palantir.conjure.python.types.PythonTypeVisitor;
+import com.palantir.conjure.spec.EndpointDefinition;
 import com.palantir.conjure.spec.PrimitiveType;
 import com.palantir.conjure.spec.ServiceDefinition;
-import com.palantir.conjure.spec.TypeDefinition;
+import com.palantir.conjure.spec.Type;
+import com.palantir.conjure.spec.TypeName;
 import com.palantir.conjure.visitor.DealiasingTypeVisitor;
-import com.palantir.conjure.visitor.TypeDefinitionVisitor;
 import com.palantir.conjure.visitor.TypeVisitor;
 import java.util.List;
 import java.util.function.Function;
@@ -41,84 +38,75 @@ import java.util.stream.Collectors;
 
 public final class ClientGenerator {
 
-    public PythonClass generateClient(
-            List<TypeDefinition> types,
-            PackageNameProcessor packageNameProvider,
-            ServiceDefinition serviceDefinition) {
+    public PythonSnippet generateClient(
+            ServiceDefinition serviceDef,
+            Function<TypeName, ImportTypeVisitor> importTypeVisitorFactory,
+            DealiasingTypeVisitor dealiasingTypeVisitor) {
+        ImportTypeVisitor importTypeVisitor = importTypeVisitorFactory.apply(serviceDef.getServiceName());
+        ImmutableSet.Builder<Type> referencedTypesBuilder = ImmutableSet.builder();
 
-        TypeMapper mapper = new TypeMapper(new DefaultTypeNameVisitor(types));
-        TypeMapper myPyMapper = new TypeMapper(new MyPyTypeNameVisitor(types));
-
-        DealiasingTypeVisitor dealiasingTypeVisitor = new DealiasingTypeVisitor(types.stream()
-                .collect(Collectors.toMap(type -> type.accept(TypeDefinitionVisitor.TYPE_NAME), Function.identity())));
-        ReferencedTypeNameVisitor referencedTypeNameVisitor = new ReferencedTypeNameVisitor(types, packageNameProvider);
-
-        ImmutableSet.Builder<PythonClassName> referencedTypesBuilder = ImmutableSet.builder();
-
-        List<PythonEndpointDefinition> endpoints = serviceDefinition.getEndpoints()
+        List<PythonEndpointDefinition> endpoints = serviceDef.getEndpoints()
                 .stream()
-                .map(ed -> {
-                    ed.getReturns()
-                            .ifPresent(returnType -> referencedTypesBuilder.addAll(
-                                    returnType.accept(referencedTypeNameVisitor)));
-                    ed.getArgs().forEach(arg -> referencedTypesBuilder.addAll(
-                            arg.getType().accept(referencedTypeNameVisitor)));
-
-                    List<PythonEndpointParam> params = ed.getArgs()
-                            .stream()
-                            .map(argEntry -> PythonEndpointParam
-                                    .builder()
-                                    .paramName(argEntry.getArgName().get())
-                                    .pythonParamName(CaseConverter.toCase(
-                                            argEntry.getArgName().get(), CaseConverter.Case.SNAKE_CASE))
-                                    .paramType(argEntry.getParamType())
-                                    .myPyType(myPyMapper.getTypeName(argEntry.getType()))
-                                    .isOptional(dealiasingTypeVisitor.dealias(argEntry.getType()).fold(
-                                            typeDefinition -> false,
-                                            type -> type.accept(TypeVisitor.IS_OPTIONAL)))
-                                    .build())
-                            .collect(Collectors.toList());
-
-                    return PythonEndpointDefinition.builder()
-                            .pythonMethodName(CaseConverter.toCase(
-                                    ed.getEndpointName().get(), CaseConverter.Case.SNAKE_CASE))
-                            .httpMethod(ed.getHttpMethod())
-                            .httpPath(ed.getHttpPath())
-                            .auth(ed.getAuth())
-                            .docs(ed.getDocs())
-                            .params(params)
-                            .pythonReturnType(ed.getReturns().map(mapper::getTypeName))
-                            .myPyReturnType(ed.getReturns().map(myPyMapper::getTypeName))
-                            .isBinary(ed.getReturns().map(rt -> {
-                                if (rt.accept(TypeVisitor.IS_PRIMITIVE)) {
-                                    return rt.accept(TypeVisitor.PRIMITIVE).get() == PrimitiveType.Value.BINARY;
-                                }
-                                return false;
-                            }).orElse(false))
-                            .isOptionalReturnType(ed.getReturns()
-                                    .map(rt -> dealiasingTypeVisitor.dealias(rt).fold(
-                                            typeDefinition -> false,
-                                            type -> type.accept(TypeVisitor.IS_OPTIONAL)))
-                                    .orElse(false))
-                            .build();
-                })
+                .map(endpointDef -> generateEndpoint(endpointDef, referencedTypesBuilder, dealiasingTypeVisitor))
                 .collect(Collectors.toList());
 
-        String packageName =
-                packageNameProvider.getPackageName(serviceDefinition.getServiceName().getPackage());
         List<PythonImport> imports = referencedTypesBuilder.build()
                 .stream()
-                .filter(entry -> !entry.conjurePackage().equals(packageName)) // don't need to import if in this file
-                .map(className -> PythonImport.of(className, packageName))
+                .flatMap(entry -> entry.accept(importTypeVisitor).stream())
                 .collect(Collectors.toList());
 
         return PythonService.builder()
-                .packageName(packageName)
-                .addAllRequiredImports(PythonService.DEFAULT_IMPORTS)
-                .addAllRequiredImports(imports)
-                .className(serviceDefinition.getServiceName().getName())
-                .docs(serviceDefinition.getDocs())
+                .className(serviceDef.getServiceName().getName())
+                .addImports(PythonService.CONJURE_IMPORT)
+                .addAllImports(imports)
+                .docs(serviceDef.getDocs())
                 .addAllEndpointDefinitions(endpoints)
+                .build();
+    }
+
+    private PythonEndpointDefinition generateEndpoint(
+            EndpointDefinition endpointDef,
+            ImmutableSet.Builder<Type> referencedTypesBuilder,
+            DealiasingTypeVisitor dealiasingTypeVisitor) {
+
+        endpointDef.getReturns().ifPresent(referencedTypesBuilder::add);
+        endpointDef.getArgs().forEach(arg -> referencedTypesBuilder.add(arg.getType()));
+
+        List<PythonEndpointParam> params = endpointDef.getArgs()
+                .stream()
+                .map(argEntry -> PythonEndpointParam
+                        .builder()
+                        .paramName(argEntry.getArgName().get())
+                        .pythonParamName(CaseConverter.toCase(
+                                argEntry.getArgName().get(), CaseConverter.Case.SNAKE_CASE))
+                        .paramType(argEntry.getParamType())
+                        .myPyType(argEntry.getType().accept(PythonTypeVisitor.MY_PY_TYPE))
+                        .isOptional(dealiasingTypeVisitor.dealias(argEntry.getType()).fold(
+                                typeDefinition -> false,
+                                type -> type.accept(TypeVisitor.IS_OPTIONAL)))
+                        .build())
+                .collect(Collectors.toList());
+
+        return PythonEndpointDefinition.builder()
+                .pythonMethodName(CaseConverter.toCase(
+                        endpointDef.getEndpointName().get(), CaseConverter.Case.SNAKE_CASE))
+                .httpMethod(endpointDef.getHttpMethod())
+                .httpPath(endpointDef.getHttpPath())
+                .auth(endpointDef.getAuth())
+                .docs(endpointDef.getDocs())
+                .params(params)
+                .pythonReturnType(endpointDef.getReturns().map(type -> type.accept(PythonTypeVisitor.PYTHON_TYPE)))
+                .myPyReturnType(endpointDef.getReturns().map(type -> type.accept(PythonTypeVisitor.MY_PY_TYPE)))
+                .isBinary(endpointDef.getReturns()
+                        // We do not need to handle alias of binary since they are treated differently over the wire
+                        .map(rt -> rt.accept(TypeVisitor.IS_PRIMITIVE)
+                                && rt.accept(TypeVisitor.PRIMITIVE).get() == PrimitiveType.Value.BINARY)
+                        .orElse(false))
+                .isOptionalReturnType(endpointDef.getReturns()
+                        .map(rt -> dealiasingTypeVisitor.dealias(rt).fold(
+                                typeDefinition -> false,
+                                type -> type.accept(TypeVisitor.IS_OPTIONAL)))
+                        .orElse(false))
                 .build();
     }
 }

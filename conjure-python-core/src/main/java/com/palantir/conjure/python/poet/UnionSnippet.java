@@ -17,40 +17,30 @@
 package com.palantir.conjure.python.poet;
 
 import com.google.common.base.Joiner;
-import com.google.common.collect.ImmutableSet;
-import com.palantir.conjure.python.poet.PythonBean.PythonField;
+import com.palantir.conjure.python.types.ImportTypeVisitor;
 import com.palantir.conjure.spec.Documentation;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 import org.immutables.value.Value;
 
 @Value.Immutable
-public interface PythonUnionTypeDefinition extends PythonClass {
-
-    ImmutableSet<PythonImport> DEFAULT_IMPORTS = ImmutableSet.of(
-            PythonImport.of(PythonClassName.of("abc", "ABCMeta")),
-            PythonImport.of(PythonClassName.of("abc", "abstractmethod")),
-            PythonImport.of(PythonClassName.of("typing", "List")),
-            PythonImport.of(PythonClassName.of("typing", "Set")),
-            PythonImport.of(PythonClassName.of("typing", "Dict")),
-            PythonImport.of(PythonClassName.of("typing", "Tuple")),
-            PythonImport.of(PythonClassName.of("typing", "Optional")),
-            PythonImport.of(PythonClassName.of("conjure_python_client", "*")));
-
+public interface UnionSnippet extends PythonSnippet {
+    PythonImport CONJURE_IMPORT = PythonImport.builder()
+            .moduleSpecifier(ImportTypeVisitor.CONJURE_PYTHON_CLIENT)
+            .addNamedImports("ConjureUnionType", "ConjureFieldDefinition")
+            .build();
 
     @Override
     @Value.Default
-    default Set<PythonImport> requiredImports() {
-        return DEFAULT_IMPORTS;
+    default String idForSorting() {
+        return className();
     }
+
+    String className();
 
     Optional<Documentation> docs();
 
-    /**
-     * The options in the union.
-     */
     List<PythonField> options();
 
     @Override
@@ -174,7 +164,7 @@ public interface PythonUnionTypeDefinition extends PythonClass {
         poetWriter.writeLine();
     }
 
-    class Builder extends ImmutablePythonUnionTypeDefinition.Builder {}
+    class Builder extends ImmutableUnionSnippet.Builder {}
 
     static Builder builder() {
         return new Builder();

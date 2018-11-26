@@ -16,18 +16,17 @@
 
 package com.palantir.conjure.python.types;
 
-import com.palantir.conjure.python.PackageNameProcessor;
-import com.palantir.conjure.python.poet.PythonClass;
+import com.palantir.conjure.python.poet.PythonSnippet;
 import com.palantir.conjure.spec.TypeDefinition;
-import java.util.List;
+import com.palantir.conjure.spec.TypeName;
+import com.palantir.conjure.visitor.DealiasingTypeVisitor;
+import java.util.function.Function;
 
 public interface PythonBeanGenerator {
 
-    enum ExperimentalFeatures {}
-
-    PythonClass generateObject(
-            List<TypeDefinition> types,
-            PackageNameProcessor packageNameProvider,
-            TypeDefinition typeDef);
+    PythonSnippet generateType(
+            TypeDefinition typeDef,
+            Function<TypeName, ImportTypeVisitor> importTypeVisitorFactory,
+            DealiasingTypeVisitor dealiasingTypeVisitor);
 
 }

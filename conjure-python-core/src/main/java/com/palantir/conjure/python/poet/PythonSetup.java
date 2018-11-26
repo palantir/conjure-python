@@ -11,26 +11,22 @@ import java.util.Set;
 import org.immutables.value.Value;
 
 @Value.Immutable
-public interface PythonSetup extends PythonClass {
-
-    ImmutableSet<PythonImport> DEFAULT_IMPORTS = ImmutableSet.of(
-            PythonImport.of(PythonClassName.of("setuptools", "find_packages")),
-            PythonImport.of(PythonClassName.of("setuptools", "setup")));
+public interface PythonSetup extends PythonSnippet {
+    ImmutableSet<PythonImport> DEFAULT_IMPORTS = ImmutableSet.of(PythonImport.builder()
+            .moduleSpecifier("setuptools")
+            .addNamedImports("find_packages", "setup")
+            .build());
 
     @Override
     @Value.Default
-    default Set<PythonImport> requiredImports() {
+    default String idForSorting() {
+        return "setup";
+    }
+
+    @Override
+    @Value.Default
+    default Set<PythonImport> imports() {
         return DEFAULT_IMPORTS;
-    }
-
-    @Override
-    default String className() {
-        return "";
-    }
-
-    @Override
-    default String packageName() {
-        return "";
     }
 
     Map<String, String> options();
