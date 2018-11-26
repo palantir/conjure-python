@@ -147,11 +147,21 @@ public interface UnionSnippet extends PythonSnippet {
         poetWriter.writeLine();
         poetWriter.writeLine();
 
-        UnionVisitorSnippet.builder()
-                .className(String.format("%sVisitor", className()))
-                .options(options())
-                .build()
-                .emit(poetWriter);
+        poetWriter.writeIndentedLine(String.format("class %sVisitor(ABCMeta('ABC', (object,), {})):", className()));
+        poetWriter.increaseIndent();
+        options().forEach(option -> {
+            poetWriter.writeLine();
+            poetWriter.writeIndentedLine("@abstractmethod");
+            poetWriter.writeIndentedLine("def _%s(self, %s):", option.attributeName(),
+                    PythonIdentifierSanitizer.sanitize(option.attributeName()));
+            poetWriter.increaseIndent();
+            poetWriter.writeIndentedLine("# type: (%s) -> Any", option.myPyType());
+            poetWriter.writeIndentedLine("pass");
+            poetWriter.decreaseIndent();
+        });
+        poetWriter.decreaseIndent();
+        poetWriter.writeLine();
+        poetWriter.writeLine();
     }
 
     class Builder extends ImmutableUnionSnippet.Builder {}
