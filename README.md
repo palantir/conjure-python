@@ -8,7 +8,7 @@ The generated clients provide a simple interface for executing statically typed 
 
 ## Usage
 
-The recommended way to use conjure-python is via a build tool like [gradle-conjure](https://github.com/palantir/gradle-conjure). However, if you don't want to use gradle-conjure, there is also an executable which conforms to [RFC 002](https://github.com/palantir/conjure/blob/develop/rfc/002-contract-for-conjure-generators.md).
+The recommended way to use conjure-python is via a build tool like [gradle-conjure](https://github.com/palantir/gradle-conjure). However, if you don't want to use gradle-conjure, there is also an executable which conforms to [RFC 002](https://github.com/palantir/conjure/blob/master/docs/rfc/002-contract-for-conjure-generators.md).
 
     Usage: conjure-python generate <input> <output> [...options]
 
