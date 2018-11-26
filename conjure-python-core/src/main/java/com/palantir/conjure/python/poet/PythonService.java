@@ -16,30 +16,26 @@
 
 package com.palantir.conjure.python.poet;
 
-import com.google.common.collect.ImmutableSet;
+import com.palantir.conjure.python.types.ImportTypeVisitor;
 import com.palantir.conjure.spec.Documentation;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import org.immutables.value.Value;
 
 @Value.Immutable
-public interface PythonService extends PythonClass {
-
-    ImmutableSet<PythonImport> DEFAULT_IMPORTS = ImmutableSet.of(
-            PythonImport.of(PythonClassName.of("typing", "Any")),
-            PythonImport.of(PythonClassName.of("typing", "List")),
-            PythonImport.of(PythonClassName.of("typing", "Set")),
-            PythonImport.of(PythonClassName.of("typing", "Dict")),
-            PythonImport.of(PythonClassName.of("typing", "Tuple")),
-            PythonImport.of(PythonClassName.of("typing", "Optional")),
-            PythonImport.of(PythonClassName.of("conjure_python_client", "*")));
+public interface PythonService extends PythonSnippet {
+    PythonImport CONJURE_IMPORT = PythonImport.builder()
+            .moduleSpecifier(ImportTypeVisitor.CONJURE_PYTHON_CLIENT)
+            .addNamedImports("Service", "ConjureEncoder", "ConjureDecoder")
+            .build();
 
     @Override
     @Value.Default
-    default Set<PythonImport> requiredImports() {
-        return DEFAULT_IMPORTS;
+    default String idForSorting() {
+        return className();
     }
+
+    String className();
 
     Optional<Documentation> docs();
 

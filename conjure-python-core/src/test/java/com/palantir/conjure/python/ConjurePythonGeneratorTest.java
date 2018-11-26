@@ -18,7 +18,6 @@ package com.palantir.conjure.python;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.google.common.collect.ImmutableSet;
 import com.palantir.conjure.defs.Conjure;
 import com.palantir.conjure.python.client.ClientGenerator;
 import com.palantir.conjure.python.types.DefaultBeanGenerator;
@@ -39,7 +38,7 @@ import org.junit.runner.RunWith;
 public final class ConjurePythonGeneratorTest {
 
     private final ConjurePythonGenerator generator = new ConjurePythonGenerator(
-            new DefaultBeanGenerator(ImmutableSet.of()), new ClientGenerator(),
+            new DefaultBeanGenerator(), new ClientGenerator(),
             GeneratorConfiguration.builder()
                     .packageName("package")
                     .packageVersion("0.0.0")

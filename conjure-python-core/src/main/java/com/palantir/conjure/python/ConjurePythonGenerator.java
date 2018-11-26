@@ -17,24 +17,31 @@
 package com.palantir.conjure.python;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Multimap;
 import com.palantir.conjure.python.client.ClientGenerator;
-import com.palantir.conjure.python.poet.PythonAll;
-import com.palantir.conjure.python.poet.PythonClass;
+import com.palantir.conjure.python.poet.AllSnippet;
 import com.palantir.conjure.python.poet.PythonFile;
 import com.palantir.conjure.python.poet.PythonLine;
 import com.palantir.conjure.python.poet.PythonMetaYaml;
 import com.palantir.conjure.python.poet.PythonSetup;
+import com.palantir.conjure.python.poet.PythonSnippet;
+import com.palantir.conjure.python.types.ImportTypeVisitor;
 import com.palantir.conjure.python.types.PythonBeanGenerator;
+import com.palantir.conjure.spec.AliasDefinition;
 import com.palantir.conjure.spec.ConjureDefinition;
+import com.palantir.conjure.spec.EnumDefinition;
+import com.palantir.conjure.spec.ObjectDefinition;
 import com.palantir.conjure.spec.TypeDefinition;
-import java.nio.file.Path;
+import com.palantir.conjure.spec.UnionDefinition;
+import com.palantir.conjure.visitor.DealiasingTypeVisitor;
+import com.palantir.conjure.visitor.TypeDefinitionVisitor;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public final class ConjurePythonGenerator {
 
@@ -42,7 +49,9 @@ public final class ConjurePythonGenerator {
     private final ClientGenerator clientGenerator;
     private final GeneratorConfiguration config;
 
-    public ConjurePythonGenerator(PythonBeanGenerator beanGenerator, ClientGenerator clientGenerator,
+    public ConjurePythonGenerator(
+            PythonBeanGenerator beanGenerator,
+            ClientGenerator clientGenerator,
             GeneratorConfiguration config) {
         Preconditions.checkArgument(
                 config.generateRawSource() || (config.packageName().isPresent() && config.packageVersion().isPresent()),
@@ -65,8 +74,6 @@ public final class ConjurePythonGenerator {
     }
 
     public List<PythonFile> generate(ConjureDefinition conjureDefinition) {
-        List<TypeDefinition> types = conjureDefinition.getTypes();
-
         PackageNameProcessor.Builder packageNameProcessorBuilder = PackageNameProcessor.builder()
                 .addProcessors(new TwoComponentStrippingPackageNameProcessor())
                 .addProcessors(new FlatteningPackageNameProcessor());
@@ -76,90 +83,92 @@ public final class ConjurePythonGenerator {
         }
         PackageNameProcessor packageNameProcessor = packageNameProcessorBuilder.build();
 
-        List<PythonClass> beanClasses = types
-                .stream()
-                .map(objectDefinition -> beanGenerator.generateObject(types, packageNameProcessor, objectDefinition))
-                .collect(Collectors.toList());
+        DealiasingTypeVisitor dealiasingTypeVisitor = new DealiasingTypeVisitor(
+                conjureDefinition.getTypes()
+                        .stream()
+                        .collect(Collectors.toMap(type -> type.accept(TypeDefinitionVisitor.TYPE_NAME),
+                                Function.identity())));
 
-        List<PythonClass> serviceClasses = conjureDefinition.getServices()
-                .stream()
-                .map(serviceDef -> clientGenerator.generateClient(types, packageNameProcessor, serviceDef))
-                .collect(Collectors.toList());
+        Multimap<String, PythonSnippet> snippets = HashMultimap.create();
+        conjureDefinition.getTypes().forEach(typeDefinition ->
+                snippets.put(resolveTypePackage(typeDefinition),
+                        beanGenerator.generateType(
+                                typeDefinition,
+                                typeName -> new ImportTypeVisitor(typeName, packageNameProcessor),
+                                dealiasingTypeVisitor)));
+        conjureDefinition.getServices().forEach(serviceDefinition ->
+                snippets.put(serviceDefinition.getServiceName().getPackage(),
+                        clientGenerator.generateClient(
+                                serviceDefinition,
+                                typeName -> new ImportTypeVisitor(typeName, packageNameProcessor),
+                                dealiasingTypeVisitor)));
 
-        Map<String, List<PythonClass>> classesByPackageName =
-                Stream.concat(beanClasses.stream(), serviceClasses.stream())
-                        .collect(Collectors.groupingBy(PythonClass::packageName));
-
-        // group into files
-        List<PythonFile.Builder> pythonFiles = classesByPackageName.entrySet()
+        ImmutableList.Builder<PythonFile> allFiles = ImmutableList.builder();
+        allFiles.addAll(snippets.asMap().entrySet()
                 .stream()
                 .map(entry -> PythonFile.builder()
-                        .packageName(entry.getKey())
-                        .addAllImports(entry.getValue()
-                                .stream()
-                                .flatMap(pt -> pt.requiredImports().stream())
-                                .collect(Collectors.toSet()))
-                        .addAllContents(entry.getValue()))
-                .collect(Collectors.toList());
+                        .packageName(packageNameProcessor.getPackageName(entry.getKey()))
+                        .fileName("__init__.py")
+                        .contents(new HashSet<>(entry.getValue()))
+                        .build())
+                .collect(Collectors.toList()));
 
-        Map<Path, Set<Path>> initDefinitions = Maps.newHashMap();
-        pythonFiles.stream()
-                .flatMap(f -> getIntermediateInitPaths(f.build()).entrySet().stream())
-                .forEach(e -> initDefinitions.merge(e.getKey(), e.getValue(), (v1, v2) -> {
-                    Set<Path> combined = Sets.newHashSet(v1);
-                    combined.addAll(v2);
-                    return combined;
-                }));
-        List<PythonFile.Builder> initFiles = initDefinitions.entrySet().stream()
-                .map(e -> buildInitPythonFile(e.getKey(), e.getValue()))
-                .filter(f -> !classesByPackageName.keySet().contains(f.build().packageName()))
-                .collect(Collectors.toList());
+        allFiles.add(getRootInit(packageNameProcessor, snippets.keySet()));
 
-        return Stream.concat(pythonFiles.stream(), initFiles.stream())
-                .map(f -> {
-                    if (!config.generateRawSource() && f.build().packageName().indexOf('.') < 0) {
-                        f.addContents(versionAttribute(f.build().packageName()));
-                        f.addContents(generatorVersionAttribute(f.build().packageName()));
-                    }
-                    return f;
-                })
-                .map(PythonFile.Builder::build)
-                .collect(Collectors.toList());
+        return allFiles.build();
     }
 
-    private static Map<Path, Set<Path>> getIntermediateInitPaths(PythonFile pythonFile) {
-        Path filePath = PythonFileWriter.getPath(pythonFile).getParent();
-        Map<Path, Set<Path>> initFiles = Maps.newHashMap();
-        while (filePath.getParent() != null) {
-            initFiles.put(filePath.getParent(), Sets.newHashSet(filePath.getFileName()));
-            filePath = filePath.getParent();
-        }
-        return initFiles;
+    private PythonFile getRootInit(PackageNameProcessor packageNameProcessor,
+            Set<String> packageNames) {
+        String rootInitFilePath = config.packageName().orElse("");
+        PythonFile.Builder builder = PythonFile.builder()
+                .packageName(config.packageName().orElse("."))
+                .fileName("__init__.py")
+                .addContents(AllSnippet.builder()
+                        .contents(packageNames.stream()
+                                .map(name -> packageNameProcessor.getPackageName(name)
+                                        .replace(rootInitFilePath, "")
+                                        .replace(".", ""))
+                                .sorted()
+                                .collect(Collectors.toList()))
+                        .build())
+                .addContents(PythonLine.builder()
+                        .text(String.format("__conjure_generator_version__ = \"%s\"", config.generatorVersion()))
+                        .build());
+        config.packageVersion().ifPresent(version -> builder.addContents(
+                PythonLine.builder()
+                        .text(String.format("__version__ = \"%s\"", config.packageVersion().get()))
+                        .build()));
+        return builder.build();
     }
 
-    private PythonFile.Builder buildInitPythonFile(Path module, Set<Path> submodules) {
-        String packageName = module.toString().replace('/', '.');
-        PythonAll all = PythonAll.builder()
-                .packageName(packageName)
-                .addAllContents(submodules.stream().map(m -> m.toString()).sorted().collect(Collectors.toList()))
-                .build();
-        return PythonFile.builder()
-                .packageName(packageName)
-                .addContents(all);
-    }
+    private String resolveTypePackage(TypeDefinition typeDef) {
+        return typeDef.accept(new TypeDefinition.Visitor<String>() {
+            @Override
+            public String visitAlias(AliasDefinition value) {
+                return value.getTypeName().getPackage();
+            }
 
-    private PythonClass versionAttribute(String packageName) {
-        return PythonLine.builder()
-                .text(String.format("__version__ = \"%s\"", config.packageVersion().get()))
-                .packageName(packageName)
-                .build();
-    }
+            @Override
+            public String visitEnum(EnumDefinition value) {
+                return value.getTypeName().getPackage();
+            }
 
-    private PythonClass generatorVersionAttribute(String packageName) {
-        return PythonLine.builder()
-                .text(String.format("__conjure_generator_version__ = \"%s\"", config.generatorVersion()))
-                .packageName(packageName)
-                .build();
+            @Override
+            public String visitObject(ObjectDefinition value) {
+                return value.getTypeName().getPackage();
+            }
+
+            @Override
+            public String visitUnion(UnionDefinition value) {
+                return value.getTypeName().getPackage();
+            }
+
+            @Override
+            public String visitUnknown(String unknownType) {
+                throw new IllegalStateException("Unsupported type: " + unknownType);
+            }
+        });
     }
 
     private PythonFile buildPythonSetupFile() {
@@ -172,28 +181,25 @@ public final class ConjurePythonGenerator {
         config.packageDescription().ifPresent(value -> builder.putOptions("description", value));
         config.packageUrl().ifPresent(value -> builder.putOptions("url", value));
         config.packageAuthor().ifPresent(value -> builder.putOptions("author", value));
-        PythonSetup setup = builder.build();
 
         return PythonFile.builder()
+                .packageName(".")
                 .fileName("setup.py")
-                .addAllImports(setup.requiredImports())
-                .addContents(setup)
+                .addContents(builder.build())
                 .build();
     }
 
     private PythonFile buildCondaMetaYamlFile() {
-        PythonMetaYaml metaYaml = PythonMetaYaml.builder()
-                .condaPackageName(config.packageName().get())
-                .packageVersion(config.packageVersion().get())
-                .addInstallDependencies("requests", "typing")
-                .addInstallDependencies(String.format("conjure-python-client >=%s,<%s",
-                        config.minConjureClientVersion(), config.maxConjureClientVersion()))
-                .build();
-
         return PythonFile.builder()
                 .packageName("conda_recipe")
                 .fileName("meta.yaml")
-                .addContents(metaYaml)
+                .addContents(PythonMetaYaml.builder()
+                        .condaPackageName(config.packageName().get())
+                        .packageVersion(config.packageVersion().get())
+                        .addInstallDependencies("requests", "typing")
+                        .addInstallDependencies(String.format("conjure-python-client >=%s,<%s",
+                                config.minConjureClientVersion(), config.maxConjureClientVersion()))
+                        .build())
                 .build();
     }
 }

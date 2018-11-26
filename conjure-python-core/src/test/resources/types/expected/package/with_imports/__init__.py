@@ -1,19 +1,6 @@
-# this is package package.with_imports
-from ..product import AnyMapExample
-from ..product import DateTimeAliasExample
-from ..product import ManyFieldExample
-from ..product import ReferenceAliasExample
-from ..product import RidAliasExample
-from ..product import StringAliasExample
-from ..product import StringExample
+from ..product import AnyMapExample, DateTimeAliasExample, ManyFieldExample, ReferenceAliasExample, RidAliasExample, StringAliasExample, StringExample
 from ..product_datasets import BackingFileSystem
-from conjure_python_client import *
-from typing import Any
-from typing import Dict
-from typing import List
-from typing import Optional
-from typing import Set
-from typing import Tuple
+from conjure_python_client import ConjureBeanType, ConjureDecoder, ConjureEncoder, ConjureFieldDefinition, ConjureUnionType, DictType, Service
 
 class ComplexObjectWithImports(ConjureBeanType):
 
