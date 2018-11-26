@@ -153,8 +153,7 @@ public final class DefaultBeanGenerator implements PythonBeanGenerator {
 
         return UnionSnippet.builder()
                 .className(typeDef.getTypeName().getName())
-                .addImports(UnionSnippet.CONJURE_IMPORT)
-                .addImports(UnionSnippet.ABC_IMPORT)
+                .addAllImports(UnionSnippet.DEFAULT_IMPORTS)
                 .addAllImports(imports)
                 .docs(typeDef.getDocs())
                 .options(options)
