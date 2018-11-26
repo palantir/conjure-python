@@ -26,6 +26,7 @@ import com.palantir.conjure.python.poet.PythonField;
 import com.palantir.conjure.python.poet.PythonImport;
 import com.palantir.conjure.python.poet.PythonSnippet;
 import com.palantir.conjure.python.poet.UnionSnippet;
+import com.palantir.conjure.python.poet.UnionVisitorSnippet;
 import com.palantir.conjure.spec.AliasDefinition;
 import com.palantir.conjure.spec.EnumDefinition;
 import com.palantir.conjure.spec.ObjectDefinition;
@@ -154,6 +155,7 @@ public final class DefaultBeanGenerator implements PythonBeanGenerator {
         return UnionSnippet.builder()
                 .className(typeDef.getTypeName().getName())
                 .addImports(UnionSnippet.CONJURE_IMPORT)
+                .addImports(UnionVisitorSnippet.ABC_IMPORTS)
                 .addAllImports(imports)
                 .docs(typeDef.getDocs())
                 .options(options)
