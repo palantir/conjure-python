@@ -151,10 +151,6 @@ public interface UnionSnippet extends PythonSnippet {
         poetWriter.writeLine();
         poetWriter.writeLine();
 
-        emitVisitor(poetWriter);
-    }
-
-    default void emitVisitor(PythonPoetWriter poetWriter) {
         poetWriter.writeIndentedLine(String.format("class %sVisitor(ABCMeta('ABC', (object,), {})):", className()));
         poetWriter.increaseIndent();
         options().forEach(option -> {
