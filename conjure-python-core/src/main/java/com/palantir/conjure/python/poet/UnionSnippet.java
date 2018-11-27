@@ -17,6 +17,7 @@
 package com.palantir.conjure.python.poet;
 
 import com.google.common.base.Joiner;
+import com.google.common.collect.ImmutableList;
 import com.palantir.conjure.python.types.ImportTypeVisitor;
 import com.palantir.conjure.spec.Documentation;
 import java.util.List;
@@ -26,10 +27,15 @@ import org.immutables.value.Value;
 
 @Value.Immutable
 public interface UnionSnippet extends PythonSnippet {
-    PythonImport CONJURE_IMPORT = PythonImport.builder()
-            .moduleSpecifier(ImportTypeVisitor.CONJURE_PYTHON_CLIENT)
-            .addNamedImports("ConjureUnionType", "ConjureFieldDefinition")
-            .build();
+    ImmutableList<PythonImport> DEFAULT_IMPORTS = ImmutableList.of(
+            PythonImport.builder()
+                    .moduleSpecifier(ImportTypeVisitor.CONJURE_PYTHON_CLIENT)
+                    .addNamedImports("ConjureUnionType", "ConjureFieldDefinition")
+                    .build(),
+            PythonImport.builder()
+                    .moduleSpecifier("abc")
+                    .addNamedImports("ABCMeta", "abstractmethod")
+                    .build());
 
     @Override
     @Value.Default
@@ -125,7 +131,44 @@ public interface UnionSnippet extends PythonSnippet {
             poetWriter.decreaseIndent();
         });
 
+        String visitorName = String.format("%sVisitor", className());
+
+        poetWriter.writeLine();
+        poetWriter.writeIndentedLine("def accept(self, visitor):");
+        poetWriter.increaseIndent();
+        poetWriter.writeIndentedLine("# type: (%s) -> Any", visitorName);
+        poetWriter.writeIndentedLine("if not isinstance(visitor, %s):", visitorName);
+        poetWriter.increaseIndent();
+        poetWriter.writeIndentedLine(
+                "raise ValueError('{} is not an instance of %s'.format(visitor.__class__.__name__))",
+                visitorName);
         poetWriter.decreaseIndent();
+        options().forEach(option -> {
+            poetWriter.writeIndentedLine("if self.type == '%s':", option.jsonIdentifier());
+            poetWriter.increaseIndent();
+            poetWriter.writeIndentedLine("return visitor._%s(self.%s)", option.attributeName(),
+                    PythonIdentifierSanitizer.sanitize(option.attributeName()));
+            poetWriter.decreaseIndent();
+        });
+        poetWriter.decreaseIndent();
+        poetWriter.decreaseIndent();
+        poetWriter.writeLine();
+        poetWriter.writeLine();
+
+        poetWriter.writeIndentedLine(String.format("class %s(ABCMeta('ABC', (object,), {})):", visitorName));
+        poetWriter.increaseIndent();
+        options().forEach(option -> {
+            poetWriter.writeLine();
+            poetWriter.writeIndentedLine("@abstractmethod");
+            poetWriter.writeIndentedLine("def _%s(self, %s):", option.attributeName(),
+                    PythonIdentifierSanitizer.sanitize(option.attributeName()));
+            poetWriter.increaseIndent();
+            poetWriter.writeIndentedLine("# type: (%s) -> Any", option.myPyType());
+            poetWriter.writeIndentedLine("pass");
+            poetWriter.decreaseIndent();
+        });
+        poetWriter.decreaseIndent();
+        poetWriter.writeLine();
         poetWriter.writeLine();
     }
 

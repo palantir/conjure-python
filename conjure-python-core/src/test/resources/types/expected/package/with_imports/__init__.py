@@ -1,5 +1,6 @@
 from ..product import AnyMapExample, DateTimeAliasExample, ManyFieldExample, ReferenceAliasExample, RidAliasExample, StringAliasExample, StringExample
 from ..product_datasets import BackingFileSystem
+from abc import ABCMeta, abstractmethod
 from conjure_python_client import ConjureBeanType, ConjureDecoder, ConjureEncoder, ConjureFieldDefinition, ConjureUnionType, DictType, Service
 
 class ComplexObjectWithImports(ConjureBeanType):
@@ -114,6 +115,29 @@ class UnionWithImports(ConjureUnionType):
     def imported(self):
         # type: () -> AnyMapExample
         return self._imported
+
+    def accept(self, visitor):
+        # type: (UnionWithImportsVisitor) -> Any
+        if not isinstance(visitor, UnionWithImportsVisitor):
+            raise ValueError('{} is not an instance of UnionWithImportsVisitor'.format(visitor.__class__.__name__))
+        if self.type == 'string':
+            return visitor._string(self.string)
+        if self.type == 'imported':
+            return visitor._imported(self.imported)
+
+
+class UnionWithImportsVisitor(ABCMeta('ABC', (object,), {})):
+
+    @abstractmethod
+    def _string(self, string):
+        # type: (str) -> Any
+        pass
+
+    @abstractmethod
+    def _imported(self, imported):
+        # type: (AnyMapExample) -> Any
+        pass
+
 
 AliasImportedObject = ManyFieldExample
 

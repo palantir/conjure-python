@@ -1,3 +1,4 @@
+from abc import ABCMeta, abstractmethod
 from conjure_python_client import BinaryType, ConjureBeanType, ConjureEnumType, ConjureFieldDefinition, ConjureUnionType, DictType, ListType, OptionalType
 from typing import Any, List, Optional, Set
 
@@ -765,6 +766,64 @@ class UnionTypeExample(ConjureUnionType):
     def interface(self):
         # type: () -> int
         return self._interface
+
+    def accept(self, visitor):
+        # type: (UnionTypeExampleVisitor) -> Any
+        if not isinstance(visitor, UnionTypeExampleVisitor):
+            raise ValueError('{} is not an instance of UnionTypeExampleVisitor'.format(visitor.__class__.__name__))
+        if self.type == 'stringExample':
+            return visitor._string_example(self.string_example)
+        if self.type == 'set':
+            return visitor._set(self.set)
+        if self.type == 'thisFieldIsAnInteger':
+            return visitor._this_field_is_an_integer(self.this_field_is_an_integer)
+        if self.type == 'alsoAnInteger':
+            return visitor._also_an_integer(self.also_an_integer)
+        if self.type == 'if':
+            return visitor._if(self.if_)
+        if self.type == 'new':
+            return visitor._new(self.new)
+        if self.type == 'interface':
+            return visitor._interface(self.interface)
+
+
+class UnionTypeExampleVisitor(ABCMeta('ABC', (object,), {})):
+
+    @abstractmethod
+    def _string_example(self, string_example):
+        # type: (StringExample) -> Any
+        pass
+
+    @abstractmethod
+    def _set(self, set):
+        # type: (List[str]) -> Any
+        pass
+
+    @abstractmethod
+    def _this_field_is_an_integer(self, this_field_is_an_integer):
+        # type: (int) -> Any
+        pass
+
+    @abstractmethod
+    def _also_an_integer(self, also_an_integer):
+        # type: (int) -> Any
+        pass
+
+    @abstractmethod
+    def _if(self, if_):
+        # type: (int) -> Any
+        pass
+
+    @abstractmethod
+    def _new(self, new):
+        # type: (int) -> Any
+        pass
+
+    @abstractmethod
+    def _interface(self, interface):
+        # type: (int) -> Any
+        pass
+
 
 class UuidExample(ConjureBeanType):
 
