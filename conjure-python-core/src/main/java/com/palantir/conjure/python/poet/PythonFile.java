@@ -67,16 +67,25 @@ public interface PythonFile extends Emittable {
 
     class PythonSnippetComparator implements Comparator<PythonSnippet> {
         @Override
-        public int compare(PythonSnippet pc1, PythonSnippet pc2) {
+        public int compare(PythonSnippet ps1, PythonSnippet ps2) {
             // PythonAliases need to occur last, since they potentially reference
             // objects defined in the current module
-            if (pc1 instanceof AliasSnippet && !(pc2 instanceof AliasSnippet)) {
+            if (ps1 instanceof AliasSnippet && !(ps2 instanceof AliasSnippet)) {
                 return 1;
-            } else if (!(pc1 instanceof AliasSnippet) && pc2 instanceof AliasSnippet) {
+            } else if (!(ps1 instanceof AliasSnippet) && ps2 instanceof AliasSnippet) {
                 return -1;
-            } else {
-                return Comparator.comparing(PythonSnippet::idForSorting).compare(pc1, pc2);
+            } else if ((ps1 instanceof AliasSnippet) && (ps2 instanceof AliasSnippet)) {
+                // Ensure that all aliases are defined before they are referenced by doing a simple topological sort
+                AliasSnippet as1 = (AliasSnippet) ps1;
+                AliasSnippet as2 = (AliasSnippet) ps2;
+                if (as1.className().contains(as2.aliasName())) {
+                    return -1;
+                }
+                if  (as2.className().contains(as1.aliasName())) {
+                    return 1;
+                }
             }
+            return Comparator.comparing(PythonSnippet::idForSorting).compare(ps1, ps2);
         }
     }
 }
