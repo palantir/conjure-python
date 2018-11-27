@@ -800,6 +800,8 @@ IntegerAliasExample = int
 
 MapAliasExample = DictType(str, object)
 
+NestedAliasExample = RecursiveObjectAlias
+
 RecursiveObjectAlias = RecursiveObjectExample
 
 ReferenceAliasExample = AnyExample
