@@ -4,4 +4,3 @@ include 'conjure-python'
 include 'conjure-python-core'
 include 'conjure-python-verifier'
 
-enableFeaturePreview('STABLE_PUBLISHING')
