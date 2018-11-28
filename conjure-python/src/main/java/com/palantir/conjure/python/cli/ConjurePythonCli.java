@@ -86,7 +86,7 @@ public final class ConjurePythonCli implements Runnable {
 
         @CommandLine.Option(names = "--writeCondaRecipe",
                 defaultValue = "false",
-                description = "Only generate the plain source without any package metadata")
+                description = "Generate a `conda_recipe/meta.yaml`")
         private boolean writeCondaRecipe;
 
         @CommandLine.Unmatched
