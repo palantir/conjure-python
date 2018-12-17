@@ -40,7 +40,7 @@ public final class ConjurePythonGeneratorTest {
     private final ConjurePythonGenerator generator = new ConjurePythonGenerator(
             new DefaultBeanGenerator(), new ClientGenerator(),
             GeneratorConfiguration.builder()
-                    .packageName("package")
+                    .packageName("package-name")
                     .packageVersion("0.0.0")
                     .packageDescription("project description")
                     .minConjureClientVersion("1.0.0")
