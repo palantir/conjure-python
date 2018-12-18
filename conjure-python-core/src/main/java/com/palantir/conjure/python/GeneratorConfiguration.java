@@ -31,6 +31,10 @@ public interface GeneratorConfiguration {
 
     boolean generateRawSource();
 
+    default Optional<String> pythonicPackageName() {
+        return packageName().map(packageName -> packageName.replace('-', '_'));
+    }
+
     @Value.Default
     default String maxConjureClientVersion() {
         String majorVersion = Splitter.on('.').splitToList(minConjureClientVersion()).get(0);

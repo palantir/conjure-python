@@ -77,8 +77,8 @@ public final class ConjurePythonGenerator {
         PackageNameProcessor.Builder packageNameProcessorBuilder = PackageNameProcessor.builder()
                 .addProcessors(new TwoComponentStrippingPackageNameProcessor())
                 .addProcessors(new FlatteningPackageNameProcessor());
-        if (config.packageName().isPresent()) {
-            String pythonicPackageName = config.packageName().get().replace('-', '_');
+        if (config.pythonicPackageName().isPresent()) {
+            String pythonicPackageName = config.pythonicPackageName().get();
             packageNameProcessorBuilder.addProcessors(new TopLevelAddingPackageNameProcessor(pythonicPackageName));
         }
         PackageNameProcessor packageNameProcessor = packageNameProcessorBuilder.build();
@@ -120,9 +120,9 @@ public final class ConjurePythonGenerator {
 
     private PythonFile getRootInit(PackageNameProcessor packageNameProcessor,
             Set<String> packageNames) {
-        String rootInitFilePath = config.packageName().orElse("");
+        String rootInitFilePath = config.pythonicPackageName().orElse("");
         PythonFile.Builder builder = PythonFile.builder()
-                .packageName(config.packageName().orElse("."))
+                .packageName(config.pythonicPackageName().orElse("."))
                 .fileName("__init__.py")
                 .addContents(AllSnippet.builder()
                         .contents(packageNames.stream()

@@ -1,7 +1,7 @@
 from setuptools import find_packages, setup
 
 setup(
-    name='package',
+    name='package-name',
     version='0.0.0',
     description='project description',
     packages=find_packages(),
