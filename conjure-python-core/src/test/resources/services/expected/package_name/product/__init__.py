@@ -13,7 +13,7 @@ class CreateDatasetRequest(ConjureBeanType):
     _file_system_id = None # type: str
     _path = None # type: str
 
-    __slots__ = ['file_system_id', 'path']
+    __slots__ = ['_file_system_id', '_path']
 
     def __init__(self, file_system_id, path):
         # type: (str, str) -> None

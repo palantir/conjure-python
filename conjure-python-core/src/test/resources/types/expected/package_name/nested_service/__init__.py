@@ -42,7 +42,7 @@ class SimpleObject(ConjureBeanType):
 
     _string = None # type: str
 
-    __slots__ = ['string']
+    __slots__ = ['_string']
 
     def __init__(self, string):
         # type: (str) -> None

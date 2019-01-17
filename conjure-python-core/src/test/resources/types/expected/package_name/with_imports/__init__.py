@@ -16,7 +16,7 @@ class ComplexObjectWithImports(ConjureBeanType):
     _string = None # type: str
     _imported = None # type: StringExample
 
-    __slots__ = ['string', 'imported']
+    __slots__ = ['_string', '_imported']
 
     def __init__(self, imported, string):
         # type: (StringExample, str) -> None
@@ -75,7 +75,7 @@ class ImportedAliasInMaps(ConjureBeanType):
 
     _aliases = None # type: Dict[RidAliasExample, DateTimeAliasExample]
 
-    __slots__ = ['aliases']
+    __slots__ = ['_aliases']
 
     def __init__(self, aliases):
         # type: (Dict[RidAliasExample, DateTimeAliasExample]) -> None
@@ -99,7 +99,7 @@ class UnionWithImports(ConjureUnionType):
             'imported': ConjureFieldDefinition('imported', AnyMapExample)
         }
 
-    __slots__ = ['string', 'imported']
+    __slots__ = ['_string', '_imported']
 
     def __init__(self, string=None, imported=None):
         if (string is not None) + (imported is not None) != 1:
