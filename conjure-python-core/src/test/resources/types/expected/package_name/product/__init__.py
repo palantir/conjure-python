@@ -1,11 +1,11 @@
-import __builtin__
 from abc import ABCMeta, abstractmethod
+import builtin
 from conjure_python_client import BinaryType, ConjureBeanType, ConjureEnumType, ConjureFieldDefinition, ConjureUnionType, DictType, ListType, OptionalType
 from typing import Any, List, Optional, Set
 
 class AliasAsMapKeyExample(ConjureBeanType):
 
-    @__builtin__.classmethod
+    @builtin.classmethod
     def _fields(cls):
         # type: () -> Dict[str, ConjureFieldDefinition]
         return {
@@ -36,44 +36,44 @@ class AliasAsMapKeyExample(ConjureBeanType):
         self._datetimes = datetimes
         self._uuids = uuids
 
-    @__builtin__.property
+    @builtin.property
     def strings(self):
         # type: () -> Dict[StringAliasExample, ManyFieldExample]
         return self._strings
 
-    @__builtin__.property
+    @builtin.property
     def rids(self):
         # type: () -> Dict[RidAliasExample, ManyFieldExample]
         return self._rids
 
-    @__builtin__.property
+    @builtin.property
     def bearertokens(self):
         # type: () -> Dict[BearerTokenAliasExample, ManyFieldExample]
         return self._bearertokens
 
-    @__builtin__.property
+    @builtin.property
     def integers(self):
         # type: () -> Dict[IntegerAliasExample, ManyFieldExample]
         return self._integers
 
-    @__builtin__.property
+    @builtin.property
     def safelongs(self):
         # type: () -> Dict[SafeLongAliasExample, ManyFieldExample]
         return self._safelongs
 
-    @__builtin__.property
+    @builtin.property
     def datetimes(self):
         # type: () -> Dict[DateTimeAliasExample, ManyFieldExample]
         return self._datetimes
 
-    @__builtin__.property
+    @builtin.property
     def uuids(self):
         # type: () -> Dict[UuidAliasExample, ManyFieldExample]
         return self._uuids
 
 class AnyExample(ConjureBeanType):
 
-    @__builtin__.classmethod
+    @builtin.classmethod
     def _fields(cls):
         # type: () -> Dict[str, ConjureFieldDefinition]
         return {
@@ -86,14 +86,14 @@ class AnyExample(ConjureBeanType):
         # type: (Any) -> None
         self._any = any
 
-    @__builtin__.property
+    @builtin.property
     def any(self):
         # type: () -> Any
         return self._any
 
 class AnyMapExample(ConjureBeanType):
 
-    @__builtin__.classmethod
+    @builtin.classmethod
     def _fields(cls):
         # type: () -> Dict[str, ConjureFieldDefinition]
         return {
@@ -106,14 +106,14 @@ class AnyMapExample(ConjureBeanType):
         # type: (Dict[str, Any]) -> None
         self._items = items
 
-    @__builtin__.property
+    @builtin.property
     def items(self):
         # type: () -> Dict[str, Any]
         return self._items
 
 class BearerTokenExample(ConjureBeanType):
 
-    @__builtin__.classmethod
+    @builtin.classmethod
     def _fields(cls):
         # type: () -> Dict[str, ConjureFieldDefinition]
         return {
@@ -126,14 +126,14 @@ class BearerTokenExample(ConjureBeanType):
         # type: (str) -> None
         self._bearer_token_value = bearer_token_value
 
-    @__builtin__.property
+    @builtin.property
     def bearer_token_value(self):
         # type: () -> str
         return self._bearer_token_value
 
 class BinaryExample(ConjureBeanType):
 
-    @__builtin__.classmethod
+    @builtin.classmethod
     def _fields(cls):
         # type: () -> Dict[str, ConjureFieldDefinition]
         return {
@@ -146,14 +146,14 @@ class BinaryExample(ConjureBeanType):
         # type: (Any) -> None
         self._binary = binary
 
-    @__builtin__.property
+    @builtin.property
     def binary(self):
         # type: () -> Any
         return self._binary
 
 class BooleanExample(ConjureBeanType):
 
-    @__builtin__.classmethod
+    @builtin.classmethod
     def _fields(cls):
         # type: () -> Dict[str, ConjureFieldDefinition]
         return {
@@ -166,14 +166,14 @@ class BooleanExample(ConjureBeanType):
         # type: (bool) -> None
         self._coin = coin
 
-    @__builtin__.property
+    @builtin.property
     def coin(self):
         # type: () -> bool
         return self._coin
 
 class CreateDatasetRequest(ConjureBeanType):
 
-    @__builtin__.classmethod
+    @builtin.classmethod
     def _fields(cls):
         # type: () -> Dict[str, ConjureFieldDefinition]
         return {
@@ -189,19 +189,19 @@ class CreateDatasetRequest(ConjureBeanType):
         self._file_system_id = file_system_id
         self._path = path
 
-    @__builtin__.property
+    @builtin.property
     def file_system_id(self):
         # type: () -> str
         return self._file_system_id
 
-    @__builtin__.property
+    @builtin.property
     def path(self):
         # type: () -> str
         return self._path
 
 class DateTimeExample(ConjureBeanType):
 
-    @__builtin__.classmethod
+    @builtin.classmethod
     def _fields(cls):
         # type: () -> Dict[str, ConjureFieldDefinition]
         return {
@@ -214,14 +214,14 @@ class DateTimeExample(ConjureBeanType):
         # type: (str) -> None
         self._datetime = datetime
 
-    @__builtin__.property
+    @builtin.property
     def datetime(self):
         # type: () -> str
         return self._datetime
 
 class DoubleExample(ConjureBeanType):
 
-    @__builtin__.classmethod
+    @builtin.classmethod
     def _fields(cls):
         # type: () -> Dict[str, ConjureFieldDefinition]
         return {
@@ -234,14 +234,14 @@ class DoubleExample(ConjureBeanType):
         # type: (float) -> None
         self._double_value = double_value
 
-    @__builtin__.property
+    @builtin.property
     def double_value(self):
         # type: () -> float
         return self._double_value
 
 class EmptyObjectExample(ConjureBeanType):
 
-    @__builtin__.classmethod
+    @builtin.classmethod
     def _fields(cls):
         # type: () -> Dict[str, ConjureFieldDefinition]
         return {
@@ -264,7 +264,7 @@ class EnumExample(ConjureEnumType):
 
 class EnumFieldExample(ConjureBeanType):
 
-    @__builtin__.classmethod
+    @builtin.classmethod
     def _fields(cls):
         # type: () -> Dict[str, ConjureFieldDefinition]
         return {
@@ -277,14 +277,14 @@ class EnumFieldExample(ConjureBeanType):
         # type: (EnumExample) -> None
         self._enum = enum
 
-    @__builtin__.property
+    @builtin.property
     def enum(self):
         # type: () -> EnumExample
         return self._enum
 
 class IntegerExample(ConjureBeanType):
 
-    @__builtin__.classmethod
+    @builtin.classmethod
     def _fields(cls):
         # type: () -> Dict[str, ConjureFieldDefinition]
         return {
@@ -297,14 +297,14 @@ class IntegerExample(ConjureBeanType):
         # type: (int) -> None
         self._integer = integer
 
-    @__builtin__.property
+    @builtin.property
     def integer(self):
         # type: () -> int
         return self._integer
 
 class ListExample(ConjureBeanType):
 
-    @__builtin__.classmethod
+    @builtin.classmethod
     def _fields(cls):
         # type: () -> Dict[str, ConjureFieldDefinition]
         return {
@@ -323,24 +323,24 @@ class ListExample(ConjureBeanType):
         self._primitive_items = primitive_items
         self._double_items = double_items
 
-    @__builtin__.property
+    @builtin.property
     def items(self):
         # type: () -> List[str]
         return self._items
 
-    @__builtin__.property
+    @builtin.property
     def primitive_items(self):
         # type: () -> List[int]
         return self._primitive_items
 
-    @__builtin__.property
+    @builtin.property
     def double_items(self):
         # type: () -> List[float]
         return self._double_items
 
 class ManyFieldExample(ConjureBeanType):
 
-    @__builtin__.classmethod
+    @builtin.classmethod
     def _fields(cls):
         # type: () -> Dict[str, ConjureFieldDefinition]
         return {
@@ -374,49 +374,49 @@ class ManyFieldExample(ConjureBeanType):
         self._map = map
         self._alias = alias
 
-    @__builtin__.property
+    @builtin.property
     def string(self):
         # type: () -> str
         """docs for string field"""
         return self._string
 
-    @__builtin__.property
+    @builtin.property
     def integer(self):
         # type: () -> int
         """docs for integer field"""
         return self._integer
 
-    @__builtin__.property
+    @builtin.property
     def double_value(self):
         # type: () -> float
         """docs for doubleValue field"""
         return self._double_value
 
-    @__builtin__.property
+    @builtin.property
     def optional_item(self):
         # type: () -> Optional[str]
         """docs for optionalItem field"""
         return self._optional_item
 
-    @__builtin__.property
+    @builtin.property
     def items(self):
         # type: () -> List[str]
         """docs for items field"""
         return self._items
 
-    @__builtin__.property
+    @builtin.property
     def set(self):
         # type: () -> List[str]
         """docs for set field"""
         return self._set
 
-    @__builtin__.property
+    @builtin.property
     def map(self):
         # type: () -> Dict[str, str]
         """docs for map field"""
         return self._map
 
-    @__builtin__.property
+    @builtin.property
     def alias(self):
         # type: () -> StringAliasExample
         """docs for alias field"""
@@ -424,7 +424,7 @@ class ManyFieldExample(ConjureBeanType):
 
 class MapExample(ConjureBeanType):
 
-    @__builtin__.classmethod
+    @builtin.classmethod
     def _fields(cls):
         # type: () -> Dict[str, ConjureFieldDefinition]
         return {
@@ -437,14 +437,14 @@ class MapExample(ConjureBeanType):
         # type: (Dict[str, str]) -> None
         self._items = items
 
-    @__builtin__.property
+    @builtin.property
     def items(self):
         # type: () -> Dict[str, str]
         return self._items
 
 class OptionalExample(ConjureBeanType):
 
-    @__builtin__.classmethod
+    @builtin.classmethod
     def _fields(cls):
         # type: () -> Dict[str, ConjureFieldDefinition]
         return {
@@ -457,14 +457,14 @@ class OptionalExample(ConjureBeanType):
         # type: (Optional[str]) -> None
         self._item = item
 
-    @__builtin__.property
+    @builtin.property
     def item(self):
         # type: () -> Optional[str]
         return self._item
 
 class PrimitiveOptionalsExample(ConjureBeanType):
 
-    @__builtin__.classmethod
+    @builtin.classmethod
     def _fields(cls):
         # type: () -> Dict[str, ConjureFieldDefinition]
         return {
@@ -495,44 +495,44 @@ class PrimitiveOptionalsExample(ConjureBeanType):
         self._bearertoken = bearertoken
         self._uuid = uuid
 
-    @__builtin__.property
+    @builtin.property
     def num(self):
         # type: () -> Optional[float]
         return self._num
 
-    @__builtin__.property
+    @builtin.property
     def bool(self):
         # type: () -> Optional[bool]
         return self._bool
 
-    @__builtin__.property
+    @builtin.property
     def integer(self):
         # type: () -> Optional[int]
         return self._integer
 
-    @__builtin__.property
+    @builtin.property
     def safelong(self):
         # type: () -> Optional[int]
         return self._safelong
 
-    @__builtin__.property
+    @builtin.property
     def rid(self):
         # type: () -> Optional[str]
         return self._rid
 
-    @__builtin__.property
+    @builtin.property
     def bearertoken(self):
         # type: () -> Optional[str]
         return self._bearertoken
 
-    @__builtin__.property
+    @builtin.property
     def uuid(self):
         # type: () -> Optional[str]
         return self._uuid
 
 class RecursiveObjectExample(ConjureBeanType):
 
-    @__builtin__.classmethod
+    @builtin.classmethod
     def _fields(cls):
         # type: () -> Dict[str, ConjureFieldDefinition]
         return {
@@ -545,14 +545,14 @@ class RecursiveObjectExample(ConjureBeanType):
         # type: (Optional[RecursiveObjectAlias]) -> None
         self._recursive_field = recursive_field
 
-    @__builtin__.property
+    @builtin.property
     def recursive_field(self):
         # type: () -> Optional[RecursiveObjectAlias]
         return self._recursive_field
 
 class ReservedKeyExample(ConjureBeanType):
 
-    @__builtin__.classmethod
+    @builtin.classmethod
     def _fields(cls):
         # type: () -> Dict[str, ConjureFieldDefinition]
         return {
@@ -574,29 +574,29 @@ class ReservedKeyExample(ConjureBeanType):
         self._field_name_with_dashes = field_name_with_dashes
         self._memoized_hash_code = memoized_hash_code
 
-    @__builtin__.property
+    @builtin.property
     def package(self):
         # type: () -> str
         return self._package
 
-    @__builtin__.property
+    @builtin.property
     def interface(self):
         # type: () -> str
         return self._interface
 
-    @__builtin__.property
+    @builtin.property
     def field_name_with_dashes(self):
         # type: () -> str
         return self._field_name_with_dashes
 
-    @__builtin__.property
+    @builtin.property
     def memoized_hash_code(self):
         # type: () -> int
         return self._memoized_hash_code
 
 class RidExample(ConjureBeanType):
 
-    @__builtin__.classmethod
+    @builtin.classmethod
     def _fields(cls):
         # type: () -> Dict[str, ConjureFieldDefinition]
         return {
@@ -609,14 +609,14 @@ class RidExample(ConjureBeanType):
         # type: (str) -> None
         self._rid_value = rid_value
 
-    @__builtin__.property
+    @builtin.property
     def rid_value(self):
         # type: () -> str
         return self._rid_value
 
 class SafeLongExample(ConjureBeanType):
 
-    @__builtin__.classmethod
+    @builtin.classmethod
     def _fields(cls):
         # type: () -> Dict[str, ConjureFieldDefinition]
         return {
@@ -629,14 +629,14 @@ class SafeLongExample(ConjureBeanType):
         # type: (int) -> None
         self._safe_long_value = safe_long_value
 
-    @__builtin__.property
+    @builtin.property
     def safe_long_value(self):
         # type: () -> int
         return self._safe_long_value
 
 class SetExample(ConjureBeanType):
 
-    @__builtin__.classmethod
+    @builtin.classmethod
     def _fields(cls):
         # type: () -> Dict[str, ConjureFieldDefinition]
         return {
@@ -652,19 +652,19 @@ class SetExample(ConjureBeanType):
         self._items = items
         self._double_items = double_items
 
-    @__builtin__.property
+    @builtin.property
     def items(self):
         # type: () -> List[str]
         return self._items
 
-    @__builtin__.property
+    @builtin.property
     def double_items(self):
         # type: () -> List[float]
         return self._double_items
 
 class StringExample(ConjureBeanType):
 
-    @__builtin__.classmethod
+    @builtin.classmethod
     def _fields(cls):
         # type: () -> Dict[str, ConjureFieldDefinition]
         return {
@@ -677,7 +677,7 @@ class StringExample(ConjureBeanType):
         # type: (str) -> None
         self._string = string
 
-    @__builtin__.property
+    @builtin.property
     def string(self):
         # type: () -> str
         return self._string
@@ -693,7 +693,7 @@ class UnionTypeExample(ConjureUnionType):
     _new = None # type: int
     _interface = None # type: int
 
-    @__builtin__.classmethod
+    @builtin.classmethod
     def _options(cls):
         # type: () -> Dict[str, ConjureFieldDefinition]
         return {
@@ -828,7 +828,7 @@ class UnionTypeExampleVisitor(ABCMeta('ABC', (object,), {})):
 
 class UuidExample(ConjureBeanType):
 
-    @__builtin__.classmethod
+    @builtin.classmethod
     def _fields(cls):
         # type: () -> Dict[str, ConjureFieldDefinition]
         return {
@@ -841,7 +841,7 @@ class UuidExample(ConjureBeanType):
         # type: (str) -> None
         self._uuid = uuid
 
-    @__builtin__.property
+    @builtin.property
     def uuid(self):
         # type: () -> str
         return self._uuid

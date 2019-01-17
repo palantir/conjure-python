@@ -1,12 +1,12 @@
 from ..product import AnyMapExample, DateTimeAliasExample, ManyFieldExample, ReferenceAliasExample, RidAliasExample, StringAliasExample, StringExample
 from ..product_datasets import BackingFileSystem
-import __builtin__
 from abc import ABCMeta, abstractmethod
+import builtin
 from conjure_python_client import ConjureBeanType, ConjureDecoder, ConjureEncoder, ConjureFieldDefinition, ConjureUnionType, DictType, Service
 
 class ComplexObjectWithImports(ConjureBeanType):
 
-    @__builtin__.classmethod
+    @builtin.classmethod
     def _fields(cls):
         # type: () -> Dict[str, ConjureFieldDefinition]
         return {
@@ -22,12 +22,12 @@ class ComplexObjectWithImports(ConjureBeanType):
         self._string = string
         self._imported = imported
 
-    @__builtin__.property
+    @builtin.property
     def string(self):
         # type: () -> str
         return self._string
 
-    @__builtin__.property
+    @builtin.property
     def imported(self):
         # type: () -> StringExample
         return self._imported
@@ -65,7 +65,7 @@ class ImportService(Service):
 
 class ImportedAliasInMaps(ConjureBeanType):
 
-    @__builtin__.classmethod
+    @builtin.classmethod
     def _fields(cls):
         # type: () -> Dict[str, ConjureFieldDefinition]
         return {
@@ -78,7 +78,7 @@ class ImportedAliasInMaps(ConjureBeanType):
         # type: (Dict[RidAliasExample, DateTimeAliasExample]) -> None
         self._aliases = aliases
 
-    @__builtin__.property
+    @builtin.property
     def aliases(self):
         # type: () -> Dict[RidAliasExample, DateTimeAliasExample]
         return self._aliases
@@ -88,7 +88,7 @@ class UnionWithImports(ConjureUnionType):
     _string = None # type: str
     _imported = None # type: AnyMapExample
 
-    @__builtin__.classmethod
+    @builtin.classmethod
     def _options(cls):
         # type: () -> Dict[str, ConjureFieldDefinition]
         return {

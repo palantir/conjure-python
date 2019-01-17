@@ -32,7 +32,7 @@ public interface BeanSnippet extends PythonSnippet {
                     .moduleSpecifier(ImportTypeVisitor.CONJURE_PYTHON_CLIENT)
                     .addNamedImports("ConjureBeanType", "ConjureFieldDefinition")
                     .build(),
-            PythonImport.of("__builtin__"));
+            PythonImport.of("builtin"));
 
     @Override
     @Value.Default
@@ -55,7 +55,7 @@ public interface BeanSnippet extends PythonSnippet {
         poetWriter.writeLine();
 
         // record off the fields, for things like serialization (python... has no types)
-        poetWriter.writeIndentedLine("@__builtin__.classmethod");
+        poetWriter.writeIndentedLine("@builtin.classmethod");
         poetWriter.writeIndentedLine("def _fields(cls):");
         poetWriter.increaseIndent();
         poetWriter.writeIndentedLine("# type: () -> Dict[str, ConjureFieldDefinition]");
@@ -109,7 +109,7 @@ public interface BeanSnippet extends PythonSnippet {
         // each property
         fields().forEach(field -> {
             poetWriter.writeLine();
-            poetWriter.writeIndentedLine("@__builtin__.property");
+            poetWriter.writeIndentedLine("@builtin.property");
             poetWriter.writeIndentedLine(String.format("def %s(self):",
                     PythonIdentifierSanitizer.sanitize(field.attributeName())));
 
