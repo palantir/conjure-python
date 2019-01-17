@@ -1,9 +1,9 @@
-import builtin
+import builtins
 from conjure_python_client import ConjureBeanType, ConjureFieldDefinition, DictType
 
 class BackingFileSystem(ConjureBeanType):
 
-    @builtin.classmethod
+    @builtins.classmethod
     def _fields(cls):
         # type: () -> Dict[str, ConjureFieldDefinition]
         return {
@@ -22,25 +22,25 @@ class BackingFileSystem(ConjureBeanType):
         self._base_uri = base_uri
         self._configuration = configuration
 
-    @builtin.property
+    @builtins.property
     def file_system_id(self):
         # type: () -> str
         """The name by which this file system is identified."""
         return self._file_system_id
 
-    @builtin.property
+    @builtins.property
     def base_uri(self):
         # type: () -> str
         return self._base_uri
 
-    @builtin.property
+    @builtins.property
     def configuration(self):
         # type: () -> Dict[str, str]
         return self._configuration
 
 class Dataset(ConjureBeanType):
 
-    @builtin.classmethod
+    @builtins.classmethod
     def _fields(cls):
         # type: () -> Dict[str, ConjureFieldDefinition]
         return {
@@ -56,12 +56,12 @@ class Dataset(ConjureBeanType):
         self._file_system_id = file_system_id
         self._rid = rid
 
-    @builtin.property
+    @builtins.property
     def file_system_id(self):
         # type: () -> str
         return self._file_system_id
 
-    @builtin.property
+    @builtins.property
     def rid(self):
         # type: () -> str
         """Uniquely identifies this dataset."""
