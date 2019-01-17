@@ -26,6 +26,10 @@ public interface PythonImport extends Emittable {
 
     Set<String> namedImports();
 
+    static PythonImport of(String moduleSpecifier) {
+        return builder().moduleSpecifier(moduleSpecifier).build();
+    }
+
     static PythonImport of(String moduleSpecifier, String namedImport) {
         return builder()
                 .moduleSpecifier(moduleSpecifier)
@@ -35,8 +39,13 @@ public interface PythonImport extends Emittable {
 
     @Override
     default void emit(PythonPoetWriter poetWriter) {
-        poetWriter.writeIndentedLine(String.format("from %s import %s",
-                moduleSpecifier(), namedImports().stream().sorted().collect(Collectors.joining(", "))));
+        // Namespace imports
+        if (namedImports().isEmpty()) {
+            poetWriter.writeIndentedLine(String.format("import %s", moduleSpecifier()));
+        } else {
+            poetWriter.writeIndentedLine(String.format("from %s import %s",
+                    moduleSpecifier(), namedImports().stream().sorted().collect(Collectors.joining(", "))));
+        }
     }
 
     class Builder extends ImmutablePythonImport.Builder {}

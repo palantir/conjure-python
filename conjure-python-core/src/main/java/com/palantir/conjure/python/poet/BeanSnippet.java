@@ -17,6 +17,7 @@
 package com.palantir.conjure.python.poet;
 
 import com.google.common.base.Joiner;
+import com.google.common.collect.ImmutableList;
 import com.palantir.conjure.python.types.ImportTypeVisitor;
 import com.palantir.conjure.spec.Documentation;
 import java.util.List;
@@ -26,10 +27,12 @@ import org.immutables.value.Value;
 
 @Value.Immutable
 public interface BeanSnippet extends PythonSnippet {
-    PythonImport CONJURE_IMPORT = PythonImport.builder()
-            .moduleSpecifier(ImportTypeVisitor.CONJURE_PYTHON_CLIENT)
-            .addNamedImports("ConjureBeanType", "ConjureFieldDefinition")
-            .build();
+    ImmutableList<PythonImport> DEFAULT_IMPORTS = ImmutableList.of(
+            PythonImport.builder()
+                    .moduleSpecifier(ImportTypeVisitor.CONJURE_PYTHON_CLIENT)
+                    .addNamedImports("ConjureBeanType", "ConjureFieldDefinition")
+                    .build(),
+            PythonImport.of("__builtin__"));
 
     @Override
     @Value.Default
@@ -52,7 +55,7 @@ public interface BeanSnippet extends PythonSnippet {
         poetWriter.writeLine();
 
         // record off the fields, for things like serialization (python... has no types)
-        poetWriter.writeIndentedLine("@classmethod");
+        poetWriter.writeIndentedLine("@__builtin__.classmethod");
         poetWriter.writeIndentedLine("def _fields(cls):");
         poetWriter.increaseIndent();
         poetWriter.writeIndentedLine("# type: () -> Dict[str, ConjureFieldDefinition]");
@@ -106,7 +109,7 @@ public interface BeanSnippet extends PythonSnippet {
         // each property
         fields().forEach(field -> {
             poetWriter.writeLine();
-            poetWriter.writeIndentedLine("@property");
+            poetWriter.writeIndentedLine("@__builtin__.property");
             poetWriter.writeIndentedLine(String.format("def %s(self):",
                     PythonIdentifierSanitizer.sanitize(field.attributeName())));
 
