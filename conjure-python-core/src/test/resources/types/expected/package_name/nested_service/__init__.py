@@ -42,6 +42,8 @@ class SimpleObject(ConjureBeanType):
 
     _string = None # type: str
 
+    __slots__ = ['string']
+
     def __init__(self, string):
         # type: (str) -> None
         self._string = string

@@ -79,6 +79,12 @@ public interface BeanSnippet extends PythonSnippet {
 
         poetWriter.writeLine();
 
+        poetWriter.writeIndentedLine(String.format("__slots__ = [%s]", fields().stream()
+                .map(field -> String.format("'%s'", PythonIdentifierSanitizer.sanitize(field.attributeName())))
+                .collect(Collectors.joining(", "))));
+
+        poetWriter.writeLine();
+
         // constructor -- only if there are fields
         if (!fields().isEmpty()) {
             poetWriter.writeIndentedLine(String.format("def __init__(self, %s):",
