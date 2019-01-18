@@ -1,3 +1,4 @@
+import builtins
 from conjure_python_client import ConjureBeanType, ConjureDecoder, ConjureEncoder, ConjureFieldDefinition, Service
 
 class SimpleNestedService(Service):
@@ -33,7 +34,7 @@ class SimpleNestedService(Service):
 
 class SimpleObject(ConjureBeanType):
 
-    @classmethod
+    @builtins.classmethod
     def _fields(cls):
         # type: () -> Dict[str, ConjureFieldDefinition]
         return {
@@ -46,7 +47,7 @@ class SimpleObject(ConjureBeanType):
         # type: (str) -> None
         self._string = string
 
-    @property
+    @builtins.property
     def string(self):
         # type: () -> str
         return self._string

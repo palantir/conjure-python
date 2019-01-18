@@ -9,5 +9,6 @@ setup(
         'requests',
         'typing',
         'conjure-python-client>=1.0.0,<2',
+        'future',
     ],
 )

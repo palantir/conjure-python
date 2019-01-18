@@ -1,8 +1,9 @@
+import builtins
 from conjure_python_client import ConjureBeanType, ConjureFieldDefinition
 
 class CreateDatasetRequest(ConjureBeanType):
 
-    @classmethod
+    @builtins.classmethod
     def _fields(cls):
         # type: () -> Dict[str, ConjureFieldDefinition]
         return {
@@ -18,12 +19,12 @@ class CreateDatasetRequest(ConjureBeanType):
         self._file_system_id = file_system_id
         self._path = path
 
-    @property
+    @builtins.property
     def file_system_id(self):
         # type: () -> str
         return self._file_system_id
 
-    @property
+    @builtins.property
     def path(self):
         # type: () -> str
         return self._path

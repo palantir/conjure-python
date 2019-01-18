@@ -177,7 +177,8 @@ public final class ConjurePythonGenerator {
                 .putOptions("version", config.packageVersion().get())
                 .addInstallDependencies("requests", "typing")
                 .addInstallDependencies(String.format("conjure-python-client>=%s,<%s",
-                        config.minConjureClientVersion(), config.maxConjureClientVersion()));
+                        config.minConjureClientVersion(), config.maxConjureClientVersion()))
+                .addInstallDependencies("future");
         config.packageDescription().ifPresent(value -> builder.putOptions("description", value));
         config.packageUrl().ifPresent(value -> builder.putOptions("url", value));
         config.packageAuthor().ifPresent(value -> builder.putOptions("author", value));

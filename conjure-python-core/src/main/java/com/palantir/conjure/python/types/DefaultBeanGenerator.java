@@ -104,7 +104,7 @@ public final class DefaultBeanGenerator implements PythonBeanGenerator {
 
         return BeanSnippet.builder()
                 .className(typeDef.getTypeName().getName())
-                .addImports(BeanSnippet.CONJURE_IMPORT)
+                .addAllImports(BeanSnippet.DEFAULT_IMPORTS)
                 .addAllImports(imports)
                 .docs(typeDef.getDocs())
                 .fields(fields)

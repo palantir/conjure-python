@@ -35,7 +35,8 @@ public interface UnionSnippet extends PythonSnippet {
             PythonImport.builder()
                     .moduleSpecifier("abc")
                     .addNamedImports("ABCMeta", "abstractmethod")
-                    .build());
+                    .build(),
+            PythonImport.of("builtins"));
 
     @Override
     @Value.Default
@@ -63,7 +64,7 @@ public interface UnionSnippet extends PythonSnippet {
         poetWriter.writeLine();
 
         // record off the options
-        poetWriter.writeIndentedLine("@classmethod");
+        poetWriter.writeIndentedLine("@builtins.classmethod");
         poetWriter.writeIndentedLine("def _options(cls):");
         poetWriter.increaseIndent();
         poetWriter.writeIndentedLine("# type: () -> Dict[str, ConjureFieldDefinition]"); // maybe....?
