@@ -1,5 +1,6 @@
 import builtins
 from conjure_python_client import ConjureBeanType, ConjureFieldDefinition, DictType
+from typing import Dict
 
 class BackingFileSystem(ConjureBeanType):
 

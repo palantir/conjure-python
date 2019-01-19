@@ -1,7 +1,7 @@
 from abc import ABCMeta, abstractmethod
 import builtins
 from conjure_python_client import BinaryType, ConjureBeanType, ConjureEnumType, ConjureFieldDefinition, ConjureUnionType, DictType, ListType, OptionalType
-from typing import Any, List, Optional, Set
+from typing import Any, Dict, List, Optional, Set
 
 class AliasAsMapKeyExample(ConjureBeanType):
 

@@ -3,6 +3,7 @@ from ..product_datasets import BackingFileSystem
 from abc import ABCMeta, abstractmethod
 import builtins
 from conjure_python_client import ConjureBeanType, ConjureDecoder, ConjureEncoder, ConjureFieldDefinition, ConjureUnionType, DictType, Service
+from typing import Dict
 
 class ComplexObjectWithImports(ConjureBeanType):
 
