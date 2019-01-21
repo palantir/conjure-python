@@ -17,14 +17,6 @@ class AliasAsMapKeyExample(ConjureBeanType):
             'uuids': ConjureFieldDefinition('uuids', DictType(UuidAliasExample, ManyFieldExample))
         }
 
-    _strings = None # type: Dict[StringAliasExample, ManyFieldExample]
-    _rids = None # type: Dict[RidAliasExample, ManyFieldExample]
-    _bearertokens = None # type: Dict[BearerTokenAliasExample, ManyFieldExample]
-    _integers = None # type: Dict[IntegerAliasExample, ManyFieldExample]
-    _safelongs = None # type: Dict[SafeLongAliasExample, ManyFieldExample]
-    _datetimes = None # type: Dict[DateTimeAliasExample, ManyFieldExample]
-    _uuids = None # type: Dict[UuidAliasExample, ManyFieldExample]
-
     __slots__ = ['_strings', '_rids', '_bearertokens', '_integers', '_safelongs', '_datetimes', '_uuids']
 
     def __init__(self, bearertokens, datetimes, integers, rids, safelongs, strings, uuids):
@@ -81,8 +73,6 @@ class AnyExample(ConjureBeanType):
             'any': ConjureFieldDefinition('any', object)
         }
 
-    _any = None # type: Any
-
     __slots__ = ['_any']
 
     def __init__(self, any):
@@ -102,8 +92,6 @@ class AnyMapExample(ConjureBeanType):
         return {
             'items': ConjureFieldDefinition('items', DictType(str, object))
         }
-
-    _items = None # type: Dict[str, Any]
 
     __slots__ = ['_items']
 
@@ -125,8 +113,6 @@ class BearerTokenExample(ConjureBeanType):
             'bearer_token_value': ConjureFieldDefinition('bearerTokenValue', str)
         }
 
-    _bearer_token_value = None # type: str
-
     __slots__ = ['_bearer_token_value']
 
     def __init__(self, bearer_token_value):
@@ -146,8 +132,6 @@ class BinaryExample(ConjureBeanType):
         return {
             'binary': ConjureFieldDefinition('binary', BinaryType())
         }
-
-    _binary = None # type: Any
 
     __slots__ = ['_binary']
 
@@ -169,8 +153,6 @@ class BooleanExample(ConjureBeanType):
             'coin': ConjureFieldDefinition('coin', bool)
         }
 
-    _coin = None # type: bool
-
     __slots__ = ['_coin']
 
     def __init__(self, coin):
@@ -191,9 +173,6 @@ class CreateDatasetRequest(ConjureBeanType):
             'file_system_id': ConjureFieldDefinition('fileSystemId', str),
             'path': ConjureFieldDefinition('path', str)
         }
-
-    _file_system_id = None # type: str
-    _path = None # type: str
 
     __slots__ = ['_file_system_id', '_path']
 
@@ -221,8 +200,6 @@ class DateTimeExample(ConjureBeanType):
             'datetime': ConjureFieldDefinition('datetime', str)
         }
 
-    _datetime = None # type: str
-
     __slots__ = ['_datetime']
 
     def __init__(self, datetime):
@@ -243,8 +220,6 @@ class DoubleExample(ConjureBeanType):
             'double_value': ConjureFieldDefinition('doubleValue', float)
         }
 
-    _double_value = None # type: float
-
     __slots__ = ['_double_value']
 
     def __init__(self, double_value):
@@ -263,7 +238,6 @@ class EmptyObjectExample(ConjureBeanType):
         # type: () -> Dict[str, ConjureFieldDefinition]
         return {
         }
-
 
     __slots__ = []
 
@@ -290,8 +264,6 @@ class EnumFieldExample(ConjureBeanType):
             'enum': ConjureFieldDefinition('enum', EnumExample)
         }
 
-    _enum = None # type: EnumExample
-
     __slots__ = ['_enum']
 
     def __init__(self, enum):
@@ -311,8 +283,6 @@ class IntegerExample(ConjureBeanType):
         return {
             'integer': ConjureFieldDefinition('integer', int)
         }
-
-    _integer = None # type: int
 
     __slots__ = ['_integer']
 
@@ -335,10 +305,6 @@ class ListExample(ConjureBeanType):
             'primitive_items': ConjureFieldDefinition('primitiveItems', ListType(int)),
             'double_items': ConjureFieldDefinition('doubleItems', ListType(float))
         }
-
-    _items = None # type: List[str]
-    _primitive_items = None # type: List[int]
-    _double_items = None # type: List[float]
 
     __slots__ = ['_items', '_primitive_items', '_double_items']
 
@@ -378,15 +344,6 @@ class ManyFieldExample(ConjureBeanType):
             'map': ConjureFieldDefinition('map', DictType(str, str)),
             'alias': ConjureFieldDefinition('alias', StringAliasExample)
         }
-
-    _string = None # type: str
-    _integer = None # type: int
-    _double_value = None # type: float
-    _optional_item = None # type: Optional[str]
-    _items = None # type: List[str]
-    _set = None # type: List[str]
-    _map = None # type: Dict[str, str]
-    _alias = None # type: StringAliasExample
 
     __slots__ = ['_string', '_integer', '_double_value', '_optional_item', '_items', '_set', '_map', '_alias']
 
@@ -458,8 +415,6 @@ class MapExample(ConjureBeanType):
             'items': ConjureFieldDefinition('items', DictType(str, str))
         }
 
-    _items = None # type: Dict[str, str]
-
     __slots__ = ['_items']
 
     def __init__(self, items):
@@ -479,8 +434,6 @@ class OptionalExample(ConjureBeanType):
         return {
             'item': ConjureFieldDefinition('item', OptionalType(str))
         }
-
-    _item = None # type: Optional[str]
 
     __slots__ = ['_item']
 
@@ -507,14 +460,6 @@ class PrimitiveOptionalsExample(ConjureBeanType):
             'bearertoken': ConjureFieldDefinition('bearertoken', OptionalType(str)),
             'uuid': ConjureFieldDefinition('uuid', OptionalType(str))
         }
-
-    _num = None # type: Optional[float]
-    _bool = None # type: Optional[bool]
-    _integer = None # type: Optional[int]
-    _safelong = None # type: Optional[int]
-    _rid = None # type: Optional[str]
-    _bearertoken = None # type: Optional[str]
-    _uuid = None # type: Optional[str]
 
     __slots__ = ['_num', '_bool', '_integer', '_safelong', '_rid', '_bearertoken', '_uuid']
 
@@ -572,8 +517,6 @@ class RecursiveObjectExample(ConjureBeanType):
             'recursive_field': ConjureFieldDefinition('recursiveField', OptionalType(RecursiveObjectAlias))
         }
 
-    _recursive_field = None # type: Optional[RecursiveObjectAlias]
-
     __slots__ = ['_recursive_field']
 
     def __init__(self, recursive_field=None):
@@ -596,11 +539,6 @@ class ReservedKeyExample(ConjureBeanType):
             'field_name_with_dashes': ConjureFieldDefinition('field-name-with-dashes', str),
             'memoized_hash_code': ConjureFieldDefinition('memoizedHashCode', int)
         }
-
-    _package = None # type: str
-    _interface = None # type: str
-    _field_name_with_dashes = None # type: str
-    _memoized_hash_code = None # type: int
 
     __slots__ = ['_package', '_interface', '_field_name_with_dashes', '_memoized_hash_code']
 
@@ -640,8 +578,6 @@ class RidExample(ConjureBeanType):
             'rid_value': ConjureFieldDefinition('ridValue', str)
         }
 
-    _rid_value = None # type: str
-
     __slots__ = ['_rid_value']
 
     def __init__(self, rid_value):
@@ -661,8 +597,6 @@ class SafeLongExample(ConjureBeanType):
         return {
             'safe_long_value': ConjureFieldDefinition('safeLongValue', int)
         }
-
-    _safe_long_value = None # type: int
 
     __slots__ = ['_safe_long_value']
 
@@ -684,9 +618,6 @@ class SetExample(ConjureBeanType):
             'items': ConjureFieldDefinition('items', ListType(str)),
             'double_items': ConjureFieldDefinition('doubleItems', ListType(float))
         }
-
-    _items = None # type: List[str]
-    _double_items = None # type: List[float]
 
     __slots__ = ['_items', '_double_items']
 
@@ -713,8 +644,6 @@ class StringExample(ConjureBeanType):
         return {
             'string': ConjureFieldDefinition('string', str)
         }
-
-    _string = None # type: str
 
     __slots__ = ['_string']
 
@@ -881,8 +810,6 @@ class UuidExample(ConjureBeanType):
         return {
             'uuid': ConjureFieldDefinition('uuid', str)
         }
-
-    _uuid = None # type: str
 
     __slots__ = ['_uuid']
 
