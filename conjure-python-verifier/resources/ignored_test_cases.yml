@@ -109,11 +109,11 @@ client:
       - 'null'
       - '"1"'
 
-  singleHeaderService: {}
+  singleHeaderService:
     # Optional arguments are ordered differently, causing the wrong parameters to be passed
     headerOptionalOfString:
-      - 'null'
-      - '"foo"'
+    - 'null'
+    - '"foo"'
 
   singlePathParamService:
     pathParamBoolean:
