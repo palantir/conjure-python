@@ -67,14 +67,14 @@ jobs:
 
       - run:
           name: Install tox things
-          command: if [ ! -d ".tox" ]; then python -m tox -e py27 --notest; fi
+          command: if [ ! -d ".tox" ]; then python -m tox -e py27,mypy27 --notest; fi
 
       - save_cache:
           key: tox-v2-py27-{{ checksum "tox.ini" }}-{{ checksum "setup.py" }}
           paths:
             - .tox
 
-      - run: python -m tox -e py27
+      - run: python -m tox -e py27,mypy27
 
       - run:
           name: Collect JUnit XML
@@ -103,14 +103,14 @@ jobs:
 
       - run:
           name: Install tox things
-          command: if [ ! -d ".tox" ]; then python -m tox -e py3 --notest; fi
+          command: if [ ! -d ".tox" ]; then python -m tox -e py3,mypy3 --notest; fi
 
       - save_cache:
           key: tox-v2-py3-{{ checksum "tox.ini" }}-{{ checksum "setup.py" }}
           paths:
             - .tox
 
-      - run: python -m tox -e py3
+      - run: python -m tox -e py3,mypy3
 
       - run:
           name: Collect JUnit XML
