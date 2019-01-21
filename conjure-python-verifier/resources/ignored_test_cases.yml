@@ -106,14 +106,9 @@ client:
       - '"+Infinity"'
 
     receiveRawOptionalExample:
-      - 'null'
       - '"1"'
 
-  singleHeaderService:
-    # Optional arguments are ordered differently, causing the wrong parameters to be passed
-    headerOptionalOfString:
-    - 'null'
-    - '"foo"'
+  singleHeaderService: {}
 
   singlePathParamService:
     pathParamBoolean:
