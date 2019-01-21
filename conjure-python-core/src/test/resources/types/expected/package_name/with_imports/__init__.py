@@ -94,8 +94,6 @@ class UnionWithImports(ConjureUnionType):
             'imported': ConjureFieldDefinition('imported', AnyMapExample)
         }
 
-    __slots__ = ['_string', '_imported']
-
     def __init__(self, string=None, imported=None):
         if (string is not None) + (imported is not None) != 1:
             raise ValueError('a union must contain a single member')

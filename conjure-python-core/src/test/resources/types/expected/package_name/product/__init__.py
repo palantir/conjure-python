@@ -680,8 +680,6 @@ class UnionTypeExample(ConjureUnionType):
             'interface': ConjureFieldDefinition('interface', int)
         }
 
-    __slots__ = ['_string_example', '_set', '_this_field_is_an_integer', '_also_an_integer', '_if_', '_new', '_interface']
-
     def __init__(self, string_example=None, set=None, this_field_is_an_integer=None, also_an_integer=None, if_=None, new=None, interface=None):
         if (string_example is not None) + (set is not None) + (this_field_is_an_integer is not None) + (also_an_integer is not None) + (if_ is not None) + (new is not None) + (interface is not None) != 1:
             raise ValueError('a union must contain a single member')

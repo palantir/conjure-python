@@ -83,12 +83,6 @@ public interface UnionSnippet extends PythonSnippet {
 
         poetWriter.writeLine();
 
-        poetWriter.writeIndentedLine(String.format("__slots__ = [%s]", options().stream()
-                .map(field -> String.format("'_%s'", PythonIdentifierSanitizer.sanitize(field.attributeName())))
-                .collect(Collectors.joining(", "))));
-
-        poetWriter.writeLine();
-
         // constructor
         poetWriter.writeIndentedLine(String.format("def __init__(self, %s):",
                 Joiner.on(", ").join(
