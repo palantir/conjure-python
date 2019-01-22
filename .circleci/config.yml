@@ -224,8 +224,12 @@ workflows:
             - build
           <<: *always-run
       - mypy27:
+          requires:
+            - build
           <<: *always-run
       - mypy3:
+          requires:
+            - build
           <<: *always-run
       - publish:
           requires:
