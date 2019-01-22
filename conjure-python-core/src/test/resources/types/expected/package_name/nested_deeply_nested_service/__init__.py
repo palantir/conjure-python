@@ -1,4 +1,5 @@
 from conjure_python_client import ConjureDecoder, ConjureEncoder, Service
+from typing import Any, Dict
 
 class DeeplyNestedService(Service):
 

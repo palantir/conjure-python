@@ -57,7 +57,7 @@ public final class ClientGenerator {
 
         return PythonService.builder()
                 .className(serviceDef.getServiceName().getName())
-                .addImports(PythonService.CONJURE_IMPORT)
+                .addAllImports(PythonService.CONJURE_IMPORTS)
                 .addAllImports(imports)
                 .docs(serviceDef.getDocs())
                 .addAllEndpointDefinitions(endpoints)

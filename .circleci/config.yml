@@ -84,6 +84,44 @@ jobs:
       - store_test_results:
           path: ~/junit
 
+  mypy27:
+    docker:
+      - image: circleci/python:3.6.5
+    working_directory: ~/project/conjure-python-verifier/python
+    steps:
+      - checkout:
+          path: ~/project
+
+      - attach_workspace:
+          at: '~/project'
+
+      - run:
+          name: Install dependencies
+          command: pip install --user setuptools tox==2.9.1 tox-virtualenv-no-download
+
+      - restore_cache:
+          key: tox-v2-mypy27-{{ checksum "tox.ini" }}-({ checksum "setup.py" })
+
+      - run:
+          name: Install tox things
+          command: if [ ! -d ".tox" ]; then python -m tox -e mypy27 --notest; fi
+
+      - save_cache:
+          key: tox-v2-mypy27-{{ checksum "tox.ini" }}-({ checksum "setup.py" })
+          paths:
+            - .tox
+
+      - run: mkdir build
+      - run: python -m tox -e mypy27
+
+      - run:
+          name: Collect JUnit XML
+          command: mkdir -p ~/junit && find . -type f -regex ".*/build/.*xml" -exec cp {} ~/junit/ \;
+          when: always
+
+      - store_test_results:
+          path: ~/junit
+
   py3:
     docker:
       - image: circleci/python:3.6.5
@@ -94,6 +132,7 @@ jobs:
 
       - attach_workspace:
           at: '~/project'
+
       - run:
           name: Install dependencies
           command: pip install --user setuptools tox==2.9.1 tox-virtualenv-no-download
@@ -120,7 +159,43 @@ jobs:
       - store_test_results:
           path: ~/junit
 
+  mypy3:
+    docker:
+      - image: circleci/python:3.6.5
+    working_directory: ~/project/conjure-python-verifier/python
+    steps:
+      - checkout:
+          path: ~/project
 
+      - attach_workspace:
+          at: '~/project'
+
+      - run:
+          name: Install dependencies
+          command: pip install --user setuptools tox==2.9.1 tox-virtualenv-no-download
+
+      - restore_cache:
+          key: tox-v2-mypy3-{{ checksum "tox.ini" }}-({ checksum "setup.py" })
+
+      - run:
+          name: Install tox things
+          command: if [ ! -d ".tox" ]; then python -m tox -e mypy3 --notest; fi
+
+      - save_cache:
+          key: tox-v2-mypy3-{{ checksum "tox.ini" }}-({ checksum "setup.py" })
+          paths:
+            - .tox
+
+      - run: mkdir build
+      - run: python -m tox -e mypy3
+
+      - run:
+          name: Collect JUnit XML
+          command: mkdir -p ~/junit && find . -type f -regex ".*/build/.*xml" -exec cp {} ~/junit/ \;
+          when: always
+
+      - store_test_results:
+          path: ~/junit
 
   publish:
     docker:
@@ -150,11 +225,21 @@ workflows:
           requires:
             - build
           <<: *always-run
+      - mypy27:
+          requires:
+            - build
+          <<: *always-run
+      - mypy3:
+          requires:
+            - build
+          <<: *always-run
       - publish:
           requires:
             - build
             - py27
             - py3
+            - mypy27
+            - mypy3
           filters:
             branches:
               ignore: /.*/

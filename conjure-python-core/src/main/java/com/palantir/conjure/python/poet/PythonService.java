@@ -16,6 +16,7 @@
 
 package com.palantir.conjure.python.poet;
 
+import com.google.common.collect.ImmutableList;
 import com.palantir.conjure.python.types.ImportTypeVisitor;
 import com.palantir.conjure.spec.Documentation;
 import java.util.List;
@@ -24,10 +25,16 @@ import org.immutables.value.Value;
 
 @Value.Immutable
 public interface PythonService extends PythonSnippet {
-    PythonImport CONJURE_IMPORT = PythonImport.builder()
-            .moduleSpecifier(ImportTypeVisitor.CONJURE_PYTHON_CLIENT)
-            .addNamedImports("Service", "ConjureEncoder", "ConjureDecoder")
-            .build();
+    ImmutableList<PythonImport> CONJURE_IMPORTS = ImmutableList.of(
+            PythonImport.builder()
+                    .moduleSpecifier(ImportTypeVisitor.CONJURE_PYTHON_CLIENT)
+                    .addNamedImports("Service", "ConjureEncoder", "ConjureDecoder")
+                    .build(),
+            PythonImport.builder()
+                    .moduleSpecifier(ImportTypeVisitor.TYPING)
+                    // Used by Endpoints
+                    .addNamedImports("Dict", "Any")
+                    .build());
 
     @Override
     @Value.Default

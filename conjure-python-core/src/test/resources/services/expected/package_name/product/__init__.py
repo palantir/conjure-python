@@ -1,5 +1,6 @@
 import builtins
 from conjure_python_client import ConjureBeanType, ConjureFieldDefinition
+from typing import Dict, List
 
 class CreateDatasetRequest(ConjureBeanType):
 
@@ -11,7 +12,7 @@ class CreateDatasetRequest(ConjureBeanType):
             'path': ConjureFieldDefinition('path', str)
         }
 
-    __slots__ = ['_file_system_id', '_path']
+    __slots__ = ['_file_system_id', '_path'] # type: List[str]
 
     def __init__(self, file_system_id, path):
         # type: (str, str) -> None
