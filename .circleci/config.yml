@@ -87,6 +87,7 @@ jobs:
   mypy27:
     docker:
       - image: circleci/python:3.6.5
+    working_directory: ~/project/conjure-python-verifier/python
     steps:
       - checkout
 
@@ -155,6 +156,7 @@ jobs:
   mypy3:
     docker:
       - image: circleci/python:3.6.5
+    working_directory: ~/project/conjure-python-verifier/python
     steps:
       - checkout
 
