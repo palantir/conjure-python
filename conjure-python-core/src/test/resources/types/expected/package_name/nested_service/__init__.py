@@ -1,6 +1,6 @@
 import builtins
 from conjure_python_client import ConjureBeanType, ConjureDecoder, ConjureEncoder, ConjureFieldDefinition, Service
-from typing import Dict
+from typing import Any, Dict, List
 
 class SimpleNestedService(Service):
 

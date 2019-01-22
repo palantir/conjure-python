@@ -1,6 +1,6 @@
 import builtins
 from conjure_python_client import ConjureBeanType, ConjureFieldDefinition
-from typing import Dict
+from typing import Dict, List
 
 class CreateDatasetRequest(ConjureBeanType):
 

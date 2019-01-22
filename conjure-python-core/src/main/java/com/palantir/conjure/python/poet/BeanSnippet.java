@@ -33,7 +33,10 @@ public interface BeanSnippet extends PythonSnippet {
                     .addNamedImports("ConjureBeanType", "ConjureFieldDefinition")
                     .build(),
             PythonImport.of("builtins"),
-            PythonImport.of(ImportTypeVisitor.TYPING, "Dict"));
+            PythonImport.builder()
+                    .moduleSpecifier(ImportTypeVisitor.TYPING)
+                    .addNamedImports("Dict", "List")
+                    .build());
 
     @Override
     @Value.Default
@@ -101,7 +104,7 @@ public interface BeanSnippet extends PythonSnippet {
                     Joiner.on(", ").join(fields().stream().sorted(new PythonField.PythonFieldComparator())
                             .map(PythonField::myPyType).collect(Collectors.toList()))));
             fields().forEach(field -> poetWriter.writeIndentedLine(
-                    String.format("self._%s = %s", field.attributeName(),
+                    String.format("self._%s = %s", PythonIdentifierSanitizer.sanitize(field.attributeName()),
                             PythonIdentifierSanitizer.sanitize(field.attributeName()))));
             poetWriter.decreaseIndent();
         }

@@ -467,7 +467,7 @@ class PrimitiveOptionalsExample(ConjureBeanType):
     def __init__(self, bearertoken=None, bool_=None, integer=None, num=None, rid=None, safelong=None, uuid=None):
         # type: (Optional[str], Optional[bool], Optional[int], Optional[float], Optional[str], Optional[int], Optional[str]) -> None
         self._num = num
-        self._bool = bool_
+        self._bool_ = bool_
         self._integer = integer
         self._safelong = safelong
         self._rid = rid
