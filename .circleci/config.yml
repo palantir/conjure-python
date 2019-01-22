@@ -67,14 +67,46 @@ jobs:
 
       - run:
           name: Install tox things
-          command: if [ ! -d ".tox" ]; then python -m tox -e py27,mypy27 --notest; fi
+          command: if [ ! -d ".tox" ]; then python -m tox -e py27 --notest; fi
 
       - save_cache:
           key: tox-v2-py27-{{ checksum "tox.ini" }}-{{ checksum "setup.py" }}
           paths:
             - .tox
 
-      - run: python -m tox -e py27,mypy27
+      - run: python -m tox -e py27
+
+      - run:
+          name: Collect JUnit XML
+          command: mkdir -p ~/junit && find . -type f -regex ".*/build/.*xml" -exec cp {} ~/junit/ \;
+          when: always
+
+      - store_test_results:
+          path: ~/junit
+
+  mypy27:
+    docker:
+      - image: circleci/python:3.6.5
+    steps:
+      - checkout
+
+      - run:
+          name: Install dependencies
+          command: pip install --user setuptools tox==2.9.1 tox-virtualenv-no-download
+
+      - restore_cache:
+          key: tox-v2-mypy27-{{ checksum "tox.ini" }}-({ checksum "Pipfile.lock" })
+
+      - run:
+          name: Install tox things
+          command: if [ ! -d ".tox" ]; then python -m tox -e mypy27 --notest; fi
+
+      - save_cache:
+          key: tox-v2-mypy27-{{ checksum "tox.ini" }}-({ checksum "Pipfile.lock" })
+          paths:
+            - .tox
+
+      - run: python -m tox -e mypy27
 
       - run:
           name: Collect JUnit XML
@@ -103,7 +135,7 @@ jobs:
 
       - run:
           name: Install tox things
-          command: if [ ! -d ".tox" ]; then python -m tox -e py3,mypy3 --notest; fi
+          command: if [ ! -d ".tox" ]; then python -m tox -e py3 --notest; fi
 
       - save_cache:
           key: tox-v2-py3-{{ checksum "tox.ini" }}-{{ checksum "setup.py" }}
@@ -120,7 +152,37 @@ jobs:
       - store_test_results:
           path: ~/junit
 
+  mypy3:
+    docker:
+      - image: circleci/python:3.6.5
+    steps:
+      - checkout
 
+      - run:
+          name: Install dependencies
+          command: pip install --user setuptools tox==2.9.1 tox-virtualenv-no-download
+
+      - restore_cache:
+          key: tox-v2-mypy3-{{ checksum "tox.ini" }}-({ checksum "Pipfile.lock" })
+
+      - run:
+          name: Install tox things
+          command: if [ ! -d ".tox" ]; then python -m tox -e mypy3 --notest; fi
+
+      - save_cache:
+          key: tox-v2-mypy3-{{ checksum "tox.ini" }}-({ checksum "Pipfile.lock" })
+          paths:
+            - .tox
+
+      - run: python -m tox -e mypy3
+
+      - run:
+          name: Collect JUnit XML
+          command: mkdir -p ~/junit && find . -type f -regex ".*/build/.*xml" -exec cp {} ~/junit/ \;
+          when: always
+
+      - store_test_results:
+          path: ~/junit
 
   publish:
     docker:
@@ -150,11 +212,17 @@ workflows:
           requires:
             - build
           <<: *always-run
+      - mypy27:
+          <<: *always-run
+      - mypy3:
+          <<: *always-run
       - publish:
           requires:
             - build
             - py27
             - py3
+            - mypy27
+            - mypy3
           filters:
             branches:
               ignore: /.*/
