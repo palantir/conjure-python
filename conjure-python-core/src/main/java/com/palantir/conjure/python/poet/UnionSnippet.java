@@ -36,6 +36,10 @@ public interface UnionSnippet extends PythonSnippet {
                     .moduleSpecifier("abc")
                     .addNamedImports("ABCMeta", "abstractmethod")
                     .build(),
+            PythonImport.builder()
+                    .moduleSpecifier(ImportTypeVisitor.TYPING)
+                    .addNamedImports("Dict", "Any")
+                    .build(),
             PythonImport.of("builtins"));
 
     @Override
@@ -156,7 +160,14 @@ public interface UnionSnippet extends PythonSnippet {
         poetWriter.writeLine();
         poetWriter.writeLine();
 
-        poetWriter.writeIndentedLine(String.format("class %s(ABCMeta('ABC', (object,), {})):", visitorName));
+        // We need to generate this base class to be python 2 compatible
+        String visitorBaseClass = String.format("%sBaseClass", visitorName);
+        poetWriter.writeLine(String.format("%s = ABCMeta('ABC', (object,), {}) # type: Any", visitorBaseClass));
+
+        poetWriter.writeLine();
+        poetWriter.writeLine();
+
+        poetWriter.writeIndentedLine(String.format("class %s(%s):", visitorName, visitorBaseClass));
         poetWriter.increaseIndent();
         options().forEach(option -> {
             poetWriter.writeLine();

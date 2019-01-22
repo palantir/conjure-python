@@ -1,5 +1,6 @@
 import builtins
 from conjure_python_client import ConjureBeanType, ConjureDecoder, ConjureEncoder, ConjureFieldDefinition, Service
+from typing import Dict
 
 class SimpleNestedService(Service):
 
@@ -41,7 +42,7 @@ class SimpleObject(ConjureBeanType):
             'string': ConjureFieldDefinition('string', str)
         }
 
-    __slots__ = ['_string']
+    __slots__ = ['_string'] # type: List[str]
 
     def __init__(self, string):
         # type: (str) -> None

@@ -3,7 +3,7 @@ from ..product_datasets import BackingFileSystem
 from abc import ABCMeta, abstractmethod
 import builtins
 from conjure_python_client import ConjureBeanType, ConjureDecoder, ConjureEncoder, ConjureFieldDefinition, ConjureUnionType, DictType, Service
-from typing import Dict
+from typing import Any, Dict
 
 class ComplexObjectWithImports(ConjureBeanType):
 
@@ -15,7 +15,7 @@ class ComplexObjectWithImports(ConjureBeanType):
             'imported': ConjureFieldDefinition('imported', StringExample)
         }
 
-    __slots__ = ['_string', '_imported']
+    __slots__ = ['_string', '_imported'] # type: List[str]
 
     def __init__(self, imported, string):
         # type: (StringExample, str) -> None
@@ -72,7 +72,7 @@ class ImportedAliasInMaps(ConjureBeanType):
             'aliases': ConjureFieldDefinition('aliases', DictType(RidAliasExample, DateTimeAliasExample))
         }
 
-    __slots__ = ['_aliases']
+    __slots__ = ['_aliases'] # type: List[str]
 
     def __init__(self, aliases):
         # type: (Dict[RidAliasExample, DateTimeAliasExample]) -> None
@@ -127,7 +127,10 @@ class UnionWithImports(ConjureUnionType):
             return visitor._imported(self.imported)
 
 
-class UnionWithImportsVisitor(ABCMeta('ABC', (object,), {})):
+UnionWithImportsVisitorBaseClass = ABCMeta('ABC', (object,), {}) # type: Any
+
+
+class UnionWithImportsVisitor(UnionWithImportsVisitorBaseClass):
 
     @abstractmethod
     def _string(self, string):

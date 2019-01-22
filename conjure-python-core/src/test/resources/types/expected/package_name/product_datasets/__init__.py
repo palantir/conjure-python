@@ -13,7 +13,7 @@ class BackingFileSystem(ConjureBeanType):
             'configuration': ConjureFieldDefinition('configuration', DictType(str, str))
         }
 
-    __slots__ = ['_file_system_id', '_base_uri', '_configuration']
+    __slots__ = ['_file_system_id', '_base_uri', '_configuration'] # type: List[str]
 
     def __init__(self, base_uri, configuration, file_system_id):
         # type: (str, Dict[str, str], str) -> None
@@ -47,7 +47,7 @@ class Dataset(ConjureBeanType):
             'rid': ConjureFieldDefinition('rid', str)
         }
 
-    __slots__ = ['_file_system_id', '_rid']
+    __slots__ = ['_file_system_id', '_rid'] # type: List[str]
 
     def __init__(self, file_system_id, rid):
         # type: (str, str) -> None
