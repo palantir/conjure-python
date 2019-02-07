@@ -12,7 +12,8 @@ class CreateDatasetRequest(ConjureBeanType):
             'path': ConjureFieldDefinition('path', str)
         }
 
-    __slots__ = ['_file_system_id', '_path'] # type: List[str]
+    _file_system_id = None # type: str
+    _path = None # type: str
 
     def __init__(self, file_system_id, path):
         # type: (str, str) -> None
