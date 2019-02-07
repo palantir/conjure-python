@@ -282,6 +282,26 @@ class EnumFieldExample(ConjureBeanType):
         # type: () -> EnumExample
         return self._enum
 
+class FieldObject(ConjureBeanType):
+
+    @builtins.classmethod
+    def _fields(cls):
+        # type: () -> Dict[str, ConjureFieldDefinition]
+        return {
+            'fields': ConjureFieldDefinition('fields', str)
+        }
+
+    _fields = None # type: str
+
+    def __init__(self, fields):
+        # type: (str) -> None
+        self._fields = fields
+
+    @builtins.property
+    def fields(self):
+        # type: () -> str
+        return self._fields
+
 class IntegerExample(ConjureBeanType):
 
     @builtins.classmethod
