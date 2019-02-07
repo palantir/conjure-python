@@ -18,6 +18,7 @@ package com.palantir.conjure.python.poet;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import com.palantir.conjure.python.types.ImportTypeVisitor;
 import com.palantir.conjure.spec.Documentation;
 import java.util.List;
@@ -37,6 +38,7 @@ public interface BeanSnippet extends PythonSnippet {
                     .moduleSpecifier(ImportTypeVisitor.TYPING)
                     .addNamedImports("Dict", "List")
                     .build());
+    ImmutableSet<String> PROTECTED_FIELDS = ImmutableSet.of("fields");
 
     @Override
     @Value.Default
@@ -81,7 +83,7 @@ public interface BeanSnippet extends PythonSnippet {
 
         // entry for each field
         fields().forEach(field -> poetWriter.writeIndentedLine(String.format("_%s = None # type: %s",
-                field.attributeName(),
+                PythonIdentifierSanitizer.sanitize(field.attributeName(), PROTECTED_FIELDS),
                 field.myPyType())));
 
         poetWriter.writeLine();
@@ -93,7 +95,8 @@ public interface BeanSnippet extends PythonSnippet {
                             fields().stream()
                                     .sorted(new PythonField.PythonFieldComparator())
                                     .map(field -> {
-                                        String name = PythonIdentifierSanitizer.sanitize(field.attributeName());
+                                        String name = PythonIdentifierSanitizer.sanitize(
+                                                field.attributeName(), PROTECTED_FIELDS);
                                         if (field.isOptional()) {
                                             return String.format("%s=None", name);
                                         }
@@ -105,7 +108,8 @@ public interface BeanSnippet extends PythonSnippet {
                     Joiner.on(", ").join(fields().stream().sorted(new PythonField.PythonFieldComparator())
                             .map(PythonField::myPyType).collect(Collectors.toList()))));
             fields().forEach(field -> poetWriter.writeIndentedLine(
-                    String.format("self._%s = %s", PythonIdentifierSanitizer.sanitize(field.attributeName()),
+                    String.format("self._%s = %s",
+                            PythonIdentifierSanitizer.sanitize(field.attributeName(), PROTECTED_FIELDS),
                             PythonIdentifierSanitizer.sanitize(field.attributeName()))));
             poetWriter.decreaseIndent();
         }
@@ -121,14 +125,14 @@ public interface BeanSnippet extends PythonSnippet {
             poetWriter.writeIndentedLine(String.format("# type: () -> %s", field.myPyType()));
             field.docs().ifPresent(docs -> poetWriter.writeIndentedLine(String.format("\"\"\"%s\"\"\"",
                     docs.get().trim())));
-            poetWriter.writeIndentedLine(String.format("return self._%s", field.attributeName()));
+            poetWriter.writeIndentedLine(String.format("return self._%s",
+                    PythonIdentifierSanitizer.sanitize(field.attributeName(), PROTECTED_FIELDS)));
             poetWriter.decreaseIndent();
         });
 
         // end of class def
         poetWriter.decreaseIndent();
         poetWriter.writeLine();
-
     }
 
     class Builder extends ImmutableBeanSnippet.Builder {}

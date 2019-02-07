@@ -291,16 +291,16 @@ class FieldObject(ConjureBeanType):
             'fields': ConjureFieldDefinition('fields', str)
         }
 
-    _fields = None # type: str
+    _fields_ = None # type: str
 
-    def __init__(self, fields):
+    def __init__(self, fields_):
         # type: (str) -> None
-        self._fields = fields
+        self._fields_ = fields
 
     @builtins.property
     def fields(self):
         # type: () -> str
-        return self._fields
+        return self._fields_
 
 class IntegerExample(ConjureBeanType):
 
@@ -498,7 +498,7 @@ class PrimitiveOptionalsExample(ConjureBeanType):
         }
 
     _num = None # type: Optional[float]
-    _bool = None # type: Optional[bool]
+    _bool_ = None # type: Optional[bool]
     _integer = None # type: Optional[int]
     _safelong = None # type: Optional[int]
     _rid = None # type: Optional[str]
@@ -523,7 +523,7 @@ class PrimitiveOptionalsExample(ConjureBeanType):
     @builtins.property
     def bool_(self):
         # type: () -> Optional[bool]
-        return self._bool
+        return self._bool_
 
     @builtins.property
     def integer(self):
@@ -743,7 +743,7 @@ class UnionTypeExample(ConjureUnionType):
             self._also_an_integer = also_an_integer
             self._type = 'alsoAnInteger'
         if if_ is not None:
-            self._if = if_
+            self._if_ = if_
             self._type = 'if'
         if new is not None:
             self._new = new
@@ -776,7 +776,7 @@ class UnionTypeExample(ConjureUnionType):
     @property
     def if_(self):
         # type: () -> int
-        return self._if
+        return self._if_
 
     @property
     def new(self):

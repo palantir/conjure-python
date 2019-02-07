@@ -18,6 +18,7 @@ package com.palantir.conjure.python.poet;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import com.palantir.conjure.python.types.ImportTypeVisitor;
 import com.palantir.conjure.spec.Documentation;
 import java.util.List;
@@ -41,6 +42,7 @@ public interface UnionSnippet extends PythonSnippet {
                     .addNamedImports("Dict", "Any")
                     .build(),
             PythonImport.of("builtins"));
+    ImmutableSet<String> PROTECTED_FIELDS = ImmutableSet.of("options");
 
     @Override
     @Value.Default
@@ -114,7 +116,8 @@ public interface UnionSnippet extends PythonSnippet {
             poetWriter.writeIndentedLine("if %s is not None:",
                     PythonIdentifierSanitizer.sanitize(option.attributeName()));
             poetWriter.increaseIndent();
-            poetWriter.writeIndentedLine("self._%s = %s", option.attributeName(),
+            poetWriter.writeIndentedLine("self._%s = %s",
+                    PythonIdentifierSanitizer.sanitize(option.attributeName(), PROTECTED_FIELDS),
                     PythonIdentifierSanitizer.sanitize(option.attributeName()));
             poetWriter.writeIndentedLine("self._type = '%s'", option.jsonIdentifier());
             poetWriter.decreaseIndent();
@@ -132,7 +135,8 @@ public interface UnionSnippet extends PythonSnippet {
             poetWriter.writeIndentedLine(String.format("# type: () -> %s", option.myPyType()));
             option.docs().ifPresent(docs -> poetWriter.writeIndentedLine(String.format("\"\"\"%s\"\"\"",
                     docs.get().trim())));
-            poetWriter.writeIndentedLine(String.format("return self._%s", option.attributeName()));
+            poetWriter.writeIndentedLine(String.format("return self._%s",
+                    PythonIdentifierSanitizer.sanitize(option.attributeName(), PROTECTED_FIELDS)));
             poetWriter.decreaseIndent();
         });
 
