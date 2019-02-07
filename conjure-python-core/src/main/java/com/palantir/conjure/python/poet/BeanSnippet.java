@@ -95,8 +95,7 @@ public interface BeanSnippet extends PythonSnippet {
                             fields().stream()
                                     .sorted(new PythonField.PythonFieldComparator())
                                     .map(field -> {
-                                        String name = PythonIdentifierSanitizer.sanitize(
-                                                field.attributeName(), PROTECTED_FIELDS);
+                                        String name = PythonIdentifierSanitizer.sanitize(field.attributeName());
                                         if (field.isOptional()) {
                                             return String.format("%s=None", name);
                                         }

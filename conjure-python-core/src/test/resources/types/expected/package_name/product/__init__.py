@@ -293,7 +293,7 @@ class FieldObject(ConjureBeanType):
 
     _fields_ = None # type: str
 
-    def __init__(self, fields_):
+    def __init__(self, fields):
         # type: (str) -> None
         self._fields_ = fields
 
