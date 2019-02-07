@@ -17,6 +17,8 @@
 package com.palantir.conjure.python.poet;
 
 import com.google.common.collect.ImmutableSet;
+import java.util.Collections;
+import java.util.Set;
 
 public final class PythonIdentifierSanitizer {
 
@@ -62,7 +64,11 @@ public final class PythonIdentifierSanitizer {
      * Does no case conversion.
      */
     public static String sanitize(String identifier) {
-        return isKeyword(identifier) ? identifier + "_" : identifier;
+        return  sanitize(identifier, Collections.emptySet());
+    }
+
+    public static String sanitize(String identifier, Set<String> protectedWords) {
+        return isKeyword(identifier) || protectedWords.contains(identifier) ? identifier + "_" : identifier;
     }
 
     public static boolean isKeyword(String identifier) {

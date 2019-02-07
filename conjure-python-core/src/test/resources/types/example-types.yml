@@ -161,3 +161,9 @@ types:
           recursiveField: optional<RecursiveObjectAlias>
       RecursiveObjectAlias:
         alias: RecursiveObjectExample
+      FieldObject:
+        fields:
+          fields: string
+      OptionsUnion:
+        union:
+          options: string

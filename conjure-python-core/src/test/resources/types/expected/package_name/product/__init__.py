@@ -276,6 +276,26 @@ class EnumFieldExample(ConjureBeanType):
         # type: () -> EnumExample
         return self._enum
 
+class FieldObject(ConjureBeanType):
+
+    @builtins.classmethod
+    def _fields(cls):
+        # type: () -> Dict[str, ConjureFieldDefinition]
+        return {
+            'fields': ConjureFieldDefinition('fields', str)
+        }
+
+    __slots__ = ['_fields_'] # type: List[str]
+
+    def __init__(self, fields):
+        # type: (str) -> None
+        self._fields_ = fields
+
+    @builtins.property
+    def fields(self):
+        # type: () -> str
+        return self._fields_
+
 class IntegerExample(ConjureBeanType):
 
     @builtins.classmethod
@@ -447,6 +467,49 @@ class OptionalExample(ConjureBeanType):
         # type: () -> Optional[str]
         return self._item
 
+class OptionsUnion(ConjureUnionType):
+
+    _options = None # type: str
+
+    @builtins.classmethod
+    def _options(cls):
+        # type: () -> Dict[str, ConjureFieldDefinition]
+        return {
+            'options': ConjureFieldDefinition('options', str)
+        }
+
+    def __init__(self, options=None):
+        if (options is not None) != 1:
+            raise ValueError('a union must contain a single member')
+
+        if options is not None:
+            self._options_ = options
+            self._type = 'options'
+
+    @property
+    def options(self):
+        # type: () -> str
+        return self._options_
+
+    def accept(self, visitor):
+        # type: (OptionsUnionVisitor) -> Any
+        if not isinstance(visitor, OptionsUnionVisitor):
+            raise ValueError('{} is not an instance of OptionsUnionVisitor'.format(visitor.__class__.__name__))
+        if self.type == 'options':
+            return visitor._options(self.options)
+
+
+OptionsUnionVisitorBaseClass = ABCMeta('ABC', (object,), {}) # type: Any
+
+
+class OptionsUnionVisitor(OptionsUnionVisitorBaseClass):
+
+    @abstractmethod
+    def _options(self, options):
+        # type: (str) -> Any
+        pass
+
+
 class PrimitiveOptionalsExample(ConjureBeanType):
 
     @builtins.classmethod
@@ -482,7 +545,7 @@ class PrimitiveOptionalsExample(ConjureBeanType):
     @builtins.property
     def bool_(self):
         # type: () -> Optional[bool]
-        return self._bool
+        return self._bool_
 
     @builtins.property
     def integer(self):
@@ -698,7 +761,7 @@ class UnionTypeExample(ConjureUnionType):
             self._also_an_integer = also_an_integer
             self._type = 'alsoAnInteger'
         if if_ is not None:
-            self._if = if_
+            self._if_ = if_
             self._type = 'if'
         if new is not None:
             self._new = new
@@ -731,7 +794,7 @@ class UnionTypeExample(ConjureUnionType):
     @property
     def if_(self):
         # type: () -> int
-        return self._if
+        return self._if_
 
     @property
     def new(self):
