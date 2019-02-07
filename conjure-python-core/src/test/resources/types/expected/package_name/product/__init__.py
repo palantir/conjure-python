@@ -467,6 +467,49 @@ class OptionalExample(ConjureBeanType):
         # type: () -> Optional[str]
         return self._item
 
+class OptionsUnion(ConjureUnionType):
+
+    _options = None # type: str
+
+    @builtins.classmethod
+    def _options(cls):
+        # type: () -> Dict[str, ConjureFieldDefinition]
+        return {
+            'options': ConjureFieldDefinition('options', str)
+        }
+
+    def __init__(self, options=None):
+        if (options is not None) != 1:
+            raise ValueError('a union must contain a single member')
+
+        if options is not None:
+            self._options_ = options
+            self._type = 'options'
+
+    @property
+    def options(self):
+        # type: () -> str
+        return self._options_
+
+    def accept(self, visitor):
+        # type: (OptionsUnionVisitor) -> Any
+        if not isinstance(visitor, OptionsUnionVisitor):
+            raise ValueError('{} is not an instance of OptionsUnionVisitor'.format(visitor.__class__.__name__))
+        if self.type == 'options':
+            return visitor._options(self.options)
+
+
+OptionsUnionVisitorBaseClass = ABCMeta('ABC', (object,), {}) # type: Any
+
+
+class OptionsUnionVisitor(OptionsUnionVisitorBaseClass):
+
+    @abstractmethod
+    def _options(self, options):
+        # type: (str) -> Any
+        pass
+
+
 class PrimitiveOptionalsExample(ConjureBeanType):
 
     @builtins.classmethod

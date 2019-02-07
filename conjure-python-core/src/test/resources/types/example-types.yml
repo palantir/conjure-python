@@ -164,3 +164,6 @@ types:
       FieldObject:
         fields:
           fields: string
+      OptionsUnion:
+        union:
+          options: string
