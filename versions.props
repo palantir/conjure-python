@@ -10,7 +10,7 @@ junit:junit = 4.12
 org.apache.commons:commons-lang3 = 3.8.1
 org.assertj:* = 3.11.1
 org.immutables:value = 2.7.5
-org.mockito:mockito-core = 2.24.0
+org.mockito:mockito-core = 2.24.5
 org.slf4j:* = 1.7.25
 
 # linter:OFF
