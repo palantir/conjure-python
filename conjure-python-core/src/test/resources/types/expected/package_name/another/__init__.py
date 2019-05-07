@@ -4,7 +4,9 @@ from conjure_python_client import BinaryType, ConjureDecoder, ConjureEncoder, Di
 from typing import Any, Dict, Optional, Set
 
 class TestService(Service):
-    """A Markdown description of the service."""
+    """
+    A Markdown description of the service. "Might end with quotes"
+    """
 
     def get_file_systems(self, auth_header):
         # type: (str) -> Dict[str, BackingFileSystem]

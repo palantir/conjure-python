@@ -50,7 +50,7 @@ services:
     default-auth: header
     base-path: /catalog
     docs: |
-      A Markdown description of the service.
+      A Markdown description of the service. "Might end with quotes"
 
     endpoints:
       getFileSystems:
