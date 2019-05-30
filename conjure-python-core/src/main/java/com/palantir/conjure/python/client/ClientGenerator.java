@@ -68,7 +68,6 @@ public final class ClientGenerator {
             EndpointDefinition endpointDef,
             ImmutableSet.Builder<Type> referencedTypesBuilder,
             DealiasingTypeVisitor dealiasingTypeVisitor) {
-
         endpointDef.getReturns().ifPresent(referencedTypesBuilder::add);
         endpointDef.getArgs().forEach(arg -> referencedTypesBuilder.add(arg.getType()));
 

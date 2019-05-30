@@ -48,7 +48,6 @@ public final class DefaultBeanGenerator implements PythonBeanGenerator {
             Function<TypeName, ImportTypeVisitor> importTypeVisitorFactory,
             DealiasingTypeVisitor dealiasingTypeVisitor) {
         return typeDef.accept(new TypeDefinition.Visitor<PythonSnippet>() {
-
             @Override
             public PythonSnippet visitAlias(AliasDefinition value) {
                 return generateAlias(value, importTypeVisitorFactory);
