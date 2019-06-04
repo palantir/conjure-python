@@ -50,7 +50,7 @@ public final class PythonAliasTopologicalSorter {
         snippets.forEach(mutableGraph::addNode);
         snippets.forEach(snippet -> snippet.aliasType().getAlias().accept(aliasEdgeVisitor).stream()
                 .filter(dependant -> !dependant.equals(snippet))
-                .forEach(dependant -> mutableGraph.putEdge(snippet, dependant)));
+                .forEach(dependant -> mutableGraph.putEdge(dependant, snippet)));
 
         ImmutableList.Builder<AliasSnippet> outputBuilder = ImmutableList.builder();
         Set<AliasSnippet> roots = mutableGraph.nodes().stream()

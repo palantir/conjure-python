@@ -891,17 +891,17 @@ RidAliasExample = str
 
 BinaryAliasExample = BinaryType()
 
-CollectionAliasExample = DictType(StringAliasExample, RecursiveObjectAlias)
-
 SafeLongAliasExample = int
 
 StringAliasExample = str
 
 UuidAliasExample = str
 
-NestedAliasExample = RecursiveObjectAlias
-
 RecursiveObjectAlias = RecursiveObjectExample
+
+CollectionAliasExample = DictType(StringAliasExample, RecursiveObjectAlias)
+
+NestedAliasExample = RecursiveObjectAlias
 
 BearerTokenAliasExample = str
 
