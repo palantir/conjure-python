@@ -4,7 +4,7 @@
 
 package com.palantir.conjure.python.poet;
 
-import com.palantir.conjure.spec.Type;
+import com.palantir.conjure.spec.AliasDefinition;
 import com.palantir.tokens.auth.ImmutablesStyle;
 import org.immutables.value.Value;
 
@@ -22,7 +22,7 @@ public interface AliasSnippet extends PythonSnippet {
 
     String aliasName();
 
-    Type aliasType();
+    AliasDefinition aliasType();
 
     @Override
     default void emit(PythonPoetWriter poetWriter) {

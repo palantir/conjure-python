@@ -887,33 +887,33 @@ class UuidExample(ConjureBeanType):
         # type: () -> str
         return self._uuid
 
-ReferenceAliasExample = AnyExample
-
-BearerTokenAliasExample = str
-
-RecursiveObjectAlias = RecursiveObjectExample
-
 RidAliasExample = str
-
-DoubleAliasExample = float
-
-CollectionAliasExample = DictType(StringAliasExample, RecursiveObjectAlias)
-
-StringAliasExample = str
-
-IntegerAliasExample = int
-
-BooleanAliasExample = bool
 
 BinaryAliasExample = BinaryType()
 
-MapAliasExample = DictType(str, object)
+CollectionAliasExample = DictType(StringAliasExample, RecursiveObjectAlias)
 
 SafeLongAliasExample = int
+
+StringAliasExample = str
 
 UuidAliasExample = str
 
 NestedAliasExample = RecursiveObjectAlias
 
+RecursiveObjectAlias = RecursiveObjectExample
+
+BearerTokenAliasExample = str
+
 DateTimeAliasExample = str
+
+MapAliasExample = DictType(str, object)
+
+ReferenceAliasExample = AnyExample
+
+DoubleAliasExample = float
+
+IntegerAliasExample = int
+
+BooleanAliasExample = bool
 

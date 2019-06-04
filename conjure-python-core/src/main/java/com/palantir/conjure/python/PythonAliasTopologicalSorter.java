@@ -31,11 +31,9 @@ import com.palantir.conjure.spec.PrimitiveType;
 import com.palantir.conjure.spec.SetType;
 import com.palantir.conjure.spec.Type;
 import com.palantir.conjure.spec.TypeName;
-import com.palantir.conjure.visitor.TypeVisitor;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -50,7 +48,7 @@ public final class PythonAliasTopologicalSorter {
                 .build();
 
         snippets.forEach(mutableGraph::addNode);
-        snippets.forEach(snippet -> snippet.aliasType().accept(aliasEdgeVisitor).stream()
+        snippets.forEach(snippet -> snippet.aliasType().getAlias().accept(aliasEdgeVisitor).stream()
                 .filter(dependant -> !dependant.equals(snippet))
                 .forEach(dependant -> mutableGraph.putEdge(snippet, dependant)));
 
@@ -58,6 +56,11 @@ public final class PythonAliasTopologicalSorter {
         Set<AliasSnippet> roots = mutableGraph.nodes().stream()
                 .filter(node -> mutableGraph.inDegree(node) == 0)
                 .collect(Collectors.toSet());
+        Map<AliasSnippet, Integer> nonRootsToInDegree = mutableGraph
+                .nodes()
+                .stream()
+                .filter(node -> mutableGraph.inDegree(node) > 0)
+                .collect(Collectors.toMap(node -> node, mutableGraph::inDegree, (a, b) -> a));
 
         // Kahn's Algorithm https://en.wikipedia.org/wiki/Topological_sorting#Kahn's_algorithm
         while (!roots.isEmpty()) {
@@ -65,23 +68,25 @@ public final class PythonAliasTopologicalSorter {
             roots.remove(currentNode);
             outputBuilder.add(currentNode);
             for (AliasSnippet successor : mutableGraph.successors(currentNode)) {
-                mutableGraph.removeEdge(currentNode, successor);
-                if (mutableGraph.predecessors(successor).isEmpty()) {
+                int inDegree = nonRootsToInDegree.get(successor) - 1;
+                nonRootsToInDegree.put(successor, inDegree);
+                if (inDegree == 0) {
+                    nonRootsToInDegree.remove(successor);
                     roots.add(successor);
                 }
             }
         }
 
-        Preconditions.checkState(mutableGraph.edges().isEmpty(), "graph has at least one cycle");
+        Preconditions.checkState(nonRootsToInDegree.isEmpty(), "graph has at least one cycle");
         return outputBuilder.build();
     }
 
     static class AliasEdgeVisitor implements Type.Visitor<List<AliasSnippet>> {
-        private final Map<Type, AliasSnippet> knownAliases;
+        private final Map<TypeName, AliasSnippet> knownAliases;
 
         AliasEdgeVisitor(List<AliasSnippet> snippets) {
             knownAliases = snippets.stream()
-                    .collect(Collectors.toMap(AliasSnippet::aliasType, Function.identity()));
+                    .collect(Collectors.toMap(snippet -> snippet.aliasType().getTypeName(), Function.identity()));
         }
 
         @Override
@@ -114,13 +119,10 @@ public final class PythonAliasTopologicalSorter {
 
         @Override
         public List<AliasSnippet> visitReference(TypeName value) {
-            Optional<Type> first = knownAliases.keySet().stream()
-                    .filter(type -> type.accept(TypeVisitor.IS_REFERENCE) && type.accept(TypeVisitor.REFERENCE).equals(
-                            value))
-                    .findFirst();
-
-            return first.<List<AliasSnippet>>map(type -> ImmutableList.of(knownAliases.get(type)))
-                    .orElse(Collections.emptyList());
+            if (knownAliases.containsKey(value)) {
+                return ImmutableList.of(knownAliases.get(value));
+            }
+            return Collections.emptyList();
         }
 
         @Override
