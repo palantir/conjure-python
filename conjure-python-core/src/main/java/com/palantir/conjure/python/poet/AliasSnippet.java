@@ -4,6 +4,7 @@
 
 package com.palantir.conjure.python.poet;
 
+import com.palantir.conjure.spec.Type;
 import com.palantir.tokens.auth.ImmutablesStyle;
 import org.immutables.value.Value;
 
@@ -20,6 +21,8 @@ public interface AliasSnippet extends PythonSnippet {
     String className();
 
     String aliasName();
+
+    Type aliasType();
 
     @Override
     default void emit(PythonPoetWriter poetWriter) {

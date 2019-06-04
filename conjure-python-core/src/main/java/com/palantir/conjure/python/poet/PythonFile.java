@@ -16,6 +16,7 @@
 
 package com.palantir.conjure.python.poet;
 
+import com.palantir.conjure.python.PythonAliasTopologicalSorter;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -55,7 +56,16 @@ public interface PythonFile extends Emittable {
                 poetWriter.writeLine();
             }
 
-            contents().stream().sorted(new PythonSnippetComparator()).forEach(poetWriter::emit);
+            contents().stream()
+                    .filter(snippet -> !(snippet instanceof AliasSnippet))
+                    .sorted((ps1, ps2) -> Comparator.comparing(PythonSnippet::idForSorting).compare(ps1, ps2))
+                    .forEach(poetWriter::emit);
+
+            List<AliasSnippet> sortedSnippets = PythonAliasTopologicalSorter.getSortedSnippets(contents().stream()
+                    .filter(snippet -> snippet instanceof AliasSnippet)
+                    .map(snippet -> (AliasSnippet) snippet)
+                    .collect(Collectors.toList()));
+            sortedSnippets.forEach(poetWriter::emit);
         });
     }
 
@@ -65,18 +75,4 @@ public interface PythonFile extends Emittable {
         return new Builder();
     }
 
-    class PythonSnippetComparator implements Comparator<PythonSnippet> {
-        @Override
-        public int compare(PythonSnippet pc1, PythonSnippet pc2) {
-            // PythonAliases need to occur last, since they potentially reference
-            // objects defined in the current module
-            if (pc1 instanceof AliasSnippet && !(pc2 instanceof AliasSnippet)) {
-                return 1;
-            } else if (!(pc1 instanceof AliasSnippet) && pc2 instanceof AliasSnippet) {
-                return -1;
-            } else {
-                return Comparator.comparing(PythonSnippet::idForSorting).compare(pc1, pc2);
-            }
-        }
-    }
 }

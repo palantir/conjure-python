@@ -167,3 +167,8 @@ types:
       OptionsUnion:
         union:
           options: string
+      # Importantly NestedAliasExample comes alphabetically before RecursiveObjectAlias
+      NestedAliasExample:
+        alias: RecursiveObjectAlias
+      CollectionAliasExample:
+        alias: map<StringAliasExample, RecursiveObjectAlias>
