@@ -166,6 +166,7 @@ public final class DefaultBeanGenerator implements PythonBeanGenerator {
         return AliasSnippet.builder()
                 .className(typeDef.getTypeName().getName())
                 .aliasName(typeDef.getAlias().accept(PythonTypeVisitor.PYTHON_TYPE))
+                .aliasType(typeDef)
                 .imports(ImmutableSet.copyOf(typeDef.getAlias().accept(importVisitor)))
                 .build();
     }
