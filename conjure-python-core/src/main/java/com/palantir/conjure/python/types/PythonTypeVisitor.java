@@ -69,9 +69,10 @@ public final class PythonTypeVisitor {
                     return "int";
                 case ANY:
                     return "object";
-                default:
+                case UNKNOWN:
                     throw new IllegalArgumentException("unknown type: " + type);
             }
+            throw new IllegalArgumentException("unknown type: " + type);
         }
 
         @Override
@@ -138,9 +139,10 @@ public final class PythonTypeVisitor {
                 case ANY:
                 case BINARY:
                     return "Any";
-                default:
+                case UNKNOWN:
                     throw new IllegalArgumentException("unknown type: " + type);
             }
+            throw new IllegalArgumentException("unknown type: " + type);
         }
 
         @Override

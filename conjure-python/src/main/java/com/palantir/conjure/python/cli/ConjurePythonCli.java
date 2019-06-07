@@ -90,6 +90,7 @@ public final class ConjurePythonCli implements Runnable {
         private boolean writeCondaRecipe;
 
         @CommandLine.Unmatched
+        @SuppressWarnings("UnusedVariable")
         private List<String> unmatchedOptions;
 
         @Override
