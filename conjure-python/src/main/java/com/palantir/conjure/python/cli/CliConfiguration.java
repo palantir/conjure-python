@@ -16,7 +16,6 @@
 
 package com.palantir.conjure.python.cli;
 
-import com.google.common.base.Preconditions;
 import com.palantir.tokens.auth.ImmutablesStyle;
 import java.io.File;
 import java.util.Optional;
@@ -54,8 +53,8 @@ public abstract class CliConfiguration {
 
     @Value.Check
     final void check() {
-        Preconditions.checkArgument(input().isFile(), "Target must exist and be a file");
-        Preconditions.checkArgument(output().isDirectory(), "Output must exist and be a directory");
+        com.palantir.logsafe.Preconditions.checkArgument(input().isFile(), "Target must exist and be a file");
+        com.palantir.logsafe.Preconditions.checkArgument(output().isDirectory(), "Output must exist and be a directory");
     }
 
     static Builder builder() {

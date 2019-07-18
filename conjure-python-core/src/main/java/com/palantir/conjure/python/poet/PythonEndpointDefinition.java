@@ -16,7 +16,6 @@
 
 package com.palantir.conjure.python.poet;
 
-import static com.google.common.base.Preconditions.checkState;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
@@ -29,6 +28,7 @@ import com.palantir.conjure.spec.ParameterId;
 import com.palantir.conjure.spec.ParameterType;
 import com.palantir.conjure.visitor.AuthTypeVisitor;
 import com.palantir.conjure.visitor.ParameterTypeVisitor;
+import com.palantir.logsafe.Preconditions;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -61,7 +61,7 @@ public interface PythonEndpointDefinition extends Emittable {
 
     @Value.Check
     default void check() {
-        checkState(pythonReturnType().isPresent() == myPyReturnType().isPresent(),
+        Preconditions.checkState(pythonReturnType().isPresent() == myPyReturnType().isPresent(),
                 "expected both return types or neither");
     }
 

@@ -16,10 +16,10 @@
 
 package com.palantir.conjure.python;
 
-import static com.google.common.base.Preconditions.checkState;
 
 import com.google.common.base.Splitter;
 import com.palantir.conjure.python.poet.PythonFile;
+import com.palantir.logsafe.Preconditions;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
@@ -30,7 +30,7 @@ public interface PythonFileWriter {
 
     static Path getPath(PythonFile file) {
         List<String> components = Splitter.on(".").splitToList(file.packageName());
-        checkState(!components.isEmpty());
+        Preconditions.checkState(!components.isEmpty());
         Path packageDir = Paths.get(components.get(0), components.subList(1, components.size()).toArray(new String[0]));
         return packageDir.resolve(file.fileName());
     }

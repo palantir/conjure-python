@@ -16,6 +16,7 @@
 
 package com.palantir.conjure.python;
 
+import com.palantir.logsafe.exceptions.SafeRuntimeException;
 import java.io.File;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -111,7 +112,7 @@ public final class ConjureSubfolderRunner extends ParentRunner<Path> {
 
     private ParentFolder getParentFolder(ParentFolder annotation) {
         if (annotation == null) {
-            throw new RuntimeException("The class must be annotated with @ParentFolder");
+            throw new SafeRuntimeException("The class must be annotated with @ParentFolder");
         }
 
         return annotation;
@@ -119,7 +120,7 @@ public final class ConjureSubfolderRunner extends ParentRunner<Path> {
 
     private FrameworkMethod validateMethod(List<FrameworkMethod> annotated) {
         if (annotated.size() != 1) {
-            throw new RuntimeException("There must be exactly one @ConjureSubfolderRunner.Test method");
+            throw new SafeRuntimeException("There must be exactly one @ConjureSubfolderRunner.Test method");
         }
 
         FrameworkMethod method = annotated.get(0);
