@@ -16,7 +16,6 @@
 
 package com.palantir.conjure.python;
 
-import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.graph.ElementOrder;
@@ -77,7 +76,7 @@ public final class PythonAliasTopologicalSorter {
             }
         }
 
-        Preconditions.checkState(nonRootsToInDegree.isEmpty(), "graph has at least one cycle");
+        com.palantir.logsafe.Preconditions.checkState(nonRootsToInDegree.isEmpty(), "graph has at least one cycle");
         return outputBuilder.build();
     }
 

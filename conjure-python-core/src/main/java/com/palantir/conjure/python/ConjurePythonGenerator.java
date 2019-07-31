@@ -16,7 +16,6 @@
 
 package com.palantir.conjure.python;
 
-import com.google.common.base.Preconditions;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Multimap;
@@ -53,10 +52,10 @@ public final class ConjurePythonGenerator {
             PythonBeanGenerator beanGenerator,
             ClientGenerator clientGenerator,
             GeneratorConfiguration config) {
-        Preconditions.checkArgument(
+        com.palantir.logsafe.Preconditions.checkArgument(
                 config.generateRawSource() || (config.packageName().isPresent() && config.packageVersion().isPresent()),
                 "If generateRawSource is not set, packageName and packageVersion must be present");
-        Preconditions.checkArgument(!(config.generateRawSource() && config.shouldWriteCondaRecipe()),
+        com.palantir.logsafe.Preconditions.checkArgument(!(config.generateRawSource() && config.shouldWriteCondaRecipe()),
                 "If generateRawSource is set, shouldWriteCondaRecipe must not be set");
         this.beanGenerator = beanGenerator;
         this.clientGenerator = clientGenerator;
