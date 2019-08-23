@@ -16,8 +16,8 @@
 
 package com.palantir.conjure.python.poet;
 
-import static com.google.common.base.Preconditions.checkState;
 
+import com.palantir.logsafe.Preconditions;
 import java.io.PrintStream;
 
 public final class PythonPoetWriter {
@@ -38,7 +38,7 @@ public final class PythonPoetWriter {
     public PythonPoetWriter maintainingIndent(Runnable runnable) {
         int startIndent = indent;
         runnable.run();
-        checkState(indent == startIndent, "expected indent to be unchanged");
+        Preconditions.checkState(indent == startIndent, "expected indent to be unchanged");
         return this;
     }
 
