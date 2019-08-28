@@ -7,6 +7,9 @@ package com.palantir.conjure.python.poet;
 import java.util.Set;
 
 public interface PythonSnippet extends Emittable {
+
+    PythonPackage pythonPackage();
+
     /*
      * Id for the snippet used for ordering.
      */

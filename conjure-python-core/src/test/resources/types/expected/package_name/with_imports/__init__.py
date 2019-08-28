@@ -143,9 +143,9 @@ class UnionWithImportsVisitor(UnionWithImportsVisitorBaseClass):
         pass
 
 
-AliasImportedObject = ManyFieldExample
-
 AliasImportedPrimitiveAlias = StringAliasExample
+
+AliasImportedObject = ManyFieldExample
 
 AliasImportedReferenceAlias = ReferenceAliasExample
 

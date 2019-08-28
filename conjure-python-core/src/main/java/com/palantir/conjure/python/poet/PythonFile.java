@@ -28,7 +28,7 @@ import org.immutables.value.Value;
 @Value.Immutable
 public interface PythonFile extends Emittable {
 
-    String packageName();
+    PythonPackage pythonPackage();
 
     String fileName();
 

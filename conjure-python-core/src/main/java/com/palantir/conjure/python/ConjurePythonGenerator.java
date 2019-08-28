@@ -17,14 +17,14 @@
 package com.palantir.conjure.python;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Multimap;
+import com.google.common.collect.Lists;
+import com.palantir.common.streams.KeyedStream;
 import com.palantir.conjure.python.client.ClientGenerator;
 import com.palantir.conjure.python.poet.AllSnippet;
 import com.palantir.conjure.python.poet.PythonFile;
 import com.palantir.conjure.python.poet.PythonLine;
 import com.palantir.conjure.python.poet.PythonMetaYaml;
+import com.palantir.conjure.python.poet.PythonPackage;
 import com.palantir.conjure.python.poet.PythonSetup;
 import com.palantir.conjure.python.poet.PythonSnippet;
 import com.palantir.conjure.python.processors.packagename.CompoundPackageNameProcessor;
@@ -33,12 +33,11 @@ import com.palantir.conjure.python.processors.packagename.PackageNameProcessor;
 import com.palantir.conjure.python.processors.packagename.TopLevelAddingPackageNameProcessor;
 import com.palantir.conjure.python.processors.packagename.TwoComponentStrippingPackageNameProcessor;
 import com.palantir.conjure.python.types.PythonBeanGenerator;
-import com.palantir.conjure.python.types.TypePackageExtractor;
 import com.palantir.conjure.spec.ConjureDefinition;
 import com.palantir.conjure.visitor.DealiasingTypeVisitor;
 import com.palantir.conjure.visitor.TypeDefinitionVisitor;
-import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -59,23 +58,18 @@ public final class ConjurePythonGenerator {
 
     public void write(ConjureDefinition conjureDefinition, PythonFileWriter writer) {
         generate(conjureDefinition).forEach(writer::writePythonFile);
+
+        PythonPackage rootPackage = PythonPackage.of(buildPackageNameProcessor().process(""));
         if (!config.generateRawSource()) {
-            writer.writePythonFile(buildPythonSetupFile());
+            writer.writePythonFile(buildPythonSetupFile(rootPackage));
         }
         if (config.shouldWriteCondaRecipe()) {
-            writer.writePythonFile(buildCondaMetaYamlFile());
+            writer.writePythonFile(buildCondaMetaYamlFile(rootPackage));
         }
     }
 
     public List<PythonFile> generate(ConjureDefinition conjureDefinition) {
-        CompoundPackageNameProcessor.Builder compoundPackageNameProcessor = CompoundPackageNameProcessor.builder()
-                .addProcessors(new TwoComponentStrippingPackageNameProcessor())
-                .addProcessors(FlatteningPackageNameProcessor.INSTANCE);
-        if (config.pythonicPackageName().isPresent()) {
-            String pythonicPackageName = config.pythonicPackageName().get();
-            compoundPackageNameProcessor.addProcessors(new TopLevelAddingPackageNameProcessor(pythonicPackageName));
-        }
-        PackageNameProcessor packageNameProcessor = compoundPackageNameProcessor.build();
+        PackageNameProcessor packageNameProcessor = buildPackageNameProcessor();
 
         DealiasingTypeVisitor dealiasingTypeVisitor = new DealiasingTypeVisitor(conjureDefinition.getTypes()
                 .stream()
@@ -84,56 +78,61 @@ public final class ConjurePythonGenerator {
         PythonBeanGenerator beanGenerator = new PythonBeanGenerator(packageNameProcessor, dealiasingTypeVisitor);
         ClientGenerator clientGenerator = new ClientGenerator(packageNameProcessor, dealiasingTypeVisitor);
 
-        Multimap<String, PythonSnippet> snippets = HashMultimap.create();
-        conjureDefinition.getTypes()
-                .forEach(typeDefinition -> snippets.put(
-                        packageNameProcessor.process(typeDefinition.accept(TypePackageExtractor.INSTANCE)),
-                        beanGenerator.generateType(typeDefinition)));
-        conjureDefinition.getServices()
-                .forEach(serviceDefinition -> snippets.put(
-                        packageNameProcessor.process(serviceDefinition.getServiceName().getPackage()),
-                        clientGenerator.generateClient(serviceDefinition)));
-
-        ImmutableList.Builder<PythonFile> allFiles = ImmutableList.builder();
-        allFiles.addAll(snippets.asMap()
-                .entrySet()
+        List<PythonSnippet> snippets = Lists.newArrayList();
+        snippets.addAll(conjureDefinition.getTypes()
                 .stream()
-                .map(entry -> PythonFile.builder()
-                        .packageName(entry.getKey())
-                        .fileName("__init__.py")
-                        .contents(new HashSet<>(entry.getValue()))
-                        .build())
+                .map(beanGenerator::generateType)
+                .collect(Collectors.toList()));
+        snippets.addAll(conjureDefinition.getServices()
+                .stream()
+                .map(clientGenerator::generateClient)
                 .collect(Collectors.toList()));
 
-        allFiles.add(getRootInit(snippets.keySet()));
+        Map<PythonPackage, List<PythonSnippet>> snippetsByPackage = snippets.stream()
+                .collect(Collectors.groupingBy(PythonSnippet::pythonPackage));
 
-        return allFiles.build();
+        List<PythonFile> pythonFiles = KeyedStream.stream(snippetsByPackage)
+                .map((pythonPackage, pythonSnippets) -> PythonFile.builder()
+                        .pythonPackage(pythonPackage)
+                        .fileName("__init__.py")
+                        .contents(pythonSnippets)
+                        .build())
+                .values()
+                .collect(Collectors.toList());
+
+        pythonFiles.add(getRootInit(snippetsByPackage.keySet(), PythonPackage.of(packageNameProcessor.process("."))));
+
+        return pythonFiles;
     }
 
-    private PythonFile getRootInit(Set<String> packageNames) {
+    private PythonFile getRootInit(Set<PythonPackage> packageNames, PythonPackage rootPackage) {
         String rootInitFilePath = config.pythonicPackageName().orElse("");
         PythonFile.Builder builder = PythonFile.builder()
-                .packageName(config.pythonicPackageName().orElse("."))
+                .pythonPackage(PythonPackage.of(config.pythonicPackageName().orElse(".")))
                 .fileName("__init__.py")
                 .addContents(AllSnippet.builder()
+                        .pythonPackage(rootPackage)
                         .contents(packageNames.stream()
-                                .map(name -> name.replace(rootInitFilePath, "")
+                                .map(pythonPackage -> pythonPackage.get().replace(rootInitFilePath, "")
                                         .replace(".", ""))
                                 .sorted()
                                 .collect(Collectors.toList()))
                         .build())
                 .addContents(PythonLine.builder()
+                        .pythonPackage(rootPackage)
                         .text(String.format("__conjure_generator_version__ = \"%s\"", config.generatorVersion()))
                         .build());
         config.packageVersion().ifPresent(version -> builder.addContents(
                 PythonLine.builder()
+                        .pythonPackage(rootPackage)
                         .text(String.format("__version__ = \"%s\"", config.packageVersion().get()))
                         .build()));
         return builder.build();
     }
 
-    private PythonFile buildPythonSetupFile() {
+    private PythonFile buildPythonSetupFile(PythonPackage rootPackage) {
         PythonSetup.Builder builder = PythonSetup.builder()
+                .pythonPackage(rootPackage)
                 .putOptions("name", config.packageName().get())
                 .putOptions("version", config.packageVersion().get())
                 .addInstallDependencies("requests", "typing")
@@ -145,17 +144,18 @@ public final class ConjurePythonGenerator {
         config.packageAuthor().ifPresent(value -> builder.putOptions("author", value));
 
         return PythonFile.builder()
-                .packageName(".")
+                .pythonPackage(PythonPackage.of("."))
                 .fileName("setup.py")
                 .addContents(builder.build())
                 .build();
     }
 
-    private PythonFile buildCondaMetaYamlFile() {
+    private PythonFile buildCondaMetaYamlFile(PythonPackage rootPackage) {
         return PythonFile.builder()
-                .packageName("conda_recipe")
+                .pythonPackage(PythonPackage.of("conda_recipe"))
                 .fileName("meta.yaml")
                 .addContents(PythonMetaYaml.builder()
+                        .pythonPackage(rootPackage)
                         .condaPackageName(config.packageName().get())
                         .packageVersion(config.packageVersion().get())
                         .addInstallDependencies("requests", "typing")
@@ -163,5 +163,16 @@ public final class ConjurePythonGenerator {
                                 config.minConjureClientVersion(), config.maxConjureClientVersion()))
                         .build())
                 .build();
+    }
+
+    private PackageNameProcessor buildPackageNameProcessor() {
+        CompoundPackageNameProcessor.Builder compoundPackageNameProcessor = CompoundPackageNameProcessor.builder()
+                .addProcessors(new TwoComponentStrippingPackageNameProcessor())
+                .addProcessors(FlatteningPackageNameProcessor.INSTANCE);
+        if (config.pythonicPackageName().isPresent()) {
+            String pythonicPackageName = config.pythonicPackageName().get();
+            compoundPackageNameProcessor.addProcessors(new TopLevelAddingPackageNameProcessor(pythonicPackageName));
+        }
+        return compoundPackageNameProcessor.build();
     }
 }

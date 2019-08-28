@@ -20,6 +20,7 @@ dependencies {
     compile 'com.fasterxml.jackson.datatype:jackson-datatype-jdk8'
     compile 'com.google.guava:guava'
     compile 'com.palantir.conjure:conjure-generator-common'
+    compile 'com.palantir.common:streams'
     compile 'org.apache.commons:commons-lang3'
     compile 'org.slf4j:slf4j-api'
 

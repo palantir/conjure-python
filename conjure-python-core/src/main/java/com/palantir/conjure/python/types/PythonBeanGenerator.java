@@ -24,6 +24,7 @@ import com.palantir.conjure.python.poet.EnumSnippet;
 import com.palantir.conjure.python.poet.EnumSnippet.PythonEnumValue;
 import com.palantir.conjure.python.poet.PythonField;
 import com.palantir.conjure.python.poet.PythonImport;
+import com.palantir.conjure.python.poet.PythonPackage;
 import com.palantir.conjure.python.poet.PythonSnippet;
 import com.palantir.conjure.python.poet.UnionSnippet;
 import com.palantir.conjure.python.processors.packagename.PackageNameProcessor;
@@ -78,7 +79,7 @@ public final class PythonBeanGenerator {
         });
     }
 
-    public BeanSnippet generateBean(ObjectDefinition typeDef) {
+    private BeanSnippet generateBean(ObjectDefinition typeDef) {
         ImportTypeVisitor importVisitor = new ImportTypeVisitor(typeDef.getTypeName(), packageNameProcessor);
 
         Set<PythonImport> imports = typeDef.getFields()
@@ -102,6 +103,7 @@ public final class PythonBeanGenerator {
                 .collect(Collectors.toList());
 
         return BeanSnippet.builder()
+                .pythonPackage(PythonPackage.of(packageNameProcessor.process(typeDef.getTypeName().getPackage())))
                 .className(typeDef.getTypeName().getName())
                 .addAllImports(BeanSnippet.DEFAULT_IMPORTS)
                 .addAllImports(imports)
@@ -110,8 +112,9 @@ public final class PythonBeanGenerator {
                 .build();
     }
 
-    public EnumSnippet generateEnum(EnumDefinition typeDef) {
+    private EnumSnippet generateEnum(EnumDefinition typeDef) {
         return EnumSnippet.builder()
+                .pythonPackage(PythonPackage.of(packageNameProcessor.process(typeDef.getTypeName().getPackage())))
                 .className(typeDef.getTypeName().getName())
                 .addImports(EnumSnippet.CONJURE_IMPORT)
                 .docs(typeDef.getDocs())
@@ -121,7 +124,7 @@ public final class PythonBeanGenerator {
                 .build();
     }
 
-    public UnionSnippet generateUnion(UnionDefinition typeDef) {
+    private UnionSnippet generateUnion(UnionDefinition typeDef) {
         ImportTypeVisitor importVisitor = new ImportTypeVisitor(typeDef.getTypeName(), packageNameProcessor);
 
         Set<PythonImport> imports = typeDef.getUnion()
@@ -148,6 +151,7 @@ public final class PythonBeanGenerator {
                 .collect(Collectors.toList());
 
         return UnionSnippet.builder()
+                .pythonPackage(PythonPackage.of(packageNameProcessor.process(typeDef.getTypeName().getPackage())))
                 .className(typeDef.getTypeName().getName())
                 .addAllImports(UnionSnippet.DEFAULT_IMPORTS)
                 .addAllImports(imports)
@@ -156,9 +160,10 @@ public final class PythonBeanGenerator {
                 .build();
     }
 
-    public AliasSnippet generateAlias(AliasDefinition typeDef) {
+    private AliasSnippet generateAlias(AliasDefinition typeDef) {
         ImportTypeVisitor importVisitor = new ImportTypeVisitor(typeDef.getTypeName(), packageNameProcessor);
         return AliasSnippet.builder()
+                .pythonPackage(PythonPackage.of(packageNameProcessor.process(typeDef.getTypeName().getPackage())))
                 .className(typeDef.getTypeName().getName())
                 .aliasName(typeDef.getAlias().accept(PythonTypeVisitor.PYTHON_TYPE))
                 .aliasType(typeDef)

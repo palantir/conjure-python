@@ -21,6 +21,7 @@ import com.palantir.conjure.CaseConverter;
 import com.palantir.conjure.python.poet.PythonEndpointDefinition;
 import com.palantir.conjure.python.poet.PythonEndpointDefinition.PythonEndpointParam;
 import com.palantir.conjure.python.poet.PythonImport;
+import com.palantir.conjure.python.poet.PythonPackage;
 import com.palantir.conjure.python.poet.PythonService;
 import com.palantir.conjure.python.poet.PythonSnippet;
 import com.palantir.conjure.python.processors.packagename.PackageNameProcessor;
@@ -60,6 +61,7 @@ public final class ClientGenerator {
                 .collect(Collectors.toList());
 
         return PythonService.builder()
+                .pythonPackage(PythonPackage.of(packageNameProcessor.process(serviceDef.getServiceName().getPackage())))
                 .className(serviceDef.getServiceName().getName())
                 .addAllImports(PythonService.CONJURE_IMPORTS)
                 .addAllImports(imports)

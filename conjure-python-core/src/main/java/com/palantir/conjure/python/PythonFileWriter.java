@@ -29,7 +29,7 @@ public interface PythonFileWriter {
     void writePythonFile(PythonFile file);
 
     static Path getPath(PythonFile file) {
-        List<String> components = Splitter.on(".").splitToList(file.packageName());
+        List<String> components = Splitter.on(".").splitToList(file.pythonPackage().get());
         checkState(!components.isEmpty());
         Path packageDir = Paths.get(components.get(0), components.subList(1, components.size()).toArray(new String[0]));
         return packageDir.resolve(file.fileName());
