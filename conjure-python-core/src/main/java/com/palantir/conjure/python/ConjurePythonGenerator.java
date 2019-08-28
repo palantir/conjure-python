@@ -33,12 +33,8 @@ import com.palantir.conjure.python.processors.packagename.PackageNameProcessor;
 import com.palantir.conjure.python.processors.packagename.TopLevelAddingPackageNameProcessor;
 import com.palantir.conjure.python.processors.packagename.TwoComponentStrippingPackageNameProcessor;
 import com.palantir.conjure.python.types.PythonBeanGenerator;
-import com.palantir.conjure.spec.AliasDefinition;
+import com.palantir.conjure.python.types.TypePackageExtractor;
 import com.palantir.conjure.spec.ConjureDefinition;
-import com.palantir.conjure.spec.EnumDefinition;
-import com.palantir.conjure.spec.ObjectDefinition;
-import com.palantir.conjure.spec.TypeDefinition;
-import com.palantir.conjure.spec.UnionDefinition;
 import com.palantir.conjure.visitor.DealiasingTypeVisitor;
 import com.palantir.conjure.visitor.TypeDefinitionVisitor;
 import java.util.HashSet;
@@ -77,53 +73,51 @@ public final class ConjurePythonGenerator {
                 .addProcessors(FlatteningPackageNameProcessor.INSTANCE);
         if (config.pythonicPackageName().isPresent()) {
             String pythonicPackageName = config.pythonicPackageName().get();
-            compoundPackageNameProcessor.addProcessors(
-                    new TopLevelAddingPackageNameProcessor(pythonicPackageName));
+            compoundPackageNameProcessor.addProcessors(new TopLevelAddingPackageNameProcessor(pythonicPackageName));
         }
         PackageNameProcessor packageNameProcessor = compoundPackageNameProcessor.build();
 
-        DealiasingTypeVisitor dealiasingTypeVisitor = new DealiasingTypeVisitor(
-                conjureDefinition.getTypes()
-                        .stream()
-                        .collect(Collectors.toMap(type -> type.accept(TypeDefinitionVisitor.TYPE_NAME),
-                                Function.identity())));
+        DealiasingTypeVisitor dealiasingTypeVisitor = new DealiasingTypeVisitor(conjureDefinition.getTypes()
+                .stream()
+                .collect(Collectors.toMap(type -> type.accept(TypeDefinitionVisitor.TYPE_NAME), Function.identity())));
 
         PythonBeanGenerator beanGenerator = new PythonBeanGenerator(packageNameProcessor, dealiasingTypeVisitor);
         ClientGenerator clientGenerator = new ClientGenerator(packageNameProcessor, dealiasingTypeVisitor);
 
         Multimap<String, PythonSnippet> snippets = HashMultimap.create();
-        conjureDefinition.getTypes().forEach(typeDefinition ->
-                snippets.put(resolveTypePackage(typeDefinition),
+        conjureDefinition.getTypes()
+                .forEach(typeDefinition -> snippets.put(
+                        packageNameProcessor.process(typeDefinition.accept(TypePackageExtractor.INSTANCE)),
                         beanGenerator.generateType(typeDefinition)));
-        conjureDefinition.getServices().forEach(serviceDefinition ->
-                snippets.put(serviceDefinition.getServiceName().getPackage(),
+        conjureDefinition.getServices()
+                .forEach(serviceDefinition -> snippets.put(
+                        packageNameProcessor.process(serviceDefinition.getServiceName().getPackage()),
                         clientGenerator.generateClient(serviceDefinition)));
 
         ImmutableList.Builder<PythonFile> allFiles = ImmutableList.builder();
-        allFiles.addAll(snippets.asMap().entrySet()
+        allFiles.addAll(snippets.asMap()
+                .entrySet()
                 .stream()
                 .map(entry -> PythonFile.builder()
-                        .packageName(packageNameProcessor.process(entry.getKey()))
+                        .packageName(entry.getKey())
                         .fileName("__init__.py")
                         .contents(new HashSet<>(entry.getValue()))
                         .build())
                 .collect(Collectors.toList()));
 
-        allFiles.add(getRootInit(packageNameProcessor, snippets.keySet()));
+        allFiles.add(getRootInit(snippets.keySet()));
 
         return allFiles.build();
     }
 
-    private PythonFile getRootInit(PackageNameProcessor packageNameProcessor,
-            Set<String> packageNames) {
+    private PythonFile getRootInit(Set<String> packageNames) {
         String rootInitFilePath = config.pythonicPackageName().orElse("");
         PythonFile.Builder builder = PythonFile.builder()
                 .packageName(config.pythonicPackageName().orElse("."))
                 .fileName("__init__.py")
                 .addContents(AllSnippet.builder()
                         .contents(packageNames.stream()
-                                .map(name -> packageNameProcessor.process(name)
-                                        .replace(rootInitFilePath, "")
+                                .map(name -> name.replace(rootInitFilePath, "")
                                         .replace(".", ""))
                                 .sorted()
                                 .collect(Collectors.toList()))
@@ -136,35 +130,6 @@ public final class ConjurePythonGenerator {
                         .text(String.format("__version__ = \"%s\"", config.packageVersion().get()))
                         .build()));
         return builder.build();
-    }
-
-    private String resolveTypePackage(TypeDefinition typeDef) {
-        return typeDef.accept(new TypeDefinition.Visitor<String>() {
-            @Override
-            public String visitAlias(AliasDefinition value) {
-                return value.getTypeName().getPackage();
-            }
-
-            @Override
-            public String visitEnum(EnumDefinition value) {
-                return value.getTypeName().getPackage();
-            }
-
-            @Override
-            public String visitObject(ObjectDefinition value) {
-                return value.getTypeName().getPackage();
-            }
-
-            @Override
-            public String visitUnion(UnionDefinition value) {
-                return value.getTypeName().getPackage();
-            }
-
-            @Override
-            public String visitUnknown(String unknownType) {
-                throw new IllegalStateException("Unsupported type: " + unknownType);
-            }
-        });
     }
 
     private PythonFile buildPythonSetupFile() {
