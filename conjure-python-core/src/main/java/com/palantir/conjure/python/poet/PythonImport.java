@@ -24,13 +24,13 @@ import org.immutables.value.Value;
 public interface PythonImport extends Emittable {
     String moduleSpecifier();
 
-    Set<String> namedImports();
+    Set<NamedImport> namedImports();
 
     static PythonImport of(String moduleSpecifier) {
         return builder().moduleSpecifier(moduleSpecifier).build();
     }
 
-    static PythonImport of(String moduleSpecifier, String namedImport) {
+    static PythonImport of(String moduleSpecifier, NamedImport namedImport) {
         return builder()
                 .moduleSpecifier(moduleSpecifier)
                 .addNamedImports(namedImport)
@@ -40,12 +40,18 @@ public interface PythonImport extends Emittable {
     @Override
     default void emit(PythonPoetWriter poetWriter) {
         // Namespace imports
-        if (namedImports().isEmpty()) {
-            poetWriter.writeIndentedLine(String.format("import %s", moduleSpecifier()));
-        } else {
-            poetWriter.writeIndentedLine(String.format(
-                    "from %s import %s",
-                    moduleSpecifier(), namedImports().stream().sorted().collect(Collectors.joining(", "))));
+        if (!moduleSpecifier().equals(".")) {
+            if (namedImports().isEmpty()) {
+                poetWriter.writeIndentedLine(String.format("import %s", moduleSpecifier()));
+            } else {
+                poetWriter.writeIndentedLine(String.format(
+                        "from %s import %s",
+                        moduleSpecifier(),
+                        namedImports().stream()
+                                .map(NamedImport::render)
+                                .sorted()
+                                .collect(Collectors.joining(", "))));
+            }
         }
     }
 

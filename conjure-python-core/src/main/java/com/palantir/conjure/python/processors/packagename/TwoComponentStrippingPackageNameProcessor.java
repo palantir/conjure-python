@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2018 Palantir Technologies Inc. All rights reserved.
+ * (c) Copyright 2019 Palantir Technologies Inc. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-package com.palantir.conjure.python;
+package com.palantir.conjure.python.processors.packagename;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
 import java.util.List;
 
-public final class TwoComponentStrippingPackageNameProcessor implements PackageNameProcessor.Processor {
+public final class TwoComponentStrippingPackageNameProcessor implements PackageNameProcessor {
 
     @Override
-    public String processPackageName(String packageName) {
+    public String process(String packageName) {
         List<String> components = ImmutableList.copyOf(Splitter.on('.').split(packageName));
 
         if (components.size() > 2) {

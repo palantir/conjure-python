@@ -15,7 +15,7 @@
 
 # TODO(forozco): Once we split out code gen have more granular testing of code evaluation
 def test_code_gen_compiles():
-    from ..generated.product import RecursiveObjectExample, RecursiveObjectAlias
+    from ..generated_integration.product import RecursiveObjectExample, RecursiveObjectAlias
     object_example = RecursiveObjectExample(None)
     object_alias = RecursiveObjectAlias(None)
     assert object_alias == object_example

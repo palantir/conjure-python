@@ -1,0 +1,5 @@
+type: improvement
+improvement:
+  description: Support for circular type references
+  links:
+  - https://github.com/palantir/conjure-python/pull/184

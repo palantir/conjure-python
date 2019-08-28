@@ -17,8 +17,10 @@
 package com.palantir.conjure.python.types;
 
 import com.google.common.collect.ImmutableSet;
-import com.palantir.conjure.python.PackageNameProcessor;
+import com.palantir.conjure.python.poet.NamedImport;
 import com.palantir.conjure.python.poet.PythonImport;
+import com.palantir.conjure.python.processors.packagename.PackageNameProcessor;
+import com.palantir.conjure.python.processors.typename.TypeNameProcessor;
 import com.palantir.conjure.spec.ExternalReference;
 import com.palantir.conjure.spec.ListType;
 import com.palantir.conjure.spec.MapType;
@@ -36,19 +38,22 @@ public final class ImportTypeVisitor implements Type.Visitor<Set<PythonImport>> 
     public static final String TYPING = "typing";
 
     private TypeName typeName;
+    private TypeNameProcessor typeNameProcessor;
     private PackageNameProcessor packageNameProcessor;
 
-    public ImportTypeVisitor(TypeName typeName, PackageNameProcessor packageNameProcessor) {
+    public ImportTypeVisitor(
+            TypeName typeName, TypeNameProcessor typeNameProcessor, PackageNameProcessor packageNameProcessor) {
         this.typeName = typeName;
+        this.typeNameProcessor = typeNameProcessor;
         this.packageNameProcessor = packageNameProcessor;
     }
 
     @Override
     public Set<PythonImport> visitPrimitive(PrimitiveType value) {
         if (value.get() == PrimitiveType.Value.ANY) {
-            return ImmutableSet.of(PythonImport.of(TYPING, "Any"));
+            return ImmutableSet.of(PythonImport.of(TYPING, NamedImport.of("Any")));
         } else if (value.get() == PrimitiveType.Value.BINARY) {
-            return ImmutableSet.of(PythonImport.of(CONJURE_PYTHON_CLIENT, "BinaryType"));
+            return ImmutableSet.of(PythonImport.of(CONJURE_PYTHON_CLIENT, NamedImport.of("BinaryType")));
         }
         return ImmutableSet.of();
     }
@@ -56,8 +61,8 @@ public final class ImportTypeVisitor implements Type.Visitor<Set<PythonImport>> 
     @Override
     public Set<PythonImport> visitOptional(OptionalType value) {
         return ImmutableSet.<PythonImport>builder()
-                .add(PythonImport.of(TYPING, "Optional"))
-                .add(PythonImport.of(CONJURE_PYTHON_CLIENT, "OptionalType"))
+                .add(PythonImport.of(TYPING, NamedImport.of("Optional")))
+                .add(PythonImport.of(CONJURE_PYTHON_CLIENT, NamedImport.of("OptionalType")))
                 .addAll(value.getItemType().accept(this))
                 .build();
     }
@@ -65,8 +70,8 @@ public final class ImportTypeVisitor implements Type.Visitor<Set<PythonImport>> 
     @Override
     public Set<PythonImport> visitList(ListType value) {
         return ImmutableSet.<PythonImport>builder()
-                .add(PythonImport.of(TYPING, "List"))
-                .add(PythonImport.of(CONJURE_PYTHON_CLIENT, "ListType"))
+                .add(PythonImport.of(TYPING, NamedImport.of("List")))
+                .add(PythonImport.of(CONJURE_PYTHON_CLIENT, NamedImport.of("ListType")))
                 .addAll(value.getItemType().accept(this))
                 .build();
     }
@@ -74,8 +79,8 @@ public final class ImportTypeVisitor implements Type.Visitor<Set<PythonImport>> 
     @Override
     public Set<PythonImport> visitSet(SetType value) {
         return ImmutableSet.<PythonImport>builder()
-                .add(PythonImport.of(TYPING, "Set"))
-                .add(PythonImport.of(CONJURE_PYTHON_CLIENT, "ListType"))
+                .add(PythonImport.of(TYPING, NamedImport.of("Set")))
+                .add(PythonImport.of(CONJURE_PYTHON_CLIENT, NamedImport.of("ListType")))
                 .addAll(value.getItemType().accept(this))
                 .build();
     }
@@ -83,8 +88,8 @@ public final class ImportTypeVisitor implements Type.Visitor<Set<PythonImport>> 
     @Override
     public Set<PythonImport> visitMap(MapType value) {
         return ImmutableSet.<PythonImport>builder()
-                .add(PythonImport.of(TYPING, "Dict"))
-                .add(PythonImport.of(CONJURE_PYTHON_CLIENT, "DictType"))
+                .add(PythonImport.of(TYPING, NamedImport.of("Dict")))
+                .add(PythonImport.of(CONJURE_PYTHON_CLIENT, NamedImport.of("DictType")))
                 .addAll(value.getKeyType().accept(this))
                 .addAll(value.getValueType().accept(this))
                 .build();
@@ -97,9 +102,9 @@ public final class ImportTypeVisitor implements Type.Visitor<Set<PythonImport>> 
         }
         return ImmutableSet.of(PythonImport.of(
                 relativePackage(
-                        packageNameProcessor.getPackageName(typeName.getPackage()),
-                        packageNameProcessor.getPackageName(value.getPackage())),
-                value.getName()));
+                        packageNameProcessor.process(typeName.getPackage()),
+                        packageNameProcessor.process(value.getPackage())),
+                NamedImport.of(typeNameProcessor.process(value))));
     }
 
     @Override

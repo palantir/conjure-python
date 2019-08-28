@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2018 Palantir Technologies Inc. All rights reserved.
+ * (c) Copyright 2019 Palantir Technologies Inc. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,18 +14,25 @@
  * limitations under the License.
  */
 
-package com.palantir.conjure.python;
+package com.palantir.conjure.python.poet;
 
-public final class TopLevelAddingPackageNameProcessor implements PackageNameProcessor.Processor {
+import org.immutables.value.Value;
 
-    private String topLevelPackageName;
+@Value.Immutable
+public interface EmptySnippet extends PythonSnippet {
 
-    TopLevelAddingPackageNameProcessor(String topLevelPackageName) {
-        this.topLevelPackageName = topLevelPackageName;
+    @Override
+    @Value.Default
+    default String idForSorting() {
+        return "";
     }
 
     @Override
-    public String processPackageName(String packageName) {
-        return topLevelPackageName + "." + packageName;
+    default void emit(PythonPoetWriter _poetWriter) {}
+
+    class Builder extends ImmutableEmptySnippet.Builder {}
+
+    static Builder builder() {
+        return new Builder();
     }
 }

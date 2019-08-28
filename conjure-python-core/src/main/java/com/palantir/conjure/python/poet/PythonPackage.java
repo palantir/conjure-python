@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2018 Palantir Technologies Inc. All rights reserved.
+ * (c) Copyright 2019 Palantir Technologies Inc. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,19 +16,15 @@
 
 package com.palantir.conjure.python.poet;
 
-import java.util.Set;
+import org.immutables.value.Value;
 
-public interface PythonSnippet extends Emittable {
+@Value.Immutable
+public interface PythonPackage {
 
-    PythonPackage pythonPackage();
+    @Value.Parameter
+    String get();
 
-    /*
-     * Id for the snippet used for ordering.
-     */
-    String idForSorting();
-
-    /*
-     * The set of imports required for this snippet to compile.
-     */
-    Set<PythonImport> imports();
+    static PythonPackage of(String packageName) {
+        return ImmutablePythonPackage.of(packageName);
+    }
 }
