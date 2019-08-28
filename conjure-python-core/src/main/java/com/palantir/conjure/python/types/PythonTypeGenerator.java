@@ -28,6 +28,7 @@ import com.palantir.conjure.python.poet.PythonPackage;
 import com.palantir.conjure.python.poet.PythonSnippet;
 import com.palantir.conjure.python.poet.UnionSnippet;
 import com.palantir.conjure.python.processors.packagename.PackageNameProcessor;
+import com.palantir.conjure.python.processors.typename.TypeNameProcessor;
 import com.palantir.conjure.spec.AliasDefinition;
 import com.palantir.conjure.spec.EnumDefinition;
 import com.palantir.conjure.spec.ObjectDefinition;
@@ -40,14 +41,23 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public final class PythonBeanGenerator {
+public final class PythonTypeGenerator {
 
     private final PackageNameProcessor packageNameProcessor;
+    private final TypeNameProcessor typeNameProcessor;
     private final DealiasingTypeVisitor dealiasingTypeVisitor;
+    private final PythonTypeNameVisitor pythonTypeNameVisitor;
+    private final MyPyTypeNameVisitor myPyTypeNameVisitor;
 
-    public PythonBeanGenerator(PackageNameProcessor packageNameProcessor, DealiasingTypeVisitor dealiasingTypeVisitor) {
+    public PythonTypeGenerator(
+            PackageNameProcessor packageNameProcessor,
+            TypeNameProcessor typeNameProcessor,
+            DealiasingTypeVisitor dealiasingTypeVisitor) {
         this.packageNameProcessor = packageNameProcessor;
+        this.typeNameProcessor = typeNameProcessor;
         this.dealiasingTypeVisitor = dealiasingTypeVisitor;
+        pythonTypeNameVisitor = new PythonTypeNameVisitor(typeNameProcessor);
+        myPyTypeNameVisitor = new MyPyTypeNameVisitor(typeNameProcessor);
     }
 
     public PythonSnippet generateType(TypeDefinition typeDef) {
@@ -94,8 +104,8 @@ public final class PythonBeanGenerator {
                                 entry.getFieldName().get(), CaseConverter.Case.SNAKE_CASE))
                         .jsonIdentifier(entry.getFieldName().get())
                         .docs(entry.getDocs())
-                        .pythonType(entry.getType().accept(PythonTypeVisitor.PYTHON_TYPE))
-                        .myPyType(entry.getType().accept(PythonTypeVisitor.MY_PY_TYPE))
+                        .pythonType(entry.getType().accept(pythonTypeNameVisitor))
+                        .myPyType(entry.getType().accept(myPyTypeNameVisitor))
                         .isOptional(dealiasingTypeVisitor.dealias(entry.getType()).fold(
                                 typeDefinition -> false,
                                 type -> type.accept(TypeVisitor.IS_OPTIONAL)))
@@ -104,7 +114,7 @@ public final class PythonBeanGenerator {
 
         return BeanSnippet.builder()
                 .pythonPackage(PythonPackage.of(packageNameProcessor.process(typeDef.getTypeName().getPackage())))
-                .className(typeDef.getTypeName().getName())
+                .className(typeNameProcessor.process(typeDef.getTypeName()))
                 .addAllImports(BeanSnippet.DEFAULT_IMPORTS)
                 .addAllImports(imports)
                 .docs(typeDef.getDocs())
@@ -115,7 +125,7 @@ public final class PythonBeanGenerator {
     private EnumSnippet generateEnum(EnumDefinition typeDef) {
         return EnumSnippet.builder()
                 .pythonPackage(PythonPackage.of(packageNameProcessor.process(typeDef.getTypeName().getPackage())))
-                .className(typeDef.getTypeName().getName())
+                .className(typeNameProcessor.process(typeDef.getTypeName()))
                 .addImports(EnumSnippet.CONJURE_IMPORT)
                 .docs(typeDef.getDocs())
                 .values(typeDef.getValues().stream()
@@ -141,8 +151,8 @@ public final class PythonBeanGenerator {
                                     unionMember.getFieldName().get(), CaseConverter.Case.SNAKE_CASE))
                             .docs(unionMember.getDocs())
                             .jsonIdentifier(unionMember.getFieldName().get())
-                            .myPyType(conjureType.accept(PythonTypeVisitor.MY_PY_TYPE))
-                            .pythonType(conjureType.accept(PythonTypeVisitor.PYTHON_TYPE))
+                            .myPyType(conjureType.accept(myPyTypeNameVisitor))
+                            .pythonType(conjureType.accept(pythonTypeNameVisitor))
                             .isOptional(dealiasingTypeVisitor.dealias(unionMember.getType()).fold(
                                     typeDefinition -> false,
                                     type -> type.accept(TypeVisitor.IS_OPTIONAL)))
@@ -152,7 +162,7 @@ public final class PythonBeanGenerator {
 
         return UnionSnippet.builder()
                 .pythonPackage(PythonPackage.of(packageNameProcessor.process(typeDef.getTypeName().getPackage())))
-                .className(typeDef.getTypeName().getName())
+                .className(typeNameProcessor.process(typeDef.getTypeName()))
                 .addAllImports(UnionSnippet.DEFAULT_IMPORTS)
                 .addAllImports(imports)
                 .docs(typeDef.getDocs())
@@ -164,8 +174,8 @@ public final class PythonBeanGenerator {
         ImportTypeVisitor importVisitor = new ImportTypeVisitor(typeDef.getTypeName(), packageNameProcessor);
         return AliasSnippet.builder()
                 .pythonPackage(PythonPackage.of(packageNameProcessor.process(typeDef.getTypeName().getPackage())))
-                .className(typeDef.getTypeName().getName())
-                .aliasName(typeDef.getAlias().accept(PythonTypeVisitor.PYTHON_TYPE))
+                .className(typeNameProcessor.process(typeDef.getTypeName()))
+                .aliasName(typeDef.getAlias().accept(pythonTypeNameVisitor))
                 .aliasType(typeDef)
                 .imports(ImmutableSet.copyOf(typeDef.getAlias().accept(importVisitor)))
                 .build();

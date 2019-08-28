@@ -25,8 +25,10 @@ import com.palantir.conjure.python.poet.PythonPackage;
 import com.palantir.conjure.python.poet.PythonService;
 import com.palantir.conjure.python.poet.PythonSnippet;
 import com.palantir.conjure.python.processors.packagename.PackageNameProcessor;
+import com.palantir.conjure.python.processors.typename.TypeNameProcessor;
 import com.palantir.conjure.python.types.ImportTypeVisitor;
-import com.palantir.conjure.python.types.PythonTypeVisitor;
+import com.palantir.conjure.python.types.MyPyTypeNameVisitor;
+import com.palantir.conjure.python.types.PythonTypeNameVisitor;
 import com.palantir.conjure.spec.EndpointDefinition;
 import com.palantir.conjure.spec.PrimitiveType;
 import com.palantir.conjure.spec.ServiceDefinition;
@@ -40,10 +42,17 @@ public final class ClientGenerator {
 
     private final PackageNameProcessor packageNameProcessor;
     private final DealiasingTypeVisitor dealiasingTypeVisitor;
+    private final PythonTypeNameVisitor pythonTypeNameVisitor;
+    private final MyPyTypeNameVisitor myPyTypeNameVisitor;
 
-    public ClientGenerator(PackageNameProcessor packageNameProcessor, DealiasingTypeVisitor dealiasingTypeVisitor) {
+    public ClientGenerator(
+            PackageNameProcessor packageNameProcessor,
+            TypeNameProcessor typeNameProcessor,
+            DealiasingTypeVisitor dealiasingTypeVisitor) {
         this.packageNameProcessor = packageNameProcessor;
         this.dealiasingTypeVisitor = dealiasingTypeVisitor;
+        pythonTypeNameVisitor = new PythonTypeNameVisitor(typeNameProcessor);
+        myPyTypeNameVisitor = new MyPyTypeNameVisitor(typeNameProcessor);
     }
 
     public PythonSnippet generateClient(ServiceDefinition serviceDef) {
@@ -84,7 +93,7 @@ public final class ClientGenerator {
                         .pythonParamName(CaseConverter.toCase(
                                 argEntry.getArgName().get(), CaseConverter.Case.SNAKE_CASE))
                         .paramType(argEntry.getParamType())
-                        .myPyType(argEntry.getType().accept(PythonTypeVisitor.MY_PY_TYPE))
+                        .myPyType(argEntry.getType().accept(myPyTypeNameVisitor))
                         .isOptional(dealiasingTypeVisitor.dealias(argEntry.getType()).fold(
                                 typeDefinition -> false,
                                 type -> type.accept(TypeVisitor.IS_OPTIONAL)))
@@ -99,8 +108,8 @@ public final class ClientGenerator {
                 .auth(endpointDef.getAuth())
                 .docs(endpointDef.getDocs())
                 .params(params)
-                .pythonReturnType(endpointDef.getReturns().map(type -> type.accept(PythonTypeVisitor.PYTHON_TYPE)))
-                .myPyReturnType(endpointDef.getReturns().map(type -> type.accept(PythonTypeVisitor.MY_PY_TYPE)))
+                .pythonReturnType(endpointDef.getReturns().map(type -> type.accept(pythonTypeNameVisitor)))
+                .myPyReturnType(endpointDef.getReturns().map(type -> type.accept(myPyTypeNameVisitor)))
                 .isBinary(endpointDef.getReturns()
                         // We do not need to handle alias of binary since they are treated differently over the wire
                         .map(rt -> rt.accept(TypeVisitor.IS_PRIMITIVE)

@@ -32,7 +32,9 @@ import com.palantir.conjure.python.processors.packagename.FlatteningPackageNameP
 import com.palantir.conjure.python.processors.packagename.PackageNameProcessor;
 import com.palantir.conjure.python.processors.packagename.TopLevelAddingPackageNameProcessor;
 import com.palantir.conjure.python.processors.packagename.TwoComponentStrippingPackageNameProcessor;
-import com.palantir.conjure.python.types.PythonBeanGenerator;
+import com.palantir.conjure.python.processors.typename.NameOnlyTypeNameProcessor;
+import com.palantir.conjure.python.processors.typename.TypeNameProcessor;
+import com.palantir.conjure.python.types.PythonTypeGenerator;
 import com.palantir.conjure.spec.ConjureDefinition;
 import com.palantir.conjure.visitor.DealiasingTypeVisitor;
 import com.palantir.conjure.visitor.TypeDefinitionVisitor;
@@ -43,6 +45,8 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public final class ConjurePythonGenerator {
+
+    private static final String INIT_PY = "__init__.py";
 
     private final GeneratorConfiguration config;
 
@@ -68,15 +72,23 @@ public final class ConjurePythonGenerator {
         }
     }
 
-    public List<PythonFile> generate(ConjureDefinition conjureDefinition) {
+    private List<PythonFile> generate(ConjureDefinition conjureDefinition) {
         PackageNameProcessor packageNameProcessor = buildPackageNameProcessor();
 
         DealiasingTypeVisitor dealiasingTypeVisitor = new DealiasingTypeVisitor(conjureDefinition.getTypes()
                 .stream()
                 .collect(Collectors.toMap(type -> type.accept(TypeDefinitionVisitor.TYPE_NAME), Function.identity())));
 
-        PythonBeanGenerator beanGenerator = new PythonBeanGenerator(packageNameProcessor, dealiasingTypeVisitor);
-        ClientGenerator clientGenerator = new ClientGenerator(packageNameProcessor, dealiasingTypeVisitor);
+        TypeNameProcessor typeNameProcessor = NameOnlyTypeNameProcessor.INSTANCE;
+
+        PythonTypeGenerator beanGenerator = new PythonTypeGenerator(
+                packageNameProcessor,
+                typeNameProcessor,
+                dealiasingTypeVisitor);
+        ClientGenerator clientGenerator = new ClientGenerator(
+                packageNameProcessor,
+                typeNameProcessor,
+                dealiasingTypeVisitor);
 
         List<PythonSnippet> snippets = Lists.newArrayList();
         snippets.addAll(conjureDefinition.getTypes()
@@ -94,7 +106,7 @@ public final class ConjurePythonGenerator {
         List<PythonFile> pythonFiles = KeyedStream.stream(snippetsByPackage)
                 .map((pythonPackage, pythonSnippets) -> PythonFile.builder()
                         .pythonPackage(pythonPackage)
-                        .fileName("__init__.py")
+                        .fileName(INIT_PY)
                         .contents(pythonSnippets)
                         .build())
                 .values()
@@ -109,7 +121,7 @@ public final class ConjurePythonGenerator {
         String rootInitFilePath = config.pythonicPackageName().orElse("");
         PythonFile.Builder builder = PythonFile.builder()
                 .pythonPackage(PythonPackage.of(config.pythonicPackageName().orElse(".")))
-                .fileName("__init__.py")
+                .fileName(INIT_PY)
                 .addContents(AllSnippet.builder()
                         .pythonPackage(rootPackage)
                         .contents(packageNames.stream()
