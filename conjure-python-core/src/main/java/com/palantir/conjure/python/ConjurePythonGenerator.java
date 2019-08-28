@@ -27,6 +27,11 @@ import com.palantir.conjure.python.poet.PythonLine;
 import com.palantir.conjure.python.poet.PythonMetaYaml;
 import com.palantir.conjure.python.poet.PythonSetup;
 import com.palantir.conjure.python.poet.PythonSnippet;
+import com.palantir.conjure.python.processors.packagename.CompoundPackageNameProcessor;
+import com.palantir.conjure.python.processors.packagename.FlatteningPackageNameProcessor;
+import com.palantir.conjure.python.processors.packagename.PackageNameProcessor;
+import com.palantir.conjure.python.processors.packagename.TopLevelAddingPackageNameProcessor;
+import com.palantir.conjure.python.processors.packagename.TwoComponentStrippingPackageNameProcessor;
 import com.palantir.conjure.python.types.ImportTypeVisitor;
 import com.palantir.conjure.python.types.PythonBeanGenerator;
 import com.palantir.conjure.spec.AliasDefinition;
@@ -45,21 +50,15 @@ import java.util.stream.Collectors;
 
 public final class ConjurePythonGenerator {
 
-    private final PythonBeanGenerator beanGenerator;
-    private final ClientGenerator clientGenerator;
     private final GeneratorConfiguration config;
 
     public ConjurePythonGenerator(
-            PythonBeanGenerator beanGenerator,
-            ClientGenerator clientGenerator,
             GeneratorConfiguration config) {
         Preconditions.checkArgument(
                 config.generateRawSource() || (config.packageName().isPresent() && config.packageVersion().isPresent()),
                 "If generateRawSource is not set, packageName and packageVersion must be present");
         Preconditions.checkArgument(!(config.generateRawSource() && config.shouldWriteCondaRecipe()),
                 "If generateRawSource is set, shouldWriteCondaRecipe must not be set");
-        this.beanGenerator = beanGenerator;
-        this.clientGenerator = clientGenerator;
         this.config = config;
     }
 
@@ -74,14 +73,15 @@ public final class ConjurePythonGenerator {
     }
 
     public List<PythonFile> generate(ConjureDefinition conjureDefinition) {
-        PackageNameProcessor.Builder packageNameProcessorBuilder = PackageNameProcessor.builder()
-                .addProcessors(new TwoComponentStrippingPackageNameProcessor())
-                .addProcessors(new FlatteningPackageNameProcessor());
+        CompoundPackageNameProcessor.Builder compoundPackageNameProcessor = CompoundPackageNameProcessor.builder()
+                        .addProcessors(new TwoComponentStrippingPackageNameProcessor());
         if (config.pythonicPackageName().isPresent()) {
             String pythonicPackageName = config.pythonicPackageName().get();
-            packageNameProcessorBuilder.addProcessors(new TopLevelAddingPackageNameProcessor(pythonicPackageName));
+            compoundPackageNameProcessor.addProcessors(
+                    new TopLevelAddingPackageNameProcessor(pythonicPackageName));
         }
-        PackageNameProcessor packageNameProcessor = packageNameProcessorBuilder.build();
+        compoundPackageNameProcessor.addProcessors(FlatteningPackageNameProcessor.INSTANCE);
+        PackageNameProcessor packageNameProcessor = compoundPackageNameProcessor.build();
 
         DealiasingTypeVisitor dealiasingTypeVisitor = new DealiasingTypeVisitor(
                 conjureDefinition.getTypes()
@@ -89,25 +89,26 @@ public final class ConjurePythonGenerator {
                         .collect(Collectors.toMap(type -> type.accept(TypeDefinitionVisitor.TYPE_NAME),
                                 Function.identity())));
 
+        PythonBeanGenerator beanGenerator = new PythonBeanGenerator(packageNameProcessor, dealiasingTypeVisitor);
+        ClientGenerator clientGenerator = new ClientGenerator(packageNameProcessor, dealiasingTypeVisitor);
+
         Multimap<String, PythonSnippet> snippets = HashMultimap.create();
         conjureDefinition.getTypes().forEach(typeDefinition ->
                 snippets.put(resolveTypePackage(typeDefinition),
                         beanGenerator.generateType(
                                 typeDefinition,
-                                typeName -> new ImportTypeVisitor(typeName, packageNameProcessor),
-                                dealiasingTypeVisitor)));
+                                typeName -> new ImportTypeVisitor(typeName, packageNameProcessor))));
         conjureDefinition.getServices().forEach(serviceDefinition ->
                 snippets.put(serviceDefinition.getServiceName().getPackage(),
                         clientGenerator.generateClient(
                                 serviceDefinition,
-                                typeName -> new ImportTypeVisitor(typeName, packageNameProcessor),
-                                dealiasingTypeVisitor)));
+                                typeName -> new ImportTypeVisitor(typeName, packageNameProcessor))));
 
         ImmutableList.Builder<PythonFile> allFiles = ImmutableList.builder();
         allFiles.addAll(snippets.asMap().entrySet()
                 .stream()
                 .map(entry -> PythonFile.builder()
-                        .packageName(packageNameProcessor.getPackageName(entry.getKey()))
+                        .packageName(packageNameProcessor.process(entry.getKey()))
                         .fileName("__init__.py")
                         .contents(new HashSet<>(entry.getValue()))
                         .build())
@@ -126,7 +127,7 @@ public final class ConjurePythonGenerator {
                 .fileName("__init__.py")
                 .addContents(AllSnippet.builder()
                         .contents(packageNames.stream()
-                                .map(name -> packageNameProcessor.getPackageName(name)
+                                .map(name -> packageNameProcessor.process(name)
                                         .replace(rootInitFilePath, "")
                                         .replace(".", ""))
                                 .sorted()

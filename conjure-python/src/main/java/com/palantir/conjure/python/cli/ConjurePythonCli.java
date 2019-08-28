@@ -23,8 +23,6 @@ import com.google.common.annotations.VisibleForTesting;
 import com.palantir.conjure.python.ConjurePythonGenerator;
 import com.palantir.conjure.python.DefaultPythonFileWriter;
 import com.palantir.conjure.python.GeneratorConfiguration;
-import com.palantir.conjure.python.client.ClientGenerator;
-import com.palantir.conjure.python.types.DefaultBeanGenerator;
 import com.palantir.conjure.spec.ConjureDefinition;
 import java.io.File;
 import java.io.IOException;
@@ -100,10 +98,7 @@ public final class ConjurePythonCli implements Runnable {
                     resolveGeneratorConfiguration(cliConfig, BuildConfiguration.load());
             try {
                 ConjureDefinition conjureDefinition = OBJECT_MAPPER.readValue(new File(input), ConjureDefinition.class);
-                ConjurePythonGenerator generator = new ConjurePythonGenerator(
-                        new DefaultBeanGenerator(),
-                        new ClientGenerator(),
-                        generatorConfig);
+                ConjurePythonGenerator generator = new ConjurePythonGenerator(generatorConfig);
                 generator.write(conjureDefinition, new DefaultPythonFileWriter(Paths.get(output)));
             } catch (IOException e) {
                 throw new RuntimeException(String.format("Error parsing definition: %s", e.toString()));

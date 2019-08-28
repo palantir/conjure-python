@@ -23,6 +23,7 @@ import com.palantir.conjure.python.poet.PythonEndpointDefinition.PythonEndpointP
 import com.palantir.conjure.python.poet.PythonImport;
 import com.palantir.conjure.python.poet.PythonService;
 import com.palantir.conjure.python.poet.PythonSnippet;
+import com.palantir.conjure.python.processors.packagename.PackageNameProcessor;
 import com.palantir.conjure.python.types.ImportTypeVisitor;
 import com.palantir.conjure.python.types.PythonTypeVisitor;
 import com.palantir.conjure.spec.EndpointDefinition;
@@ -38,16 +39,23 @@ import java.util.stream.Collectors;
 
 public final class ClientGenerator {
 
+    private final PackageNameProcessor packageNameProcessor;
+    private final DealiasingTypeVisitor dealiasingTypeVisitor;
+
+    public ClientGenerator(PackageNameProcessor packageNameProcessor, DealiasingTypeVisitor dealiasingTypeVisitor) {
+        this.packageNameProcessor = packageNameProcessor;
+        this.dealiasingTypeVisitor = dealiasingTypeVisitor;
+    }
+
     public PythonSnippet generateClient(
             ServiceDefinition serviceDef,
-            Function<TypeName, ImportTypeVisitor> importTypeVisitorFactory,
-            DealiasingTypeVisitor dealiasingTypeVisitor) {
+            Function<TypeName, ImportTypeVisitor> importTypeVisitorFactory) {
         ImportTypeVisitor importTypeVisitor = importTypeVisitorFactory.apply(serviceDef.getServiceName());
         ImmutableSet.Builder<Type> referencedTypesBuilder = ImmutableSet.builder();
 
         List<PythonEndpointDefinition> endpoints = serviceDef.getEndpoints()
                 .stream()
-                .map(endpointDef -> generateEndpoint(endpointDef, referencedTypesBuilder, dealiasingTypeVisitor))
+                .map(endpointDef -> generateEndpoint(endpointDef, referencedTypesBuilder))
                 .collect(Collectors.toList());
 
         List<PythonImport> imports = referencedTypesBuilder.build()
@@ -66,8 +74,7 @@ public final class ClientGenerator {
 
     private PythonEndpointDefinition generateEndpoint(
             EndpointDefinition endpointDef,
-            ImmutableSet.Builder<Type> referencedTypesBuilder,
-            DealiasingTypeVisitor dealiasingTypeVisitor) {
+            ImmutableSet.Builder<Type> referencedTypesBuilder) {
         endpointDef.getReturns().ifPresent(referencedTypesBuilder::add);
         endpointDef.getArgs().forEach(arg -> referencedTypesBuilder.add(arg.getType()));
 

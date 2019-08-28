@@ -17,8 +17,8 @@
 package com.palantir.conjure.python.types;
 
 import com.google.common.collect.ImmutableSet;
-import com.palantir.conjure.python.PackageNameProcessor;
 import com.palantir.conjure.python.poet.PythonImport;
+import com.palantir.conjure.python.processors.packagename.PackageNameProcessor;
 import com.palantir.conjure.spec.ExternalReference;
 import com.palantir.conjure.spec.ListType;
 import com.palantir.conjure.spec.MapType;
@@ -97,8 +97,8 @@ public final class ImportTypeVisitor implements Type.Visitor<Set<PythonImport>> 
         }
         return ImmutableSet.of(PythonImport.of(
                         relativePackage(
-                                packageNameProcessor.getPackageName(typeName.getPackage()),
-                                packageNameProcessor.getPackageName(value.getPackage())),
+                                packageNameProcessor.process(typeName.getPackage()),
+                                packageNameProcessor.process(value.getPackage())),
                         value.getName()));
     }
 
