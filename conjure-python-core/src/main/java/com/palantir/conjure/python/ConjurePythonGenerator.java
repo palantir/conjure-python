@@ -32,7 +32,6 @@ import com.palantir.conjure.python.processors.packagename.FlatteningPackageNameP
 import com.palantir.conjure.python.processors.packagename.PackageNameProcessor;
 import com.palantir.conjure.python.processors.packagename.TopLevelAddingPackageNameProcessor;
 import com.palantir.conjure.python.processors.packagename.TwoComponentStrippingPackageNameProcessor;
-import com.palantir.conjure.python.types.ImportTypeVisitor;
 import com.palantir.conjure.python.types.PythonBeanGenerator;
 import com.palantir.conjure.spec.AliasDefinition;
 import com.palantir.conjure.spec.ConjureDefinition;
@@ -74,13 +73,13 @@ public final class ConjurePythonGenerator {
 
     public List<PythonFile> generate(ConjureDefinition conjureDefinition) {
         CompoundPackageNameProcessor.Builder compoundPackageNameProcessor = CompoundPackageNameProcessor.builder()
-                        .addProcessors(new TwoComponentStrippingPackageNameProcessor());
+                .addProcessors(new TwoComponentStrippingPackageNameProcessor())
+                .addProcessors(FlatteningPackageNameProcessor.INSTANCE);
         if (config.pythonicPackageName().isPresent()) {
             String pythonicPackageName = config.pythonicPackageName().get();
             compoundPackageNameProcessor.addProcessors(
                     new TopLevelAddingPackageNameProcessor(pythonicPackageName));
         }
-        compoundPackageNameProcessor.addProcessors(FlatteningPackageNameProcessor.INSTANCE);
         PackageNameProcessor packageNameProcessor = compoundPackageNameProcessor.build();
 
         DealiasingTypeVisitor dealiasingTypeVisitor = new DealiasingTypeVisitor(
@@ -95,14 +94,10 @@ public final class ConjurePythonGenerator {
         Multimap<String, PythonSnippet> snippets = HashMultimap.create();
         conjureDefinition.getTypes().forEach(typeDefinition ->
                 snippets.put(resolveTypePackage(typeDefinition),
-                        beanGenerator.generateType(
-                                typeDefinition,
-                                typeName -> new ImportTypeVisitor(typeName, packageNameProcessor))));
+                        beanGenerator.generateType(typeDefinition)));
         conjureDefinition.getServices().forEach(serviceDefinition ->
                 snippets.put(serviceDefinition.getServiceName().getPackage(),
-                        clientGenerator.generateClient(
-                                serviceDefinition,
-                                typeName -> new ImportTypeVisitor(typeName, packageNameProcessor))));
+                        clientGenerator.generateClient(serviceDefinition)));
 
         ImmutableList.Builder<PythonFile> allFiles = ImmutableList.builder();
         allFiles.addAll(snippets.asMap().entrySet()

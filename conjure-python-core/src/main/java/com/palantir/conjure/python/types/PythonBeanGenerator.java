@@ -26,31 +26,34 @@ import com.palantir.conjure.python.poet.PythonField;
 import com.palantir.conjure.python.poet.PythonImport;
 import com.palantir.conjure.python.poet.PythonSnippet;
 import com.palantir.conjure.python.poet.UnionSnippet;
+import com.palantir.conjure.python.processors.packagename.PackageNameProcessor;
 import com.palantir.conjure.spec.AliasDefinition;
 import com.palantir.conjure.spec.EnumDefinition;
 import com.palantir.conjure.spec.ObjectDefinition;
 import com.palantir.conjure.spec.Type;
 import com.palantir.conjure.spec.TypeDefinition;
-import com.palantir.conjure.spec.TypeName;
 import com.palantir.conjure.spec.UnionDefinition;
 import com.palantir.conjure.visitor.DealiasingTypeVisitor;
 import com.palantir.conjure.visitor.TypeVisitor;
 import java.util.List;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public final class DefaultBeanGenerator implements PythonBeanGenerator {
+public final class PythonBeanGenerator {
 
-    @Override
-    public PythonSnippet generateType(
-            TypeDefinition typeDef,
-            Function<TypeName, ImportTypeVisitor> importTypeVisitorFactory,
-            DealiasingTypeVisitor dealiasingTypeVisitor) {
+    private final PackageNameProcessor packageNameProcessor;
+    private final DealiasingTypeVisitor dealiasingTypeVisitor;
+
+    public PythonBeanGenerator(PackageNameProcessor packageNameProcessor, DealiasingTypeVisitor dealiasingTypeVisitor) {
+        this.packageNameProcessor = packageNameProcessor;
+        this.dealiasingTypeVisitor = dealiasingTypeVisitor;
+    }
+
+    public PythonSnippet generateType(TypeDefinition typeDef) {
         return typeDef.accept(new TypeDefinition.Visitor<PythonSnippet>() {
             @Override
             public PythonSnippet visitAlias(AliasDefinition value) {
-                return generateAlias(value, importTypeVisitorFactory);
+                return generateAlias(value);
             }
 
             @Override
@@ -60,12 +63,12 @@ public final class DefaultBeanGenerator implements PythonBeanGenerator {
 
             @Override
             public PythonSnippet visitObject(ObjectDefinition value) {
-                return generateBean(value, importTypeVisitorFactory, dealiasingTypeVisitor);
+                return generateBean(value);
             }
 
             @Override
             public PythonSnippet visitUnion(UnionDefinition value) {
-                return generateUnion(value, importTypeVisitorFactory, dealiasingTypeVisitor);
+                return generateUnion(value);
             }
 
             @Override
@@ -75,12 +78,8 @@ public final class DefaultBeanGenerator implements PythonBeanGenerator {
         });
     }
 
-    @Override
-    public BeanSnippet generateBean(
-            ObjectDefinition typeDef,
-            Function<TypeName, ImportTypeVisitor> importTypeVisitorFactory,
-            DealiasingTypeVisitor dealiasingTypeVisitor) {
-        ImportTypeVisitor importVisitor = importTypeVisitorFactory.apply(typeDef.getTypeName());
+    public BeanSnippet generateBean(ObjectDefinition typeDef) {
+        ImportTypeVisitor importVisitor = new ImportTypeVisitor(typeDef.getTypeName(), packageNameProcessor);
 
         Set<PythonImport> imports = typeDef.getFields()
                 .stream()
@@ -111,7 +110,6 @@ public final class DefaultBeanGenerator implements PythonBeanGenerator {
                 .build();
     }
 
-    @Override
     public EnumSnippet generateEnum(EnumDefinition typeDef) {
         return EnumSnippet.builder()
                 .className(typeDef.getTypeName().getName())
@@ -123,12 +121,8 @@ public final class DefaultBeanGenerator implements PythonBeanGenerator {
                 .build();
     }
 
-    @Override
-    public UnionSnippet generateUnion(
-            UnionDefinition typeDef,
-            Function<TypeName, ImportTypeVisitor> importTypeVisitorFactory,
-            DealiasingTypeVisitor dealiasingTypeVisitor) {
-        ImportTypeVisitor importVisitor = importTypeVisitorFactory.apply(typeDef.getTypeName());
+    public UnionSnippet generateUnion(UnionDefinition typeDef) {
+        ImportTypeVisitor importVisitor = new ImportTypeVisitor(typeDef.getTypeName(), packageNameProcessor);
 
         Set<PythonImport> imports = typeDef.getUnion()
                 .stream()
@@ -162,10 +156,8 @@ public final class DefaultBeanGenerator implements PythonBeanGenerator {
                 .build();
     }
 
-    @Override
-    public AliasSnippet generateAlias(
-            AliasDefinition typeDef, Function<TypeName, ImportTypeVisitor> importTypeVisitorFactory) {
-        ImportTypeVisitor importVisitor = importTypeVisitorFactory.apply(typeDef.getTypeName());
+    public AliasSnippet generateAlias(AliasDefinition typeDef) {
+        ImportTypeVisitor importVisitor = new ImportTypeVisitor(typeDef.getTypeName(), packageNameProcessor);
         return AliasSnippet.builder()
                 .className(typeDef.getTypeName().getName())
                 .aliasName(typeDef.getAlias().accept(PythonTypeVisitor.PYTHON_TYPE))

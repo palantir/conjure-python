@@ -30,11 +30,9 @@ import com.palantir.conjure.spec.EndpointDefinition;
 import com.palantir.conjure.spec.PrimitiveType;
 import com.palantir.conjure.spec.ServiceDefinition;
 import com.palantir.conjure.spec.Type;
-import com.palantir.conjure.spec.TypeName;
 import com.palantir.conjure.visitor.DealiasingTypeVisitor;
 import com.palantir.conjure.visitor.TypeVisitor;
 import java.util.List;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public final class ClientGenerator {
@@ -47,10 +45,8 @@ public final class ClientGenerator {
         this.dealiasingTypeVisitor = dealiasingTypeVisitor;
     }
 
-    public PythonSnippet generateClient(
-            ServiceDefinition serviceDef,
-            Function<TypeName, ImportTypeVisitor> importTypeVisitorFactory) {
-        ImportTypeVisitor importTypeVisitor = importTypeVisitorFactory.apply(serviceDef.getServiceName());
+    public PythonSnippet generateClient(ServiceDefinition serviceDef) {
+        ImportTypeVisitor importTypeVisitor = new ImportTypeVisitor(serviceDef.getServiceName(), packageNameProcessor);
         ImmutableSet.Builder<Type> referencedTypesBuilder = ImmutableSet.builder();
 
         List<PythonEndpointDefinition> endpoints = serviceDef.getEndpoints()
