@@ -49,6 +49,10 @@ public interface BeanSnippet extends PythonSnippet {
 
     String className();
 
+    String definitionName();
+
+    PythonPackage definitionPackage();
+
     Optional<Documentation> docs();
 
     List<PythonField> fields();
@@ -58,8 +62,6 @@ public interface BeanSnippet extends PythonSnippet {
         poetWriter.writeIndentedLine(String.format("class %s(ConjureBeanType):", className()));
         poetWriter.increaseIndent();
         docs().ifPresent(docs -> poetWriter.writeIndentedLine(String.format("\"\"\"%s\"\"\"", docs.get().trim())));
-
-        poetWriter.writeLine();
 
         // record off the fields, for things like serialization (python... has no types)
         poetWriter.writeIndentedLine("@builtins.classmethod");
@@ -132,6 +134,14 @@ public interface BeanSnippet extends PythonSnippet {
 
         // end of class def
         poetWriter.decreaseIndent();
+        poetWriter.writeLine();
+        poetWriter.writeLine();
+
+        poetWriter.writeIndentedLine(String.format("%s.__name__ = \"%s\"", className(), definitionName()));
+        poetWriter.writeIndentedLine(
+                String.format("%s.__module__ = \"%s\"", className(), definitionPackage().get()));
+
+        poetWriter.writeLine();
         poetWriter.writeLine();
     }
 

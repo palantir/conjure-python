@@ -40,28 +40,34 @@ import java.util.stream.Collectors;
 
 public final class ClientGenerator {
 
-    private final PackageNameProcessor packageNameProcessor;
+    private final PackageNameProcessor implPackageNameProcessor;
+    private final TypeNameProcessor implTypeNameProcessor;
+    private final PackageNameProcessor definitionPackageNameProcessor;
+    private final TypeNameProcessor definitionTypeNameProcessor;
     private final DealiasingTypeVisitor dealiasingTypeVisitor;
-    private final TypeNameProcessor typeNameProcessor;
     private final PythonTypeNameVisitor pythonTypeNameVisitor;
     private final MyPyTypeNameVisitor myPyTypeNameVisitor;
 
     public ClientGenerator(
-            PackageNameProcessor packageNameProcessor,
-            TypeNameProcessor typeNameProcessor,
+            PackageNameProcessor implPackageNameProcessor,
+            TypeNameProcessor implTypeNameProcessor,
+            PackageNameProcessor definitionPackageNameProcessor,
+            TypeNameProcessor definitionTypeNameProcessor,
             DealiasingTypeVisitor dealiasingTypeVisitor) {
-        this.packageNameProcessor = packageNameProcessor;
+        this.implPackageNameProcessor = implPackageNameProcessor;
+        this.implTypeNameProcessor = implTypeNameProcessor;
+        this.definitionPackageNameProcessor = definitionPackageNameProcessor;
+        this.definitionTypeNameProcessor = definitionTypeNameProcessor;
         this.dealiasingTypeVisitor = dealiasingTypeVisitor;
-        this.typeNameProcessor = typeNameProcessor;
-        pythonTypeNameVisitor = new PythonTypeNameVisitor(typeNameProcessor);
-        myPyTypeNameVisitor = new MyPyTypeNameVisitor(typeNameProcessor);
+        pythonTypeNameVisitor = new PythonTypeNameVisitor(implTypeNameProcessor);
+        myPyTypeNameVisitor = new MyPyTypeNameVisitor(implTypeNameProcessor);
     }
 
     public PythonSnippet generateClient(ServiceDefinition serviceDef) {
         ImportTypeVisitor importTypeVisitor = new ImportTypeVisitor(
                 serviceDef.getServiceName(),
-                typeNameProcessor,
-                packageNameProcessor);
+                implTypeNameProcessor,
+                implPackageNameProcessor);
         ImmutableSet.Builder<Type> referencedTypesBuilder = ImmutableSet.builder();
 
         List<PythonEndpointDefinition> endpoints = serviceDef.getEndpoints()
@@ -75,8 +81,12 @@ public final class ClientGenerator {
                 .collect(Collectors.toList());
 
         return PythonService.builder()
-                .pythonPackage(PythonPackage.of(packageNameProcessor.process(serviceDef.getServiceName().getPackage())))
-                .className(typeNameProcessor.process(serviceDef.getServiceName()))
+                .pythonPackage(PythonPackage.of(implPackageNameProcessor.process(
+                        serviceDef.getServiceName().getPackage())))
+                .className(implTypeNameProcessor.process(serviceDef.getServiceName()))
+                .definitionPackage(PythonPackage.of(definitionPackageNameProcessor.process(
+                        serviceDef.getServiceName().getPackage())))
+                .definitionName(definitionTypeNameProcessor.process(serviceDef.getServiceName()))
                 .addAllImports(PythonService.CONJURE_IMPORTS)
                 .addAllImports(imports)
                 .docs(serviceDef.getDocs())

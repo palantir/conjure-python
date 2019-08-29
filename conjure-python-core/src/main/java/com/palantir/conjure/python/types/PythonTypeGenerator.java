@@ -43,21 +43,27 @@ import java.util.stream.Collectors;
 
 public final class PythonTypeGenerator {
 
-    private final PackageNameProcessor packageNameProcessor;
-    private final TypeNameProcessor typeNameProcessor;
+    private final PackageNameProcessor implPackageNameProcessor;
+    private final TypeNameProcessor implTypeNameProcessor;
+    private final PackageNameProcessor definitionPackageNameProcessor;
+    private final TypeNameProcessor definitionTypeNameProcessor;
     private final DealiasingTypeVisitor dealiasingTypeVisitor;
     private final PythonTypeNameVisitor pythonTypeNameVisitor;
     private final MyPyTypeNameVisitor myPyTypeNameVisitor;
 
     public PythonTypeGenerator(
-            PackageNameProcessor packageNameProcessor,
-            TypeNameProcessor typeNameProcessor,
+            PackageNameProcessor implPackageNameProcessor,
+            TypeNameProcessor implTypeNameProcessor,
+            PackageNameProcessor definitionPackageNameProcessor,
+            TypeNameProcessor definitionTypeNameProcessor,
             DealiasingTypeVisitor dealiasingTypeVisitor) {
-        this.packageNameProcessor = packageNameProcessor;
-        this.typeNameProcessor = typeNameProcessor;
+        this.implPackageNameProcessor = implPackageNameProcessor;
+        this.implTypeNameProcessor = implTypeNameProcessor;
+        this.definitionPackageNameProcessor = definitionPackageNameProcessor;
+        this.definitionTypeNameProcessor = definitionTypeNameProcessor;
         this.dealiasingTypeVisitor = dealiasingTypeVisitor;
-        pythonTypeNameVisitor = new PythonTypeNameVisitor(typeNameProcessor);
-        myPyTypeNameVisitor = new MyPyTypeNameVisitor(typeNameProcessor);
+        pythonTypeNameVisitor = new PythonTypeNameVisitor(implTypeNameProcessor);
+        myPyTypeNameVisitor = new MyPyTypeNameVisitor(implTypeNameProcessor);
     }
 
     public PythonSnippet generateType(TypeDefinition typeDef) {
@@ -92,8 +98,8 @@ public final class PythonTypeGenerator {
     private BeanSnippet generateBean(ObjectDefinition typeDef) {
         ImportTypeVisitor importVisitor = new ImportTypeVisitor(
                 typeDef.getTypeName(),
-                typeNameProcessor,
-                packageNameProcessor);
+                implTypeNameProcessor,
+                implPackageNameProcessor);
 
         Set<PythonImport> imports = typeDef.getFields()
                 .stream()
@@ -116,8 +122,11 @@ public final class PythonTypeGenerator {
                 .collect(Collectors.toList());
 
         return BeanSnippet.builder()
-                .pythonPackage(PythonPackage.of(packageNameProcessor.process(typeDef.getTypeName().getPackage())))
-                .className(typeNameProcessor.process(typeDef.getTypeName()))
+                .pythonPackage(PythonPackage.of(implPackageNameProcessor.process(typeDef.getTypeName().getPackage())))
+                .className(implTypeNameProcessor.process(typeDef.getTypeName()))
+                .definitionPackage(PythonPackage.of(definitionPackageNameProcessor.process(typeDef.getTypeName()
+                        .getPackage())))
+                .definitionName(definitionTypeNameProcessor.process(typeDef.getTypeName()))
                 .addAllImports(BeanSnippet.DEFAULT_IMPORTS)
                 .addAllImports(imports)
                 .docs(typeDef.getDocs())
@@ -127,8 +136,11 @@ public final class PythonTypeGenerator {
 
     private EnumSnippet generateEnum(EnumDefinition typeDef) {
         return EnumSnippet.builder()
-                .pythonPackage(PythonPackage.of(packageNameProcessor.process(typeDef.getTypeName().getPackage())))
-                .className(typeNameProcessor.process(typeDef.getTypeName()))
+                .pythonPackage(PythonPackage.of(implPackageNameProcessor.process(typeDef.getTypeName().getPackage())))
+                .className(implTypeNameProcessor.process(typeDef.getTypeName()))
+                .definitionPackage(PythonPackage.of(definitionPackageNameProcessor.process(typeDef.getTypeName()
+                        .getPackage())))
+                .definitionName(definitionTypeNameProcessor.process(typeDef.getTypeName()))
                 .addImports(EnumSnippet.CONJURE_IMPORT)
                 .docs(typeDef.getDocs())
                 .values(typeDef.getValues().stream()
@@ -140,8 +152,8 @@ public final class PythonTypeGenerator {
     private UnionSnippet generateUnion(UnionDefinition typeDef) {
         ImportTypeVisitor importVisitor = new ImportTypeVisitor(
                 typeDef.getTypeName(),
-                typeNameProcessor,
-                packageNameProcessor);
+                implTypeNameProcessor,
+                implPackageNameProcessor);
 
         Set<PythonImport> imports = typeDef.getUnion()
                 .stream()
@@ -167,8 +179,11 @@ public final class PythonTypeGenerator {
                 .collect(Collectors.toList());
 
         return UnionSnippet.builder()
-                .pythonPackage(PythonPackage.of(packageNameProcessor.process(typeDef.getTypeName().getPackage())))
-                .className(typeNameProcessor.process(typeDef.getTypeName()))
+                .pythonPackage(PythonPackage.of(implPackageNameProcessor.process(typeDef.getTypeName().getPackage())))
+                .className(implTypeNameProcessor.process(typeDef.getTypeName()))
+                .definitionPackage(PythonPackage.of(definitionPackageNameProcessor.process(typeDef.getTypeName()
+                        .getPackage())))
+                .definitionName(definitionTypeNameProcessor.process(typeDef.getTypeName()))
                 .addAllImports(UnionSnippet.DEFAULT_IMPORTS)
                 .addAllImports(imports)
                 .docs(typeDef.getDocs())
@@ -179,11 +194,11 @@ public final class PythonTypeGenerator {
     private AliasSnippet generateAlias(AliasDefinition typeDef) {
         ImportTypeVisitor importVisitor = new ImportTypeVisitor(
                 typeDef.getTypeName(),
-                typeNameProcessor,
-                packageNameProcessor);
+                implTypeNameProcessor,
+                implPackageNameProcessor);
         return AliasSnippet.builder()
-                .pythonPackage(PythonPackage.of(packageNameProcessor.process(typeDef.getTypeName().getPackage())))
-                .className(typeNameProcessor.process(typeDef.getTypeName()))
+                .pythonPackage(PythonPackage.of(implPackageNameProcessor.process(typeDef.getTypeName().getPackage())))
+                .className(implTypeNameProcessor.process(typeDef.getTypeName()))
                 .aliasName(typeDef.getAlias().accept(pythonTypeNameVisitor))
                 .aliasType(typeDef)
                 .imports(ImmutableSet.copyOf(typeDef.getAlias().accept(importVisitor)))

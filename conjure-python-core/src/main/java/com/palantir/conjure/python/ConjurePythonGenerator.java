@@ -86,18 +86,41 @@ public final class ConjurePythonGenerator {
                 .stream()
                 .collect(Collectors.toMap(type -> type.accept(TypeDefinitionVisitor.TYPE_NAME), Function.identity())));
 
-        CompoundPackageNameProcessor.Builder compoundPackageNameProcessor = CompoundPackageNameProcessor.builder()
-                .addProcessors(new TwoComponentStrippingPackageNameProcessor())
-                .addProcessors(FlatteningPackageNameProcessor.INSTANCE);
-        TypeNameProcessor typeNameProcessor = new PackagePrependingTypeNameProcessor(
-                compoundPackageNameProcessor.build());
+        PackageNameProcessor implPackageNameProcessor = new ConstantPackageNameProcessor(
+                config.pythonicPackageName().orElse(""));
 
-        List<PythonFile> pythonFiles = Lists.newArrayList(getImplPythonFile(
+
+        PackageNameProcessor definitionPackageNameProcessor = CompoundPackageNameProcessor.builder()
+                .addProcessors(new TwoComponentStrippingPackageNameProcessor())
+                .addProcessors(FlatteningPackageNameProcessor.INSTANCE)
+                .addAllProcessors(config.pythonicPackageName()
+                        .map(pythonPackageName -> ImmutableSet.of(
+                                new TopLevelAddingPackageNameProcessor(pythonPackageName)))
+                        .orElse(ImmutableSet.of()))
+                .build();
+
+        TypeNameProcessor implTypeNameProcessor = new PackagePrependingTypeNameProcessor(
+                CompoundPackageNameProcessor.builder()
+                        .addProcessors(new TwoComponentStrippingPackageNameProcessor())
+                        .addProcessors(FlatteningPackageNameProcessor.INSTANCE)
+                        .build());
+
+        TypeNameProcessor definitionTypeNameProcessor = NameOnlyTypeNameProcessor.INSTANCE;
+
+        List<PythonFile> pythonFiles = Lists.newArrayList();
+        pythonFiles.add(getImplPythonFile(
                 conjureDefinition,
                 dealiasingTypeVisitor,
-                typeNameProcessor));
-
-        pythonFiles.addAll(getInitFiles(conjureDefinition, typeNameProcessor));
+                implPackageNameProcessor,
+                implTypeNameProcessor,
+                definitionPackageNameProcessor,
+                definitionTypeNameProcessor));
+        pythonFiles.addAll(getInitFiles(
+                conjureDefinition,
+                implPackageNameProcessor,
+                implTypeNameProcessor,
+                definitionPackageNameProcessor,
+                definitionTypeNameProcessor));
 
         PythonPackage rootPackage = PythonPackage.of(buildPackageNameProcessor().process("."));
 
@@ -109,17 +132,21 @@ public final class ConjurePythonGenerator {
     private PythonFile getImplPythonFile(
             ConjureDefinition conjureDefinition,
             DealiasingTypeVisitor dealiasingTypeVisitor,
-            TypeNameProcessor typeNameProcessor) {
-        PackageNameProcessor packageNameProcessor = new ConstantPackageNameProcessor(
-                config.pythonicPackageName().get());
-
+            PackageNameProcessor implPackageNameProcessor,
+            TypeNameProcessor implTypeNameProcessor,
+            PackageNameProcessor definitionPackageNameProcessor,
+            TypeNameProcessor definitionTypeNameProcessor) {
         PythonTypeGenerator beanGenerator = new PythonTypeGenerator(
-                packageNameProcessor,
-                typeNameProcessor,
+                implPackageNameProcessor,
+                implTypeNameProcessor,
+                definitionPackageNameProcessor,
+                definitionTypeNameProcessor,
                 dealiasingTypeVisitor);
         ClientGenerator clientGenerator = new ClientGenerator(
-                packageNameProcessor,
-                typeNameProcessor,
+                implPackageNameProcessor,
+                implTypeNameProcessor,
+                definitionPackageNameProcessor,
+                definitionTypeNameProcessor,
                 dealiasingTypeVisitor);
 
         List<PythonSnippet> snippets = Lists.newArrayList();
@@ -135,7 +162,7 @@ public final class ConjurePythonGenerator {
         Map<PythonPackage, List<PythonSnippet>> snippetsByPackage = snippets.stream()
                 .collect(Collectors.groupingBy(PythonSnippet::pythonPackage));
 
-        PythonPackage rootPackage = PythonPackage.of(packageNameProcessor.process(""));
+        PythonPackage rootPackage = PythonPackage.of(implPackageNameProcessor.process(""));
         List<PythonFile> pythonFiles = KeyedStream.stream(snippetsByPackage)
                 .map((pythonPackage, pythonSnippets) -> PythonFile.builder()
                         .pythonPackage(rootPackage)
@@ -150,20 +177,11 @@ public final class ConjurePythonGenerator {
 
     private List<PythonFile> getInitFiles(
             ConjureDefinition conjureDefinition,
-            TypeNameProcessor importNameProcessor) {
-        CompoundPackageNameProcessor.Builder compoundPackageNameProcessor = CompoundPackageNameProcessor.builder()
-                .addProcessors(new TwoComponentStrippingPackageNameProcessor())
-                .addProcessors(FlatteningPackageNameProcessor.INSTANCE)
-                .addAllProcessors(config.pythonicPackageName()
-                        .map(pythonPackageName -> ImmutableSet.of(
-                                new TopLevelAddingPackageNameProcessor(pythonPackageName)))
-                        .orElse(ImmutableSet.of()));
-        PackageNameProcessor packageNameProcessor = compoundPackageNameProcessor.build();
-
-        PackageNameProcessor implFilePackageNameProcessor = new ConstantPackageNameProcessor(
-                config.pythonicPackageName().get());
-
-        String moduleSpecifier = implFilePackageNameProcessor.process("") + "._impl";
+            PackageNameProcessor implPackageNameProcessor,
+            TypeNameProcessor implTypeNameProcessor,
+            PackageNameProcessor definitionPackageNameProcessor,
+            TypeNameProcessor definitionTypeNameProcessor) {
+        String moduleSpecifier = implPackageNameProcessor.process("") + "._impl";
 
         List<PythonSnippet> snippets = Lists.newArrayList();
         snippets.addAll(conjureDefinition.getTypes()
@@ -171,13 +189,14 @@ public final class ConjurePythonGenerator {
                 .map(typeDefinition -> {
                     TypeName typeName = typeDefinition.accept(TypeDefinitionVisitor.TYPE_NAME);
                     return EmptySnippet.builder()
-                            .pythonPackage(PythonPackage.of(packageNameProcessor.process(typeName.getPackage())))
+                            .pythonPackage(
+                                    PythonPackage.of(definitionPackageNameProcessor.process(typeName.getPackage())))
                             .addImports(
                                     PythonImport.of(
                                             moduleSpecifier,
                                             NamedImport.of(
-                                                    importNameProcessor.process(typeName),
-                                                    NameOnlyTypeNameProcessor.INSTANCE.process(typeName))))
+                                                    implTypeNameProcessor.process(typeName),
+                                                    definitionTypeNameProcessor.process(typeName))))
                             .build();
                 })
                 .collect(Collectors.toList()));
@@ -185,14 +204,14 @@ public final class ConjurePythonGenerator {
         snippets.addAll(conjureDefinition.getServices()
                 .stream()
                 .map(serviceDefinition -> EmptySnippet.builder()
-                        .pythonPackage(PythonPackage.of(packageNameProcessor.process(
+                        .pythonPackage(PythonPackage.of(definitionPackageNameProcessor.process(
                                 serviceDefinition.getServiceName().getPackage())))
                         .addImports(
                                 PythonImport.of(
                                         moduleSpecifier,
                                         NamedImport.of(
-                                                importNameProcessor.process(serviceDefinition.getServiceName()),
-                                                NameOnlyTypeNameProcessor.INSTANCE.process(
+                                                implTypeNameProcessor.process(serviceDefinition.getServiceName()),
+                                                definitionTypeNameProcessor.process(
                                                         serviceDefinition.getServiceName()))))
                         .build())
                 .collect(Collectors.toList()));

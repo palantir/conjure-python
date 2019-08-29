@@ -432,6 +432,11 @@ class another_TestService(Service):
         _decoder = ConjureDecoder()
         return _decoder.decode(_response.json(), int)
 
+
+another_TestService.__name__ = "TestService"
+another_TestService.__module__ = "package_name.another"
+
+
 class nested_deeply_nested_service_DeeplyNestedService(Service):
 
     def test_endpoint(self, string):
@@ -462,6 +467,11 @@ class nested_deeply_nested_service_DeeplyNestedService(Service):
 
         _decoder = ConjureDecoder()
         return _decoder.decode(_response.json(), str)
+
+
+nested_deeply_nested_service_DeeplyNestedService.__name__ = "DeeplyNestedService"
+nested_deeply_nested_service_DeeplyNestedService.__module__ = "package_name.nested_deeply_nested_service"
+
 
 class nested_service2_SimpleNestedService2(Service):
 
@@ -494,6 +504,11 @@ class nested_service2_SimpleNestedService2(Service):
         _decoder = ConjureDecoder()
         return _decoder.decode(_response.json(), str)
 
+
+nested_service2_SimpleNestedService2.__name__ = "SimpleNestedService2"
+nested_service2_SimpleNestedService2.__module__ = "package_name.nested_service2"
+
+
 class nested_service_SimpleNestedService(Service):
 
     def test_endpoint(self, string):
@@ -525,8 +540,12 @@ class nested_service_SimpleNestedService(Service):
         _decoder = ConjureDecoder()
         return _decoder.decode(_response.json(), str)
 
-class nested_service_SimpleObject(ConjureBeanType):
 
+nested_service_SimpleNestedService.__name__ = "SimpleNestedService"
+nested_service_SimpleNestedService.__module__ = "package_name.nested_service"
+
+
+class nested_service_SimpleObject(ConjureBeanType):
     @builtins.classmethod
     def _fields(cls):
         # type: () -> Dict[str, ConjureFieldDefinition]
@@ -545,8 +564,12 @@ class nested_service_SimpleObject(ConjureBeanType):
         # type: () -> str
         return self._string
 
-class product_AliasAsMapKeyExample(ConjureBeanType):
 
+nested_service_SimpleObject.__name__ = "SimpleObject"
+nested_service_SimpleObject.__module__ = "package_name.nested_service"
+
+
+class product_AliasAsMapKeyExample(ConjureBeanType):
     @builtins.classmethod
     def _fields(cls):
         # type: () -> Dict[str, ConjureFieldDefinition]
@@ -607,8 +630,12 @@ class product_AliasAsMapKeyExample(ConjureBeanType):
         # type: () -> Dict[product_UuidAliasExample, product_ManyFieldExample]
         return self._uuids
 
-class product_AnyExample(ConjureBeanType):
 
+product_AliasAsMapKeyExample.__name__ = "AliasAsMapKeyExample"
+product_AliasAsMapKeyExample.__module__ = "package_name.product"
+
+
+class product_AnyExample(ConjureBeanType):
     @builtins.classmethod
     def _fields(cls):
         # type: () -> Dict[str, ConjureFieldDefinition]
@@ -627,8 +654,12 @@ class product_AnyExample(ConjureBeanType):
         # type: () -> Any
         return self._any
 
-class product_AnyMapExample(ConjureBeanType):
 
+product_AnyExample.__name__ = "AnyExample"
+product_AnyExample.__module__ = "package_name.product"
+
+
+class product_AnyMapExample(ConjureBeanType):
     @builtins.classmethod
     def _fields(cls):
         # type: () -> Dict[str, ConjureFieldDefinition]
@@ -647,8 +678,12 @@ class product_AnyMapExample(ConjureBeanType):
         # type: () -> Dict[str, Any]
         return self._items
 
-class product_BearerTokenExample(ConjureBeanType):
 
+product_AnyMapExample.__name__ = "AnyMapExample"
+product_AnyMapExample.__module__ = "package_name.product"
+
+
+class product_BearerTokenExample(ConjureBeanType):
     @builtins.classmethod
     def _fields(cls):
         # type: () -> Dict[str, ConjureFieldDefinition]
@@ -667,8 +702,12 @@ class product_BearerTokenExample(ConjureBeanType):
         # type: () -> str
         return self._bearer_token_value
 
-class product_BinaryExample(ConjureBeanType):
 
+product_BearerTokenExample.__name__ = "BearerTokenExample"
+product_BearerTokenExample.__module__ = "package_name.product"
+
+
+class product_BinaryExample(ConjureBeanType):
     @builtins.classmethod
     def _fields(cls):
         # type: () -> Dict[str, ConjureFieldDefinition]
@@ -687,8 +726,12 @@ class product_BinaryExample(ConjureBeanType):
         # type: () -> Any
         return self._binary
 
-class product_BooleanExample(ConjureBeanType):
 
+product_BinaryExample.__name__ = "BinaryExample"
+product_BinaryExample.__module__ = "package_name.product"
+
+
+class product_BooleanExample(ConjureBeanType):
     @builtins.classmethod
     def _fields(cls):
         # type: () -> Dict[str, ConjureFieldDefinition]
@@ -707,8 +750,12 @@ class product_BooleanExample(ConjureBeanType):
         # type: () -> bool
         return self._coin
 
-class product_CreateDatasetRequest(ConjureBeanType):
 
+product_BooleanExample.__name__ = "BooleanExample"
+product_BooleanExample.__module__ = "package_name.product"
+
+
+class product_CreateDatasetRequest(ConjureBeanType):
     @builtins.classmethod
     def _fields(cls):
         # type: () -> Dict[str, ConjureFieldDefinition]
@@ -734,8 +781,12 @@ class product_CreateDatasetRequest(ConjureBeanType):
         # type: () -> str
         return self._path
 
-class product_DateTimeExample(ConjureBeanType):
 
+product_CreateDatasetRequest.__name__ = "CreateDatasetRequest"
+product_CreateDatasetRequest.__module__ = "package_name.product"
+
+
+class product_DateTimeExample(ConjureBeanType):
     @builtins.classmethod
     def _fields(cls):
         # type: () -> Dict[str, ConjureFieldDefinition]
@@ -754,8 +805,12 @@ class product_DateTimeExample(ConjureBeanType):
         # type: () -> str
         return self._datetime
 
-class product_DoubleExample(ConjureBeanType):
 
+product_DateTimeExample.__name__ = "DateTimeExample"
+product_DateTimeExample.__module__ = "package_name.product"
+
+
+class product_DoubleExample(ConjureBeanType):
     @builtins.classmethod
     def _fields(cls):
         # type: () -> Dict[str, ConjureFieldDefinition]
@@ -774,8 +829,12 @@ class product_DoubleExample(ConjureBeanType):
         # type: () -> float
         return self._double_value
 
-class product_EmptyObjectExample(ConjureBeanType):
 
+product_DoubleExample.__name__ = "DoubleExample"
+product_DoubleExample.__module__ = "package_name.product"
+
+
+class product_EmptyObjectExample(ConjureBeanType):
     @builtins.classmethod
     def _fields(cls):
         # type: () -> Dict[str, ConjureFieldDefinition]
@@ -785,9 +844,13 @@ class product_EmptyObjectExample(ConjureBeanType):
     __slots__ = [] # type: List[str]
 
 
+
+product_EmptyObjectExample.__name__ = "EmptyObjectExample"
+product_EmptyObjectExample.__module__ = "package_name.product"
+
+
 class product_EnumExample(ConjureEnumType):
     """This enumerates the numbers 1:2."""
-
     ONE = 'ONE'
     '''ONE'''
     TWO = 'TWO'
@@ -798,8 +861,12 @@ class product_EnumExample(ConjureEnumType):
     def __reduce_ex__(self, proto):
         return self.__class__, (self.name,)
 
-class product_EnumFieldExample(ConjureBeanType):
 
+product_EnumExample.__name__ = "EnumExample"
+product_EnumExample.__module__ = "package_name.product"
+
+
+class product_EnumFieldExample(ConjureBeanType):
     @builtins.classmethod
     def _fields(cls):
         # type: () -> Dict[str, ConjureFieldDefinition]
@@ -818,8 +885,12 @@ class product_EnumFieldExample(ConjureBeanType):
         # type: () -> product_EnumExample
         return self._enum
 
-class product_FieldObject(ConjureBeanType):
 
+product_EnumFieldExample.__name__ = "EnumFieldExample"
+product_EnumFieldExample.__module__ = "package_name.product"
+
+
+class product_FieldObject(ConjureBeanType):
     @builtins.classmethod
     def _fields(cls):
         # type: () -> Dict[str, ConjureFieldDefinition]
@@ -838,8 +909,12 @@ class product_FieldObject(ConjureBeanType):
         # type: () -> str
         return self._fields_
 
-class product_IntegerExample(ConjureBeanType):
 
+product_FieldObject.__name__ = "FieldObject"
+product_FieldObject.__module__ = "package_name.product"
+
+
+class product_IntegerExample(ConjureBeanType):
     @builtins.classmethod
     def _fields(cls):
         # type: () -> Dict[str, ConjureFieldDefinition]
@@ -858,8 +933,12 @@ class product_IntegerExample(ConjureBeanType):
         # type: () -> int
         return self._integer
 
-class product_ListExample(ConjureBeanType):
 
+product_IntegerExample.__name__ = "IntegerExample"
+product_IntegerExample.__module__ = "package_name.product"
+
+
+class product_ListExample(ConjureBeanType):
     @builtins.classmethod
     def _fields(cls):
         # type: () -> Dict[str, ConjureFieldDefinition]
@@ -892,8 +971,12 @@ class product_ListExample(ConjureBeanType):
         # type: () -> List[float]
         return self._double_items
 
-class product_ManyFieldExample(ConjureBeanType):
 
+product_ListExample.__name__ = "ListExample"
+product_ListExample.__module__ = "package_name.product"
+
+
+class product_ManyFieldExample(ConjureBeanType):
     @builtins.classmethod
     def _fields(cls):
         # type: () -> Dict[str, ConjureFieldDefinition]
@@ -969,8 +1052,12 @@ class product_ManyFieldExample(ConjureBeanType):
         """docs for alias field"""
         return self._alias
 
-class product_MapExample(ConjureBeanType):
 
+product_ManyFieldExample.__name__ = "ManyFieldExample"
+product_ManyFieldExample.__module__ = "package_name.product"
+
+
+class product_MapExample(ConjureBeanType):
     @builtins.classmethod
     def _fields(cls):
         # type: () -> Dict[str, ConjureFieldDefinition]
@@ -989,8 +1076,12 @@ class product_MapExample(ConjureBeanType):
         # type: () -> Dict[str, str]
         return self._items
 
-class product_OptionalExample(ConjureBeanType):
 
+product_MapExample.__name__ = "MapExample"
+product_MapExample.__module__ = "package_name.product"
+
+
+class product_OptionalExample(ConjureBeanType):
     @builtins.classmethod
     def _fields(cls):
         # type: () -> Dict[str, ConjureFieldDefinition]
@@ -1009,8 +1100,12 @@ class product_OptionalExample(ConjureBeanType):
         # type: () -> Optional[str]
         return self._item
 
-class product_OptionsUnion(ConjureUnionType):
 
+product_OptionalExample.__name__ = "OptionalExample"
+product_OptionalExample.__module__ = "package_name.product"
+
+
+class product_OptionsUnion(ConjureUnionType):
     _options = None # type: str
 
     @builtins.classmethod
@@ -1041,6 +1136,10 @@ class product_OptionsUnion(ConjureUnionType):
             return visitor._options(self.options)
 
 
+product_OptionsUnion.__name__ = "OptionsUnion"
+product_OptionsUnion.__module__ = "package_name.product"
+
+
 product_OptionsUnionVisitorBaseClass = ABCMeta('ABC', (object,), {}) # type: Any
 
 
@@ -1052,8 +1151,11 @@ class product_OptionsUnionVisitor(product_OptionsUnionVisitorBaseClass):
         pass
 
 
-class product_PrimitiveOptionalsExample(ConjureBeanType):
+product_OptionsUnionVisitor.__name__ = "OptionsUnionVisitor"
+product_OptionsUnionVisitor.__module__ = "OptionsUnionVisitor"
 
+
+class product_PrimitiveOptionalsExample(ConjureBeanType):
     @builtins.classmethod
     def _fields(cls):
         # type: () -> Dict[str, ConjureFieldDefinition]
@@ -1114,8 +1216,12 @@ class product_PrimitiveOptionalsExample(ConjureBeanType):
         # type: () -> Optional[str]
         return self._uuid
 
-class product_RecursiveObjectExample(ConjureBeanType):
 
+product_PrimitiveOptionalsExample.__name__ = "PrimitiveOptionalsExample"
+product_PrimitiveOptionalsExample.__module__ = "package_name.product"
+
+
+class product_RecursiveObjectExample(ConjureBeanType):
     @builtins.classmethod
     def _fields(cls):
         # type: () -> Dict[str, ConjureFieldDefinition]
@@ -1134,8 +1240,12 @@ class product_RecursiveObjectExample(ConjureBeanType):
         # type: () -> Optional[product_RecursiveObjectAlias]
         return self._recursive_field
 
-class product_ReservedKeyExample(ConjureBeanType):
 
+product_RecursiveObjectExample.__name__ = "RecursiveObjectExample"
+product_RecursiveObjectExample.__module__ = "package_name.product"
+
+
+class product_ReservedKeyExample(ConjureBeanType):
     @builtins.classmethod
     def _fields(cls):
         # type: () -> Dict[str, ConjureFieldDefinition]
@@ -1175,8 +1285,12 @@ class product_ReservedKeyExample(ConjureBeanType):
         # type: () -> int
         return self._memoized_hash_code
 
-class product_RidExample(ConjureBeanType):
 
+product_ReservedKeyExample.__name__ = "ReservedKeyExample"
+product_ReservedKeyExample.__module__ = "package_name.product"
+
+
+class product_RidExample(ConjureBeanType):
     @builtins.classmethod
     def _fields(cls):
         # type: () -> Dict[str, ConjureFieldDefinition]
@@ -1195,8 +1309,12 @@ class product_RidExample(ConjureBeanType):
         # type: () -> str
         return self._rid_value
 
-class product_SafeLongExample(ConjureBeanType):
 
+product_RidExample.__name__ = "RidExample"
+product_RidExample.__module__ = "package_name.product"
+
+
+class product_SafeLongExample(ConjureBeanType):
     @builtins.classmethod
     def _fields(cls):
         # type: () -> Dict[str, ConjureFieldDefinition]
@@ -1215,8 +1333,12 @@ class product_SafeLongExample(ConjureBeanType):
         # type: () -> int
         return self._safe_long_value
 
-class product_SetExample(ConjureBeanType):
 
+product_SafeLongExample.__name__ = "SafeLongExample"
+product_SafeLongExample.__module__ = "package_name.product"
+
+
+class product_SetExample(ConjureBeanType):
     @builtins.classmethod
     def _fields(cls):
         # type: () -> Dict[str, ConjureFieldDefinition]
@@ -1242,8 +1364,12 @@ class product_SetExample(ConjureBeanType):
         # type: () -> List[float]
         return self._double_items
 
-class product_StringExample(ConjureBeanType):
 
+product_SetExample.__name__ = "SetExample"
+product_SetExample.__module__ = "package_name.product"
+
+
+class product_StringExample(ConjureBeanType):
     @builtins.classmethod
     def _fields(cls):
         # type: () -> Dict[str, ConjureFieldDefinition]
@@ -1262,9 +1388,13 @@ class product_StringExample(ConjureBeanType):
         # type: () -> str
         return self._string
 
+
+product_StringExample.__name__ = "StringExample"
+product_StringExample.__module__ = "package_name.product"
+
+
 class product_UnionTypeExample(ConjureUnionType):
     """A type which can either be a StringExample, a set of strings, or an integer."""
-
     _string_example = None # type: product_StringExample
     _set = None # type: List[str]
     _this_field_is_an_integer = None # type: int
@@ -1368,6 +1498,10 @@ class product_UnionTypeExample(ConjureUnionType):
             return visitor._interface(self.interface)
 
 
+product_UnionTypeExample.__name__ = "UnionTypeExample"
+product_UnionTypeExample.__module__ = "package_name.product"
+
+
 product_UnionTypeExampleVisitorBaseClass = ABCMeta('ABC', (object,), {}) # type: Any
 
 
@@ -1409,8 +1543,11 @@ class product_UnionTypeExampleVisitor(product_UnionTypeExampleVisitorBaseClass):
         pass
 
 
-class product_UuidExample(ConjureBeanType):
+product_UnionTypeExampleVisitor.__name__ = "UnionTypeExampleVisitor"
+product_UnionTypeExampleVisitor.__module__ = "UnionTypeExampleVisitor"
 
+
+class product_UuidExample(ConjureBeanType):
     @builtins.classmethod
     def _fields(cls):
         # type: () -> Dict[str, ConjureFieldDefinition]
@@ -1429,8 +1566,12 @@ class product_UuidExample(ConjureBeanType):
         # type: () -> str
         return self._uuid
 
-class product_datasets_BackingFileSystem(ConjureBeanType):
 
+product_UuidExample.__name__ = "UuidExample"
+product_UuidExample.__module__ = "package_name.product"
+
+
+class product_datasets_BackingFileSystem(ConjureBeanType):
     @builtins.classmethod
     def _fields(cls):
         # type: () -> Dict[str, ConjureFieldDefinition]
@@ -1464,8 +1605,12 @@ class product_datasets_BackingFileSystem(ConjureBeanType):
         # type: () -> Dict[str, str]
         return self._configuration
 
-class product_datasets_Dataset(ConjureBeanType):
 
+product_datasets_BackingFileSystem.__name__ = "BackingFileSystem"
+product_datasets_BackingFileSystem.__module__ = "package_name.product_datasets"
+
+
+class product_datasets_Dataset(ConjureBeanType):
     @builtins.classmethod
     def _fields(cls):
         # type: () -> Dict[str, ConjureFieldDefinition]
@@ -1492,8 +1637,12 @@ class product_datasets_Dataset(ConjureBeanType):
         """Uniquely identifies this dataset."""
         return self._rid
 
-class with_imports_ComplexObjectWithImports(ConjureBeanType):
 
+product_datasets_Dataset.__name__ = "Dataset"
+product_datasets_Dataset.__module__ = "package_name.product_datasets"
+
+
+class with_imports_ComplexObjectWithImports(ConjureBeanType):
     @builtins.classmethod
     def _fields(cls):
         # type: () -> Dict[str, ConjureFieldDefinition]
@@ -1518,6 +1667,11 @@ class with_imports_ComplexObjectWithImports(ConjureBeanType):
     def imported(self):
         # type: () -> product_StringExample
         return self._imported
+
+
+with_imports_ComplexObjectWithImports.__name__ = "ComplexObjectWithImports"
+with_imports_ComplexObjectWithImports.__module__ = "package_name.with_imports"
+
 
 class with_imports_ImportService(Service):
 
@@ -1550,8 +1704,12 @@ class with_imports_ImportService(Service):
         _decoder = ConjureDecoder()
         return _decoder.decode(_response.json(), product_datasets_BackingFileSystem)
 
-class with_imports_ImportedAliasInMaps(ConjureBeanType):
 
+with_imports_ImportService.__name__ = "ImportService"
+with_imports_ImportService.__module__ = "package_name.with_imports"
+
+
+class with_imports_ImportedAliasInMaps(ConjureBeanType):
     @builtins.classmethod
     def _fields(cls):
         # type: () -> Dict[str, ConjureFieldDefinition]
@@ -1570,8 +1728,12 @@ class with_imports_ImportedAliasInMaps(ConjureBeanType):
         # type: () -> Dict[product_RidAliasExample, product_DateTimeAliasExample]
         return self._aliases
 
-class with_imports_UnionWithImports(ConjureUnionType):
 
+with_imports_ImportedAliasInMaps.__name__ = "ImportedAliasInMaps"
+with_imports_ImportedAliasInMaps.__module__ = "package_name.with_imports"
+
+
+class with_imports_UnionWithImports(ConjureUnionType):
     _string = None # type: str
     _imported = None # type: product_AnyMapExample
 
@@ -1614,6 +1776,10 @@ class with_imports_UnionWithImports(ConjureUnionType):
             return visitor._imported(self.imported)
 
 
+with_imports_UnionWithImports.__name__ = "UnionWithImports"
+with_imports_UnionWithImports.__module__ = "package_name.with_imports"
+
+
 with_imports_UnionWithImportsVisitorBaseClass = ABCMeta('ABC', (object,), {}) # type: Any
 
 
@@ -1628,6 +1794,10 @@ class with_imports_UnionWithImportsVisitor(with_imports_UnionWithImportsVisitorB
     def _imported(self, imported):
         # type: (product_AnyMapExample) -> Any
         pass
+
+
+with_imports_UnionWithImportsVisitor.__name__ = "UnionWithImportsVisitor"
+with_imports_UnionWithImportsVisitor.__module__ = "UnionWithImportsVisitor"
 
 
 product_RecursiveObjectAlias = product_RecursiveObjectExample

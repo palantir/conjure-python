@@ -47,6 +47,10 @@ public interface PythonService extends PythonSnippet {
 
     String className();
 
+    String definitionName();
+
+    PythonPackage definitionPackage();
+
     Optional<Documentation> docs();
 
     List<PythonEndpointDefinition> endpointDefinitions();
@@ -67,8 +71,15 @@ public interface PythonService extends PythonSnippet {
                 endpointDefinition.emit(poetWriter);
             });
             poetWriter.writeLine();
+            poetWriter.writeLine();
 
             poetWriter.decreaseIndent();
+            poetWriter.writeIndentedLine(String.format("%s.__name__ = \"%s\"", className(), definitionName()));
+            poetWriter.writeIndentedLine(
+                    String.format("%s.__module__ = \"%s\"", className(), definitionPackage().get()));
+
+            poetWriter.writeLine();
+            poetWriter.writeLine();
         });
     }
 
