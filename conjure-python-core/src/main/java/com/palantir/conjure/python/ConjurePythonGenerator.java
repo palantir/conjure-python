@@ -115,16 +115,21 @@ public final class ConjurePythonGenerator {
                 implTypeNameProcessor,
                 definitionPackageNameProcessor,
                 definitionTypeNameProcessor));
-        pythonFiles.addAll(getInitFiles(
+        List<PythonFile> initFiles = getInitFiles(
                 conjureDefinition,
                 implPackageNameProcessor,
                 implTypeNameProcessor,
                 definitionPackageNameProcessor,
-                definitionTypeNameProcessor));
+                definitionTypeNameProcessor);
+        pythonFiles.addAll(initFiles);
 
         PythonPackage rootPackage = PythonPackage.of(buildPackageNameProcessor().process("."));
 
-        pythonFiles.add(getRootInit(ImmutableSet.of(), rootPackage));
+        pythonFiles.add(getRootInit(
+                initFiles.stream()
+                        .map(PythonFile::pythonPackage)
+                        .collect(Collectors.toSet()),
+                rootPackage));
 
         return pythonFiles;
     }
