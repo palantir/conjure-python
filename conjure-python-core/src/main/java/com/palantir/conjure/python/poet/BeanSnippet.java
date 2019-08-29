@@ -32,12 +32,12 @@ public interface BeanSnippet extends PythonSnippet {
     ImmutableList<PythonImport> DEFAULT_IMPORTS = ImmutableList.of(
             PythonImport.builder()
                     .moduleSpecifier(ImportTypeVisitor.CONJURE_PYTHON_CLIENT)
-                    .addNamedImports("ConjureBeanType", "ConjureFieldDefinition")
+                    .addNamedImports(NamedImport.of("ConjureBeanType"), NamedImport.of("ConjureFieldDefinition"))
                     .build(),
             PythonImport.of("builtins"),
             PythonImport.builder()
                     .moduleSpecifier(ImportTypeVisitor.TYPING)
-                    .addNamedImports("Dict", "List")
+                    .addNamedImports(NamedImport.of("Dict"), NamedImport.of("List"))
                     .build());
     ImmutableSet<String> PROTECTED_FIELDS = ImmutableSet.of("fields");
 

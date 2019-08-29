@@ -14,7 +14,7 @@ import org.immutables.value.Value;
 public interface PythonSetup extends PythonSnippet {
     ImmutableSet<PythonImport> DEFAULT_IMPORTS = ImmutableSet.of(PythonImport.builder()
             .moduleSpecifier("setuptools")
-            .addNamedImports("find_packages", "setup")
+            .addNamedImports(NamedImport.of("find_packages"), NamedImport.of("setup"))
             .build());
 
     @Override

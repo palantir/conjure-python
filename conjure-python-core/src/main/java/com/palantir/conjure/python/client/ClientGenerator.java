@@ -42,6 +42,7 @@ public final class ClientGenerator {
 
     private final PackageNameProcessor packageNameProcessor;
     private final DealiasingTypeVisitor dealiasingTypeVisitor;
+    private final TypeNameProcessor typeNameProcessor;
     private final PythonTypeNameVisitor pythonTypeNameVisitor;
     private final MyPyTypeNameVisitor myPyTypeNameVisitor;
 
@@ -51,12 +52,16 @@ public final class ClientGenerator {
             DealiasingTypeVisitor dealiasingTypeVisitor) {
         this.packageNameProcessor = packageNameProcessor;
         this.dealiasingTypeVisitor = dealiasingTypeVisitor;
+        this.typeNameProcessor = typeNameProcessor;
         pythonTypeNameVisitor = new PythonTypeNameVisitor(typeNameProcessor);
         myPyTypeNameVisitor = new MyPyTypeNameVisitor(typeNameProcessor);
     }
 
     public PythonSnippet generateClient(ServiceDefinition serviceDef) {
-        ImportTypeVisitor importTypeVisitor = new ImportTypeVisitor(serviceDef.getServiceName(), packageNameProcessor);
+        ImportTypeVisitor importTypeVisitor = new ImportTypeVisitor(
+                serviceDef.getServiceName(),
+                typeNameProcessor,
+                packageNameProcessor);
         ImmutableSet.Builder<Type> referencedTypesBuilder = ImmutableSet.builder();
 
         List<PythonEndpointDefinition> endpoints = serviceDef.getEndpoints()
@@ -71,7 +76,7 @@ public final class ClientGenerator {
 
         return PythonService.builder()
                 .pythonPackage(PythonPackage.of(packageNameProcessor.process(serviceDef.getServiceName().getPackage())))
-                .className(serviceDef.getServiceName().getName())
+                .className(typeNameProcessor.process(serviceDef.getServiceName()))
                 .addAllImports(PythonService.CONJURE_IMPORTS)
                 .addAllImports(imports)
                 .docs(serviceDef.getDocs())

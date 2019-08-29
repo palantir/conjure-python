@@ -28,12 +28,15 @@ public interface PythonService extends PythonSnippet {
     ImmutableList<PythonImport> CONJURE_IMPORTS = ImmutableList.of(
             PythonImport.builder()
                     .moduleSpecifier(ImportTypeVisitor.CONJURE_PYTHON_CLIENT)
-                    .addNamedImports("Service", "ConjureEncoder", "ConjureDecoder")
+                    .addNamedImports(
+                            NamedImport.of("Service"),
+                            NamedImport.of("ConjureEncoder"),
+                            NamedImport.of("ConjureDecoder"))
                     .build(),
             PythonImport.builder()
                     .moduleSpecifier(ImportTypeVisitor.TYPING)
                     // Used by Endpoints
-                    .addNamedImports("Dict", "Any")
+                    .addNamedImports(NamedImport.of("Dict"), NamedImport.of("Any"))
                     .build());
 
     @Override

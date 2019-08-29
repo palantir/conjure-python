@@ -17,25 +17,33 @@
 package com.palantir.conjure.python;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.palantir.common.streams.KeyedStream;
 import com.palantir.conjure.python.client.ClientGenerator;
 import com.palantir.conjure.python.poet.AllSnippet;
+import com.palantir.conjure.python.poet.EmptySnippet;
+import com.palantir.conjure.python.poet.NamedImport;
 import com.palantir.conjure.python.poet.PythonFile;
+import com.palantir.conjure.python.poet.PythonImport;
 import com.palantir.conjure.python.poet.PythonLine;
 import com.palantir.conjure.python.poet.PythonMetaYaml;
 import com.palantir.conjure.python.poet.PythonPackage;
 import com.palantir.conjure.python.poet.PythonSetup;
 import com.palantir.conjure.python.poet.PythonSnippet;
 import com.palantir.conjure.python.processors.packagename.CompoundPackageNameProcessor;
+import com.palantir.conjure.python.processors.packagename.ConstantPackageNameProcessor;
 import com.palantir.conjure.python.processors.packagename.FlatteningPackageNameProcessor;
 import com.palantir.conjure.python.processors.packagename.PackageNameProcessor;
 import com.palantir.conjure.python.processors.packagename.TopLevelAddingPackageNameProcessor;
 import com.palantir.conjure.python.processors.packagename.TwoComponentStrippingPackageNameProcessor;
 import com.palantir.conjure.python.processors.typename.NameOnlyTypeNameProcessor;
+import com.palantir.conjure.python.processors.typename.PackagePrependingTypeNameProcessor;
 import com.palantir.conjure.python.processors.typename.TypeNameProcessor;
 import com.palantir.conjure.python.types.PythonTypeGenerator;
 import com.palantir.conjure.spec.ConjureDefinition;
+import com.palantir.conjure.spec.TypeName;
 import com.palantir.conjure.visitor.DealiasingTypeVisitor;
 import com.palantir.conjure.visitor.TypeDefinitionVisitor;
 import java.util.List;
@@ -47,6 +55,7 @@ import java.util.stream.Collectors;
 public final class ConjurePythonGenerator {
 
     private static final String INIT_PY = "__init__.py";
+    private static final String IMPL_PY = "_impl.py";
 
     private final GeneratorConfiguration config;
 
@@ -73,13 +82,36 @@ public final class ConjurePythonGenerator {
     }
 
     private List<PythonFile> generate(ConjureDefinition conjureDefinition) {
-        PackageNameProcessor packageNameProcessor = buildPackageNameProcessor();
-
         DealiasingTypeVisitor dealiasingTypeVisitor = new DealiasingTypeVisitor(conjureDefinition.getTypes()
                 .stream()
                 .collect(Collectors.toMap(type -> type.accept(TypeDefinitionVisitor.TYPE_NAME), Function.identity())));
 
-        TypeNameProcessor typeNameProcessor = NameOnlyTypeNameProcessor.INSTANCE;
+        CompoundPackageNameProcessor.Builder compoundPackageNameProcessor = CompoundPackageNameProcessor.builder()
+                .addProcessors(new TwoComponentStrippingPackageNameProcessor())
+                .addProcessors(FlatteningPackageNameProcessor.INSTANCE);
+        TypeNameProcessor typeNameProcessor = new PackagePrependingTypeNameProcessor(
+                compoundPackageNameProcessor.build());
+
+        List<PythonFile> pythonFiles = Lists.newArrayList(getImplPythonFile(
+                conjureDefinition,
+                dealiasingTypeVisitor,
+                typeNameProcessor));
+
+        pythonFiles.addAll(getInitFiles(conjureDefinition, typeNameProcessor));
+
+        PythonPackage rootPackage = PythonPackage.of(buildPackageNameProcessor().process("."));
+
+        pythonFiles.add(getRootInit(ImmutableSet.of(), rootPackage));
+
+        return pythonFiles;
+    }
+
+    private PythonFile getImplPythonFile(
+            ConjureDefinition conjureDefinition,
+            DealiasingTypeVisitor dealiasingTypeVisitor,
+            TypeNameProcessor typeNameProcessor) {
+        PackageNameProcessor packageNameProcessor = new ConstantPackageNameProcessor(
+                config.pythonicPackageName().get());
 
         PythonTypeGenerator beanGenerator = new PythonTypeGenerator(
                 packageNameProcessor,
@@ -103,7 +135,72 @@ public final class ConjurePythonGenerator {
         Map<PythonPackage, List<PythonSnippet>> snippetsByPackage = snippets.stream()
                 .collect(Collectors.groupingBy(PythonSnippet::pythonPackage));
 
+        PythonPackage rootPackage = PythonPackage.of(packageNameProcessor.process(""));
         List<PythonFile> pythonFiles = KeyedStream.stream(snippetsByPackage)
+                .map((pythonPackage, pythonSnippets) -> PythonFile.builder()
+                        .pythonPackage(rootPackage)
+                        .fileName(IMPL_PY)
+                        .contents(pythonSnippets)
+                        .build())
+                .values()
+                .collect(Collectors.toList());
+
+        return Iterables.getOnlyElement(pythonFiles);
+    }
+
+    private List<PythonFile> getInitFiles(
+            ConjureDefinition conjureDefinition,
+            TypeNameProcessor importNameProcessor) {
+        CompoundPackageNameProcessor.Builder compoundPackageNameProcessor = CompoundPackageNameProcessor.builder()
+                .addProcessors(new TwoComponentStrippingPackageNameProcessor())
+                .addProcessors(FlatteningPackageNameProcessor.INSTANCE)
+                .addAllProcessors(config.pythonicPackageName()
+                        .map(pythonPackageName -> ImmutableSet.of(
+                                new TopLevelAddingPackageNameProcessor(pythonPackageName)))
+                        .orElse(ImmutableSet.of()));
+        PackageNameProcessor packageNameProcessor = compoundPackageNameProcessor.build();
+
+        PackageNameProcessor implFilePackageNameProcessor = new ConstantPackageNameProcessor(
+                config.pythonicPackageName().get());
+
+        String moduleSpecifier = implFilePackageNameProcessor.process("") + "._impl";
+
+        List<PythonSnippet> snippets = Lists.newArrayList();
+        snippets.addAll(conjureDefinition.getTypes()
+                .stream()
+                .map(typeDefinition -> {
+                    TypeName typeName = typeDefinition.accept(TypeDefinitionVisitor.TYPE_NAME);
+                    return EmptySnippet.builder()
+                            .pythonPackage(PythonPackage.of(packageNameProcessor.process(typeName.getPackage())))
+                            .addImports(
+                                    PythonImport.of(
+                                            moduleSpecifier,
+                                            NamedImport.of(
+                                                    importNameProcessor.process(typeName),
+                                                    NameOnlyTypeNameProcessor.INSTANCE.process(typeName))))
+                            .build();
+                })
+                .collect(Collectors.toList()));
+
+        snippets.addAll(conjureDefinition.getServices()
+                .stream()
+                .map(serviceDefinition -> EmptySnippet.builder()
+                        .pythonPackage(PythonPackage.of(packageNameProcessor.process(
+                                serviceDefinition.getServiceName().getPackage())))
+                        .addImports(
+                                PythonImport.of(
+                                        moduleSpecifier,
+                                        NamedImport.of(
+                                                importNameProcessor.process(serviceDefinition.getServiceName()),
+                                                NameOnlyTypeNameProcessor.INSTANCE.process(
+                                                        serviceDefinition.getServiceName()))))
+                        .build())
+                .collect(Collectors.toList()));
+
+        Map<PythonPackage, List<PythonSnippet>> snippetsByPackage = snippets.stream()
+                .collect(Collectors.groupingBy(PythonSnippet::pythonPackage));
+
+        return KeyedStream.stream(snippetsByPackage)
                 .map((pythonPackage, pythonSnippets) -> PythonFile.builder()
                         .pythonPackage(pythonPackage)
                         .fileName(INIT_PY)
@@ -111,10 +208,6 @@ public final class ConjurePythonGenerator {
                         .build())
                 .values()
                 .collect(Collectors.toList());
-
-        pythonFiles.add(getRootInit(snippetsByPackage.keySet(), PythonPackage.of(packageNameProcessor.process("."))));
-
-        return pythonFiles;
     }
 
     private PythonFile getRootInit(Set<PythonPackage> packageNames, PythonPackage rootPackage) {
@@ -180,11 +273,11 @@ public final class ConjurePythonGenerator {
     private PackageNameProcessor buildPackageNameProcessor() {
         CompoundPackageNameProcessor.Builder compoundPackageNameProcessor = CompoundPackageNameProcessor.builder()
                 .addProcessors(new TwoComponentStrippingPackageNameProcessor())
+                .addAllProcessors(config.pythonicPackageName()
+                        .map(pythonPackageName -> ImmutableSet.of(
+                                new TopLevelAddingPackageNameProcessor(pythonPackageName)))
+                        .orElse(ImmutableSet.of()))
                 .addProcessors(FlatteningPackageNameProcessor.INSTANCE);
-        if (config.pythonicPackageName().isPresent()) {
-            String pythonicPackageName = config.pythonicPackageName().get();
-            compoundPackageNameProcessor.addProcessors(new TopLevelAddingPackageNameProcessor(pythonicPackageName));
-        }
         return compoundPackageNameProcessor.build();
     }
 }

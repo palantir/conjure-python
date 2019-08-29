@@ -90,7 +90,10 @@ public final class PythonTypeGenerator {
     }
 
     private BeanSnippet generateBean(ObjectDefinition typeDef) {
-        ImportTypeVisitor importVisitor = new ImportTypeVisitor(typeDef.getTypeName(), packageNameProcessor);
+        ImportTypeVisitor importVisitor = new ImportTypeVisitor(
+                typeDef.getTypeName(),
+                typeNameProcessor,
+                packageNameProcessor);
 
         Set<PythonImport> imports = typeDef.getFields()
                 .stream()
@@ -135,7 +138,10 @@ public final class PythonTypeGenerator {
     }
 
     private UnionSnippet generateUnion(UnionDefinition typeDef) {
-        ImportTypeVisitor importVisitor = new ImportTypeVisitor(typeDef.getTypeName(), packageNameProcessor);
+        ImportTypeVisitor importVisitor = new ImportTypeVisitor(
+                typeDef.getTypeName(),
+                typeNameProcessor,
+                packageNameProcessor);
 
         Set<PythonImport> imports = typeDef.getUnion()
                 .stream()
@@ -171,7 +177,10 @@ public final class PythonTypeGenerator {
     }
 
     private AliasSnippet generateAlias(AliasDefinition typeDef) {
-        ImportTypeVisitor importVisitor = new ImportTypeVisitor(typeDef.getTypeName(), packageNameProcessor);
+        ImportTypeVisitor importVisitor = new ImportTypeVisitor(
+                typeDef.getTypeName(),
+                typeNameProcessor,
+                packageNameProcessor);
         return AliasSnippet.builder()
                 .pythonPackage(PythonPackage.of(packageNameProcessor.process(typeDef.getTypeName().getPackage())))
                 .className(typeNameProcessor.process(typeDef.getTypeName()))

@@ -32,15 +32,15 @@ public interface UnionSnippet extends PythonSnippet {
     ImmutableList<PythonImport> DEFAULT_IMPORTS = ImmutableList.of(
             PythonImport.builder()
                     .moduleSpecifier(ImportTypeVisitor.CONJURE_PYTHON_CLIENT)
-                    .addNamedImports("ConjureUnionType", "ConjureFieldDefinition")
+                    .addNamedImports(NamedImport.of("ConjureUnionType"), NamedImport.of("ConjureFieldDefinition"))
                     .build(),
             PythonImport.builder()
                     .moduleSpecifier("abc")
-                    .addNamedImports("ABCMeta", "abstractmethod")
+                    .addNamedImports(NamedImport.of("ABCMeta"), NamedImport.of("abstractmethod"))
                     .build(),
             PythonImport.builder()
                     .moduleSpecifier(ImportTypeVisitor.TYPING)
-                    .addNamedImports("Dict", "Any")
+                    .addNamedImports(NamedImport.of("Dict"), NamedImport.of("Any"))
                     .build(),
             PythonImport.of("builtins"));
     ImmutableSet<String> PROTECTED_FIELDS = ImmutableSet.of("options");

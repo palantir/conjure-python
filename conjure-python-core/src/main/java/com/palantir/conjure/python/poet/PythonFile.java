@@ -37,7 +37,7 @@ public interface PythonFile extends Emittable {
     @Override
     default void emit(PythonPoetWriter poetWriter) {
         poetWriter.maintainingIndent(() -> {
-            Map<String, Set<String>> imports = contents().stream()
+            Map<String, Set<NamedImport>> imports = contents().stream()
                     .flatMap(pythonSnippet -> pythonSnippet.imports().stream())
                     .collect(Collectors.toMap(
                             PythonImport::moduleSpecifier,
