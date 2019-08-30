@@ -1,2 +1,2 @@
-from package_name._impl import product_CreateDatasetRequest as CreateDatasetRequest
+from .._impl import product_CreateDatasetRequest as CreateDatasetRequest
 

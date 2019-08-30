@@ -117,7 +117,6 @@ public final class ConjurePythonGenerator {
                 definitionTypeNameProcessor));
         List<PythonFile> initFiles = getInitFiles(
                 conjureDefinition,
-                implPackageNameProcessor,
                 implTypeNameProcessor,
                 definitionPackageNameProcessor,
                 definitionTypeNameProcessor);
@@ -182,11 +181,10 @@ public final class ConjurePythonGenerator {
 
     private List<PythonFile> getInitFiles(
             ConjureDefinition conjureDefinition,
-            PackageNameProcessor implPackageNameProcessor,
             TypeNameProcessor implTypeNameProcessor,
             PackageNameProcessor definitionPackageNameProcessor,
             TypeNameProcessor definitionTypeNameProcessor) {
-        String moduleSpecifier = implPackageNameProcessor.process("") + "._impl";
+        String moduleSpecifier = ".._impl";
 
         List<PythonSnippet> snippets = Lists.newArrayList();
         snippets.addAll(conjureDefinition.getTypes()

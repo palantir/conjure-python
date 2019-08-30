@@ -1,2 +1,2 @@
-from package_name._impl import product_datasets_BackingFileSystem as BackingFileSystem, product_datasets_Dataset as Dataset
+from .._impl import product_datasets_BackingFileSystem as BackingFileSystem, product_datasets_Dataset as Dataset
 
