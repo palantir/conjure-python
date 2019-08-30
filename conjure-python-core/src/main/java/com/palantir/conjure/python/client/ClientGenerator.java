@@ -60,7 +60,7 @@ public final class ClientGenerator {
         this.definitionTypeNameProcessor = definitionTypeNameProcessor;
         this.dealiasingTypeVisitor = dealiasingTypeVisitor;
         pythonTypeNameVisitor = new PythonTypeNameVisitor(implTypeNameProcessor);
-        myPyTypeNameVisitor = new MyPyTypeNameVisitor(implTypeNameProcessor);
+        myPyTypeNameVisitor = new MyPyTypeNameVisitor(dealiasingTypeVisitor, implTypeNameProcessor);
     }
 
     public PythonSnippet generateClient(ServiceDefinition serviceDef) {

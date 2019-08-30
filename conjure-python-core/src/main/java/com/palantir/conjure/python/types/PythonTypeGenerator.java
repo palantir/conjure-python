@@ -63,7 +63,7 @@ public final class PythonTypeGenerator {
         this.definitionTypeNameProcessor = definitionTypeNameProcessor;
         this.dealiasingTypeVisitor = dealiasingTypeVisitor;
         pythonTypeNameVisitor = new PythonTypeNameVisitor(implTypeNameProcessor);
-        myPyTypeNameVisitor = new MyPyTypeNameVisitor(implTypeNameProcessor);
+        myPyTypeNameVisitor = new MyPyTypeNameVisitor(dealiasingTypeVisitor, implTypeNameProcessor);
     }
 
     public PythonSnippet generateType(TypeDefinition typeDef) {

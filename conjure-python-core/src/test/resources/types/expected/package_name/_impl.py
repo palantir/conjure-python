@@ -586,7 +586,7 @@ class product_AliasAsMapKeyExample(ConjureBeanType):
     __slots__ = ['_strings', '_rids', '_bearertokens', '_integers', '_safelongs', '_datetimes', '_uuids'] # type: List[str]
 
     def __init__(self, bearertokens, datetimes, integers, rids, safelongs, strings, uuids):
-        # type: (Dict[product_BearerTokenAliasExample, product_ManyFieldExample], Dict[product_DateTimeAliasExample, product_ManyFieldExample], Dict[product_IntegerAliasExample, product_ManyFieldExample], Dict[product_RidAliasExample, product_ManyFieldExample], Dict[product_SafeLongAliasExample, product_ManyFieldExample], Dict[product_StringAliasExample, product_ManyFieldExample], Dict[product_UuidAliasExample, product_ManyFieldExample]) -> None
+        # type: (Dict[str, product_ManyFieldExample], Dict[str, product_ManyFieldExample], Dict[int, product_ManyFieldExample], Dict[str, product_ManyFieldExample], Dict[int, product_ManyFieldExample], Dict[str, product_ManyFieldExample], Dict[str, product_ManyFieldExample]) -> None
         self._strings = strings
         self._rids = rids
         self._bearertokens = bearertokens
@@ -597,37 +597,37 @@ class product_AliasAsMapKeyExample(ConjureBeanType):
 
     @builtins.property
     def strings(self):
-        # type: () -> Dict[product_StringAliasExample, product_ManyFieldExample]
+        # type: () -> Dict[str, product_ManyFieldExample]
         return self._strings
 
     @builtins.property
     def rids(self):
-        # type: () -> Dict[product_RidAliasExample, product_ManyFieldExample]
+        # type: () -> Dict[str, product_ManyFieldExample]
         return self._rids
 
     @builtins.property
     def bearertokens(self):
-        # type: () -> Dict[product_BearerTokenAliasExample, product_ManyFieldExample]
+        # type: () -> Dict[str, product_ManyFieldExample]
         return self._bearertokens
 
     @builtins.property
     def integers(self):
-        # type: () -> Dict[product_IntegerAliasExample, product_ManyFieldExample]
+        # type: () -> Dict[int, product_ManyFieldExample]
         return self._integers
 
     @builtins.property
     def safelongs(self):
-        # type: () -> Dict[product_SafeLongAliasExample, product_ManyFieldExample]
+        # type: () -> Dict[int, product_ManyFieldExample]
         return self._safelongs
 
     @builtins.property
     def datetimes(self):
-        # type: () -> Dict[product_DateTimeAliasExample, product_ManyFieldExample]
+        # type: () -> Dict[str, product_ManyFieldExample]
         return self._datetimes
 
     @builtins.property
     def uuids(self):
-        # type: () -> Dict[product_UuidAliasExample, product_ManyFieldExample]
+        # type: () -> Dict[str, product_ManyFieldExample]
         return self._uuids
 
 
@@ -994,7 +994,7 @@ class product_ManyFieldExample(ConjureBeanType):
     __slots__ = ['_string', '_integer', '_double_value', '_optional_item', '_items', '_set', '_map', '_alias'] # type: List[str]
 
     def __init__(self, alias, double_value, integer, items, map, set, string, optional_item=None):
-        # type: (product_StringAliasExample, float, int, List[str], Dict[str, str], List[str], str, Optional[str]) -> None
+        # type: (str, float, int, List[str], Dict[str, str], List[str], str, Optional[str]) -> None
         self._string = string
         self._integer = integer
         self._double_value = double_value
@@ -1048,7 +1048,7 @@ class product_ManyFieldExample(ConjureBeanType):
 
     @builtins.property
     def alias(self):
-        # type: () -> product_StringAliasExample
+        # type: () -> str
         """docs for alias field"""
         return self._alias
 
@@ -1232,12 +1232,12 @@ class product_RecursiveObjectExample(ConjureBeanType):
     __slots__ = ['_recursive_field'] # type: List[str]
 
     def __init__(self, recursive_field=None):
-        # type: (Optional[product_RecursiveObjectAlias]) -> None
+        # type: (Optional[product_RecursiveObjectExample]) -> None
         self._recursive_field = recursive_field
 
     @builtins.property
     def recursive_field(self):
-        # type: () -> Optional[product_RecursiveObjectAlias]
+        # type: () -> Optional[product_RecursiveObjectExample]
         return self._recursive_field
 
 
@@ -1720,12 +1720,12 @@ class with_imports_ImportedAliasInMaps(ConjureBeanType):
     __slots__ = ['_aliases'] # type: List[str]
 
     def __init__(self, aliases):
-        # type: (Dict[product_RidAliasExample, product_DateTimeAliasExample]) -> None
+        # type: (Dict[str, str]) -> None
         self._aliases = aliases
 
     @builtins.property
     def aliases(self):
-        # type: () -> Dict[product_RidAliasExample, product_DateTimeAliasExample]
+        # type: () -> Dict[str, str]
         return self._aliases
 
 

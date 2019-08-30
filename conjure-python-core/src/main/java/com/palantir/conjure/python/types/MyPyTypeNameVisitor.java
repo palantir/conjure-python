@@ -17,21 +17,30 @@
 package com.palantir.conjure.python.types;
 
 import com.palantir.conjure.python.processors.typename.TypeNameProcessor;
+import com.palantir.conjure.spec.AliasDefinition;
+import com.palantir.conjure.spec.EnumDefinition;
 import com.palantir.conjure.spec.ExternalReference;
 import com.palantir.conjure.spec.ListType;
 import com.palantir.conjure.spec.MapType;
+import com.palantir.conjure.spec.ObjectDefinition;
 import com.palantir.conjure.spec.OptionalType;
 import com.palantir.conjure.spec.PrimitiveType;
 import com.palantir.conjure.spec.SetType;
 import com.palantir.conjure.spec.Type;
+import com.palantir.conjure.spec.TypeDefinition;
 import com.palantir.conjure.spec.TypeName;
+import com.palantir.conjure.spec.UnionDefinition;
+import com.palantir.conjure.visitor.DealiasingTypeVisitor;
 import com.palantir.conjure.visitor.TypeVisitor;
 
 public final class MyPyTypeNameVisitor implements Type.Visitor<String> {
 
+    private final DealiasingTypeVisitor dealiasingTypeVisitor;
     private final TypeNameProcessor typeNameProcessor;
 
-    public MyPyTypeNameVisitor(TypeNameProcessor typeNameProcessor) {
+    public MyPyTypeNameVisitor(DealiasingTypeVisitor dealiasingTypeVisitor,
+            TypeNameProcessor typeNameProcessor) {
+        this.dealiasingTypeVisitor = dealiasingTypeVisitor;
         this.typeNameProcessor = typeNameProcessor;
     }
 
@@ -78,7 +87,36 @@ public final class MyPyTypeNameVisitor implements Type.Visitor<String> {
 
     @Override
     public String visitReference(TypeName type) {
-        return typeNameProcessor.process(type);
+        MyPyTypeNameVisitor myPyTypeNameVisitor = this;
+        TypeDefinition.Visitor<String> visitor = new TypeDefinition.Visitor<String>() {
+            @Override
+            public String visitAlias(AliasDefinition value) {
+                return value.getAlias().accept(myPyTypeNameVisitor);
+            }
+
+            @Override
+            public String visitEnum(EnumDefinition value) {
+                return typeNameProcessor.process(value.getTypeName());
+            }
+
+            @Override
+            public String visitObject(ObjectDefinition value) {
+                return typeNameProcessor.process(value.getTypeName());
+            }
+
+            @Override
+            public String visitUnion(UnionDefinition value) {
+                return typeNameProcessor.process(value.getTypeName());
+            }
+
+            @Override
+            public String visitUnknown(String unknownType) {
+                throw new IllegalStateException("Unknown definition: " + unknownType);
+            }
+        };
+        return dealiasingTypeVisitor.visitReference(type).fold(
+                typeDefinition -> typeDefinition.accept(visitor),
+                typeReference -> typeReference.accept(this));
     }
 
     @Override
