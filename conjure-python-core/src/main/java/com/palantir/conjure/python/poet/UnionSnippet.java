@@ -56,12 +56,24 @@ public interface UnionSnippet extends PythonSnippet {
 
     List<PythonField> options();
 
+    /** The name of the option as a constructor / method parameter. */
     static String parameterName(PythonField option) {
         return PythonIdentifierSanitizer.sanitize(option.attributeName());
     }
 
+    /** The name of the option as a {@code @property}. Must be different from {@link #fieldName}. */
+    static String propertyName(PythonField option) {
+        return PythonIdentifierSanitizer.sanitize(option.attributeName());
+    }
+
+    /** The name of the option as a field. */
     static String fieldName(PythonField option) {
         return "_" + PythonIdentifierSanitizer.sanitize(option.attributeName(), PROTECTED_FIELDS);
+    }
+
+    /** The name of the visitor method for the given option. */
+    static String visitorMethodName(PythonField option) {
+        return "_" + option.attributeName();
     }
 
     @Override
@@ -132,7 +144,7 @@ public interface UnionSnippet extends PythonSnippet {
         options().forEach(option -> {
             poetWriter.writeLine();
             poetWriter.writeIndentedLine("@property");
-            poetWriter.writeIndentedLine(String.format("def %s(self):", parameterName(option)));
+            poetWriter.writeIndentedLine(String.format("def %s(self):", propertyName(option)));
 
             poetWriter.increaseIndent();
             poetWriter.writeIndentedLine(String.format("# type: () -> %s", option.myPyType()));
@@ -157,7 +169,7 @@ public interface UnionSnippet extends PythonSnippet {
         options().forEach(option -> {
             poetWriter.writeIndentedLine("if self.type == '%s':", option.jsonIdentifier());
             poetWriter.increaseIndent();
-            poetWriter.writeIndentedLine("return visitor.%s(self.%s)", fieldName(option), parameterName(option));
+            poetWriter.writeIndentedLine("return visitor.%s(self.%s)", visitorMethodName(option), propertyName(option));
             poetWriter.decreaseIndent();
         });
         poetWriter.decreaseIndent();
@@ -177,7 +189,7 @@ public interface UnionSnippet extends PythonSnippet {
         options().forEach(option -> {
             poetWriter.writeLine();
             poetWriter.writeIndentedLine("@abstractmethod");
-            poetWriter.writeIndentedLine("def %s(self, %s):", fieldName(option), parameterName(option));
+            poetWriter.writeIndentedLine("def %s(self, %s):", visitorMethodName(option), parameterName(option));
             poetWriter.increaseIndent();
             poetWriter.writeIndentedLine("# type: (%s) -> Any", option.myPyType());
             poetWriter.writeIndentedLine("pass");

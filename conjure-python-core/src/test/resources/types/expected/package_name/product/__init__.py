@@ -469,7 +469,7 @@ class OptionalExample(ConjureBeanType):
 
 class OptionsUnion(ConjureUnionType):
 
-    _options = None # type: str
+    _options_ = None # type: str
 
     @builtins.classmethod
     def _options(cls):
@@ -727,7 +727,7 @@ class UnionTypeExample(ConjureUnionType):
     _set = None # type: List[str]
     _this_field_is_an_integer = None # type: int
     _also_an_integer = None # type: int
-    _if = None # type: int
+    _if_ = None # type: int
     _new = None # type: int
     _interface = None # type: int
 
