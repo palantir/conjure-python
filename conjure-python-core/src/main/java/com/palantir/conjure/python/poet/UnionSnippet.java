@@ -99,7 +99,7 @@ public interface UnionSnippet extends PythonSnippet {
         for (int i = 0; i < options().size(); i++) {
             PythonField option = options().get(i);
             poetWriter.writeIndentedLine("'%s': ConjureFieldDefinition('%s', %s)%s",
-                    parameterName(option),
+                    propertyName(option),
                     option.jsonIdentifier(),
                     option.pythonType(),
                     i == options().size() - 1 ? "" : ",");
