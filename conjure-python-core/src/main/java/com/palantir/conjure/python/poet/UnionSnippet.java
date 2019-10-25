@@ -56,6 +56,26 @@ public interface UnionSnippet extends PythonSnippet {
 
     List<PythonField> options();
 
+    /** The name of the option as a constructor / method parameter. */
+    static String parameterName(PythonField option) {
+        return PythonIdentifierSanitizer.sanitize(option.attributeName());
+    }
+
+    /** The name of the option as a {@code @property}. Must be different from {@link #fieldName}. */
+    static String propertyName(PythonField option) {
+        return PythonIdentifierSanitizer.sanitize(option.attributeName());
+    }
+
+    /** The name of the option as a field. */
+    static String fieldName(PythonField option) {
+        return "_" + PythonIdentifierSanitizer.sanitize(option.attributeName(), PROTECTED_FIELDS);
+    }
+
+    /** The name of the visitor method for the given option. */
+    static String visitorMethodName(PythonField option) {
+        return "_" + option.attributeName();
+    }
+
     @Override
     default void emit(PythonPoetWriter poetWriter) {
         poetWriter.writeIndentedLine(String.format("class %s(ConjureUnionType):", className()));
@@ -64,8 +84,8 @@ public interface UnionSnippet extends PythonSnippet {
 
         poetWriter.writeLine();
 
-        options().forEach(option -> poetWriter.writeIndentedLine("_%s = None # type: %s",
-                option.attributeName(), option.myPyType()));
+        options().forEach(option -> poetWriter.writeIndentedLine("%s = None # type: %s",
+                fieldName(option), option.myPyType()));
 
         poetWriter.writeLine();
 
@@ -79,7 +99,7 @@ public interface UnionSnippet extends PythonSnippet {
         for (int i = 0; i < options().size(); i++) {
             PythonField option = options().get(i);
             poetWriter.writeIndentedLine("'%s': ConjureFieldDefinition('%s', %s)%s",
-                    PythonIdentifierSanitizer.sanitize(option.attributeName()),
+                    propertyName(option),
                     option.jsonIdentifier(),
                     option.pythonType(),
                     i == options().size() - 1 ? "" : ",");
@@ -103,8 +123,7 @@ public interface UnionSnippet extends PythonSnippet {
         poetWriter.writeIndentedLine("if %s != 1:",
                 Joiner.on(" + ").join(
                     options().stream()
-                        .map(option -> String.format("(%s is not None)",
-                                PythonIdentifierSanitizer.sanitize(option.attributeName())))
+                        .map(option -> String.format("(%s is not None)", parameterName(option)))
                         .collect(Collectors.toList())));
         poetWriter.increaseIndent();
         poetWriter.writeIndentedLine("raise ValueError('a union must contain a single member')");
@@ -113,12 +132,9 @@ public interface UnionSnippet extends PythonSnippet {
         poetWriter.writeLine();
         // save off
         options().forEach(option -> {
-            poetWriter.writeIndentedLine("if %s is not None:",
-                    PythonIdentifierSanitizer.sanitize(option.attributeName()));
+            poetWriter.writeIndentedLine("if %s is not None:", parameterName(option));
             poetWriter.increaseIndent();
-            poetWriter.writeIndentedLine("self._%s = %s",
-                    PythonIdentifierSanitizer.sanitize(option.attributeName(), PROTECTED_FIELDS),
-                    PythonIdentifierSanitizer.sanitize(option.attributeName()));
+            poetWriter.writeIndentedLine("self.%s = %s", fieldName(option), parameterName(option));
             poetWriter.writeIndentedLine("self._type = '%s'", option.jsonIdentifier());
             poetWriter.decreaseIndent();
         });
@@ -128,15 +144,13 @@ public interface UnionSnippet extends PythonSnippet {
         options().forEach(option -> {
             poetWriter.writeLine();
             poetWriter.writeIndentedLine("@property");
-            poetWriter.writeIndentedLine(String.format("def %s(self):",
-                    PythonIdentifierSanitizer.sanitize(option.attributeName())));
+            poetWriter.writeIndentedLine(String.format("def %s(self):", propertyName(option)));
 
             poetWriter.increaseIndent();
             poetWriter.writeIndentedLine(String.format("# type: () -> %s", option.myPyType()));
             option.docs().ifPresent(docs -> poetWriter.writeIndentedLine(String.format("\"\"\"%s\"\"\"",
                     docs.get().trim())));
-            poetWriter.writeIndentedLine(String.format("return self._%s",
-                    PythonIdentifierSanitizer.sanitize(option.attributeName(), PROTECTED_FIELDS)));
+            poetWriter.writeIndentedLine(String.format("return self.%s", fieldName(option)));
             poetWriter.decreaseIndent();
         });
 
@@ -155,8 +169,7 @@ public interface UnionSnippet extends PythonSnippet {
         options().forEach(option -> {
             poetWriter.writeIndentedLine("if self.type == '%s':", option.jsonIdentifier());
             poetWriter.increaseIndent();
-            poetWriter.writeIndentedLine("return visitor._%s(self.%s)", option.attributeName(),
-                    PythonIdentifierSanitizer.sanitize(option.attributeName()));
+            poetWriter.writeIndentedLine("return visitor.%s(self.%s)", visitorMethodName(option), propertyName(option));
             poetWriter.decreaseIndent();
         });
         poetWriter.decreaseIndent();
@@ -176,8 +189,7 @@ public interface UnionSnippet extends PythonSnippet {
         options().forEach(option -> {
             poetWriter.writeLine();
             poetWriter.writeIndentedLine("@abstractmethod");
-            poetWriter.writeIndentedLine("def _%s(self, %s):", option.attributeName(),
-                    PythonIdentifierSanitizer.sanitize(option.attributeName()));
+            poetWriter.writeIndentedLine("def %s(self, %s):", visitorMethodName(option), parameterName(option));
             poetWriter.increaseIndent();
             poetWriter.writeIndentedLine("# type: (%s) -> Any", option.myPyType());
             poetWriter.writeIndentedLine("pass");
