@@ -244,7 +244,9 @@ class EmptyObjectExample(ConjureBeanType):
 
 
 class EnumExample(ConjureEnumType):
-    """This enumerates the numbers 1:2."""
+    """
+    This enumerates the numbers 1:2.
+    """
 
     ONE = 'ONE'
     '''ONE'''
@@ -737,7 +739,9 @@ class StringExample(ConjureBeanType):
         return self._string
 
 class UnionTypeExample(ConjureUnionType):
-    """A type which can either be a StringExample, a set of strings, or an integer."""
+    """
+    A type which can either be a StringExample, a set of strings, or an integer.
+    """
 
     _string_example = None # type: StringExample
     _set = None # type: List[str]
@@ -789,7 +793,9 @@ class UnionTypeExample(ConjureUnionType):
     @property
     def string_example(self):
         # type: () -> StringExample
-        """Docs for when UnionTypeExample is of type StringExample."""
+        """
+        Docs for when UnionTypeExample is of type StringExample.
+        """
         return self._string_example
 
     @property
