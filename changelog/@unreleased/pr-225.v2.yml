@@ -1,0 +1,5 @@
+type: fix
+fix:
+  description: Fix doc escaping in conjure bean.
+  links:
+  - https://github.com/palantir/conjure-python/pull/225
