@@ -382,49 +382,65 @@ class ManyFieldExample(ConjureBeanType):
     @builtins.property
     def string(self):
         # type: () -> str
-        """docs for string field"""
+        """
+        docs for string field
+        """
         return self._string
 
     @builtins.property
     def integer(self):
         # type: () -> int
-        """docs for integer field"""
+        """
+        docs for integer field
+        """
         return self._integer
 
     @builtins.property
     def double_value(self):
         # type: () -> float
-        """docs for doubleValue field"""
+        """
+        docs for doubleValue field
+        """
         return self._double_value
 
     @builtins.property
     def optional_item(self):
         # type: () -> Optional[str]
-        """docs for optionalItem field"""
+        """
+        docs for optionalItem field
+        """
         return self._optional_item
 
     @builtins.property
     def items(self):
         # type: () -> List[str]
-        """docs for items field"""
+        """
+        docs for items field
+        """
         return self._items
 
     @builtins.property
     def set(self):
         # type: () -> List[str]
-        """docs for set field"""
+        """
+        docs for set field
+        """
         return self._set
 
     @builtins.property
     def map(self):
         # type: () -> Dict[str, str]
-        """docs for map field"""
+        """
+        docs for map field
+        """
         return self._map
 
     @builtins.property
     def alias(self):
         # type: () -> StringAliasExample
-        """docs for alias field"""
+        """
+        docs for alias field
+        """
         return self._alias
 
 class MapExample(ConjureBeanType):
