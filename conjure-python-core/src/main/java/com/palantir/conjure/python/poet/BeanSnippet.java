@@ -56,7 +56,11 @@ public interface BeanSnippet extends PythonSnippet {
     default void emit(PythonPoetWriter poetWriter) {
         poetWriter.writeIndentedLine(String.format("class %s(ConjureBeanType):", className()));
         poetWriter.increaseIndent();
-        docs().ifPresent(docs -> poetWriter.writeIndentedLine(String.format("\"\"\"%s\"\"\"", docs.get().trim())));
+        docs().ifPresent(docs -> {
+            poetWriter.writeIndentedLine("\"\"\"");
+            poetWriter.writeIndentedLine(docs.get().trim());
+            poetWriter.writeIndentedLine("\"\"\"");
+        });
 
         poetWriter.writeLine();
 
@@ -122,8 +126,11 @@ public interface BeanSnippet extends PythonSnippet {
 
             poetWriter.increaseIndent();
             poetWriter.writeIndentedLine(String.format("# type: () -> %s", field.myPyType()));
-            field.docs().ifPresent(docs -> poetWriter.writeIndentedLine(String.format("\"\"\"%s\"\"\"",
-                    docs.get().trim())));
+            field.docs().ifPresent(docs -> {
+                poetWriter.writeIndentedLine("\"\"\"");
+                poetWriter.writeIndentedLine(docs.get().trim());
+                poetWriter.writeIndentedLine("\"\"\"");
+            });
             poetWriter.writeIndentedLine(String.format("return self._%s",
                     PythonIdentifierSanitizer.sanitize(field.attributeName(), PROTECTED_FIELDS)));
             poetWriter.decreaseIndent();

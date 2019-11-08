@@ -24,7 +24,9 @@ class BackingFileSystem(ConjureBeanType):
     @builtins.property
     def file_system_id(self):
         # type: () -> str
-        """The name by which this file system is identified."""
+        """
+        The name by which this file system is identified.
+        """
         return self._file_system_id
 
     @builtins.property
@@ -62,6 +64,8 @@ class Dataset(ConjureBeanType):
     @builtins.property
     def rid(self):
         # type: () -> str
-        """Uniquely identifies this dataset."""
+        """
+        Uniquely identifies this dataset.
+        """
         return self._rid
 

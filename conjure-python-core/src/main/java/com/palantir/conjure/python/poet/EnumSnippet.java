@@ -47,7 +47,11 @@ public interface EnumSnippet extends PythonSnippet {
         poetWriter.maintainingIndent(() -> {
             poetWriter.writeIndentedLine(String.format("class %s(ConjureEnumType):", className()));
             poetWriter.increaseIndent();
-            docs().ifPresent(docs -> poetWriter.writeIndentedLine(String.format("\"\"\"%s\"\"\"", docs.get().trim())));
+            docs().ifPresent(docs -> {
+                poetWriter.writeIndentedLine("\"\"\"");
+                poetWriter.writeIndentedLine(docs.get().trim());
+                poetWriter.writeIndentedLine("\"\"\"");
+            });
 
             poetWriter.writeLine();
 

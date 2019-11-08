@@ -10,7 +10,9 @@ class TestService(Service):
 
     def get_file_systems(self, auth_header):
         # type: (str) -> Dict[str, BackingFileSystem]
-        """Returns a mapping from file system id to backing file system configuration."""
+        """
+        Returns a mapping from file system id to backing file system configuration.
+        """
 
         _headers = {
             'Accept': 'application/json',
@@ -224,7 +226,9 @@ class TestService(Service):
 
     def get_branches_deprecated(self, auth_header, dataset_rid):
         # type: (str, str) -> List[str]
-        """Gets all branches of this dataset."""
+        """
+        Gets all branches of this dataset.
+        """
 
         _headers = {
             'Accept': 'application/json',

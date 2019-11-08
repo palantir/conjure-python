@@ -1,0 +1,5 @@
+type: fix
+fix:
+  description: Fix doc escaping in bean, enum, endpoint, and union snippets.
+  links:
+  - https://github.com/palantir/conjure-python/pull/225

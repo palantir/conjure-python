@@ -80,7 +80,11 @@ public interface UnionSnippet extends PythonSnippet {
     default void emit(PythonPoetWriter poetWriter) {
         poetWriter.writeIndentedLine(String.format("class %s(ConjureUnionType):", className()));
         poetWriter.increaseIndent();
-        docs().ifPresent(docs -> poetWriter.writeIndentedLine(String.format("\"\"\"%s\"\"\"", docs.get().trim())));
+        docs().ifPresent(docs -> {
+            poetWriter.writeIndentedLine("\"\"\"");
+            poetWriter.writeIndentedLine(docs.get().trim());
+            poetWriter.writeIndentedLine("\"\"\"");
+        });
 
         poetWriter.writeLine();
 
@@ -148,8 +152,11 @@ public interface UnionSnippet extends PythonSnippet {
 
             poetWriter.increaseIndent();
             poetWriter.writeIndentedLine(String.format("# type: () -> %s", option.myPyType()));
-            option.docs().ifPresent(docs -> poetWriter.writeIndentedLine(String.format("\"\"\"%s\"\"\"",
-                    docs.get().trim())));
+            option.docs().ifPresent(docs -> {
+                poetWriter.writeIndentedLine("\"\"\"");
+                poetWriter.writeIndentedLine(docs.get().trim());
+                poetWriter.writeIndentedLine("\"\"\"");
+            });
             poetWriter.writeIndentedLine(String.format("return self.%s", fieldName(option)));
             poetWriter.decreaseIndent();
         });
