@@ -223,7 +223,7 @@ public interface PythonEndpointDefinition extends Emittable {
     }
 
     @Value.Immutable
-    public interface PythonEndpointParam {
+    interface PythonEndpointParam {
 
         String paramName();
 

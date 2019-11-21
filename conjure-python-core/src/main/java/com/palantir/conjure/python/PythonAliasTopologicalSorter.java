@@ -90,7 +90,7 @@ public final class PythonAliasTopologicalSorter {
         }
 
         @Override
-        public List<AliasSnippet> visitPrimitive(PrimitiveType value) {
+        public List<AliasSnippet> visitPrimitive(PrimitiveType _value) {
             return Collections.emptyList();
         }
 
@@ -126,7 +126,7 @@ public final class PythonAliasTopologicalSorter {
         }
 
         @Override
-        public List<AliasSnippet> visitExternal(ExternalReference value) {
+        public List<AliasSnippet> visitExternal(ExternalReference _value) {
             return Collections.emptyList();
         }
 

@@ -29,7 +29,6 @@ import com.palantir.conjure.spec.ConjureDefinition;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
-import java.util.List;
 import java.util.Optional;
 import picocli.CommandLine;
 
@@ -89,9 +88,7 @@ public final class ConjurePythonCli implements Runnable {
                 description = "Generate a `conda_recipe/meta.yaml`")
         private boolean writeCondaRecipe;
 
-        @CommandLine.Unmatched
-        @SuppressWarnings("UnusedVariable")
-        private List<String> unmatchedOptions;
+
 
         @Override
         public void run() {
