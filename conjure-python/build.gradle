@@ -18,6 +18,10 @@ apply from: "$rootDir/gradle/publish-dist.gradle"
 
 mainClassName = 'com.palantir.conjure.python.cli.ConjurePythonCli'
 
+configurations {
+    conjurePythonClient
+}
+
 dependencies {
     compile project(':conjure-python-core')
     compile 'info.picocli:picocli'
@@ -28,11 +32,13 @@ dependencies {
 
     annotationProcessor 'org.immutables:value'
     compileOnly 'org.immutables:value::annotations'
+
+    conjurePythonClient 'com.palantir.conjure.python:conjure-python-client'
 }
 
 task generateBuildConfiguration() {
     doLast {
-        def minConjureClientVersion = getVersion('com.palantir.conjure.python', 'conjure-python-client')
+        def minConjureClientVersion = getVersion('com.palantir.conjure.python', 'conjure-python-client', configurations.conjurePythonClient)
         def props = new File("$projectDir/src/main/resources/buildConfiguration.yml")
         props.getParentFile().mkdirs()
         props.text = "generatorVersion: ${project.version}\n"
