@@ -1,4 +1,4 @@
-rootProject.name = 'conjure-python'
+rootProject.name = 'conjure-python-root'
 
 include 'conjure-python'
 include 'conjure-python-core'
