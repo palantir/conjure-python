@@ -21,7 +21,7 @@ jobs:
       - restore_cache:
           key: gradle-cache-{{ checksum "versions.props" }}-{{ checksum "build.gradle" }}
 
-      - run: ./gradlew --parallel resolveConfigurations
+      - run: ./gradlew --parallel classes testClasses
 
       - save_cache:
           key: gradle-wrapper-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}

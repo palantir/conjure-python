@@ -25,6 +25,7 @@ buildscript {
     }
 
     dependencies {
+        classpath 'com.palantir.gradle.consistentversions:gradle-consistent-versions:1.15.0'
         classpath 'com.netflix.nebula:gradle-info-plugin:5.2.0'
         classpath 'com.netflix.nebula:nebula-publishing-plugin:14.1.1'
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4'
@@ -35,6 +36,7 @@ buildscript {
     }
 }
 
+apply plugin: 'com.palantir.consistent-versions'
 apply plugin: 'com.palantir.baseline'
 apply plugin: 'com.palantir.git-version'
 
@@ -46,12 +48,6 @@ allprojects {
         mavenCentral()
         maven {
             url 'https://dl.bintray.com/palantir/releases/'
-        }
-    }
-
-    configurations.all {
-        resolutionStrategy {
-            failOnVersionConflict()
         }
     }
 }

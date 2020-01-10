@@ -30,9 +30,9 @@ dependencies {
     compileOnly 'org.immutables:value::annotations'
 }
 
-task generateBuildConfiguration() {
+task generateBuildConfiguration {
     doLast {
-        def minConjureClientVersion = dependencyRecommendations.getRecommendedVersion('com.palantir.conjure.python', 'conjure-python-client')
+        def minConjureClientVersion = conjurePythonClientVersion
         def props = new File("$projectDir/src/main/resources/buildConfiguration.yml")
         props.getParentFile().mkdirs()
         props.text = "generatorVersion: ${project.version}\n"
