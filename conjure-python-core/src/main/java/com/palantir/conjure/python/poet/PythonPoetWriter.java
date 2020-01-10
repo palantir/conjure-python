@@ -18,6 +18,7 @@ package com.palantir.conjure.python.poet;
 
 import static com.google.common.base.Preconditions.checkState;
 
+import com.google.errorprone.annotations.FormatMethod;
 import java.io.PrintStream;
 
 public final class PythonPoetWriter {
@@ -86,6 +87,7 @@ public final class PythonPoetWriter {
         return this;
     }
 
+    @FormatMethod
     public PythonPoetWriter writeIndentedLine(String formatString, Object... args) {
         return writeIndentedLine(String.format(formatString, args));
     }

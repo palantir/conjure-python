@@ -16,7 +16,6 @@
 
 package com.palantir.conjure.python;
 
-import com.google.common.collect.Maps;
 import com.palantir.conjure.python.poet.PythonFile;
 import com.palantir.conjure.python.poet.PythonPoetWriter;
 import java.io.ByteArrayOutputStream;
@@ -24,11 +23,12 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
+import java.util.HashMap;
 import java.util.Map;
 
 public final class InMemoryPythonFileWriter implements PythonFileWriter {
 
-    private final Map<Path, String> pythonFiles = Maps.newHashMap();
+    private final Map<Path, String> pythonFiles = new HashMap<>();
 
     public Map<Path, String> getPythonFiles() {
         return pythonFiles;
