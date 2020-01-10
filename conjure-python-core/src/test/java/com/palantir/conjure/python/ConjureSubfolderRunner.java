@@ -149,7 +149,7 @@ public final class ConjureSubfolderRunner extends ParentRunner<Path> {
             @Override
             @SuppressWarnings("FutureReturnValueIgnored")
             public void schedule(Runnable childStatement) {
-                executor.submit(childStatement);
+                executor.execute(childStatement);
             }
 
             @Override
