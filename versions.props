@@ -1,7 +1,8 @@
 com.fasterxml.jackson.*:jackson-* = 2.9.8
 com.google.code.findbugs:jsr305 = 3.0.2
-com.google.errorprone:error_prone_annotations = 2.3.3
 com.google.guava:guava = 23.6.1-jre
+com.google.errorprone:error_prone_annotations = 2.3.4
+com.google.errorprone:error_prone_core = 2.3.4
 com.palantir.conjure.verification:* = 0.16.6
 com.palantir.conjure:* = 4.4.0
 commons-cli:commons-cli = 1.4
@@ -15,3 +16,6 @@ org.slf4j:* = 1.7.25
 
 # linter:OFF
 com.palantir.conjure.python:conjure-python-client = 1.4.0
+
+# conflict resolution
+org.checkerframework:checker-qual = 3.0.0
