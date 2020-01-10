@@ -15,4 +15,3 @@ org.mockito:mockito-core = 3.0.0
 org.slf4j:* = 1.7.25
 
 # linter:OFF
-com.palantir.conjure.python:conjure-python-client = 1.4.0
