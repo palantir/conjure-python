@@ -17,7 +17,7 @@
 apply from: "$rootDir/gradle/publish-dist.gradle"
 
 mainClassName = 'com.palantir.conjure.python.cli.ConjurePythonCli'
-
+￿
 dependencies {
     compile project(':conjure-python-core')
     compile 'info.picocli:picocli'
@@ -30,7 +30,7 @@ dependencies {
     compileOnly 'org.immutables:value::annotations'
 }
 
-task generateBuildConfiguration() {
+task generateBuildConfiguration {
     doLast {
         def minConjureClientVersion = '1.4.0'
         def props = new File("$projectDir/src/main/resources/buildConfiguration.yml")
