@@ -44,7 +44,7 @@ import org.slf4j.LoggerFactory;
  * Inspired by {@link org.junit.runners.BlockJUnit4ClassRunner}, except instead of a test 'method' being the unit of
  * work, it's a 'directory'.
  *
- * Note, this doesn't support @Rule or @ClassRule.
+ * <p>Note, this doesn't support @Rule or @ClassRule.
  */
 public final class ConjureSubfolderRunner extends ParentRunner<Path> {
     private static final Logger log = LoggerFactory.getLogger(ConjureSubfolderRunner.class);
@@ -59,8 +59,8 @@ public final class ConjureSubfolderRunner extends ParentRunner<Path> {
     }
 
     /**
-     * Use this annotation to tell {@link ConjureSubfolderRunner} to execute your test method for every subfolder
-     * it finds inside the {@link ParentFolder} you specified.
+     * Use this annotation to tell {@link ConjureSubfolderRunner} to execute your test method for every subfolder it
+     * finds inside the {@link ParentFolder} you specified.
      */
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.METHOD)

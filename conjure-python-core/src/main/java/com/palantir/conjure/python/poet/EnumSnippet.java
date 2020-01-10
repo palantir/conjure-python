@@ -92,6 +92,5 @@ public interface EnumSnippet extends PythonSnippet {
         static PythonEnumValue of(String name, Optional<Documentation> docs) {
             return ImmutablePythonEnumValue.builder().name(name).docs(docs).build();
         }
-
     }
 }

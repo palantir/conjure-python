@@ -27,14 +27,10 @@ public interface PythonField {
 
     String jsonIdentifier();
 
-    /**
-     * The python type (or a conjure fake type) for this type.
-     */
+    /** The python type (or a conjure fake type) for this type. */
     String pythonType();
 
-    /**
-     * The mypy type for this type.
-     */
+    /** The mypy type for this type. */
     String myPyType();
 
     boolean isOptional();

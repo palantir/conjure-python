@@ -43,9 +43,7 @@ public final class PythonAliasTopologicalSorter {
 
     public static List<AliasSnippet> getSortedSnippets(List<AliasSnippet> snippets) {
         AliasEdgeVisitor aliasEdgeVisitor = new AliasEdgeVisitor(snippets);
-        MutableGraph<AliasSnippet> mutableGraph = GraphBuilder.directed()
-                .nodeOrder(ElementOrder.insertion())
-                .build();
+        MutableGraph<AliasSnippet> mutableGraph = GraphBuilder.directed().nodeOrder(ElementOrder.insertion()).build();
 
         snippets.forEach(mutableGraph::addNode);
         snippets.forEach(snippet -> snippet.aliasType().getAlias().accept(aliasEdgeVisitor).stream()
@@ -56,9 +54,7 @@ public final class PythonAliasTopologicalSorter {
         Set<AliasSnippet> roots = mutableGraph.nodes().stream()
                 .filter(node -> mutableGraph.inDegree(node) == 0)
                 .collect(Collectors.toSet());
-        Map<AliasSnippet, Integer> nonRootsToInDegree = mutableGraph
-                .nodes()
-                .stream()
+        Map<AliasSnippet, Integer> nonRootsToInDegree = mutableGraph.nodes().stream()
                 .filter(node -> mutableGraph.inDegree(node) > 0)
                 .collect(Collectors.toMap(node -> node, mutableGraph::inDegree, (a, b) -> a));
 

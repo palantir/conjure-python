@@ -38,7 +38,8 @@ import org.junit.runner.RunWith;
 public final class ConjurePythonGeneratorTest {
 
     private final ConjurePythonGenerator generator = new ConjurePythonGenerator(
-            new DefaultBeanGenerator(), new ClientGenerator(),
+            new DefaultBeanGenerator(),
+            new ClientGenerator(),
             GeneratorConfiguration.builder()
                     .packageName("package-name")
                     .packageVersion("0.0.0")
@@ -69,7 +70,8 @@ public final class ConjurePythonGeneratorTest {
                     continue;
                 }
                 String expectedContent = Strings.join(Files.readAllLines(path)).with("\n") + "\n";
-                assertThat(pythonFileWriter.getPythonFiles().get(expected.relativize(path))).isEqualTo(expectedContent);
+                assertThat(pythonFileWriter.getPythonFiles().get(expected.relativize(path)))
+                        .isEqualTo(expectedContent);
                 generatedButNotExpected.remove(expected.relativize(path));
                 count += 1;
             }
@@ -79,8 +81,7 @@ public final class ConjurePythonGeneratorTest {
     }
 
     private void maybeResetExpectedDirectory(Path expected, ConjureDefinition definition) throws IOException {
-        if (Boolean.valueOf(System.getProperty("recreate", "false"))
-                || !expected.toFile().isDirectory()) {
+        if (Boolean.valueOf(System.getProperty("recreate", "false")) || !expected.toFile().isDirectory()) {
             Files.createDirectories(expected);
             try (Stream<Path> walk = Files.walk(expected)) {
                 walk.filter(path -> path.toFile().isFile()).forEach(path -> path.toFile().delete());
@@ -97,8 +98,7 @@ public final class ConjurePythonGeneratorTest {
     private ConjureDefinition getInputDefinitions(Path folder) throws IOException {
         Files.createDirectories(folder);
         try (Stream<Path> walk = Files.walk(folder)) {
-            List<File> files = walk
-                    .map(Path::toFile)
+            List<File> files = walk.map(Path::toFile)
                     .filter(file -> file.toString().endsWith(".yml"))
                     .collect(Collectors.toList());
 

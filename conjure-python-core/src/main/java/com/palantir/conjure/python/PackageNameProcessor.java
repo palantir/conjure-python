@@ -20,9 +20,7 @@ import com.palantir.tokens.auth.ImmutablesStyle;
 import java.util.List;
 import org.immutables.value.Value;
 
-/**
- * Post process package names.
- */
+/** Post process package names. */
 @Value.Immutable
 @ImmutablesStyle
 public abstract class PackageNameProcessor {
@@ -37,7 +35,6 @@ public abstract class PackageNameProcessor {
         }
         return updatedPackage;
     }
-
 
     public static Builder builder() {
         return new Builder();

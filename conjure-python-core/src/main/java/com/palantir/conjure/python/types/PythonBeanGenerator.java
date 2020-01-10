@@ -28,5 +28,4 @@ public interface PythonBeanGenerator {
             TypeDefinition typeDef,
             Function<TypeName, ImportTypeVisitor> importTypeVisitorFactory,
             DealiasingTypeVisitor dealiasingTypeVisitor);
-
 }

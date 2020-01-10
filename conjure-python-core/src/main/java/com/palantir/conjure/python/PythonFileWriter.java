@@ -34,5 +34,4 @@ public interface PythonFileWriter {
         Path packageDir = Paths.get(components.get(0), components.subList(1, components.size()).toArray(new String[0]));
         return packageDir.resolve(file.fileName());
     }
-
 }

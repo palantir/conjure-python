@@ -40,10 +40,9 @@ public interface PythonFile extends Emittable {
             Map<String, Set<String>> imports = contents().stream()
                     .flatMap(pythonSnippet -> pythonSnippet.imports().stream())
                     .collect(Collectors.toMap(
-                            PythonImport::moduleSpecifier,
-                            PythonImport::namedImports,
-                            (strings, strings2) -> Stream.concat(strings.stream(), strings2.stream())
-                                    .collect(Collectors.toSet())));
+                            PythonImport::moduleSpecifier, PythonImport::namedImports, (strings, strings2) ->
+                                    Stream.concat(strings.stream(), strings2.stream())
+                                            .collect(Collectors.toSet())));
 
             imports.entrySet().stream()
                     .sorted(Comparator.comparing(Map.Entry::getKey))
@@ -74,5 +73,4 @@ public interface PythonFile extends Emittable {
     static Builder builder() {
         return new Builder();
     }
-
 }

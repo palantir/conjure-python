@@ -61,7 +61,8 @@ public interface PythonEndpointDefinition extends Emittable {
 
     @Value.Check
     default void check() {
-        checkState(pythonReturnType().isPresent() == myPyReturnType().isPresent(),
+        checkState(
+                pythonReturnType().isPresent() == myPyReturnType().isPresent(),
                 "expected both return types or neither");
     }
 
@@ -73,20 +74,23 @@ public interface PythonEndpointDefinition extends Emittable {
             boolean isHeaderType = auth().isPresent() && auth().get().accept(AuthTypeVisitor.IS_HEADER);
             List<PythonEndpointParam> paramsWithHeader = isHeaderType
                     ? ImmutableList.<PythonEndpointParam>builder()
-                    .add(PythonEndpointParam.builder()
-                            .paramName("authHeader")
-                            .pythonParamName("auth_header")
-                            .myPyType("str")
-                            .isOptional(false)
-                            .paramType(ParameterType.header(HeaderParameterType.of(ParameterId.of("Authorization"))))
-                            .build())
-                    .addAll(params())
-                    .build() : params();
+                            .add(PythonEndpointParam.builder()
+                                    .paramName("authHeader")
+                                    .pythonParamName("auth_header")
+                                    .myPyType("str")
+                                    .isOptional(false)
+                                    .paramType(ParameterType.header(
+                                            HeaderParameterType.of(ParameterId.of("Authorization"))))
+                                    .build())
+                            .addAll(params())
+                            .build()
+                    : params();
 
-            poetWriter.writeIndentedLine("def %s(self, %s):",
+            poetWriter.writeIndentedLine(
+                    "def %s(self, %s):",
                     pythonMethodName(),
-                    Joiner.on(", ").join(
-                            paramsWithHeader.stream()
+                    Joiner.on(", ")
+                            .join(paramsWithHeader.stream()
                                     .sorted(new PythonEndpointParamComparator())
                                     .map(param -> {
                                         if (param.isOptional()) {
@@ -96,9 +100,10 @@ public interface PythonEndpointDefinition extends Emittable {
                                     })
                                     .collect(Collectors.toList())));
             poetWriter.increaseIndent();
-            poetWriter.writeIndentedLine("# type: (%s) -> %s",
-                    Joiner.on(", ").join(
-                            paramsWithHeader.stream()
+            poetWriter.writeIndentedLine(
+                    "# type: (%s) -> %s",
+                    Joiner.on(", ")
+                            .join(paramsWithHeader.stream()
                                     .sorted(new PythonEndpointParamComparator())
                                     .map(PythonEndpointParam::myPyType)
                                     .collect(Collectors.toList())),
@@ -113,8 +118,8 @@ public interface PythonEndpointDefinition extends Emittable {
             poetWriter.writeLine();
             poetWriter.writeIndentedLine("_headers = {");
             poetWriter.increaseIndent();
-            poetWriter.writeIndentedLine("'Accept': '%s',",
-                    isBinary() ? MediaType.APPLICATION_OCTET_STREAM : MediaType.APPLICATION_JSON);
+            poetWriter.writeIndentedLine(
+                    "'Accept': '%s',", isBinary() ? MediaType.APPLICATION_OCTET_STREAM : MediaType.APPLICATION_JSON);
 
             // body
             Optional<PythonEndpointParam> bodyParam = paramsWithHeader.stream()
@@ -127,9 +132,13 @@ public interface PythonEndpointDefinition extends Emittable {
             paramsWithHeader.stream()
                     .filter(param -> param.paramType().accept(ParameterTypeVisitor.IS_HEADER))
                     .forEach(param -> {
-                        poetWriter.writeIndentedLine("'%s': %s,",
-                                param.paramType().accept(ParameterTypeVisitor.HEADER)
-                                        .getParamId().get(), param.pythonParamName());
+                        poetWriter.writeIndentedLine(
+                                "'%s': %s,",
+                                param.paramType()
+                                        .accept(ParameterTypeVisitor.HEADER)
+                                        .getParamId()
+                                        .get(),
+                                param.pythonParamName());
                     });
             poetWriter.decreaseIndent();
             poetWriter.writeIndentedLine("} # type: Dict[str, Any]");
@@ -141,8 +150,12 @@ public interface PythonEndpointDefinition extends Emittable {
             paramsWithHeader.stream()
                     .filter(param -> param.paramType().accept(ParameterTypeVisitor.IS_QUERY))
                     .forEach(param -> {
-                        poetWriter.writeIndentedLine("'%s': %s,",
-                                param.paramType().accept(ParameterTypeVisitor.QUERY).getParamId().get(),
+                        poetWriter.writeIndentedLine(
+                                "'%s': %s,",
+                                param.paramType()
+                                        .accept(ParameterTypeVisitor.QUERY)
+                                        .getParamId()
+                                        .get(),
                                 param.pythonParamName());
                     });
             poetWriter.decreaseIndent();
@@ -156,17 +169,15 @@ public interface PythonEndpointDefinition extends Emittable {
             paramsWithHeader.stream()
                     .filter(param -> param.paramType().accept(ParameterTypeVisitor.IS_PATH))
                     .forEach(param -> {
-                        poetWriter.writeIndentedLine("'%s': %s,",
-                                param.paramName(),
-                                param.pythonParamName());
+                        poetWriter.writeIndentedLine("'%s': %s,", param.paramName(), param.pythonParamName());
                     });
             poetWriter.decreaseIndent();
             poetWriter.writeIndentedLine("} # type: Dict[str, Any]");
 
             if (bodyParam.isPresent()) {
                 poetWriter.writeLine();
-                poetWriter.writeIndentedLine("_json = ConjureEncoder().default(%s) # type: Any",
-                        bodyParam.get().pythonParamName());
+                poetWriter.writeIndentedLine(
+                        "_json = ConjureEncoder().default(%s) # type: Any", bodyParam.get().pythonParamName());
             } else {
                 poetWriter.writeLine();
                 poetWriter.writeIndentedLine("_json = None # type: Any");
@@ -205,8 +216,8 @@ public interface PythonEndpointDefinition extends Emittable {
                             "return None if _response.status_code == 204 else _decoder.decode(_response.json(), %s)",
                             pythonReturnType().get());
                 } else {
-                    poetWriter.writeIndentedLine("return _decoder.decode(_response.json(), %s)",
-                            pythonReturnType().get());
+                    poetWriter.writeIndentedLine(
+                            "return _decoder.decode(_response.json(), %s)", pythonReturnType().get());
                 }
             } else {
                 poetWriter.writeIndentedLine("return");
@@ -240,7 +251,6 @@ public interface PythonEndpointDefinition extends Emittable {
         static Builder builder() {
             return new Builder();
         }
-
     }
 
     class PythonEndpointParamComparator implements Comparator<PythonEndpointParam> {
@@ -255,5 +265,4 @@ public interface PythonEndpointDefinition extends Emittable {
             return o1.pythonParamName().compareTo(o2.pythonParamName());
         }
     }
-
 }

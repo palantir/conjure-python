@@ -33,9 +33,7 @@ public final class PythonPoetWriter {
         this.printStream = printStream;
     }
 
-    /**
-     * Asserts that the code in runnable leaves the indent unchanged.
-     */
+    /** Asserts that the code in runnable leaves the indent unchanged. */
     public PythonPoetWriter maintainingIndent(Runnable runnable) {
         int startIndent = indent;
         runnable.run();

@@ -43,7 +43,8 @@ public interface PythonImport extends Emittable {
         if (namedImports().isEmpty()) {
             poetWriter.writeIndentedLine(String.format("import %s", moduleSpecifier()));
         } else {
-            poetWriter.writeIndentedLine(String.format("from %s import %s",
+            poetWriter.writeIndentedLine(String.format(
+                    "from %s import %s",
                     moduleSpecifier(), namedImports().stream().sorted().collect(Collectors.joining(", "))));
         }
     }

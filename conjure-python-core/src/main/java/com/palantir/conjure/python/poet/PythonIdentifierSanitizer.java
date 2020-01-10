@@ -60,11 +60,11 @@ public final class PythonIdentifierSanitizer {
 
     /**
      * If the identifier is a python keyword, prepends "_".
-     * <p>
-     * Does no case conversion.
+     *
+     * <p>Does no case conversion.
      */
     public static String sanitize(String identifier) {
-        return  sanitize(identifier, Collections.emptySet());
+        return sanitize(identifier, Collections.emptySet());
     }
 
     public static String sanitize(String identifier, Set<String> protectedWords) {
@@ -76,5 +76,4 @@ public final class PythonIdentifierSanitizer {
     }
 
     private PythonIdentifierSanitizer() {}
-
 }

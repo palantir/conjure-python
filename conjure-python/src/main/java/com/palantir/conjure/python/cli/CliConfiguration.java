@@ -51,7 +51,6 @@ public abstract class CliConfiguration {
         return false;
     }
 
-
     @Value.Check
     final void check() {
         Preconditions.checkArgument(input().isFile(), "Target must exist and be a file");

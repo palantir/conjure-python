@@ -81,23 +81,20 @@ public final class DefaultBeanGenerator implements PythonBeanGenerator {
             DealiasingTypeVisitor dealiasingTypeVisitor) {
         ImportTypeVisitor importVisitor = importTypeVisitorFactory.apply(typeDef.getTypeName());
 
-        Set<PythonImport> imports = typeDef.getFields()
-                .stream()
+        Set<PythonImport> imports = typeDef.getFields().stream()
                 .flatMap(entry -> entry.getType().accept(importVisitor).stream())
                 .collect(Collectors.toSet());
 
-        List<PythonField> fields = typeDef.getFields()
-                .stream()
+        List<PythonField> fields = typeDef.getFields().stream()
                 .map(entry -> PythonField.builder()
-                        .attributeName(CaseConverter.toCase(
-                                entry.getFieldName().get(), CaseConverter.Case.SNAKE_CASE))
+                        .attributeName(CaseConverter.toCase(entry.getFieldName().get(), CaseConverter.Case.SNAKE_CASE))
                         .jsonIdentifier(entry.getFieldName().get())
                         .docs(entry.getDocs())
                         .pythonType(entry.getType().accept(PythonTypeVisitor.PYTHON_TYPE))
                         .myPyType(entry.getType().accept(PythonTypeVisitor.MY_PY_TYPE))
-                        .isOptional(dealiasingTypeVisitor.dealias(entry.getType()).fold(
-                                typeDefinition -> false,
-                                type -> type.accept(TypeVisitor.IS_OPTIONAL)))
+                        .isOptional(
+                                dealiasingTypeVisitor.dealias(entry.getType()).fold(typeDefinition -> false, type ->
+                                        type.accept(TypeVisitor.IS_OPTIONAL)))
                         .build())
                 .collect(Collectors.toList());
 
@@ -127,13 +124,11 @@ public final class DefaultBeanGenerator implements PythonBeanGenerator {
             DealiasingTypeVisitor dealiasingTypeVisitor) {
         ImportTypeVisitor importVisitor = importTypeVisitorFactory.apply(typeDef.getTypeName());
 
-        Set<PythonImport> imports = typeDef.getUnion()
-                .stream()
+        Set<PythonImport> imports = typeDef.getUnion().stream()
                 .flatMap(fieldDefinition -> fieldDefinition.getType().accept(importVisitor).stream())
                 .collect(Collectors.toSet());
 
-        List<PythonField> options = typeDef.getUnion()
-                .stream()
+        List<PythonField> options = typeDef.getUnion().stream()
                 .map(unionMember -> {
                     Type conjureType = unionMember.getType();
                     return PythonField.builder()
@@ -143,9 +138,9 @@ public final class DefaultBeanGenerator implements PythonBeanGenerator {
                             .jsonIdentifier(unionMember.getFieldName().get())
                             .myPyType(conjureType.accept(PythonTypeVisitor.MY_PY_TYPE))
                             .pythonType(conjureType.accept(PythonTypeVisitor.PYTHON_TYPE))
-                            .isOptional(dealiasingTypeVisitor.dealias(unionMember.getType()).fold(
-                                    typeDefinition -> false,
-                                    type -> type.accept(TypeVisitor.IS_OPTIONAL)))
+                            .isOptional(dealiasingTypeVisitor
+                                    .dealias(unionMember.getType())
+                                    .fold(typeDefinition -> false, type -> type.accept(TypeVisitor.IS_OPTIONAL)))
                             .build();
                 })
                 .collect(Collectors.toList());
@@ -169,5 +164,4 @@ public final class DefaultBeanGenerator implements PythonBeanGenerator {
                 .imports(ImmutableSet.copyOf(typeDef.getAlias().accept(importVisitor)))
                 .build();
     }
-
 }

@@ -83,8 +83,7 @@ public final class PythonTypeVisitor {
         @Override
         public String visitExternal(ExternalReference externalType) {
             if (externalType.getFallback().accept(TypeVisitor.IS_PRIMITIVE)) {
-                return visitPrimitive(externalType.getFallback().accept(
-                       TypeVisitor.PRIMITIVE));
+                return visitPrimitive(externalType.getFallback().accept(TypeVisitor.PRIMITIVE));
             } else {
                 throw new IllegalStateException("unknown type: " + externalType);
             }
@@ -169,6 +168,5 @@ public final class PythonTypeVisitor {
             // TODO(#27): real sets
             return Type.list(ListType.of(type.getItemType())).accept(this);
         }
-
     }
 }

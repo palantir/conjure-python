@@ -46,5 +46,4 @@ public final class DefaultPythonFileWriter implements PythonFileWriter {
             throw new RuntimeException(e);
         }
     }
-
 }

@@ -73,7 +73,8 @@ public interface BeanSnippet extends PythonSnippet {
         poetWriter.increaseIndent();
         for (int i = 0; i < fields().size(); i++) {
             PythonField field = fields().get(i);
-            poetWriter.writeIndentedLine(String.format("'%s': ConjureFieldDefinition('%s', %s)%s",
+            poetWriter.writeIndentedLine(String.format(
+                    "'%s': ConjureFieldDefinition('%s', %s)%s",
                     PythonIdentifierSanitizer.sanitize(field.attributeName()),
                     field.jsonIdentifier(),
                     field.pythonType(),
@@ -85,18 +86,21 @@ public interface BeanSnippet extends PythonSnippet {
 
         poetWriter.writeLine();
 
-        poetWriter.writeIndentedLine(String.format("__slots__ = [%s] # type: List[str]", fields().stream()
-                .map(field -> String.format("'_%s'",
-                        PythonIdentifierSanitizer.sanitize(field.attributeName(), PROTECTED_FIELDS)))
-                .collect(Collectors.joining(", "))));
+        poetWriter.writeIndentedLine(String.format(
+                "__slots__ = [%s] # type: List[str]",
+                fields().stream()
+                        .map(field -> String.format(
+                                "'_%s'", PythonIdentifierSanitizer.sanitize(field.attributeName(), PROTECTED_FIELDS)))
+                        .collect(Collectors.joining(", "))));
 
         poetWriter.writeLine();
 
         // constructor -- only if there are fields
         if (!fields().isEmpty()) {
-            poetWriter.writeIndentedLine(String.format("def __init__(self, %s):",
-                    Joiner.on(", ").join(
-                            fields().stream()
+            poetWriter.writeIndentedLine(String.format(
+                    "def __init__(self, %s):",
+                    Joiner.on(", ")
+                            .join(fields().stream()
                                     .sorted(new PythonField.PythonFieldComparator())
                                     .map(field -> {
                                         String name = PythonIdentifierSanitizer.sanitize(field.attributeName());
@@ -107,13 +111,17 @@ public interface BeanSnippet extends PythonSnippet {
                                     })
                                     .collect(Collectors.toList()))));
             poetWriter.increaseIndent();
-            poetWriter.writeIndentedLine(String.format("# type: (%s) -> None",
-                    Joiner.on(", ").join(fields().stream().sorted(new PythonField.PythonFieldComparator())
-                            .map(PythonField::myPyType).collect(Collectors.toList()))));
-            fields().forEach(field -> poetWriter.writeIndentedLine(
-                    String.format("self._%s = %s",
-                            PythonIdentifierSanitizer.sanitize(field.attributeName(), PROTECTED_FIELDS),
-                            PythonIdentifierSanitizer.sanitize(field.attributeName()))));
+            poetWriter.writeIndentedLine(String.format(
+                    "# type: (%s) -> None",
+                    Joiner.on(", ")
+                            .join(fields().stream()
+                                    .sorted(new PythonField.PythonFieldComparator())
+                                    .map(PythonField::myPyType)
+                                    .collect(Collectors.toList()))));
+            fields().forEach(field -> poetWriter.writeIndentedLine(String.format(
+                    "self._%s = %s",
+                    PythonIdentifierSanitizer.sanitize(field.attributeName(), PROTECTED_FIELDS),
+                    PythonIdentifierSanitizer.sanitize(field.attributeName()))));
             poetWriter.decreaseIndent();
         }
 
@@ -121,8 +129,8 @@ public interface BeanSnippet extends PythonSnippet {
         fields().forEach(field -> {
             poetWriter.writeLine();
             poetWriter.writeIndentedLine("@builtins.property");
-            poetWriter.writeIndentedLine(String.format("def %s(self):",
-                    PythonIdentifierSanitizer.sanitize(field.attributeName())));
+            poetWriter.writeIndentedLine(
+                    String.format("def %s(self):", PythonIdentifierSanitizer.sanitize(field.attributeName())));
 
             poetWriter.increaseIndent();
             poetWriter.writeIndentedLine(String.format("# type: () -> %s", field.myPyType()));
@@ -131,8 +139,8 @@ public interface BeanSnippet extends PythonSnippet {
                 poetWriter.writeIndentedLine(docs.get().trim());
                 poetWriter.writeIndentedLine("\"\"\"");
             });
-            poetWriter.writeIndentedLine(String.format("return self._%s",
-                    PythonIdentifierSanitizer.sanitize(field.attributeName(), PROTECTED_FIELDS)));
+            poetWriter.writeIndentedLine(String.format(
+                    "return self._%s", PythonIdentifierSanitizer.sanitize(field.attributeName(), PROTECTED_FIELDS)));
             poetWriter.decreaseIndent();
         });
 
