@@ -71,14 +71,14 @@ task generate() {
 
 task checkPipFile() {
     doLast {
-        def clientVersion = getVersion('com.palantir.conjure.python', 'conjure-python-client')
+        def clientVersion = conjurePythonClientVersion
         assert file("python/Pipfile").text.contains("conjure-python-client = \"==${clientVersion}\"")
     }
 }
 
 task checkToxIni() {
     doLast {
-        def clientVersion = getVersion('com.palantir.conjure.python', 'conjure-python-client')
+        def clientVersion = conjurePythonClientVersion
         assert file("python/tox.ini").text.contains("CONJURE_PYTHON_CLIENT_VERSION = ${clientVersion}")
     }
 }
