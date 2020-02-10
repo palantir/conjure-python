@@ -37,7 +37,8 @@ public interface GeneratorConfiguration {
 
     @Value.Default
     default String maxConjureClientVersion() {
-        String majorVersion = Splitter.on('.').splitToList(minConjureClientVersion()).get(0);
+        String majorVersion =
+                Splitter.on('.').splitToList(minConjureClientVersion()).get(0);
         return String.valueOf(Integer.parseInt(majorVersion) + 1);
     }
 

@@ -38,7 +38,6 @@ public abstract class PackageNameProcessor {
         return updatedPackage;
     }
 
-
     public static Builder builder() {
         return new Builder();
     }

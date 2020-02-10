@@ -42,15 +42,16 @@ public class ConjurePythonCliTest {
     @Test
     public void correctlyParseArguments() {
         String[] args = {
-                "generate",
-                inputFile.getAbsolutePath(),
-                folder.getRoot().getAbsolutePath(),
-                "--packageName",
-                "package-name",
-                "--packageVersion",
-                "0.0.0",
-                };
-        ConjurePythonCli.GenerateCommand cmd = new CommandLine(new ConjurePythonCli()).parse(args).get(1).getCommand();
+            "generate",
+            inputFile.getAbsolutePath(),
+            folder.getRoot().getAbsolutePath(),
+            "--packageName",
+            "package-name",
+            "--packageVersion",
+            "0.0.0",
+        };
+        ConjurePythonCli.GenerateCommand cmd =
+                new CommandLine(new ConjurePythonCli()).parse(args).get(1).getCommand();
         CliConfiguration expectedConfiguration = CliConfiguration.builder()
                 .input(inputFile)
                 .output(folder.getRoot())
@@ -63,7 +64,8 @@ public class ConjurePythonCliTest {
     @Test
     public void throwsWhenTargetDoesNotExist() {
         String[] args = {"generate", "foo", "bar", "--rawSource"};
-        ConjurePythonCli.GenerateCommand cmd = new CommandLine(new ConjurePythonCli()).parse(args).get(1).getCommand();
+        ConjurePythonCli.GenerateCommand cmd =
+                new CommandLine(new ConjurePythonCli()).parse(args).get(1).getCommand();
         assertThatThrownBy(cmd::getConfiguration)
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Target must exist and be a file");
@@ -72,7 +74,8 @@ public class ConjurePythonCliTest {
     @Test
     public void throwsWhenOutputDoesNotExist() {
         String[] args = {"generate", inputFile.getAbsolutePath(), "bar", "--rawSource"};
-        ConjurePythonCli.GenerateCommand cmd = new CommandLine(new ConjurePythonCli()).parse(args).get(1).getCommand();
+        ConjurePythonCli.GenerateCommand cmd =
+                new CommandLine(new ConjurePythonCli()).parse(args).get(1).getCommand();
         assertThatThrownBy(cmd::getConfiguration)
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Output must exist and be a directory");
@@ -81,13 +84,14 @@ public class ConjurePythonCliTest {
     @Test
     public void makesPackageVersionPythonic() {
         String[] args = {
-                "generate",
-                inputFile.getAbsolutePath(),
-                folder.getRoot().getAbsolutePath(),
-                "--packageName=package-name",
-                "--packageVersion=0.0.0-dev"
+            "generate",
+            inputFile.getAbsolutePath(),
+            folder.getRoot().getAbsolutePath(),
+            "--packageName=package-name",
+            "--packageVersion=0.0.0-dev"
         };
-        ConjurePythonCli.GenerateCommand cmd = new CommandLine(new ConjurePythonCli()).parse(args).get(1).getCommand();
+        ConjurePythonCli.GenerateCommand cmd =
+                new CommandLine(new ConjurePythonCli()).parse(args).get(1).getCommand();
         CliConfiguration expectedConfiguration = CliConfiguration.builder()
                 .input(inputFile)
                 .output(folder.getRoot())
@@ -101,26 +105,25 @@ public class ConjurePythonCliTest {
     public void generatesCode() throws Exception {
         File output = folder.newFolder();
         String[] args = {
-                "generate",
-                "src/test/resources/conjure-api.json",
-                output.getAbsolutePath(),
-                "--packageName",
-                "conjure",
-                "--packageVersion", "0.0.0"
+            "generate",
+            "src/test/resources/conjure-api.json",
+            output.getAbsolutePath(),
+            "--packageName",
+            "conjure",
+            "--packageVersion",
+            "0.0.0"
         };
         CommandLine.run(new ConjurePythonCli(), args);
-        assertThat(new File(output, "conjure/conjure_spec/__init__.py").isFile()).isTrue();
+        assertThat(new File(output, "conjure/conjure_spec/__init__.py").isFile())
+                .isTrue();
     }
 
     @Test
     public void generatesRawSource() throws IOException {
         File output = folder.newFolder();
         String[] args = {
-                "generate",
-                "src/test/resources/conjure-api.json",
-                output.getAbsolutePath(),
-                "--rawSource",
-                };
+            "generate", "src/test/resources/conjure-api.json", output.getAbsolutePath(), "--rawSource",
+        };
         CommandLine.run(new ConjurePythonCli(), args);
         assertThat(new File(output, "conjure_spec/__init__.py").isFile()).isTrue();
     }
@@ -128,15 +131,12 @@ public class ConjurePythonCliTest {
     @Test
     public void throwsWhenInvalidDefinition() throws Exception {
         String[] args = {
-                "generate",
-                folder.newFile().getAbsolutePath(),
-                folder.newFolder().getAbsolutePath(),
-                "--rawSource",
-                };
+            "generate", folder.newFile().getAbsolutePath(), folder.newFolder().getAbsolutePath(), "--rawSource",
+        };
 
         assertThatThrownBy(() -> CommandLine.run(new ConjurePythonCli(), args))
-                .isInstanceOfSatisfying(RuntimeException.class, e ->
-                        assertThat(e.getMessage()).contains("Error parsing definition"));
+                .isInstanceOfSatisfying(
+                        RuntimeException.class, e -> assertThat(e.getMessage()).contains("Error parsing definition"));
     }
 
     @Test

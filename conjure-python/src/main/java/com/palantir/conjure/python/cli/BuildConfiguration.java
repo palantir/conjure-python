@@ -25,8 +25,7 @@ public abstract class BuildConfiguration {
     static BuildConfiguration load() {
         try {
             return OBJECT_MAPPER.readValue(
-                    BuildConfiguration.class.getResourceAsStream("/buildConfiguration.yml"),
-                    BuildConfiguration.class);
+                    BuildConfiguration.class.getResourceAsStream("/buildConfiguration.yml"), BuildConfiguration.class);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

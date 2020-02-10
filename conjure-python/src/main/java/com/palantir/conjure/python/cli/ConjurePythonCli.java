@@ -48,7 +48,8 @@ public final class ConjurePythonCli implements Runnable {
         CommandLine.usage(this, System.out);
     }
 
-    @CommandLine.Command(name = "generate",
+    @CommandLine.Command(
+            name = "generate",
             description = "Generate Python bindings for a Conjure API",
             mixinStandardHelpOptions = true,
             usageHelpWidth = 120)
@@ -57,12 +58,11 @@ public final class ConjurePythonCli implements Runnable {
                 .registerModule(new Jdk8Module())
                 .setSerializationInclusion(JsonInclude.Include.NON_ABSENT);
 
-        @CommandLine.Parameters(paramLabel = "<input>",
-                description = "Path to the input IR file",
-                index = "0")
+        @CommandLine.Parameters(paramLabel = "<input>", description = "Path to the input IR file", index = "0")
         private String input;
 
-        @CommandLine.Parameters(paramLabel = "<output>",
+        @CommandLine.Parameters(
+                paramLabel = "<output>",
                 description = "Output directory for generated source",
                 index = "1")
         private String output;
@@ -79,12 +79,14 @@ public final class ConjurePythonCli implements Runnable {
         @CommandLine.Option(names = "--packageUrl", description = "The url of the package to generate")
         private String packageUrl;
 
-        @CommandLine.Option(names = "--rawSource",
+        @CommandLine.Option(
+                names = "--rawSource",
                 defaultValue = "false",
                 description = "Only generate the plain source without any package metadata")
         private boolean rawSource;
 
-        @CommandLine.Option(names = "--writeCondaRecipe",
+        @CommandLine.Option(
+                names = "--writeCondaRecipe",
                 defaultValue = "false",
                 description = "Generate a `conda_recipe/meta.yaml`")
         private boolean writeCondaRecipe;
@@ -100,10 +102,8 @@ public final class ConjurePythonCli implements Runnable {
                     resolveGeneratorConfiguration(cliConfig, BuildConfiguration.load());
             try {
                 ConjureDefinition conjureDefinition = OBJECT_MAPPER.readValue(new File(input), ConjureDefinition.class);
-                ConjurePythonGenerator generator = new ConjurePythonGenerator(
-                        new DefaultBeanGenerator(),
-                        new ClientGenerator(),
-                        generatorConfig);
+                ConjurePythonGenerator generator =
+                        new ConjurePythonGenerator(new DefaultBeanGenerator(), new ClientGenerator(), generatorConfig);
                 generator.write(conjureDefinition, new DefaultPythonFileWriter(Paths.get(output)));
             } catch (IOException e) {
                 throw new RuntimeException(String.format("Error parsing definition: %s", e.toString()));
@@ -124,8 +124,8 @@ public final class ConjurePythonCli implements Runnable {
                     .build();
         }
 
-        static GeneratorConfiguration resolveGeneratorConfiguration(CliConfiguration cliConfig,
-                BuildConfiguration buildConfig) {
+        static GeneratorConfiguration resolveGeneratorConfiguration(
+                CliConfiguration cliConfig, BuildConfiguration buildConfig) {
             return GeneratorConfiguration.builder()
                     .generatorVersion(buildConfig.generatorVersion())
                     .minConjureClientVersion(buildConfig.minConjureClientVersion())

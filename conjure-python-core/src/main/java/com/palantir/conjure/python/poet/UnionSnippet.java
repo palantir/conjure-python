@@ -88,8 +88,9 @@ public interface UnionSnippet extends PythonSnippet {
 
         poetWriter.writeLine();
 
-        options().forEach(option -> poetWriter.writeIndentedLine("%s = None # type: %s",
-                fieldName(option), option.myPyType()));
+        options()
+                .forEach(option ->
+                        poetWriter.writeIndentedLine("%s = None # type: %s", fieldName(option), option.myPyType()));
 
         poetWriter.writeLine();
 
@@ -102,7 +103,8 @@ public interface UnionSnippet extends PythonSnippet {
         poetWriter.increaseIndent();
         for (int i = 0; i < options().size(); i++) {
             PythonField option = options().get(i);
-            poetWriter.writeIndentedLine("'%s': ConjureFieldDefinition('%s', %s)%s",
+            poetWriter.writeIndentedLine(
+                    "'%s': ConjureFieldDefinition('%s', %s)%s",
                     propertyName(option),
                     option.jsonIdentifier(),
                     option.pythonType(),
@@ -115,20 +117,22 @@ public interface UnionSnippet extends PythonSnippet {
         poetWriter.writeLine();
 
         // constructor
-        poetWriter.writeIndentedLine(String.format("def __init__(self, %s):",
-                Joiner.on(", ").join(
-                        options().stream()
-                            .map(PythonField::attributeName)
-                            .map(PythonIdentifierSanitizer::sanitize)
-                            .map(attributeName -> String.format("%s=None", attributeName))
-                            .collect(Collectors.toList()))));
+        poetWriter.writeIndentedLine(String.format(
+                "def __init__(self, %s):",
+                Joiner.on(", ")
+                        .join(options().stream()
+                                .map(PythonField::attributeName)
+                                .map(PythonIdentifierSanitizer::sanitize)
+                                .map(attributeName -> String.format("%s=None", attributeName))
+                                .collect(Collectors.toList()))));
         poetWriter.increaseIndent();
         // check we have exactly one non-null
-        poetWriter.writeIndentedLine("if %s != 1:",
-                Joiner.on(" + ").join(
-                    options().stream()
-                        .map(option -> String.format("(%s is not None)", parameterName(option)))
-                        .collect(Collectors.toList())));
+        poetWriter.writeIndentedLine(
+                "if %s != 1:",
+                Joiner.on(" + ")
+                        .join(options().stream()
+                                .map(option -> String.format("(%s is not None)", parameterName(option)))
+                                .collect(Collectors.toList())));
         poetWriter.increaseIndent();
         poetWriter.writeIndentedLine("raise ValueError('a union must contain a single member')");
         poetWriter.decreaseIndent();
@@ -170,8 +174,7 @@ public interface UnionSnippet extends PythonSnippet {
         poetWriter.writeIndentedLine("if not isinstance(visitor, %s):", visitorName);
         poetWriter.increaseIndent();
         poetWriter.writeIndentedLine(
-                "raise ValueError('{} is not an instance of %s'.format(visitor.__class__.__name__))",
-                visitorName);
+                "raise ValueError('{} is not an instance of %s'.format(visitor.__class__.__name__))", visitorName);
         poetWriter.decreaseIndent();
         options().forEach(option -> {
             poetWriter.writeIndentedLine("if self.type == '%s':", option.jsonIdentifier());

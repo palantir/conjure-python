@@ -10,5 +10,4 @@ public final class FlatteningPackageNameProcessor implements PackageNameProcesso
     public String processPackageName(String packageName) {
         return packageName.replace(".", "_");
     }
-
 }

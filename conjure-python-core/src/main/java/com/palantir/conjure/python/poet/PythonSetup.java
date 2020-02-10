@@ -62,5 +62,4 @@ public interface PythonSetup extends PythonSnippet {
     static Builder builder() {
         return new Builder();
     }
-
 }
