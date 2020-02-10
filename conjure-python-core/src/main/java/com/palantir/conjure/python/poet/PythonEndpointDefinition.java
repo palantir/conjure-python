@@ -66,7 +66,7 @@ public interface PythonEndpointDefinition extends Emittable {
                 "expected both return types or neither");
     }
 
-    @SuppressWarnings("checkstyle:CyclomaticComplexity")
+    @SuppressWarnings({"CyclomaticComplexity", "MethodLength"})
     @Override
     default void emit(PythonPoetWriter poetWriter) {
         poetWriter.maintainingIndent(() -> {
