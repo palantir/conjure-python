@@ -58,7 +58,8 @@ public interface PythonFile extends Emittable {
 
             contents().stream()
                     .filter(snippet -> !(snippet instanceof AliasSnippet))
-                    .sorted((ps1, ps2) -> Comparator.comparing(PythonSnippet::idForSorting).compare(ps1, ps2))
+                    .sorted((ps1, ps2) ->
+                            Comparator.comparing(PythonSnippet::idForSorting).compare(ps1, ps2))
                     .forEach(poetWriter::emit);
 
             List<AliasSnippet> sortedSnippets = PythonAliasTopologicalSorter.getSortedSnippets(contents().stream()
@@ -74,5 +75,4 @@ public interface PythonFile extends Emittable {
     static Builder builder() {
         return new Builder();
     }
-
 }

@@ -33,5 +33,4 @@ public final class TwoComponentStrippingPackageNameProcessor implements PackageN
             return packageName;
         }
     }
-
 }

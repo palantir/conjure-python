@@ -41,8 +41,8 @@ public interface PythonMetaYaml extends PythonSnippet {
             poetWriter.writeIndentedLine("build:");
             poetWriter.increaseIndent();
             poetWriter.writeIndentedLine("noarch: python");
-            poetWriter.writeIndentedLine("script: python setup.py install "
-                    + "--single-version-externally-managed --record=record.txt");
+            poetWriter.writeIndentedLine(
+                    "script: python setup.py install " + "--single-version-externally-managed --record=record.txt");
             poetWriter.decreaseIndent();
 
             poetWriter.writeLine();

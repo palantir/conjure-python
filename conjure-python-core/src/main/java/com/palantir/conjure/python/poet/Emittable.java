@@ -19,5 +19,4 @@ package com.palantir.conjure.python.poet;
 public interface Emittable {
 
     void emit(PythonPoetWriter poetWriter);
-
 }

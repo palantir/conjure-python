@@ -45,13 +45,11 @@ public final class ClientGenerator {
         ImportTypeVisitor importTypeVisitor = importTypeVisitorFactory.apply(serviceDef.getServiceName());
         ImmutableSet.Builder<Type> referencedTypesBuilder = ImmutableSet.builder();
 
-        List<PythonEndpointDefinition> endpoints = serviceDef.getEndpoints()
-                .stream()
+        List<PythonEndpointDefinition> endpoints = serviceDef.getEndpoints().stream()
                 .map(endpointDef -> generateEndpoint(endpointDef, referencedTypesBuilder, dealiasingTypeVisitor))
                 .collect(Collectors.toList());
 
-        List<PythonImport> imports = referencedTypesBuilder.build()
-                .stream()
+        List<PythonImport> imports = referencedTypesBuilder.build().stream()
                 .flatMap(entry -> entry.accept(importTypeVisitor).stream())
                 .collect(Collectors.toList());
 
@@ -71,24 +69,22 @@ public final class ClientGenerator {
         endpointDef.getReturns().ifPresent(referencedTypesBuilder::add);
         endpointDef.getArgs().forEach(arg -> referencedTypesBuilder.add(arg.getType()));
 
-        List<PythonEndpointParam> params = endpointDef.getArgs()
-                .stream()
-                .map(argEntry -> PythonEndpointParam
-                        .builder()
+        List<PythonEndpointParam> params = endpointDef.getArgs().stream()
+                .map(argEntry -> PythonEndpointParam.builder()
                         .paramName(argEntry.getArgName().get())
-                        .pythonParamName(CaseConverter.toCase(
-                                argEntry.getArgName().get(), CaseConverter.Case.SNAKE_CASE))
+                        .pythonParamName(
+                                CaseConverter.toCase(argEntry.getArgName().get(), CaseConverter.Case.SNAKE_CASE))
                         .paramType(argEntry.getParamType())
                         .myPyType(argEntry.getType().accept(PythonTypeVisitor.MY_PY_TYPE))
-                        .isOptional(dealiasingTypeVisitor.dealias(argEntry.getType()).fold(
-                                typeDefinition -> false,
-                                type -> type.accept(TypeVisitor.IS_OPTIONAL)))
+                        .isOptional(dealiasingTypeVisitor
+                                .dealias(argEntry.getType())
+                                .fold(typeDefinition -> false, type -> type.accept(TypeVisitor.IS_OPTIONAL)))
                         .build())
                 .collect(Collectors.toList());
 
         return PythonEndpointDefinition.builder()
-                .pythonMethodName(CaseConverter.toCase(
-                        endpointDef.getEndpointName().get(), CaseConverter.Case.SNAKE_CASE))
+                .pythonMethodName(
+                        CaseConverter.toCase(endpointDef.getEndpointName().get(), CaseConverter.Case.SNAKE_CASE))
                 .httpMethod(endpointDef.getHttpMethod())
                 .httpPath(endpointDef.getHttpPath())
                 .auth(endpointDef.getAuth())
@@ -96,15 +92,17 @@ public final class ClientGenerator {
                 .params(params)
                 .pythonReturnType(endpointDef.getReturns().map(type -> type.accept(PythonTypeVisitor.PYTHON_TYPE)))
                 .myPyReturnType(endpointDef.getReturns().map(type -> type.accept(PythonTypeVisitor.MY_PY_TYPE)))
-                .isBinary(endpointDef.getReturns()
+                .isBinary(endpointDef
+                        .getReturns()
                         // We do not need to handle alias of binary since they are treated differently over the wire
                         .map(rt -> rt.accept(TypeVisitor.IS_PRIMITIVE)
                                 && rt.accept(TypeVisitor.PRIMITIVE).get() == PrimitiveType.Value.BINARY)
                         .orElse(false))
-                .isOptionalReturnType(endpointDef.getReturns()
-                        .map(rt -> dealiasingTypeVisitor.dealias(rt).fold(
-                                typeDefinition -> false,
-                                type -> type.accept(TypeVisitor.IS_OPTIONAL)))
+                .isOptionalReturnType(endpointDef
+                        .getReturns()
+                        .map(rt -> dealiasingTypeVisitor
+                                .dealias(rt)
+                                .fold(typeDefinition -> false, type -> type.accept(TypeVisitor.IS_OPTIONAL)))
                         .orElse(false))
                 .build();
     }

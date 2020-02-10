@@ -96,10 +96,10 @@ public final class ImportTypeVisitor implements Type.Visitor<Set<PythonImport>> 
             return ImmutableSet.of();
         }
         return ImmutableSet.of(PythonImport.of(
-                        relativePackage(
-                                packageNameProcessor.getPackageName(typeName.getPackage()),
-                                packageNameProcessor.getPackageName(value.getPackage())),
-                        value.getName()));
+                relativePackage(
+                        packageNameProcessor.getPackageName(typeName.getPackage()),
+                        packageNameProcessor.getPackageName(value.getPackage())),
+                value.getName()));
     }
 
     @Override
@@ -121,5 +121,4 @@ public final class ImportTypeVisitor implements Type.Visitor<Set<PythonImport>> 
         Path relativeImport = curPath.relativize(toPath);
         return relativeImport.toString().replace("../", "..");
     }
-
 }

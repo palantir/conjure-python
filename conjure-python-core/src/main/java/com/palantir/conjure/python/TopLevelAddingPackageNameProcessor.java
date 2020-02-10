@@ -16,5 +16,4 @@ public final class TopLevelAddingPackageNameProcessor implements PackageNameProc
     public String processPackageName(String packageName) {
         return topLevelPackageName + "." + packageName;
     }
-
 }
