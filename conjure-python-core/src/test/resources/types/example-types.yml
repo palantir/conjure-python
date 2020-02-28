@@ -135,6 +135,8 @@ types:
           interface: integer
       EmptyObjectExample:
         fields: {}
+      EmptyUnionExample:
+        union: {}
       AliasAsMapKeyExample:
         fields:
           strings: map<StringAliasExample, ManyFieldExample>
