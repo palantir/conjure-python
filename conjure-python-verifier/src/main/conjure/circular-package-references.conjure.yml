@@ -1,0 +1,16 @@
+types:
+  definitions:
+    objects:
+      Foo:
+        package: com.palantir.product.a
+        fields:
+          bar: Bar
+      Operation:
+        package: com.palantir.product.a
+        fields:
+          operation: string
+      Bar:
+        package: com.palantir.product.b
+        fields:
+          value: integer
+          operation: Operation
