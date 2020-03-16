@@ -27,7 +27,7 @@ import org.immutables.value.Value;
 public interface EnumSnippet extends PythonSnippet {
     PythonImport CONJURE_IMPORT = PythonImport.builder()
             .moduleSpecifier(ImportTypeVisitor.CONJURE_PYTHON_CLIENT)
-            .addNamedImports("ConjureEnumType")
+            .addNamedImports(NamedImport.of("ConjureEnumType"))
             .build();
 
     @Override
@@ -37,6 +37,10 @@ public interface EnumSnippet extends PythonSnippet {
     }
 
     String className();
+
+    String definitionName();
+
+    PythonPackage definitionPackage();
 
     Optional<Documentation> docs();
 
@@ -72,6 +76,14 @@ public interface EnumSnippet extends PythonSnippet {
             poetWriter.decreaseIndent();
 
             poetWriter.decreaseIndent();
+            poetWriter.writeLine();
+            poetWriter.writeLine();
+
+            poetWriter.writeIndentedLine(String.format("%s.__name__ = \"%s\"", className(), definitionName()));
+            poetWriter.writeIndentedLine(String.format(
+                    "%s.__module__ = \"%s\"", className(), definitionPackage().get()));
+
+            poetWriter.writeLine();
             poetWriter.writeLine();
         });
     }

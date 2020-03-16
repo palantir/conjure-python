@@ -28,12 +28,15 @@ public interface PythonService extends PythonSnippet {
     ImmutableList<PythonImport> CONJURE_IMPORTS = ImmutableList.of(
             PythonImport.builder()
                     .moduleSpecifier(ImportTypeVisitor.CONJURE_PYTHON_CLIENT)
-                    .addNamedImports("Service", "ConjureEncoder", "ConjureDecoder")
+                    .addNamedImports(
+                            NamedImport.of("Service"),
+                            NamedImport.of("ConjureEncoder"),
+                            NamedImport.of("ConjureDecoder"))
                     .build(),
             PythonImport.builder()
                     .moduleSpecifier(ImportTypeVisitor.TYPING)
                     // Used by Endpoints
-                    .addNamedImports("Dict", "Any")
+                    .addNamedImports(NamedImport.of("Dict"), NamedImport.of("Any"))
                     .build());
 
     @Override
@@ -43,6 +46,10 @@ public interface PythonService extends PythonSnippet {
     }
 
     String className();
+
+    String definitionName();
+
+    PythonPackage definitionPackage();
 
     Optional<Documentation> docs();
 
@@ -64,8 +71,15 @@ public interface PythonService extends PythonSnippet {
                 endpointDefinition.emit(poetWriter);
             });
             poetWriter.writeLine();
+            poetWriter.writeLine();
 
             poetWriter.decreaseIndent();
+            poetWriter.writeIndentedLine(String.format("%s.__name__ = \"%s\"", className(), definitionName()));
+            poetWriter.writeIndentedLine(String.format(
+                    "%s.__module__ = \"%s\"", className(), definitionPackage().get()));
+
+            poetWriter.writeLine();
+            poetWriter.writeLine();
         });
     }
 

@@ -21,32 +21,55 @@ import com.palantir.conjure.CaseConverter;
 import com.palantir.conjure.python.poet.PythonEndpointDefinition;
 import com.palantir.conjure.python.poet.PythonEndpointDefinition.PythonEndpointParam;
 import com.palantir.conjure.python.poet.PythonImport;
+import com.palantir.conjure.python.poet.PythonPackage;
 import com.palantir.conjure.python.poet.PythonService;
 import com.palantir.conjure.python.poet.PythonSnippet;
+import com.palantir.conjure.python.processors.packagename.PackageNameProcessor;
+import com.palantir.conjure.python.processors.typename.TypeNameProcessor;
 import com.palantir.conjure.python.types.ImportTypeVisitor;
-import com.palantir.conjure.python.types.PythonTypeVisitor;
+import com.palantir.conjure.python.types.MyPyTypeNameVisitor;
+import com.palantir.conjure.python.types.PythonTypeNameVisitor;
 import com.palantir.conjure.spec.EndpointDefinition;
 import com.palantir.conjure.spec.PrimitiveType;
 import com.palantir.conjure.spec.ServiceDefinition;
 import com.palantir.conjure.spec.Type;
-import com.palantir.conjure.spec.TypeName;
 import com.palantir.conjure.visitor.DealiasingTypeVisitor;
 import com.palantir.conjure.visitor.TypeVisitor;
 import java.util.List;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public final class ClientGenerator {
 
-    public PythonSnippet generateClient(
-            ServiceDefinition serviceDef,
-            Function<TypeName, ImportTypeVisitor> importTypeVisitorFactory,
+    private final PackageNameProcessor implPackageNameProcessor;
+    private final TypeNameProcessor implTypeNameProcessor;
+    private final PackageNameProcessor definitionPackageNameProcessor;
+    private final TypeNameProcessor definitionTypeNameProcessor;
+    private final DealiasingTypeVisitor dealiasingTypeVisitor;
+    private final PythonTypeNameVisitor pythonTypeNameVisitor;
+    private final MyPyTypeNameVisitor myPyTypeNameVisitor;
+
+    public ClientGenerator(
+            PackageNameProcessor implPackageNameProcessor,
+            TypeNameProcessor implTypeNameProcessor,
+            PackageNameProcessor definitionPackageNameProcessor,
+            TypeNameProcessor definitionTypeNameProcessor,
             DealiasingTypeVisitor dealiasingTypeVisitor) {
-        ImportTypeVisitor importTypeVisitor = importTypeVisitorFactory.apply(serviceDef.getServiceName());
+        this.implPackageNameProcessor = implPackageNameProcessor;
+        this.implTypeNameProcessor = implTypeNameProcessor;
+        this.definitionPackageNameProcessor = definitionPackageNameProcessor;
+        this.definitionTypeNameProcessor = definitionTypeNameProcessor;
+        this.dealiasingTypeVisitor = dealiasingTypeVisitor;
+        pythonTypeNameVisitor = new PythonTypeNameVisitor(implTypeNameProcessor);
+        myPyTypeNameVisitor = new MyPyTypeNameVisitor(dealiasingTypeVisitor, implTypeNameProcessor);
+    }
+
+    public PythonSnippet generateClient(ServiceDefinition serviceDef) {
+        ImportTypeVisitor importTypeVisitor =
+                new ImportTypeVisitor(serviceDef.getServiceName(), implTypeNameProcessor, implPackageNameProcessor);
         ImmutableSet.Builder<Type> referencedTypesBuilder = ImmutableSet.builder();
 
         List<PythonEndpointDefinition> endpoints = serviceDef.getEndpoints().stream()
-                .map(endpointDef -> generateEndpoint(endpointDef, referencedTypesBuilder, dealiasingTypeVisitor))
+                .map(endpointDef -> generateEndpoint(endpointDef, referencedTypesBuilder))
                 .collect(Collectors.toList());
 
         List<PythonImport> imports = referencedTypesBuilder.build().stream()
@@ -54,7 +77,12 @@ public final class ClientGenerator {
                 .collect(Collectors.toList());
 
         return PythonService.builder()
-                .className(serviceDef.getServiceName().getName())
+                .pythonPackage(PythonPackage.of(implPackageNameProcessor.process(
+                        serviceDef.getServiceName().getPackage())))
+                .className(implTypeNameProcessor.process(serviceDef.getServiceName()))
+                .definitionPackage(PythonPackage.of(definitionPackageNameProcessor.process(
+                        serviceDef.getServiceName().getPackage())))
+                .definitionName(definitionTypeNameProcessor.process(serviceDef.getServiceName()))
                 .addAllImports(PythonService.CONJURE_IMPORTS)
                 .addAllImports(imports)
                 .docs(serviceDef.getDocs())
@@ -63,9 +91,7 @@ public final class ClientGenerator {
     }
 
     private PythonEndpointDefinition generateEndpoint(
-            EndpointDefinition endpointDef,
-            ImmutableSet.Builder<Type> referencedTypesBuilder,
-            DealiasingTypeVisitor dealiasingTypeVisitor) {
+            EndpointDefinition endpointDef, ImmutableSet.Builder<Type> referencedTypesBuilder) {
         endpointDef.getReturns().ifPresent(referencedTypesBuilder::add);
         endpointDef.getArgs().forEach(arg -> referencedTypesBuilder.add(arg.getType()));
 
@@ -75,7 +101,7 @@ public final class ClientGenerator {
                         .pythonParamName(
                                 CaseConverter.toCase(argEntry.getArgName().get(), CaseConverter.Case.SNAKE_CASE))
                         .paramType(argEntry.getParamType())
-                        .myPyType(argEntry.getType().accept(PythonTypeVisitor.MY_PY_TYPE))
+                        .myPyType(argEntry.getType().accept(myPyTypeNameVisitor))
                         .isOptional(dealiasingTypeVisitor
                                 .dealias(argEntry.getType())
                                 .fold(typeDefinition -> false, type -> type.accept(TypeVisitor.IS_OPTIONAL)))
@@ -90,8 +116,8 @@ public final class ClientGenerator {
                 .auth(endpointDef.getAuth())
                 .docs(endpointDef.getDocs())
                 .params(params)
-                .pythonReturnType(endpointDef.getReturns().map(type -> type.accept(PythonTypeVisitor.PYTHON_TYPE)))
-                .myPyReturnType(endpointDef.getReturns().map(type -> type.accept(PythonTypeVisitor.MY_PY_TYPE)))
+                .pythonReturnType(endpointDef.getReturns().map(type -> type.accept(pythonTypeNameVisitor)))
+                .myPyReturnType(endpointDef.getReturns().map(type -> type.accept(myPyTypeNameVisitor)))
                 .isBinary(endpointDef
                         .getReturns()
                         // We do not need to handle alias of binary since they are treated differently over the wire

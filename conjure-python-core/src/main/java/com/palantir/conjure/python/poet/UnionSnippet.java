@@ -19,6 +19,7 @@ package com.palantir.conjure.python.poet;
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import com.palantir.conjure.python.processors.PythonIdentifierSanitizer;
 import com.palantir.conjure.python.types.ImportTypeVisitor;
 import com.palantir.conjure.spec.Documentation;
 import java.util.List;
@@ -31,15 +32,15 @@ public interface UnionSnippet extends PythonSnippet {
     ImmutableList<PythonImport> DEFAULT_IMPORTS = ImmutableList.of(
             PythonImport.builder()
                     .moduleSpecifier(ImportTypeVisitor.CONJURE_PYTHON_CLIENT)
-                    .addNamedImports("ConjureUnionType", "ConjureFieldDefinition")
+                    .addNamedImports(NamedImport.of("ConjureUnionType"), NamedImport.of("ConjureFieldDefinition"))
                     .build(),
             PythonImport.builder()
                     .moduleSpecifier("abc")
-                    .addNamedImports("ABCMeta", "abstractmethod")
+                    .addNamedImports(NamedImport.of("ABCMeta"), NamedImport.of("abstractmethod"))
                     .build(),
             PythonImport.builder()
                     .moduleSpecifier(ImportTypeVisitor.TYPING)
-                    .addNamedImports("Dict", "Any")
+                    .addNamedImports(NamedImport.of("Dict"), NamedImport.of("Any"))
                     .build(),
             PythonImport.of("builtins"));
     ImmutableSet<String> PROTECTED_FIELDS = ImmutableSet.of("options");
@@ -51,6 +52,10 @@ public interface UnionSnippet extends PythonSnippet {
     }
 
     String className();
+
+    String definitionName();
+
+    PythonPackage definitionPackage();
 
     Optional<Documentation> docs();
 
@@ -78,136 +83,148 @@ public interface UnionSnippet extends PythonSnippet {
 
     @Override
     default void emit(PythonPoetWriter poetWriter) {
-        poetWriter.writeIndentedLine(String.format("class %s(ConjureUnionType):", className()));
-        poetWriter.increaseIndent();
-        docs().ifPresent(docs -> {
-            poetWriter.writeIndentedLine("\"\"\"");
-            poetWriter.writeIndentedLine(docs.get().trim());
-            poetWriter.writeIndentedLine("\"\"\"");
-        });
+        poetWriter.maintainingIndent(() -> {
+            poetWriter.writeIndentedLine(String.format("class %s(ConjureUnionType):", className()));
+            poetWriter.increaseIndent();
+            docs().ifPresent(docs -> poetWriter.writeIndentedLine(
+                    String.format("\"\"\"%s\"\"\"", docs.get().trim())));
 
-        poetWriter.writeLine();
+            options()
+                    .forEach(option ->
+                            poetWriter.writeIndentedLine("%s = None # type: %s", fieldName(option), option.myPyType()));
 
-        options()
-                .forEach(option ->
-                        poetWriter.writeIndentedLine("%s = None # type: %s", fieldName(option), option.myPyType()));
+            poetWriter.writeLine();
 
-        poetWriter.writeLine();
+            // record off the options
+            poetWriter.writeIndentedLine("@builtins.classmethod");
+            poetWriter.writeIndentedLine("def _options(cls):");
+            poetWriter.increaseIndent();
+            poetWriter.writeIndentedLine("# type: () -> Dict[str, ConjureFieldDefinition]"); // maybe....?
+            poetWriter.writeIndentedLine("return {");
+            poetWriter.increaseIndent();
+            for (int i = 0; i < options().size(); i++) {
+                PythonField option = options().get(i);
+                poetWriter.writeIndentedLine(
+                        "'%s': ConjureFieldDefinition('%s', %s)%s",
+                        propertyName(option),
+                        option.jsonIdentifier(),
+                        option.pythonType(),
+                        i == options().size() - 1 ? "" : ",");
+            }
+            poetWriter.decreaseIndent();
+            poetWriter.writeIndentedLine("}");
+            poetWriter.decreaseIndent();
 
-        // record off the options
-        poetWriter.writeIndentedLine("@builtins.classmethod");
-        poetWriter.writeIndentedLine("def _options(cls):");
-        poetWriter.increaseIndent();
-        poetWriter.writeIndentedLine("# type: () -> Dict[str, ConjureFieldDefinition]"); // maybe....?
-        poetWriter.writeIndentedLine("return {");
-        poetWriter.increaseIndent();
-        for (int i = 0; i < options().size(); i++) {
-            PythonField option = options().get(i);
+            poetWriter.writeLine();
+            // constructor
+            poetWriter.writeIndentedLine(String.format(
+                    "def __init__(self, %s):",
+                    Joiner.on(", ")
+                            .join(options().stream()
+                                    .map(PythonField::attributeName)
+                                    .map(PythonIdentifierSanitizer::sanitize)
+                                    .map(attributeName -> String.format("%s=None", attributeName))
+                                    .collect(Collectors.toList()))));
+            poetWriter.increaseIndent();
+            // check we have exactly one non-null
             poetWriter.writeIndentedLine(
-                    "'%s': ConjureFieldDefinition('%s', %s)%s",
-                    propertyName(option),
-                    option.jsonIdentifier(),
-                    option.pythonType(),
-                    i == options().size() - 1 ? "" : ",");
-        }
-        poetWriter.decreaseIndent();
-        poetWriter.writeIndentedLine("}");
-        poetWriter.decreaseIndent();
-
-        poetWriter.writeLine();
-
-        // constructor
-        poetWriter.writeIndentedLine(String.format(
-                "def __init__(self, %s):",
-                Joiner.on(", ")
-                        .join(options().stream()
-                                .map(PythonField::attributeName)
-                                .map(PythonIdentifierSanitizer::sanitize)
-                                .map(attributeName -> String.format("%s=None", attributeName))
-                                .collect(Collectors.toList()))));
-        poetWriter.increaseIndent();
-        // check we have exactly one non-null
-        poetWriter.writeIndentedLine(
-                "if %s != 1:",
-                Joiner.on(" + ")
-                        .join(options().stream()
-                                .map(option -> String.format("(%s is not None)", parameterName(option)))
-                                .collect(Collectors.toList())));
-        poetWriter.increaseIndent();
-        poetWriter.writeIndentedLine("raise ValueError('a union must contain a single member')");
-        poetWriter.decreaseIndent();
-        // keep track of how many non-null there are
-        poetWriter.writeLine();
-        // save off
-        options().forEach(option -> {
-            poetWriter.writeIndentedLine("if %s is not None:", parameterName(option));
+                    "if %s != 1:",
+                    Joiner.on(" + ")
+                            .join(options().stream()
+                                    .map(option -> String.format("(%s is not None)", parameterName(option)))
+                                    .collect(Collectors.toList())));
             poetWriter.increaseIndent();
-            poetWriter.writeIndentedLine("self.%s = %s", fieldName(option), parameterName(option));
-            poetWriter.writeIndentedLine("self._type = '%s'", option.jsonIdentifier());
+            poetWriter.writeIndentedLine("raise ValueError('a union must contain a single member')");
             poetWriter.decreaseIndent();
-        });
-        poetWriter.decreaseIndent();
-
-        // python @property for each member of the union
-        options().forEach(option -> {
+            // keep track of how many non-null there are
             poetWriter.writeLine();
-            poetWriter.writeIndentedLine("@property");
-            poetWriter.writeIndentedLine(String.format("def %s(self):", propertyName(option)));
-
-            poetWriter.increaseIndent();
-            poetWriter.writeIndentedLine(String.format("# type: () -> %s", option.myPyType()));
-            option.docs().ifPresent(docs -> {
-                poetWriter.writeIndentedLine("\"\"\"");
-                poetWriter.writeIndentedLine(docs.get().trim());
-                poetWriter.writeIndentedLine("\"\"\"");
+            // save off
+            options().forEach(option -> {
+                poetWriter.writeIndentedLine("if %s is not None:", parameterName(option));
+                poetWriter.increaseIndent();
+                poetWriter.writeIndentedLine("self.%s = %s", fieldName(option), parameterName(option));
+                poetWriter.writeIndentedLine("self._type = '%s'", option.jsonIdentifier());
+                poetWriter.decreaseIndent();
             });
-            poetWriter.writeIndentedLine(String.format("return self.%s", fieldName(option)));
             poetWriter.decreaseIndent();
-        });
 
-        String visitorName = String.format("%sVisitor", className());
+            // python @property for each member of the union
+            options().forEach(option -> {
+                poetWriter.writeLine();
 
-        poetWriter.writeLine();
-        poetWriter.writeIndentedLine("def accept(self, visitor):");
-        poetWriter.increaseIndent();
-        poetWriter.writeIndentedLine("# type: (%s) -> Any", visitorName);
-        poetWriter.writeIndentedLine("if not isinstance(visitor, %s):", visitorName);
-        poetWriter.increaseIndent();
-        poetWriter.writeIndentedLine(
-                "raise ValueError('{} is not an instance of %s'.format(visitor.__class__.__name__))", visitorName);
-        poetWriter.decreaseIndent();
-        options().forEach(option -> {
-            poetWriter.writeIndentedLine("if self.type == '%s':", option.jsonIdentifier());
-            poetWriter.increaseIndent();
-            poetWriter.writeIndentedLine("return visitor.%s(self.%s)", visitorMethodName(option), propertyName(option));
-            poetWriter.decreaseIndent();
-        });
-        poetWriter.decreaseIndent();
-        poetWriter.decreaseIndent();
-        poetWriter.writeLine();
-        poetWriter.writeLine();
+                poetWriter.writeIndentedLine("@property");
+                poetWriter.writeIndentedLine(String.format("def %s(self):", propertyName(option)));
 
-        // We need to generate this base class to be python 2 compatible
-        String visitorBaseClass = String.format("%sBaseClass", visitorName);
-        poetWriter.writeLine(String.format("%s = ABCMeta('ABC', (object,), {}) # type: Any", visitorBaseClass));
+                poetWriter.increaseIndent();
+                poetWriter.writeIndentedLine(String.format("# type: () -> %s", option.myPyType()));
+                option.docs().ifPresent(docs -> {
+                    poetWriter.writeIndentedLine("\"\"\"");
+                    poetWriter.writeIndentedLine(docs.get().trim());
+                    poetWriter.writeIndentedLine("\"\"\"");
+                });
+                poetWriter.writeIndentedLine(String.format("return self.%s", fieldName(option)));
+                poetWriter.decreaseIndent();
+            });
 
-        poetWriter.writeLine();
-        poetWriter.writeLine();
+            String visitorName = String.format("%sVisitor", className());
+            String definitionVisitorName = String.format("%sVisitor", definitionName());
 
-        poetWriter.writeIndentedLine(String.format("class %s(%s):", visitorName, visitorBaseClass));
-        poetWriter.increaseIndent();
-        options().forEach(option -> {
             poetWriter.writeLine();
-            poetWriter.writeIndentedLine("@abstractmethod");
-            poetWriter.writeIndentedLine("def %s(self, %s):", visitorMethodName(option), parameterName(option));
+            poetWriter.writeIndentedLine("def accept(self, visitor):");
             poetWriter.increaseIndent();
-            poetWriter.writeIndentedLine("# type: (%s) -> Any", option.myPyType());
-            poetWriter.writeIndentedLine("pass");
+            poetWriter.writeIndentedLine("# type: (%s) -> Any", visitorName);
+            poetWriter.writeIndentedLine("if not isinstance(visitor, %s):", visitorName);
+            poetWriter.increaseIndent();
+            poetWriter.writeIndentedLine(
+                    "raise ValueError('{} is not an instance of %s'.format(visitor.__class__.__name__))", visitorName);
             poetWriter.decreaseIndent();
+            options().forEach(option -> {
+                poetWriter.writeIndentedLine("if self.type == '%s':", option.jsonIdentifier());
+                poetWriter.increaseIndent();
+                poetWriter.writeIndentedLine(
+                        "return visitor.%s(self.%s)", visitorMethodName(option), propertyName(option));
+                poetWriter.decreaseIndent();
+            });
+            poetWriter.decreaseIndent();
+            poetWriter.decreaseIndent();
+            poetWriter.writeLine();
+            poetWriter.writeLine();
+
+            poetWriter.writeIndentedLine(String.format("%s.__name__ = \"%s\"", className(), definitionName()));
+            poetWriter.writeIndentedLine(String.format(
+                    "%s.__module__ = \"%s\"", className(), definitionPackage().get()));
+
+            poetWriter.writeLine();
+            poetWriter.writeLine();
+
+            // We need to generate this base class to be python 2 compatible
+            String visitorBaseClass = String.format("%sBaseClass", visitorName);
+            poetWriter.writeLine(String.format("%s = ABCMeta('ABC', (object,), {}) # type: Any", visitorBaseClass));
+
+            poetWriter.writeLine();
+            poetWriter.writeLine();
+
+            poetWriter.writeIndentedLine(String.format("class %s(%s):", visitorName, visitorBaseClass));
+            poetWriter.increaseIndent();
+            options().forEach(option -> {
+                poetWriter.writeLine();
+                poetWriter.writeIndentedLine("@abstractmethod");
+                poetWriter.writeIndentedLine("def %s(self, %s):", visitorMethodName(option), parameterName(option));
+                poetWriter.increaseIndent();
+                poetWriter.writeIndentedLine("# type: (%s) -> Any", option.myPyType());
+                poetWriter.writeIndentedLine("pass");
+                poetWriter.decreaseIndent();
+            });
+            poetWriter.decreaseIndent();
+            poetWriter.writeLine();
+            poetWriter.writeLine();
+
+            poetWriter.writeIndentedLine(String.format("%s.__name__ = \"%s\"", visitorName, definitionVisitorName));
+            poetWriter.writeIndentedLine(String.format("%s.__module__ = \"%s\"", visitorName, definitionVisitorName));
+
+            poetWriter.writeLine();
+            poetWriter.writeLine();
         });
-        poetWriter.decreaseIndent();
-        poetWriter.writeLine();
-        poetWriter.writeLine();
     }
 
     class Builder extends ImmutableUnionSnippet.Builder {}

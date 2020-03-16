@@ -45,7 +45,7 @@ task generateVerifierBindings(type: JavaExec, dependsOn: [copyTestCases, ':conju
     args 'generate',
             "${-> configurations.verificationApi.singleFile}",
             'python/test',
-            '--packageName', 'generated',
+            '--packageName', 'generated_verifier',
             '--packageVersion', '0.0.0'
 
     inputs.files configurations.verificationApi
@@ -58,7 +58,7 @@ task generateIntegrationTests(type: JavaExec, dependsOn: [compileIr, ':conjure-p
     args 'generate',
             'build/conjure-ir/conjure-python-verifier.conjure.json',
             'python/test',
-            '--packageName', 'generated',
+            '--packageName', 'generated_integration',
             '--packageVersion', '0.0.0'
 
     inputs.files configurations.verificationApi

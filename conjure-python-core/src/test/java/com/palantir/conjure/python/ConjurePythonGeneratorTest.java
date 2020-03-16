@@ -19,8 +19,6 @@ package com.palantir.conjure.python;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.palantir.conjure.defs.Conjure;
-import com.palantir.conjure.python.client.ClientGenerator;
-import com.palantir.conjure.python.types.DefaultBeanGenerator;
 import com.palantir.conjure.spec.ConjureDefinition;
 import java.io.File;
 import java.io.IOException;
@@ -37,18 +35,15 @@ import org.junit.runner.RunWith;
 @RunWith(ConjureSubfolderRunner.class)
 public final class ConjurePythonGeneratorTest {
 
-    private final ConjurePythonGenerator generator = new ConjurePythonGenerator(
-            new DefaultBeanGenerator(),
-            new ClientGenerator(),
-            GeneratorConfiguration.builder()
-                    .packageName("package-name")
-                    .packageVersion("0.0.0")
-                    .packageDescription("project description")
-                    .minConjureClientVersion("1.0.0")
-                    .generatorVersion("0.0.0")
-                    .shouldWriteCondaRecipe(true)
-                    .generateRawSource(false)
-                    .build());
+    private final ConjurePythonGenerator generator = new ConjurePythonGenerator(GeneratorConfiguration.builder()
+            .packageName("package-name")
+            .packageVersion("0.0.0")
+            .packageDescription("project description")
+            .minConjureClientVersion("1.0.0")
+            .generatorVersion("0.0.0")
+            .shouldWriteCondaRecipe(true)
+            .generateRawSource(false)
+            .build());
     private final InMemoryPythonFileWriter pythonFileWriter = new InMemoryPythonFileWriter();
 
     @ConjureSubfolderRunner.Test

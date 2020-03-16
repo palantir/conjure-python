@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.palantir.conjure.python.poet;
+package com.palantir.conjure.python.processors;
 
 import com.google.common.collect.ImmutableSet;
 import java.util.Collections;

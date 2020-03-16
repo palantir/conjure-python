@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2018 Palantir Technologies Inc. All rights reserved.
+ * (c) Copyright 2019 Palantir Technologies Inc. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,18 +14,11 @@
  * limitations under the License.
  */
 
-package com.palantir.conjure.python.types;
+package com.palantir.conjure.python.processors.typename;
 
-import com.palantir.conjure.python.poet.PythonSnippet;
-import com.palantir.conjure.spec.TypeDefinition;
 import com.palantir.conjure.spec.TypeName;
-import com.palantir.conjure.visitor.DealiasingTypeVisitor;
-import java.util.function.Function;
 
-public interface PythonBeanGenerator {
+public interface TypeNameProcessor {
 
-    PythonSnippet generateType(
-            TypeDefinition typeDef,
-            Function<TypeName, ImportTypeVisitor> importTypeVisitorFactory,
-            DealiasingTypeVisitor dealiasingTypeVisitor);
+    String process(TypeName typeName);
 }

@@ -14,23 +14,27 @@
  * limitations under the License.
  */
 
-package com.palantir.conjure.python;
+package com.palantir.conjure.python.processors.packagename;
 
-import com.google.common.base.Joiner;
-import com.google.common.base.Splitter;
-import com.google.common.collect.ImmutableList;
 import java.util.List;
 
-public final class TwoComponentStrippingPackageNameProcessor implements PackageNameProcessor.Processor {
+/**
+ * Post process package names.
+ */
+public final class CompoundPackageNameProcessor implements PackageNameProcessor {
+
+    private final List<PackageNameProcessor> processors;
+
+    public CompoundPackageNameProcessor(List<PackageNameProcessor> processors) {
+        this.processors = processors;
+    }
 
     @Override
-    public String processPackageName(String packageName) {
-        List<String> components = ImmutableList.copyOf(Splitter.on('.').split(packageName));
-
-        if (components.size() > 2) {
-            return Joiner.on('.').join(components.subList(2, components.size()));
-        } else {
-            return packageName;
+    public String process(String packageName) {
+        String updatedPackage = packageName;
+        for (PackageNameProcessor processor : processors) {
+            updatedPackage = processor.process(updatedPackage);
         }
+        return updatedPackage;
     }
 }

@@ -24,33 +24,53 @@ import com.palantir.conjure.python.poet.EnumSnippet;
 import com.palantir.conjure.python.poet.EnumSnippet.PythonEnumValue;
 import com.palantir.conjure.python.poet.PythonField;
 import com.palantir.conjure.python.poet.PythonImport;
+import com.palantir.conjure.python.poet.PythonPackage;
 import com.palantir.conjure.python.poet.PythonSnippet;
 import com.palantir.conjure.python.poet.UnionSnippet;
+import com.palantir.conjure.python.processors.packagename.PackageNameProcessor;
+import com.palantir.conjure.python.processors.typename.TypeNameProcessor;
 import com.palantir.conjure.spec.AliasDefinition;
 import com.palantir.conjure.spec.EnumDefinition;
 import com.palantir.conjure.spec.ObjectDefinition;
 import com.palantir.conjure.spec.Type;
 import com.palantir.conjure.spec.TypeDefinition;
-import com.palantir.conjure.spec.TypeName;
 import com.palantir.conjure.spec.UnionDefinition;
 import com.palantir.conjure.visitor.DealiasingTypeVisitor;
 import com.palantir.conjure.visitor.TypeVisitor;
 import java.util.List;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public final class DefaultBeanGenerator implements PythonBeanGenerator {
+public final class PythonTypeGenerator {
 
-    @Override
-    public PythonSnippet generateType(
-            TypeDefinition typeDef,
-            Function<TypeName, ImportTypeVisitor> importTypeVisitorFactory,
+    private final PackageNameProcessor implPackageNameProcessor;
+    private final TypeNameProcessor implTypeNameProcessor;
+    private final PackageNameProcessor definitionPackageNameProcessor;
+    private final TypeNameProcessor definitionTypeNameProcessor;
+    private final DealiasingTypeVisitor dealiasingTypeVisitor;
+    private final PythonTypeNameVisitor pythonTypeNameVisitor;
+    private final MyPyTypeNameVisitor myPyTypeNameVisitor;
+
+    public PythonTypeGenerator(
+            PackageNameProcessor implPackageNameProcessor,
+            TypeNameProcessor implTypeNameProcessor,
+            PackageNameProcessor definitionPackageNameProcessor,
+            TypeNameProcessor definitionTypeNameProcessor,
             DealiasingTypeVisitor dealiasingTypeVisitor) {
+        this.implPackageNameProcessor = implPackageNameProcessor;
+        this.implTypeNameProcessor = implTypeNameProcessor;
+        this.definitionPackageNameProcessor = definitionPackageNameProcessor;
+        this.definitionTypeNameProcessor = definitionTypeNameProcessor;
+        this.dealiasingTypeVisitor = dealiasingTypeVisitor;
+        pythonTypeNameVisitor = new PythonTypeNameVisitor(implTypeNameProcessor);
+        myPyTypeNameVisitor = new MyPyTypeNameVisitor(dealiasingTypeVisitor, implTypeNameProcessor);
+    }
+
+    public PythonSnippet generateType(TypeDefinition typeDef) {
         return typeDef.accept(new TypeDefinition.Visitor<PythonSnippet>() {
             @Override
             public PythonSnippet visitAlias(AliasDefinition value) {
-                return generateAlias(value, importTypeVisitorFactory);
+                return generateAlias(value);
             }
 
             @Override
@@ -60,12 +80,12 @@ public final class DefaultBeanGenerator implements PythonBeanGenerator {
 
             @Override
             public PythonSnippet visitObject(ObjectDefinition value) {
-                return generateBean(value, importTypeVisitorFactory, dealiasingTypeVisitor);
+                return generateBean(value);
             }
 
             @Override
             public PythonSnippet visitUnion(UnionDefinition value) {
-                return generateUnion(value, importTypeVisitorFactory, dealiasingTypeVisitor);
+                return generateUnion(value);
             }
 
             @Override
@@ -75,11 +95,9 @@ public final class DefaultBeanGenerator implements PythonBeanGenerator {
         });
     }
 
-    private BeanSnippet generateBean(
-            ObjectDefinition typeDef,
-            Function<TypeName, ImportTypeVisitor> importTypeVisitorFactory,
-            DealiasingTypeVisitor dealiasingTypeVisitor) {
-        ImportTypeVisitor importVisitor = importTypeVisitorFactory.apply(typeDef.getTypeName());
+    private BeanSnippet generateBean(ObjectDefinition typeDef) {
+        ImportTypeVisitor importVisitor =
+                new ImportTypeVisitor(typeDef.getTypeName(), implTypeNameProcessor, implPackageNameProcessor);
 
         Set<PythonImport> imports = typeDef.getFields().stream()
                 .flatMap(entry -> entry.getType().accept(importVisitor).stream())
@@ -90,8 +108,8 @@ public final class DefaultBeanGenerator implements PythonBeanGenerator {
                         .attributeName(CaseConverter.toCase(entry.getFieldName().get(), CaseConverter.Case.SNAKE_CASE))
                         .jsonIdentifier(entry.getFieldName().get())
                         .docs(entry.getDocs())
-                        .pythonType(entry.getType().accept(PythonTypeVisitor.PYTHON_TYPE))
-                        .myPyType(entry.getType().accept(PythonTypeVisitor.MY_PY_TYPE))
+                        .pythonType(entry.getType().accept(pythonTypeNameVisitor))
+                        .myPyType(entry.getType().accept(myPyTypeNameVisitor))
                         .isOptional(dealiasingTypeVisitor
                                 .dealias(entry.getType())
                                 .fold(typeDefinition -> false, type -> type.accept(TypeVisitor.IS_OPTIONAL)))
@@ -99,7 +117,12 @@ public final class DefaultBeanGenerator implements PythonBeanGenerator {
                 .collect(Collectors.toList());
 
         return BeanSnippet.builder()
-                .className(typeDef.getTypeName().getName())
+                .pythonPackage(PythonPackage.of(
+                        implPackageNameProcessor.process(typeDef.getTypeName().getPackage())))
+                .className(implTypeNameProcessor.process(typeDef.getTypeName()))
+                .definitionPackage(PythonPackage.of(definitionPackageNameProcessor.process(
+                        typeDef.getTypeName().getPackage())))
+                .definitionName(definitionTypeNameProcessor.process(typeDef.getTypeName()))
                 .addAllImports(BeanSnippet.DEFAULT_IMPORTS)
                 .addAllImports(imports)
                 .docs(typeDef.getDocs())
@@ -109,7 +132,12 @@ public final class DefaultBeanGenerator implements PythonBeanGenerator {
 
     private EnumSnippet generateEnum(EnumDefinition typeDef) {
         return EnumSnippet.builder()
-                .className(typeDef.getTypeName().getName())
+                .pythonPackage(PythonPackage.of(
+                        implPackageNameProcessor.process(typeDef.getTypeName().getPackage())))
+                .className(implTypeNameProcessor.process(typeDef.getTypeName()))
+                .definitionPackage(PythonPackage.of(definitionPackageNameProcessor.process(
+                        typeDef.getTypeName().getPackage())))
+                .definitionName(definitionTypeNameProcessor.process(typeDef.getTypeName()))
                 .addImports(EnumSnippet.CONJURE_IMPORT)
                 .docs(typeDef.getDocs())
                 .values(typeDef.getValues().stream()
@@ -118,11 +146,9 @@ public final class DefaultBeanGenerator implements PythonBeanGenerator {
                 .build();
     }
 
-    private UnionSnippet generateUnion(
-            UnionDefinition typeDef,
-            Function<TypeName, ImportTypeVisitor> importTypeVisitorFactory,
-            DealiasingTypeVisitor dealiasingTypeVisitor) {
-        ImportTypeVisitor importVisitor = importTypeVisitorFactory.apply(typeDef.getTypeName());
+    private UnionSnippet generateUnion(UnionDefinition typeDef) {
+        ImportTypeVisitor importVisitor =
+                new ImportTypeVisitor(typeDef.getTypeName(), implTypeNameProcessor, implPackageNameProcessor);
 
         Set<PythonImport> imports = typeDef.getUnion().stream()
                 .flatMap(fieldDefinition -> fieldDefinition.getType().accept(importVisitor).stream())
@@ -136,8 +162,8 @@ public final class DefaultBeanGenerator implements PythonBeanGenerator {
                                     unionMember.getFieldName().get(), CaseConverter.Case.SNAKE_CASE))
                             .docs(unionMember.getDocs())
                             .jsonIdentifier(unionMember.getFieldName().get())
-                            .myPyType(conjureType.accept(PythonTypeVisitor.MY_PY_TYPE))
-                            .pythonType(conjureType.accept(PythonTypeVisitor.PYTHON_TYPE))
+                            .myPyType(conjureType.accept(myPyTypeNameVisitor))
+                            .pythonType(conjureType.accept(pythonTypeNameVisitor))
                             .isOptional(dealiasingTypeVisitor
                                     .dealias(unionMember.getType())
                                     .fold(typeDefinition -> false, type -> type.accept(TypeVisitor.IS_OPTIONAL)))
@@ -146,7 +172,12 @@ public final class DefaultBeanGenerator implements PythonBeanGenerator {
                 .collect(Collectors.toList());
 
         return UnionSnippet.builder()
-                .className(typeDef.getTypeName().getName())
+                .pythonPackage(PythonPackage.of(
+                        implPackageNameProcessor.process(typeDef.getTypeName().getPackage())))
+                .className(implTypeNameProcessor.process(typeDef.getTypeName()))
+                .definitionPackage(PythonPackage.of(definitionPackageNameProcessor.process(
+                        typeDef.getTypeName().getPackage())))
+                .definitionName(definitionTypeNameProcessor.process(typeDef.getTypeName()))
                 .addAllImports(UnionSnippet.DEFAULT_IMPORTS)
                 .addAllImports(imports)
                 .docs(typeDef.getDocs())
@@ -154,12 +185,14 @@ public final class DefaultBeanGenerator implements PythonBeanGenerator {
                 .build();
     }
 
-    private AliasSnippet generateAlias(
-            AliasDefinition typeDef, Function<TypeName, ImportTypeVisitor> importTypeVisitorFactory) {
-        ImportTypeVisitor importVisitor = importTypeVisitorFactory.apply(typeDef.getTypeName());
+    private AliasSnippet generateAlias(AliasDefinition typeDef) {
+        ImportTypeVisitor importVisitor =
+                new ImportTypeVisitor(typeDef.getTypeName(), implTypeNameProcessor, implPackageNameProcessor);
         return AliasSnippet.builder()
-                .className(typeDef.getTypeName().getName())
-                .aliasName(typeDef.getAlias().accept(PythonTypeVisitor.PYTHON_TYPE))
+                .pythonPackage(PythonPackage.of(
+                        implPackageNameProcessor.process(typeDef.getTypeName().getPackage())))
+                .className(implTypeNameProcessor.process(typeDef.getTypeName()))
+                .aliasName(typeDef.getAlias().accept(pythonTypeNameVisitor))
                 .aliasType(typeDef)
                 .imports(ImmutableSet.copyOf(typeDef.getAlias().accept(importVisitor)))
                 .build();

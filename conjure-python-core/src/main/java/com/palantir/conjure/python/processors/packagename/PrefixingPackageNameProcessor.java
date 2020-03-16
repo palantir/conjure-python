@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2018 Palantir Technologies Inc. All rights reserved.
+ * (c) Copyright 2019 Palantir Technologies Inc. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,21 +14,18 @@
  * limitations under the License.
  */
 
-package com.palantir.conjure.python.poet;
+package com.palantir.conjure.python.processors.packagename;
 
-import java.util.Set;
+public final class PrefixingPackageNameProcessor implements PackageNameProcessor {
 
-public interface PythonSnippet extends Emittable {
+    private String topLevelPackageName;
 
-    PythonPackage pythonPackage();
+    public PrefixingPackageNameProcessor(String topLevelPackageName) {
+        this.topLevelPackageName = topLevelPackageName;
+    }
 
-    /*
-     * Id for the snippet used for ordering.
-     */
-    String idForSorting();
-
-    /*
-     * The set of imports required for this snippet to compile.
-     */
-    Set<PythonImport> imports();
+    @Override
+    public String process(String packageName) {
+        return topLevelPackageName + "." + packageName;
+    }
 }

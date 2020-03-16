@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2018 Palantir Technologies Inc. All rights reserved.
+ * (c) Copyright 2019 Palantir Technologies Inc. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-package com.palantir.conjure.python;
+package com.palantir.conjure.python.processors.packagename;
 
-public final class FlatteningPackageNameProcessor implements PackageNameProcessor.Processor {
+public enum FlatteningPackageNameProcessor implements PackageNameProcessor {
+    INSTANCE;
 
     @Override
-    public String processPackageName(String packageName) {
+    public String process(String packageName) {
         return packageName.replace(".", "_");
     }
 }

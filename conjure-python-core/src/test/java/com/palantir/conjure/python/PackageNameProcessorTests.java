@@ -18,52 +18,54 @@ package com.palantir.conjure.python;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.google.common.collect.ImmutableList;
+import com.palantir.conjure.python.processors.packagename.CompoundPackageNameProcessor;
+import com.palantir.conjure.python.processors.packagename.FlatteningPackageNameProcessor;
+import com.palantir.conjure.python.processors.packagename.PackageNameProcessor;
+import com.palantir.conjure.python.processors.packagename.PrefixingPackageNameProcessor;
+import com.palantir.conjure.python.processors.packagename.TwoComponentStrippingPackageNameProcessor;
 import org.junit.Test;
 
 public final class PackageNameProcessorTests {
 
     @Test
     public void testPackageNameProcessor() {
-        PackageNameProcessor processor = PackageNameProcessor.builder().build();
-        assertThat(processor.getPackageName("com.palantir.test")).isEqualTo("com.palantir.test");
+        PackageNameProcessor processor = new CompoundPackageNameProcessor(ImmutableList.of());
+        assertThat(processor.process("com.palantir.test")).isEqualTo("com.palantir.test");
     }
 
     @Test
     public void testTwoComponentStrippingPackageNameProcessor() {
-        PackageNameProcessor processor = PackageNameProcessor.builder()
-                .addProcessors(new TwoComponentStrippingPackageNameProcessor())
-                .build();
-        assertThat(processor.getPackageName("com.palantir.test")).isEqualTo("test");
-        assertThat(processor.getPackageName("com.palantir")).isEqualTo("com.palantir");
+        PackageNameProcessor processor =
+                new CompoundPackageNameProcessor(ImmutableList.of(new TwoComponentStrippingPackageNameProcessor()));
+        assertThat(processor.process("com.palantir.test")).isEqualTo("test");
+        assertThat(processor.process("com.palantir")).isEqualTo("com.palantir");
     }
 
     @Test
     public void testTopLevelRenamingPackageNameProcessor() {
-        PackageNameProcessor processor = PackageNameProcessor.builder()
-                .addProcessors(new TopLevelAddingPackageNameProcessor("toplevel"))
-                .build();
-        assertThat(processor.getPackageName("test")).isEqualTo("toplevel.test");
-        assertThat(processor.getPackageName("test.whatever")).isEqualTo("toplevel.test.whatever");
+        PackageNameProcessor processor =
+                new CompoundPackageNameProcessor(ImmutableList.of(new PrefixingPackageNameProcessor("toplevel")));
+        assertThat(processor.process("test")).isEqualTo("toplevel.test");
+        assertThat(processor.process("test.whatever")).isEqualTo("toplevel.test.whatever");
     }
 
     @Test
     public void testFlatteningPackageNameProcessor() {
-        PackageNameProcessor processor = PackageNameProcessor.builder()
-                .addProcessors(new FlatteningPackageNameProcessor())
-                .build();
-        assertThat(processor.getPackageName("data.test.api")).isEqualTo("data_test_api");
+        PackageNameProcessor processor =
+                new CompoundPackageNameProcessor(ImmutableList.of(FlatteningPackageNameProcessor.INSTANCE));
+        assertThat(processor.process("data.test.api")).isEqualTo("data_test_api");
     }
 
     @Test
     public void testPackageNameProcessorComposition() {
-        PackageNameProcessor processor = PackageNameProcessor.builder()
-                .addProcessors(new TwoComponentStrippingPackageNameProcessor())
-                .addProcessors(new FlatteningPackageNameProcessor())
-                .addProcessors(new TopLevelAddingPackageNameProcessor("toplevel"))
-                .build();
-        assertThat(processor.getPackageName("test")).isEqualTo("toplevel.test");
-        assertThat(processor.getPackageName("test.whatever")).isEqualTo("toplevel.test_whatever");
-        assertThat(processor.getPackageName("com.palantir.test")).isEqualTo("toplevel.test");
-        assertThat(processor.getPackageName("com.palantir.test.whatever")).isEqualTo("toplevel.test_whatever");
+        PackageNameProcessor processor = new CompoundPackageNameProcessor(ImmutableList.of(
+                new TwoComponentStrippingPackageNameProcessor(),
+                FlatteningPackageNameProcessor.INSTANCE,
+                new PrefixingPackageNameProcessor("toplevel")));
+        assertThat(processor.process("test")).isEqualTo("toplevel.test");
+        assertThat(processor.process("test.whatever")).isEqualTo("toplevel.test_whatever");
+        assertThat(processor.process("com.palantir.test")).isEqualTo("toplevel.test");
+        assertThat(processor.process("com.palantir.test.whatever")).isEqualTo("toplevel.test_whatever");
     }
 }

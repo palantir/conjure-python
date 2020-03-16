@@ -19,6 +19,7 @@ package com.palantir.conjure.python.poet;
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import com.palantir.conjure.python.processors.PythonIdentifierSanitizer;
 import com.palantir.conjure.python.types.ImportTypeVisitor;
 import com.palantir.conjure.spec.Documentation;
 import java.util.List;
@@ -31,12 +32,12 @@ public interface BeanSnippet extends PythonSnippet {
     ImmutableList<PythonImport> DEFAULT_IMPORTS = ImmutableList.of(
             PythonImport.builder()
                     .moduleSpecifier(ImportTypeVisitor.CONJURE_PYTHON_CLIENT)
-                    .addNamedImports("ConjureBeanType", "ConjureFieldDefinition")
+                    .addNamedImports(NamedImport.of("ConjureBeanType"), NamedImport.of("ConjureFieldDefinition"))
                     .build(),
             PythonImport.of("builtins"),
             PythonImport.builder()
                     .moduleSpecifier(ImportTypeVisitor.TYPING)
-                    .addNamedImports("Dict", "List")
+                    .addNamedImports(NamedImport.of("Dict"), NamedImport.of("List"))
                     .build());
     ImmutableSet<String> PROTECTED_FIELDS = ImmutableSet.of("fields");
 
@@ -47,6 +48,10 @@ public interface BeanSnippet extends PythonSnippet {
     }
 
     String className();
+
+    String definitionName();
+
+    PythonPackage definitionPackage();
 
     Optional<Documentation> docs();
 
@@ -146,6 +151,14 @@ public interface BeanSnippet extends PythonSnippet {
 
         // end of class def
         poetWriter.decreaseIndent();
+        poetWriter.writeLine();
+        poetWriter.writeLine();
+
+        poetWriter.writeIndentedLine(String.format("%s.__name__ = \"%s\"", className(), definitionName()));
+        poetWriter.writeIndentedLine(String.format(
+                "%s.__module__ = \"%s\"", className(), definitionPackage().get()));
+
+        poetWriter.writeLine();
         poetWriter.writeLine();
     }
 
