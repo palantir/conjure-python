@@ -1,7 +1,28 @@
-from abc import ABCMeta, abstractmethod
+from abc import (
+    ABCMeta,
+    abstractmethod,
+)
 import builtins
-from conjure_python_client import BinaryType, ConjureBeanType, ConjureDecoder, ConjureEncoder, ConjureEnumType, ConjureFieldDefinition, ConjureUnionType, DictType, ListType, OptionalType, Service
-from typing import Any, Dict, List, Optional, Set
+from conjure_python_client import (
+    BinaryType,
+    ConjureBeanType,
+    ConjureDecoder,
+    ConjureEncoder,
+    ConjureEnumType,
+    ConjureFieldDefinition,
+    ConjureUnionType,
+    DictType,
+    ListType,
+    OptionalType,
+    Service,
+)
+from typing import (
+    Any,
+    Dict,
+    List,
+    Optional,
+    Set,
+)
 
 class another_TestService(Service):
     """

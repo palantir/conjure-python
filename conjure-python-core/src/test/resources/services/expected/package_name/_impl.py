@@ -1,6 +1,22 @@
 import builtins
-from conjure_python_client import BinaryType, ConjureBeanType, ConjureDecoder, ConjureEncoder, ConjureFieldDefinition, DictType, ListType, OptionalType, Service
-from typing import Any, Dict, List, Optional, Set
+from conjure_python_client import (
+    BinaryType,
+    ConjureBeanType,
+    ConjureDecoder,
+    ConjureEncoder,
+    ConjureFieldDefinition,
+    DictType,
+    ListType,
+    OptionalType,
+    Service,
+)
+from typing import (
+    Any,
+    Dict,
+    List,
+    Optional,
+    Set,
+)
 
 class another_TestService(Service):
     """

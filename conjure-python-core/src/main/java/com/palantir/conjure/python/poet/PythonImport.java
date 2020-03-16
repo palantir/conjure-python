@@ -17,7 +17,6 @@
 package com.palantir.conjure.python.poet;
 
 import java.util.Set;
-import java.util.stream.Collectors;
 import org.immutables.value.Value;
 
 @Value.Immutable
@@ -42,15 +41,16 @@ public interface PythonImport extends Emittable {
         // Namespace imports
         if (!moduleSpecifier().equals(".")) {
             if (namedImports().isEmpty()) {
-                poetWriter.writeIndentedLine(String.format("import %s", moduleSpecifier()));
+                poetWriter.writeIndentedLine("import %s", moduleSpecifier());
             } else {
-                poetWriter.writeIndentedLine(String.format(
-                        "from %s import %s",
-                        moduleSpecifier(),
-                        namedImports().stream()
-                                .map(NamedImport::render)
-                                .sorted()
-                                .collect(Collectors.joining(", "))));
+                poetWriter.writeIndentedLine("from %s import (", moduleSpecifier());
+                poetWriter.increaseIndent();
+                namedImports().stream()
+                        .map(NamedImport::render)
+                        .sorted()
+                        .forEach(namedImport -> poetWriter.writeIndentedLine("%s,", namedImport));
+                poetWriter.decreaseIndent();
+                poetWriter.writeIndentedLine(")");
             }
         }
     }
