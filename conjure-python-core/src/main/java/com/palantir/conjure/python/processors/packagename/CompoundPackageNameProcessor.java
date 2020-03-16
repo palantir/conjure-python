@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2019 Palantir Technologies Inc. All rights reserved.
+ * (c) Copyright 2018 Palantir Technologies Inc. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,32 +16,25 @@
 
 package com.palantir.conjure.python.processors.packagename;
 
-import com.palantir.tokens.auth.ImmutablesStyle;
 import java.util.List;
-import org.immutables.value.Value;
 
 /**
  * Post process package names.
  */
-@Value.Immutable
-@ImmutablesStyle
-public abstract class CompoundPackageNameProcessor implements PackageNameProcessor {
-    CompoundPackageNameProcessor() {}
+public final class CompoundPackageNameProcessor implements PackageNameProcessor {
 
-    abstract List<PackageNameProcessor> processors();
+    private final List<PackageNameProcessor> processors;
+
+    public CompoundPackageNameProcessor(List<PackageNameProcessor> processors) {
+        this.processors = processors;
+    }
 
     @Override
-    public final String process(String packageName) {
+    public String process(String packageName) {
         String updatedPackage = packageName;
-        for (PackageNameProcessor processor : processors()) {
+        for (PackageNameProcessor processor : processors) {
             updatedPackage = processor.process(updatedPackage);
         }
         return updatedPackage;
     }
-
-    public static Builder builder() {
-        return new Builder();
-    }
-
-    public static final class Builder extends ImmutableCompoundPackageNameProcessor.Builder {}
 }

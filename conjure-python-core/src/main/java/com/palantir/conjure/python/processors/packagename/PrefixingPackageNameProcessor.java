@@ -16,11 +16,11 @@
 
 package com.palantir.conjure.python.processors.packagename;
 
-public final class TopLevelAddingPackageNameProcessor implements PackageNameProcessor {
+public final class PrefixingPackageNameProcessor implements PackageNameProcessor {
 
     private String topLevelPackageName;
 
-    public TopLevelAddingPackageNameProcessor(String topLevelPackageName) {
+    public PrefixingPackageNameProcessor(String topLevelPackageName) {
         this.topLevelPackageName = topLevelPackageName;
     }
 

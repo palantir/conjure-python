@@ -17,6 +17,7 @@
 package com.palantir.conjure.python;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import com.palantir.common.streams.KeyedStream;
@@ -35,7 +36,7 @@ import com.palantir.conjure.python.processors.packagename.CompoundPackageNamePro
 import com.palantir.conjure.python.processors.packagename.ConstantPackageNameProcessor;
 import com.palantir.conjure.python.processors.packagename.FlatteningPackageNameProcessor;
 import com.palantir.conjure.python.processors.packagename.PackageNameProcessor;
-import com.palantir.conjure.python.processors.packagename.TopLevelAddingPackageNameProcessor;
+import com.palantir.conjure.python.processors.packagename.PrefixingPackageNameProcessor;
 import com.palantir.conjure.python.processors.packagename.TwoComponentStrippingPackageNameProcessor;
 import com.palantir.conjure.python.processors.typename.NameOnlyTypeNameProcessor;
 import com.palantir.conjure.python.processors.typename.PackagePrependingTypeNameProcessor;
@@ -90,20 +91,17 @@ public final class ConjurePythonGenerator {
         PackageNameProcessor implPackageNameProcessor =
                 new ConstantPackageNameProcessor(config.pythonicPackageName().orElse(""));
 
-        PackageNameProcessor definitionPackageNameProcessor = CompoundPackageNameProcessor.builder()
-                .addProcessors(new TwoComponentStrippingPackageNameProcessor())
-                .addProcessors(FlatteningPackageNameProcessor.INSTANCE)
-                .addAllProcessors(config.pythonicPackageName()
-                        .map(pythonPackageName ->
-                                ImmutableSet.of(new TopLevelAddingPackageNameProcessor(pythonPackageName)))
-                        .orElseGet(ImmutableSet::of))
-                .build();
+        List<PackageNameProcessor> packageNameProcessors = new ArrayList<>();
+        packageNameProcessors.add(new TwoComponentStrippingPackageNameProcessor());
+        packageNameProcessors.add(FlatteningPackageNameProcessor.INSTANCE);
+        packageNameProcessors.addAll(config.pythonicPackageName()
+                .map(pythonPackageName -> ImmutableSet.of(new PrefixingPackageNameProcessor(pythonPackageName)))
+                .orElseGet(ImmutableSet::of));
+        PackageNameProcessor definitionPackageNameProcessor = new CompoundPackageNameProcessor(packageNameProcessors);
 
         TypeNameProcessor implTypeNameProcessor =
-                new PackagePrependingTypeNameProcessor(CompoundPackageNameProcessor.builder()
-                        .addProcessors(new TwoComponentStrippingPackageNameProcessor())
-                        .addProcessors(FlatteningPackageNameProcessor.INSTANCE)
-                        .build());
+                new PackagePrependingTypeNameProcessor(new CompoundPackageNameProcessor(ImmutableList.of(
+                        new TwoComponentStrippingPackageNameProcessor(), FlatteningPackageNameProcessor.INSTANCE)));
 
         TypeNameProcessor definitionTypeNameProcessor = NameOnlyTypeNameProcessor.INSTANCE;
 
@@ -285,13 +283,12 @@ public final class ConjurePythonGenerator {
     }
 
     private PackageNameProcessor buildPackageNameProcessor() {
-        CompoundPackageNameProcessor.Builder compoundPackageNameProcessor = CompoundPackageNameProcessor.builder()
-                .addProcessors(new TwoComponentStrippingPackageNameProcessor())
-                .addAllProcessors(config.pythonicPackageName()
-                        .map(pythonPackageName ->
-                                ImmutableSet.of(new TopLevelAddingPackageNameProcessor(pythonPackageName)))
-                        .orElseGet(ImmutableSet::of))
-                .addProcessors(FlatteningPackageNameProcessor.INSTANCE);
-        return compoundPackageNameProcessor.build();
+        List<PackageNameProcessor> packageNameProcessors = new ArrayList<>();
+        packageNameProcessors.add(new TwoComponentStrippingPackageNameProcessor());
+        packageNameProcessors.addAll(config.pythonicPackageName()
+                .map(pythonPackageName -> ImmutableSet.of(new PrefixingPackageNameProcessor(pythonPackageName)))
+                .orElseGet(ImmutableSet::of));
+        packageNameProcessors.add(FlatteningPackageNameProcessor.INSTANCE);
+        return new CompoundPackageNameProcessor(packageNameProcessors);
     }
 }
