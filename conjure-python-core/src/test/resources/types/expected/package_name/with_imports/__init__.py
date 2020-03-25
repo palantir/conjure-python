@@ -6,5 +6,6 @@ from .._impl import (
     with_imports_ImportService as ImportService,
     with_imports_ImportedAliasInMaps as ImportedAliasInMaps,
     with_imports_UnionWithImports as UnionWithImports,
+    with_imports_UnionWithImportsVisitor as UnionWithImportsVisitor,
 )
 

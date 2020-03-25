@@ -24,3 +24,12 @@ def test_import_circular_package_reference():
     from ..generated_integration.product_a import Foo, Operation
     from ..generated_integration.product_b import Bar
     Foo(Bar(value=1, operation=Operation("operation")))
+
+def test_union_visitor():
+    from ..generated_integration.product import OptionsUnion, OptionsUnionVisitor
+
+    class TestOptionsUnionVisitor(OptionsUnionVisitor):
+        def _options(self, value):
+            return value
+
+    assert OptionsUnion(options="options").accept(TestOptionsUnionVisitor()) == "options"

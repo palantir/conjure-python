@@ -27,6 +27,7 @@ from .._impl import (
     product_NestedAliasExample as NestedAliasExample,
     product_OptionalExample as OptionalExample,
     product_OptionsUnion as OptionsUnion,
+    product_OptionsUnionVisitor as OptionsUnionVisitor,
     product_PrimitiveOptionalsExample as PrimitiveOptionalsExample,
     product_RecursiveObjectAlias as RecursiveObjectAlias,
     product_RecursiveObjectExample as RecursiveObjectExample,
@@ -40,6 +41,7 @@ from .._impl import (
     product_StringAliasExample as StringAliasExample,
     product_StringExample as StringExample,
     product_UnionTypeExample as UnionTypeExample,
+    product_UnionTypeExampleVisitor as UnionTypeExampleVisitor,
     product_UuidAliasExample as UuidAliasExample,
     product_UuidExample as UuidExample,
 )

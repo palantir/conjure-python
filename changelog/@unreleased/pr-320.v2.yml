@@ -1,0 +1,5 @@
+type: fix
+fix:
+  description: Import abstract union visitors from impl module
+  links:
+  - https://github.com/palantir/conjure-python/pull/320
