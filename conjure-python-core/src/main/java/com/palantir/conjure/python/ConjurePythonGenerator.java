@@ -41,6 +41,7 @@ import com.palantir.conjure.python.processors.packagename.TwoComponentStrippingP
 import com.palantir.conjure.python.processors.typename.NameOnlyTypeNameProcessor;
 import com.palantir.conjure.python.processors.typename.PackagePrependingTypeNameProcessor;
 import com.palantir.conjure.python.processors.typename.TypeNameProcessor;
+import com.palantir.conjure.python.types.DefinitionImportTypeDefinitionVisitor;
 import com.palantir.conjure.python.types.PythonTypeGenerator;
 import com.palantir.conjure.spec.ConjureDefinition;
 import com.palantir.conjure.spec.TypeName;
@@ -176,6 +177,10 @@ public final class ConjurePythonGenerator {
             TypeNameProcessor definitionTypeNameProcessor) {
         String moduleSpecifier = ".._impl";
 
+        DefinitionImportTypeDefinitionVisitor definitionImportTypeDefinitionVisitor =
+                new DefinitionImportTypeDefinitionVisitor(
+                        moduleSpecifier, implTypeNameProcessor, definitionTypeNameProcessor);
+
         List<PythonSnippet> snippets = new ArrayList<>();
         snippets.addAll(conjureDefinition.getTypes().stream()
                 .map(typeDefinition -> {
@@ -183,11 +188,7 @@ public final class ConjurePythonGenerator {
                     return EmptySnippet.builder()
                             .pythonPackage(
                                     PythonPackage.of(definitionPackageNameProcessor.process(typeName.getPackage())))
-                            .addImports(PythonImport.of(
-                                    moduleSpecifier,
-                                    NamedImport.of(
-                                            implTypeNameProcessor.process(typeName),
-                                            definitionTypeNameProcessor.process(typeName))))
+                            .addAllImports(typeDefinition.accept(definitionImportTypeDefinitionVisitor))
                             .build();
                 })
                 .collect(Collectors.toList()));
