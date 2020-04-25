@@ -37,14 +37,14 @@ The recommended way to use conjure-python is via a build tool like [gradle-conju
     stringVariant = UnionTypeExample(string_example="foo")
     ```
 
-- **Conjure enum: [EnumExample](https://github.com/palantir/conjure-python/blob/8e983b250f9cc7e5baeda34f405e31fa710bd068/conjure-python-core/src/test/resources/types/expected/package_name/_impl.py#L888)**
+- **Conjure enum: [EnumExample](https://github.com/palantir/conjure-python/blob/develop/conjure-python-core/src/test/resources/types/expected/package_name/_impl.py#L888)**
 
   ```python
   one = EnumExample.ONE;
   print(one); // prints: 'ONE'
   ```
 
-- **Conjure alias: [StringAliasExample](https://github.com/palantir/conjure-python/blob/8e983b250f9cc7e5baeda34f405e31fa710bd068/conjure-python-core/src/test/resources/types/expected/package_name/_impl.py#L1895)**
+- **Conjure alias: [StringAliasExample](https://github.com/palantir/conjure-python/blob/develop/conjure-python-core/src/test/resources/types/expected/package_name/_impl.py#L1895)**
 
   Python uses structural (duck-typing) so aliases are currently transparent.
 
