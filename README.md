@@ -52,7 +52,7 @@ The recommended way to use conjure-python is via a build tool like [gradle-conju
 Example service interface: [TestService](https://github.com/palantir/conjure-python/blob/develop/conjure-python-core/src/test/resources/services/expected/package_name/_impl.py#L21)
 
 ```python
-class another_TestService(Service):
+class TestService(Service):
     """
     A Markdown description of the service. "Might end with quotes"
     """
