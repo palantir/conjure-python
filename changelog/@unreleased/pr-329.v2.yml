@@ -1,0 +1,5 @@
+type: fix
+fix:
+  description: Example links in the readme work.
+  links:
+  - https://github.com/palantir/conjure-python/pull/329
