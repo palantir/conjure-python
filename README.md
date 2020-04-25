@@ -58,7 +58,7 @@ class another_TestService(Service):
     """
 
     def get_file_systems(self, auth_header):
-        # type: (str) -> Dict[str, product_datasets_BackingFileSystem]
+        # type: (str) -> Dict[str, BackingFileSystem]
         """
         Returns a mapping from file system id to backing file system configuration.
         """
@@ -87,7 +87,7 @@ class another_TestService(Service):
             json=_json)
 
         _decoder = ConjureDecoder()
-        return _decoder.decode(_response.json(), DictType(str, product_datasets_BackingFileSystem))
+        return _decoder.decode(_response.json(), DictType(str, BackingFileSystem))
 ```
 
 ## Constructing clients
