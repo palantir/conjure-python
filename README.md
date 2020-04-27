@@ -25,46 +25,59 @@ The recommended way to use conjure-python is via a build tool like [gradle-conju
 
 ## Example generated objects
 
-- **Conjure object: [ManyFieldExample](https://github.com/palantir/conjure-python/blob/develop/conjure-python-core/src/test/resources/types/expected/package/product/__init__.py#L345)**
+- **Conjure object: [ManyFieldExample](https://github.com/palantir/conjure-python/blob/develop/conjure-python-core/src/test/resources/types/expected/package_name/_impl.py#L1022)**
 
     ```python
     example = ManyFieldExample('alias', 1.0, 1, [], {}, [])
     ```
 
-- **Conjure union: [UnionTypeExample](https://github.com/palantir/conjure-python/blob/develop/conjure-python-core/src/test/resources/types/expected/package/product/__init__.py#L689)**
+- **Conjure union: [UnionTypeExample](https://github.com/palantir/conjure-python/blob/develop/conjure-python-core/src/test/resources/types/expected/package_name/_impl.py#L1465)**
 
     ```python
     stringVariant = UnionTypeExample(string_example="foo")
     ```
 
-- **Conjure enum: [EnumExample](https://github.com/palantir/conjure-python/blob/develop/conjure-python-core/src/test/resources/types/expected/package/product/__init__.py#L256)**
+- **Conjure enum: [EnumExample](https://github.com/palantir/conjure-python/blob/develop/conjure-python-core/src/test/resources/types/expected/package_name/_impl.py#L888)**
 
   ```python
   one = EnumExample.ONE;
   print(one); // prints: 'ONE'
   ```
 
-- **Conjure alias: [StringAliasExample](https://github.com/palantir/conjure-python/blob/develop/conjure-python-core/src/test/resources/types/expected/package/product/__init__.py#L817)**
+- **Conjure alias: [StringAliasExample](https://github.com/palantir/conjure-python/blob/develop/conjure-python-core/src/test/resources/types/expected/package_name/_impl.py#L1895)**
 
   Python uses structural (duck-typing) so aliases are currently transparent.
 
 ## Example Client interfaces
-Example service interface: [TestService](./conjure-python-core/src/test/resources/services/expected/package/another/__init__.py)
+Example service interface: [TestService](https://github.com/palantir/conjure-python/blob/develop/conjure-python-core/src/test/resources/services/expected/package_name/_impl.py#L21)
 
 ```python
 class TestService(Service):
-    """A Markdown description of the service."""
+    """
+    A Markdown description of the service. "Might end with quotes"
+    """
 
     def get_file_systems(self, auth_header):
         # type: (str) -> Dict[str, BackingFileSystem]
-        """Returns a mapping from file system id to backing file system configuration."""
+        """
+        Returns a mapping from file system id to backing file system configuration.
+        """
 
         _headers = {
             'Accept': 'application/json',
             'Authorization': auth_header,
         } # type: Dict[str, Any]
 
+        _params = {
+        } # type: Dict[str, Any]
+
+        _path_params = {
+        } # type: Dict[str, Any]
+
+        _json = None # type: Any
+
         _path = '/catalog/fileSystems'
+        _path = _path.format(**_path_params)
 
         _response = self._request( # type: ignore
             'GET',
@@ -75,7 +88,6 @@ class TestService(Service):
 
         _decoder = ConjureDecoder()
         return _decoder.decode(_response.json(), DictType(str, BackingFileSystem))
-
 ```
 
 ## Constructing clients
