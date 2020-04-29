@@ -1,5 +1,6 @@
 __all__ = [
     'another',
+    'package_name',
     'product',
     'product_datasets',
 ]

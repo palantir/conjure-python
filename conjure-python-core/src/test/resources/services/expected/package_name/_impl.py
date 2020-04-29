@@ -565,3 +565,5 @@ product_datasets_Dataset.__name__ = "Dataset"
 product_datasets_Dataset.__module__ = "package_name.product_datasets"
 
 
+package_name_TypeInPackageWithTheSameNameAsRootPackage = str
+
