@@ -228,7 +228,7 @@ public final class ConjurePythonGenerator {
                         .contents(packageNames.stream()
                                 .map(pythonPackage -> pythonPackage
                                         .get()
-                                        .replace(rootInitFilePath, "")
+                                        .replaceFirst(rootInitFilePath, "")
                                         .replace(".", ""))
                                 .sorted()
                                 .collect(Collectors.toList()))

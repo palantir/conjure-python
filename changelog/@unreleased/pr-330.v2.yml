@@ -1,0 +1,6 @@
+type: improvement
+improvement:
+  description: We now only match the first occurence of the root pacakage name, rather
+    than all occurences in the subpackage name.
+  links:
+  - https://github.com/palantir/conjure-python/pull/330

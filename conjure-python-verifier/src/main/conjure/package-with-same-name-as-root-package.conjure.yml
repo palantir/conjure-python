@@ -1,0 +1,7 @@
+types:
+  definitions:
+    default-package: com.palantir.generated.integration.subpackage
+    objects:
+      SomeObject:
+        fields:
+          string: string

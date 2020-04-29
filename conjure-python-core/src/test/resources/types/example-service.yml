@@ -43,6 +43,10 @@ types:
           fileSystemId: string
           path: string
 
+      TypeInPackageWithTheSameNameAsRootPackage:
+        package: com.palantir.package.name
+        alias: string
+
 services:
   TestService:
     name: Test Service

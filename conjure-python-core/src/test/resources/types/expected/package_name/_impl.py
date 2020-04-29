@@ -1898,6 +1898,8 @@ product_UuidAliasExample = str
 
 product_CollectionAliasExample = DictType(product_StringAliasExample, product_RecursiveObjectAlias)
 
+package_name_TypeInPackageWithTheSameNameAsRootPackage = str
+
 product_ReferenceAliasExample = product_AnyExample
 
 product_RidAliasExample = str

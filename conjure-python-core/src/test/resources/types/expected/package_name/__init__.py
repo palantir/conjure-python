@@ -3,6 +3,7 @@ __all__ = [
     'nested_deeply_nested_service',
     'nested_service',
     'nested_service2',
+    'package_name',
     'product',
     'product_datasets',
     'with_imports',
