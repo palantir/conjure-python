@@ -1,18 +1,18 @@
-com.fasterxml.jackson.*:jackson-* = 2.9.8
+com.fasterxml.jackson.*:jackson-* = 2.11.0
 com.google.code.findbugs:jsr305 = 3.0.2
 com.google.guava:guava = 23.6.1-jre
 com.google.errorprone:error_prone_annotations = 2.4.0
 com.google.errorprone:error_prone_core = 2.4.0
-com.palantir.conjure.verification:* = 0.16.6
+com.palantir.conjure.verification:* = 0.18.5
 com.palantir.conjure:* = 4.4.0
 com.palantir.common:streams = 1.9.1
 commons-cli:commons-cli = 1.4
 info.picocli:picocli = 4.3.2
 junit:junit = 4.12
 org.apache.commons:commons-lang3 = 3.9
-org.assertj:* = 3.12.2
+org.assertj:* = 3.16.1
 org.immutables:value = 2.8.8
 org.mockito:mockito-core = 3.3.3
-org.slf4j:* = 1.7.25
+org.slf4j:* = 1.7.30
 
 # linter:OFF
