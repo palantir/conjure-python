@@ -1,0 +1,5 @@
+type: fix
+fix:
+  description: Explicitly use `builtins.property` in generated unions to prevent members named 'property' breaking generated code.
+  links:
+  - https://github.com/palantir/conjure-python/pull/345
