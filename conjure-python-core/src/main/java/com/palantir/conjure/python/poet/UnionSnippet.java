@@ -148,11 +148,11 @@ public interface UnionSnippet extends PythonSnippet {
             });
             poetWriter.decreaseIndent();
 
-            // python @property for each member of the union
+            // python @builtins.property for each member of the union
             options().forEach(option -> {
                 poetWriter.writeLine();
 
-                poetWriter.writeIndentedLine("@property");
+                poetWriter.writeIndentedLine("@builtins.property");
                 poetWriter.writeIndentedLine(String.format("def %s(self):", propertyName(option)));
 
                 poetWriter.increaseIndent();
