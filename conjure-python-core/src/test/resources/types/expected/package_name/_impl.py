@@ -1185,7 +1185,7 @@ class product_OptionsUnion(ConjureUnionType):
             self._options_ = options
             self._type = 'options'
 
-    @property
+    @builtins.property
     def options(self):
         # type: () -> str
         return self._options_
@@ -1471,6 +1471,7 @@ class product_UnionTypeExample(ConjureUnionType):
     _if_ = None # type: int
     _new = None # type: int
     _interface = None # type: int
+    _property = None # type: int
 
     @builtins.classmethod
     def _options(cls):
@@ -1482,11 +1483,12 @@ class product_UnionTypeExample(ConjureUnionType):
             'also_an_integer': ConjureFieldDefinition('alsoAnInteger', int),
             'if_': ConjureFieldDefinition('if', int),
             'new': ConjureFieldDefinition('new', int),
-            'interface': ConjureFieldDefinition('interface', int)
+            'interface': ConjureFieldDefinition('interface', int),
+            'property': ConjureFieldDefinition('property', int)
         }
 
-    def __init__(self, string_example=None, set=None, this_field_is_an_integer=None, also_an_integer=None, if_=None, new=None, interface=None):
-        if (string_example is not None) + (set is not None) + (this_field_is_an_integer is not None) + (also_an_integer is not None) + (if_ is not None) + (new is not None) + (interface is not None) != 1:
+    def __init__(self, string_example=None, set=None, this_field_is_an_integer=None, also_an_integer=None, if_=None, new=None, interface=None, property=None):
+        if (string_example is not None) + (set is not None) + (this_field_is_an_integer is not None) + (also_an_integer is not None) + (if_ is not None) + (new is not None) + (interface is not None) + (property is not None) != 1:
             raise ValueError('a union must contain a single member')
 
         if string_example is not None:
@@ -1510,8 +1512,11 @@ class product_UnionTypeExample(ConjureUnionType):
         if interface is not None:
             self._interface = interface
             self._type = 'interface'
+        if property is not None:
+            self._property = property
+            self._type = 'property'
 
-    @property
+    @builtins.property
     def string_example(self):
         # type: () -> product_StringExample
         """
@@ -1519,35 +1524,40 @@ class product_UnionTypeExample(ConjureUnionType):
         """
         return self._string_example
 
-    @property
+    @builtins.property
     def set(self):
         # type: () -> List[str]
         return self._set
 
-    @property
+    @builtins.property
     def this_field_is_an_integer(self):
         # type: () -> int
         return self._this_field_is_an_integer
 
-    @property
+    @builtins.property
     def also_an_integer(self):
         # type: () -> int
         return self._also_an_integer
 
-    @property
+    @builtins.property
     def if_(self):
         # type: () -> int
         return self._if_
 
-    @property
+    @builtins.property
     def new(self):
         # type: () -> int
         return self._new
 
-    @property
+    @builtins.property
     def interface(self):
         # type: () -> int
         return self._interface
+
+    @builtins.property
+    def property(self):
+        # type: () -> int
+        return self._property
 
     def accept(self, visitor):
         # type: (product_UnionTypeExampleVisitor) -> Any
@@ -1567,6 +1577,8 @@ class product_UnionTypeExample(ConjureUnionType):
             return visitor._new(self.new)
         if self.type == 'interface':
             return visitor._interface(self.interface)
+        if self.type == 'property':
+            return visitor._property(self.property)
 
 
 product_UnionTypeExample.__name__ = "UnionTypeExample"
@@ -1610,6 +1622,11 @@ class product_UnionTypeExampleVisitor(product_UnionTypeExampleVisitorBaseClass):
 
     @abstractmethod
     def _interface(self, interface):
+        # type: (int) -> Any
+        pass
+
+    @abstractmethod
+    def _property(self, property):
         # type: (int) -> Any
         pass
 
@@ -1836,12 +1853,12 @@ class with_imports_UnionWithImports(ConjureUnionType):
             self._imported = imported
             self._type = 'imported'
 
-    @property
+    @builtins.property
     def string(self):
         # type: () -> str
         return self._string
 
-    @property
+    @builtins.property
     def imported(self):
         # type: () -> product_AnyMapExample
         return self._imported
