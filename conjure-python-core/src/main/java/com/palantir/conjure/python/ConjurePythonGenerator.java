@@ -251,7 +251,7 @@ public final class ConjurePythonGenerator {
                 .pythonPackage(rootPackage)
                 .putOptions("name", config.packageName().get())
                 .putOptions("version", config.packageVersion().get())
-                .addInstallDependencies("requests", "typing")
+                .addInstallDependencies("requests", "typing ; python_version < \"3.5\"")
                 .addInstallDependencies(String.format(
                         "conjure-python-client>=%s,<%s",
                         config.minConjureClientVersion(), config.maxConjureClientVersion()))
