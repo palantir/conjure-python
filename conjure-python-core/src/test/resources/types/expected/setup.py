@@ -10,7 +10,7 @@ setup(
     packages=find_packages(),
     install_requires=[
         'requests',
-        'typing',
+        'typing ; python_version < "3.5"',
         'conjure-python-client>=1.0.0,<2',
         'future',
     ],
