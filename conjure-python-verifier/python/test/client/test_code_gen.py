@@ -11,22 +11,38 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import pickle
 
 
 # TODO(forozco): Once we split out code gen have more granular testing of code evaluation
 def test_code_gen_compiles():
-    from ..generated_integration.product import RecursiveObjectExample, RecursiveObjectAlias
+    from generated_integration.product import RecursiveObjectExample, RecursiveObjectAlias
     object_example = RecursiveObjectExample(None)
     object_alias = RecursiveObjectAlias(None)
     assert object_alias == object_example
 
+
+def test_code_gen_is_picklable():
+    from generated_integration.product import RecursiveObjectExample, RecursiveObjectAlias
+    object_example = RecursiveObjectExample(None)
+    object_alias = RecursiveObjectAlias(None)
+    assert object_alias == object_example
+    pickled_object = pickle.dumps(object_example, pickle.HIGHEST_PROTOCOL)
+    pickled_alias = pickle.dumps(object_alias, pickle.HIGHEST_PROTOCOL)
+    unpickled_object = pickle.loads(pickled_object)
+    unpickled_alias = pickle.loads(pickled_alias)
+    assert unpickled_object == object_example
+    assert unpickled_alias == object_alias
+
+
 def test_import_circular_package_reference():
-    from ..generated_integration.product_a import Foo, Operation
-    from ..generated_integration.product_b import Bar
+    from generated_integration.product_a import Foo, Operation
+    from generated_integration.product_b import Bar
     Foo(Bar(value=1, operation=Operation("operation")))
 
+
 def test_union_visitor():
-    from ..generated_integration.product import OptionsUnion, OptionsUnionVisitor
+    from generated_integration.product import OptionsUnion, OptionsUnionVisitor
 
     class TestOptionsUnionVisitor(OptionsUnionVisitor):
         def _options(self, value):

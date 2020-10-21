@@ -190,12 +190,7 @@ public interface UnionSnippet extends PythonSnippet {
             poetWriter.writeLine();
             poetWriter.writeLine();
 
-            poetWriter.writeIndentedLine(String.format("%s.__name__ = \"%s\"", className(), definitionName()));
-            poetWriter.writeIndentedLine(String.format(
-                    "%s.__module__ = \"%s\"", className(), definitionPackage().get()));
-
-            poetWriter.writeLine();
-            poetWriter.writeLine();
+            PythonClassRenamer.renameClass(poetWriter, className(), definitionPackage(), definitionName());
 
             // We need to generate this base class to be python 2 compatible
             String visitorBaseClass = String.format("%sBaseClass", visitorName);
@@ -219,11 +214,7 @@ public interface UnionSnippet extends PythonSnippet {
             poetWriter.writeLine();
             poetWriter.writeLine();
 
-            poetWriter.writeIndentedLine(String.format("%s.__name__ = \"%s\"", visitorName, definitionVisitorName));
-            poetWriter.writeIndentedLine(String.format("%s.__module__ = \"%s\"", visitorName, definitionVisitorName));
-
-            poetWriter.writeLine();
-            poetWriter.writeLine();
+            PythonClassRenamer.renameClass(poetWriter, visitorName, definitionPackage(), definitionVisitorName);
         });
     }
 
