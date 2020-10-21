@@ -154,12 +154,7 @@ public interface BeanSnippet extends PythonSnippet {
         poetWriter.writeLine();
         poetWriter.writeLine();
 
-        poetWriter.writeIndentedLine(String.format("%s.__name__ = \"%s\"", className(), definitionName()));
-        poetWriter.writeIndentedLine(String.format(
-                "%s.__module__ = \"%s\"", className(), definitionPackage().get()));
-
-        poetWriter.writeLine();
-        poetWriter.writeLine();
+        PythonClassRenamer.renameClass(poetWriter, className(), definitionPackage(), definitionName());
     }
 
     class Builder extends ImmutableBeanSnippet.Builder {}

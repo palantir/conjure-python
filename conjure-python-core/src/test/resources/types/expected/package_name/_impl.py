@@ -459,6 +459,7 @@ class another_TestService(Service):
 
 
 another_TestService.__name__ = "TestService"
+another_TestService.__qualname__ = "TestService"
 another_TestService.__module__ = "package_name.another"
 
 
@@ -495,6 +496,7 @@ class nested_deeply_nested_service_DeeplyNestedService(Service):
 
 
 nested_deeply_nested_service_DeeplyNestedService.__name__ = "DeeplyNestedService"
+nested_deeply_nested_service_DeeplyNestedService.__qualname__ = "DeeplyNestedService"
 nested_deeply_nested_service_DeeplyNestedService.__module__ = "package_name.nested_deeply_nested_service"
 
 
@@ -531,6 +533,7 @@ class nested_service2_SimpleNestedService2(Service):
 
 
 nested_service2_SimpleNestedService2.__name__ = "SimpleNestedService2"
+nested_service2_SimpleNestedService2.__qualname__ = "SimpleNestedService2"
 nested_service2_SimpleNestedService2.__module__ = "package_name.nested_service2"
 
 
@@ -567,6 +570,7 @@ class nested_service_SimpleNestedService(Service):
 
 
 nested_service_SimpleNestedService.__name__ = "SimpleNestedService"
+nested_service_SimpleNestedService.__qualname__ = "SimpleNestedService"
 nested_service_SimpleNestedService.__module__ = "package_name.nested_service"
 
 
@@ -592,6 +596,7 @@ class nested_service_SimpleObject(ConjureBeanType):
 
 
 nested_service_SimpleObject.__name__ = "SimpleObject"
+nested_service_SimpleObject.__qualname__ = "SimpleObject"
 nested_service_SimpleObject.__module__ = "package_name.nested_service"
 
 
@@ -659,6 +664,7 @@ class product_AliasAsMapKeyExample(ConjureBeanType):
 
 
 product_AliasAsMapKeyExample.__name__ = "AliasAsMapKeyExample"
+product_AliasAsMapKeyExample.__qualname__ = "AliasAsMapKeyExample"
 product_AliasAsMapKeyExample.__module__ = "package_name.product"
 
 
@@ -684,6 +690,7 @@ class product_AnyExample(ConjureBeanType):
 
 
 product_AnyExample.__name__ = "AnyExample"
+product_AnyExample.__qualname__ = "AnyExample"
 product_AnyExample.__module__ = "package_name.product"
 
 
@@ -709,6 +716,7 @@ class product_AnyMapExample(ConjureBeanType):
 
 
 product_AnyMapExample.__name__ = "AnyMapExample"
+product_AnyMapExample.__qualname__ = "AnyMapExample"
 product_AnyMapExample.__module__ = "package_name.product"
 
 
@@ -734,6 +742,7 @@ class product_BearerTokenExample(ConjureBeanType):
 
 
 product_BearerTokenExample.__name__ = "BearerTokenExample"
+product_BearerTokenExample.__qualname__ = "BearerTokenExample"
 product_BearerTokenExample.__module__ = "package_name.product"
 
 
@@ -759,6 +768,7 @@ class product_BinaryExample(ConjureBeanType):
 
 
 product_BinaryExample.__name__ = "BinaryExample"
+product_BinaryExample.__qualname__ = "BinaryExample"
 product_BinaryExample.__module__ = "package_name.product"
 
 
@@ -784,6 +794,7 @@ class product_BooleanExample(ConjureBeanType):
 
 
 product_BooleanExample.__name__ = "BooleanExample"
+product_BooleanExample.__qualname__ = "BooleanExample"
 product_BooleanExample.__module__ = "package_name.product"
 
 
@@ -816,6 +827,7 @@ class product_CreateDatasetRequest(ConjureBeanType):
 
 
 product_CreateDatasetRequest.__name__ = "CreateDatasetRequest"
+product_CreateDatasetRequest.__qualname__ = "CreateDatasetRequest"
 product_CreateDatasetRequest.__module__ = "package_name.product"
 
 
@@ -841,6 +853,7 @@ class product_DateTimeExample(ConjureBeanType):
 
 
 product_DateTimeExample.__name__ = "DateTimeExample"
+product_DateTimeExample.__qualname__ = "DateTimeExample"
 product_DateTimeExample.__module__ = "package_name.product"
 
 
@@ -866,6 +879,7 @@ class product_DoubleExample(ConjureBeanType):
 
 
 product_DoubleExample.__name__ = "DoubleExample"
+product_DoubleExample.__qualname__ = "DoubleExample"
 product_DoubleExample.__module__ = "package_name.product"
 
 
@@ -882,6 +896,7 @@ class product_EmptyObjectExample(ConjureBeanType):
 
 
 product_EmptyObjectExample.__name__ = "EmptyObjectExample"
+product_EmptyObjectExample.__qualname__ = "EmptyObjectExample"
 product_EmptyObjectExample.__module__ = "package_name.product"
 
 
@@ -902,6 +917,7 @@ class product_EnumExample(ConjureEnumType):
 
 
 product_EnumExample.__name__ = "EnumExample"
+product_EnumExample.__qualname__ = "EnumExample"
 product_EnumExample.__module__ = "package_name.product"
 
 
@@ -927,6 +943,7 @@ class product_EnumFieldExample(ConjureBeanType):
 
 
 product_EnumFieldExample.__name__ = "EnumFieldExample"
+product_EnumFieldExample.__qualname__ = "EnumFieldExample"
 product_EnumFieldExample.__module__ = "package_name.product"
 
 
@@ -952,6 +969,7 @@ class product_FieldObject(ConjureBeanType):
 
 
 product_FieldObject.__name__ = "FieldObject"
+product_FieldObject.__qualname__ = "FieldObject"
 product_FieldObject.__module__ = "package_name.product"
 
 
@@ -977,6 +995,7 @@ class product_IntegerExample(ConjureBeanType):
 
 
 product_IntegerExample.__name__ = "IntegerExample"
+product_IntegerExample.__qualname__ = "IntegerExample"
 product_IntegerExample.__module__ = "package_name.product"
 
 
@@ -1016,6 +1035,7 @@ class product_ListExample(ConjureBeanType):
 
 
 product_ListExample.__name__ = "ListExample"
+product_ListExample.__qualname__ = "ListExample"
 product_ListExample.__module__ = "package_name.product"
 
 
@@ -1114,6 +1134,7 @@ class product_ManyFieldExample(ConjureBeanType):
 
 
 product_ManyFieldExample.__name__ = "ManyFieldExample"
+product_ManyFieldExample.__qualname__ = "ManyFieldExample"
 product_ManyFieldExample.__module__ = "package_name.product"
 
 
@@ -1139,6 +1160,7 @@ class product_MapExample(ConjureBeanType):
 
 
 product_MapExample.__name__ = "MapExample"
+product_MapExample.__qualname__ = "MapExample"
 product_MapExample.__module__ = "package_name.product"
 
 
@@ -1164,6 +1186,7 @@ class product_OptionalExample(ConjureBeanType):
 
 
 product_OptionalExample.__name__ = "OptionalExample"
+product_OptionalExample.__qualname__ = "OptionalExample"
 product_OptionalExample.__module__ = "package_name.product"
 
 
@@ -1199,6 +1222,7 @@ class product_OptionsUnion(ConjureUnionType):
 
 
 product_OptionsUnion.__name__ = "OptionsUnion"
+product_OptionsUnion.__qualname__ = "OptionsUnion"
 product_OptionsUnion.__module__ = "package_name.product"
 
 
@@ -1214,7 +1238,8 @@ class product_OptionsUnionVisitor(product_OptionsUnionVisitorBaseClass):
 
 
 product_OptionsUnionVisitor.__name__ = "OptionsUnionVisitor"
-product_OptionsUnionVisitor.__module__ = "OptionsUnionVisitor"
+product_OptionsUnionVisitor.__qualname__ = "OptionsUnionVisitor"
+product_OptionsUnionVisitor.__module__ = "package_name.product"
 
 
 class product_PrimitiveOptionalsExample(ConjureBeanType):
@@ -1281,6 +1306,7 @@ class product_PrimitiveOptionalsExample(ConjureBeanType):
 
 
 product_PrimitiveOptionalsExample.__name__ = "PrimitiveOptionalsExample"
+product_PrimitiveOptionalsExample.__qualname__ = "PrimitiveOptionalsExample"
 product_PrimitiveOptionalsExample.__module__ = "package_name.product"
 
 
@@ -1306,6 +1332,7 @@ class product_RecursiveObjectExample(ConjureBeanType):
 
 
 product_RecursiveObjectExample.__name__ = "RecursiveObjectExample"
+product_RecursiveObjectExample.__qualname__ = "RecursiveObjectExample"
 product_RecursiveObjectExample.__module__ = "package_name.product"
 
 
@@ -1352,6 +1379,7 @@ class product_ReservedKeyExample(ConjureBeanType):
 
 
 product_ReservedKeyExample.__name__ = "ReservedKeyExample"
+product_ReservedKeyExample.__qualname__ = "ReservedKeyExample"
 product_ReservedKeyExample.__module__ = "package_name.product"
 
 
@@ -1377,6 +1405,7 @@ class product_RidExample(ConjureBeanType):
 
 
 product_RidExample.__name__ = "RidExample"
+product_RidExample.__qualname__ = "RidExample"
 product_RidExample.__module__ = "package_name.product"
 
 
@@ -1402,6 +1431,7 @@ class product_SafeLongExample(ConjureBeanType):
 
 
 product_SafeLongExample.__name__ = "SafeLongExample"
+product_SafeLongExample.__qualname__ = "SafeLongExample"
 product_SafeLongExample.__module__ = "package_name.product"
 
 
@@ -1434,6 +1464,7 @@ class product_SetExample(ConjureBeanType):
 
 
 product_SetExample.__name__ = "SetExample"
+product_SetExample.__qualname__ = "SetExample"
 product_SetExample.__module__ = "package_name.product"
 
 
@@ -1459,6 +1490,7 @@ class product_StringExample(ConjureBeanType):
 
 
 product_StringExample.__name__ = "StringExample"
+product_StringExample.__qualname__ = "StringExample"
 product_StringExample.__module__ = "package_name.product"
 
 
@@ -1582,6 +1614,7 @@ class product_UnionTypeExample(ConjureUnionType):
 
 
 product_UnionTypeExample.__name__ = "UnionTypeExample"
+product_UnionTypeExample.__qualname__ = "UnionTypeExample"
 product_UnionTypeExample.__module__ = "package_name.product"
 
 
@@ -1632,7 +1665,8 @@ class product_UnionTypeExampleVisitor(product_UnionTypeExampleVisitorBaseClass):
 
 
 product_UnionTypeExampleVisitor.__name__ = "UnionTypeExampleVisitor"
-product_UnionTypeExampleVisitor.__module__ = "UnionTypeExampleVisitor"
+product_UnionTypeExampleVisitor.__qualname__ = "UnionTypeExampleVisitor"
+product_UnionTypeExampleVisitor.__module__ = "package_name.product"
 
 
 class product_UuidExample(ConjureBeanType):
@@ -1657,6 +1691,7 @@ class product_UuidExample(ConjureBeanType):
 
 
 product_UuidExample.__name__ = "UuidExample"
+product_UuidExample.__qualname__ = "UuidExample"
 product_UuidExample.__module__ = "package_name.product"
 
 
@@ -1699,6 +1734,7 @@ class product_datasets_BackingFileSystem(ConjureBeanType):
 
 
 product_datasets_BackingFileSystem.__name__ = "BackingFileSystem"
+product_datasets_BackingFileSystem.__qualname__ = "BackingFileSystem"
 product_datasets_BackingFileSystem.__module__ = "package_name.product_datasets"
 
 
@@ -1734,6 +1770,7 @@ class product_datasets_Dataset(ConjureBeanType):
 
 
 product_datasets_Dataset.__name__ = "Dataset"
+product_datasets_Dataset.__qualname__ = "Dataset"
 product_datasets_Dataset.__module__ = "package_name.product_datasets"
 
 
@@ -1766,6 +1803,7 @@ class with_imports_ComplexObjectWithImports(ConjureBeanType):
 
 
 with_imports_ComplexObjectWithImports.__name__ = "ComplexObjectWithImports"
+with_imports_ComplexObjectWithImports.__qualname__ = "ComplexObjectWithImports"
 with_imports_ComplexObjectWithImports.__module__ = "package_name.with_imports"
 
 
@@ -1802,6 +1840,7 @@ class with_imports_ImportService(Service):
 
 
 with_imports_ImportService.__name__ = "ImportService"
+with_imports_ImportService.__qualname__ = "ImportService"
 with_imports_ImportService.__module__ = "package_name.with_imports"
 
 
@@ -1827,6 +1866,7 @@ class with_imports_ImportedAliasInMaps(ConjureBeanType):
 
 
 with_imports_ImportedAliasInMaps.__name__ = "ImportedAliasInMaps"
+with_imports_ImportedAliasInMaps.__qualname__ = "ImportedAliasInMaps"
 with_imports_ImportedAliasInMaps.__module__ = "package_name.with_imports"
 
 
@@ -1874,6 +1914,7 @@ class with_imports_UnionWithImports(ConjureUnionType):
 
 
 with_imports_UnionWithImports.__name__ = "UnionWithImports"
+with_imports_UnionWithImports.__qualname__ = "UnionWithImports"
 with_imports_UnionWithImports.__module__ = "package_name.with_imports"
 
 
@@ -1894,7 +1935,8 @@ class with_imports_UnionWithImportsVisitor(with_imports_UnionWithImportsVisitorB
 
 
 with_imports_UnionWithImportsVisitor.__name__ = "UnionWithImportsVisitor"
-with_imports_UnionWithImportsVisitor.__module__ = "UnionWithImportsVisitor"
+with_imports_UnionWithImportsVisitor.__qualname__ = "UnionWithImportsVisitor"
+with_imports_UnionWithImportsVisitor.__module__ = "package_name.with_imports"
 
 
 product_RecursiveObjectAlias = product_RecursiveObjectExample

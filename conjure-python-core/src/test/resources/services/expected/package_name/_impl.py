@@ -453,6 +453,7 @@ class another_TestService(Service):
 
 
 another_TestService.__name__ = "TestService"
+another_TestService.__qualname__ = "TestService"
 another_TestService.__module__ = "package_name.another"
 
 
@@ -485,6 +486,7 @@ class product_CreateDatasetRequest(ConjureBeanType):
 
 
 product_CreateDatasetRequest.__name__ = "CreateDatasetRequest"
+product_CreateDatasetRequest.__qualname__ = "CreateDatasetRequest"
 product_CreateDatasetRequest.__module__ = "package_name.product"
 
 
@@ -527,6 +529,7 @@ class product_datasets_BackingFileSystem(ConjureBeanType):
 
 
 product_datasets_BackingFileSystem.__name__ = "BackingFileSystem"
+product_datasets_BackingFileSystem.__qualname__ = "BackingFileSystem"
 product_datasets_BackingFileSystem.__module__ = "package_name.product_datasets"
 
 
@@ -562,6 +565,7 @@ class product_datasets_Dataset(ConjureBeanType):
 
 
 product_datasets_Dataset.__name__ = "Dataset"
+product_datasets_Dataset.__qualname__ = "Dataset"
 product_datasets_Dataset.__module__ = "package_name.product_datasets"
 
 
