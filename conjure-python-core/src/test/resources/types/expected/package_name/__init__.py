@@ -1,4 +1,4 @@
-# coding=utf8
+# coding=utf-8
 __all__ = [
     'another',
     'nested_deeply_nested_service',

@@ -36,7 +36,7 @@ public interface PythonFile extends Emittable {
 
     @Override
     default void emit(PythonPoetWriter poetWriter) {
-        poetWriter.writeLine("# coding=utf8");
+        poetWriter.writeLine("# coding=utf-8");
         poetWriter.maintainingIndent(() -> {
             Map<String, Set<NamedImport>> imports = contents().stream()
                     .flatMap(pythonSnippet -> pythonSnippet.imports().stream())
