@@ -1,3 +1,4 @@
+# coding=utf8
 from .._impl import (
     with_imports_AliasImportedObject as AliasImportedObject,
     with_imports_AliasImportedPrimitiveAlias as AliasImportedPrimitiveAlias,
