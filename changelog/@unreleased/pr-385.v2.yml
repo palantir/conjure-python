@@ -1,0 +1,7 @@
+type: fix
+fix:
+  description: 'All generated python files now start with a # coding=utf8 comment
+    (as per PEP-0263) to ensure that any special characters in the file are correctly
+    parsed by python 2.'
+  links:
+  - https://github.com/palantir/conjure-python/pull/385
