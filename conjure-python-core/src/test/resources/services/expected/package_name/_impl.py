@@ -1,3 +1,4 @@
+# coding=utf-8
 import builtins
 from conjure_python_client import (
     BinaryType,

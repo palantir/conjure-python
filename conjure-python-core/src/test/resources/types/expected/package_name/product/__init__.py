@@ -1,3 +1,4 @@
+# coding=utf-8
 from .._impl import (
     product_AliasAsMapKeyExample as AliasAsMapKeyExample,
     product_AnyExample as AnyExample,
