@@ -88,7 +88,7 @@ public final class ConjurePythonGeneratorTest {
             }
             Files.createDirectories(expected);
 
-            generator.write(definition, new DefaultPythonFileWriter(expected));
+            generator.write(definition, new DefaultPythonFileWriter(expected, 3));
         }
     }
 

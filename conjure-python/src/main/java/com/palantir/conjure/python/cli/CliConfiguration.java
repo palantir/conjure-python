@@ -39,6 +39,8 @@ public abstract class CliConfiguration {
 
     abstract Optional<String> packageAuthor();
 
+    abstract int minimumPythonVersion();
+
     @Value.Default
     @SuppressWarnings("DesignForExtension")
     boolean generateRawSource() {
@@ -55,6 +57,10 @@ public abstract class CliConfiguration {
     final void check() {
         Preconditions.checkArgument(input().isFile(), "Target must exist and be a file");
         Preconditions.checkArgument(output().isDirectory(), "Output must exist and be a directory");
+        Preconditions.checkArgument(
+                minimumPythonVersion() == 2 || minimumPythonVersion() == 3,
+                "minimumPythonVersion" + " must be either 2 or 3. Found: %s",
+                minimumPythonVersion());
     }
 
     static Builder builder() {

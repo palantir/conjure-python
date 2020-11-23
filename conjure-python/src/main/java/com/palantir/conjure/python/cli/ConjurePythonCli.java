@@ -89,6 +89,13 @@ public final class ConjurePythonCli implements Runnable {
                 description = "Generate a `conda_recipe/meta.yaml`")
         private boolean writeCondaRecipe;
 
+        @CommandLine.Option(
+                names = "--minimumPythonVersion",
+                defaultValue = "3",
+                description = "generated code must be usable on this python version (i.e. ASCII only source for "
+                        + "python 2)")
+        private int minimumPythonVersion;
+
         @CommandLine.Unmatched
         @SuppressWarnings("StrictUnusedVariable")
         private List<String> unmatchedOptions;
@@ -101,7 +108,9 @@ public final class ConjurePythonCli implements Runnable {
             try {
                 ConjureDefinition conjureDefinition = OBJECT_MAPPER.readValue(new File(input), ConjureDefinition.class);
                 ConjurePythonGenerator generator = new ConjurePythonGenerator(generatorConfig);
-                generator.write(conjureDefinition, new DefaultPythonFileWriter(Paths.get(output)));
+                generator.write(
+                        conjureDefinition,
+                        new DefaultPythonFileWriter(Paths.get(output), cliConfig.minimumPythonVersion()));
             } catch (IOException e) {
                 throw new RuntimeException(String.format("Error parsing definition: %s", e.toString()));
             }
@@ -118,6 +127,7 @@ public final class ConjurePythonCli implements Runnable {
                     .packageUrl(Optional.ofNullable(packageUrl))
                     .generateRawSource(rawSource)
                     .shouldWriteCondaRecipe(writeCondaRecipe)
+                    .minimumPythonVersion(minimumPythonVersion)
                     .build();
         }
 

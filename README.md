@@ -16,12 +16,13 @@ The recommended way to use conjure-python is via a build tool like [gradle-conju
 
     Usage: conjure-python generate <input> <output> [...options]
 
-        --packageName         package name that will appear in setup.py
-        --packageVersion      version number that will appear in setup.py
-        --packageDescription  description that will appear in setup.py
-        --packageUrl          url that will appear in setup.py
-        --packageAuthor       author that will appear in setup.py
-        --writeCondaRecipe    use this boolean option to generate a `conda_recipe/meta.yaml`
+        --packageName          package name that will appear in setup.py
+        --packageVersion       version number that will appear in setup.py
+        --packageDescription   description that will appear in setup.py
+        --packageUrl           url that will appear in setup.py
+        --packageAuthor        author that will appear in setup.py
+        --writeCondaRecipe     use this boolean option to generate a `conda_recipe/meta.yaml`
+        --minimumPythonVersion generated code must be usable on this python version (i.e. ASCII only source for python 2)
 
 ## Example generated objects
 

@@ -21,15 +21,19 @@ import com.palantir.conjure.python.poet.PythonPoetWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
 public final class DefaultPythonFileWriter implements PythonFileWriter {
 
     private final Path basePath;
+    private final Charset charset;
 
-    public DefaultPythonFileWriter(Path basePath) {
+    public DefaultPythonFileWriter(Path basePath, int minimumPythonVersion) {
         this.basePath = basePath;
+        this.charset = minimumPythonVersion == 2 ? StandardCharsets.US_ASCII : StandardCharsets.UTF_8;
     }
 
     @Override
@@ -38,7 +42,7 @@ public final class DefaultPythonFileWriter implements PythonFileWriter {
         try {
             Files.createDirectories(filePath.getParent());
             try (OutputStream os = Files.newOutputStream(filePath);
-                    PrintStream ps = new PrintStream(os)) {
+                    PrintStream ps = new PrintStream(os, false, charset.toString())) {
                 PythonPoetWriter writer = new PythonPoetWriter(ps);
                 writer.emit(file);
             }
