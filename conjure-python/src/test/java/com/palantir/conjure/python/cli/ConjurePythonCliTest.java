@@ -113,7 +113,7 @@ public class ConjurePythonCliTest {
             "--packageVersion",
             "0.0.0"
         };
-        new CommandLine(new ConjurePythonCli()).execute(args);
+        assertThat(new CommandLine(new ConjurePythonCli()).execute(args)).isZero();
         assertThat(new File(output, "conjure/conjure_spec/__init__.py").isFile())
                 .isTrue();
     }
