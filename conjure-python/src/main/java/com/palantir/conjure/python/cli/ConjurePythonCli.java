@@ -38,7 +38,7 @@ import picocli.CommandLine;
         subcommands = {ConjurePythonCli.GenerateCommand.class})
 public final class ConjurePythonCli implements Runnable {
     public static void main(String[] args) {
-        CommandLine.run(new ConjurePythonCli(), args);
+        System.exit(new CommandLine(new ConjurePythonCli()).execute(args));
     }
 
     @Override
