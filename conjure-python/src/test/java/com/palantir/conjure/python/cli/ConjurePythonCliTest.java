@@ -113,7 +113,7 @@ public class ConjurePythonCliTest {
             "--packageVersion",
             "0.0.0"
         };
-        CommandLine.run(new ConjurePythonCli(), args);
+        assertThat(new CommandLine(new ConjurePythonCli()).execute(args)).isZero();
         assertThat(new File(output, "conjure/conjure_spec/__init__.py").isFile())
                 .isTrue();
     }
@@ -124,7 +124,7 @@ public class ConjurePythonCliTest {
         String[] args = {
             "generate", "src/test/resources/conjure-api.json", output.getAbsolutePath(), "--rawSource",
         };
-        CommandLine.run(new ConjurePythonCli(), args);
+        assertThat(new CommandLine(new ConjurePythonCli()).execute(args)).isZero();
         assertThat(new File(output, "conjure_spec/__init__.py").isFile()).isTrue();
     }
 
