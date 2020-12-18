@@ -1,0 +1,5 @@
+type: fix
+fix:
+  description: Move to non-deprecated picocli methods in main class
+  links:
+  - https://github.com/palantir/conjure-python/pull/390
