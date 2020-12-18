@@ -124,7 +124,7 @@ public class ConjurePythonCliTest {
         String[] args = {
             "generate", "src/test/resources/conjure-api.json", output.getAbsolutePath(), "--rawSource",
         };
-        new CommandLine(new ConjurePythonCli()).execute(args);
+        assertThat(new CommandLine(new ConjurePythonCli()).execute(args)).isZero();
         assertThat(new File(output, "conjure_spec/__init__.py").isFile()).isTrue();
     }
 
