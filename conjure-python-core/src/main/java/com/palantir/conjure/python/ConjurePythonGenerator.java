@@ -159,7 +159,7 @@ public final class ConjurePythonGenerator {
 
         PythonPackage rootPackage = PythonPackage.of(implPackageNameProcessor.process(""));
         List<PythonFile> pythonFiles = KeyedStream.stream(snippetsByPackage)
-                .map((pythonPackage, pythonSnippets) -> PythonFile.builder()
+                .map((_pythonPackage, pythonSnippets) -> PythonFile.builder()
                         .pythonPackage(rootPackage)
                         .fileName(IMPL_PY)
                         .contents(pythonSnippets)
@@ -238,7 +238,7 @@ public final class ConjurePythonGenerator {
                         .text(String.format("__conjure_generator_version__ = \"%s\"", config.generatorVersion()))
                         .build());
         config.packageVersion()
-                .ifPresent(version -> builder.addContents(PythonLine.builder()
+                .ifPresent(_version -> builder.addContents(PythonLine.builder()
                         .pythonPackage(rootPackage)
                         .text(String.format(
                                 "__version__ = \"%s\"", config.packageVersion().get()))
