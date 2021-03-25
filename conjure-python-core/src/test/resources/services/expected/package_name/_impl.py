@@ -452,7 +452,7 @@ class another_TestService(Service):
         _decoder = ConjureDecoder()
         return _decoder.decode(_response.json(), int)
 
-    def test_keyword(self, auth_header, from=None):
+    def test_keyword(self, auth_header, from_=None):
         # type: (str, Optional[int]) -> Optional[str]
 
         _headers = {
@@ -461,7 +461,7 @@ class another_TestService(Service):
         } # type: Dict[str, Any]
 
         _params = {
-            'before': from,
+            'before': from_,
         } # type: Dict[str, Any]
 
         _path_params = {
