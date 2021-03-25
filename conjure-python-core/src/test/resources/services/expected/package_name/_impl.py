@@ -452,6 +452,36 @@ class another_TestService(Service):
         _decoder = ConjureDecoder()
         return _decoder.decode(_response.json(), int)
 
+    def test_keyword(self, auth_header, from=None):
+        # type: (str, Optional[int]) -> Optional[str]
+
+        _headers = {
+            'Accept': 'application/json',
+            'Authorization': auth_header,
+        } # type: Dict[str, Any]
+
+        _params = {
+            'before': from,
+        } # type: Dict[str, Any]
+
+        _path_params = {
+        } # type: Dict[str, Any]
+
+        _json = None # type: Any
+
+        _path = '/catalog/testKeyword'
+        _path = _path.format(**_path_params)
+
+        _response = self._request( # type: ignore
+            'GET',
+            self._uri + _path,
+            params=_params,
+            headers=_headers,
+            json=_json)
+
+        _decoder = ConjureDecoder()
+        return None if _response.status_code == 204 else _decoder.decode(_response.json(), OptionalType(str))
+
 
 another_TestService.__name__ = "TestService"
 another_TestService.__qualname__ = "TestService"

@@ -191,3 +191,12 @@ services:
       testInteger:
         http: GET /integer
         returns: integer
+
+      testKeyword:
+        http: GET /testKeyword
+        args:
+          from:
+            type: optional<integer>
+            param-id: before
+            param-type: query
+        returns: optional<string>
