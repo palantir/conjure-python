@@ -1192,7 +1192,7 @@ product_OptionalExample.__module__ = "package_name.product"
 
 
 class product_OptionsUnion(ConjureUnionType):
-    _options_ = None # type: str
+    _options_ = None # type: Optional[str]
 
     @builtins.classmethod
     def _options(cls):
@@ -1203,7 +1203,7 @@ class product_OptionsUnion(ConjureUnionType):
 
     def __init__(
             self,
-            options=None  # type: str
+            options=None  # type: Optional[str]
             ):
         # type: (...) -> None
         if (options is not None) != 1:
@@ -1215,14 +1215,14 @@ class product_OptionsUnion(ConjureUnionType):
 
     @builtins.property
     def options(self):
-        # type: () -> str
+        # type: () -> Optional[str]
         return self._options_
 
     def accept(self, visitor):
         # type: (product_OptionsUnionVisitor) -> Any
         if not isinstance(visitor, product_OptionsUnionVisitor):
             raise ValueError('{} is not an instance of product_OptionsUnionVisitor'.format(visitor.__class__.__name__))
-        if self.type == 'options':
+        if self.options is not None:
             return visitor._options(self.options)
 
 
@@ -1501,14 +1501,14 @@ product_StringExample.__module__ = "package_name.product"
 
 class product_UnionTypeExample(ConjureUnionType):
     """A type which can either be a StringExample, a set of strings, or an integer."""
-    _string_example = None # type: product_StringExample
-    _set = None # type: List[str]
-    _this_field_is_an_integer = None # type: int
-    _also_an_integer = None # type: int
-    _if_ = None # type: int
-    _new = None # type: int
-    _interface = None # type: int
-    _property = None # type: int
+    _string_example = None # type: Optional[product_StringExample]
+    _set = None # type: Optional[List[str]]
+    _this_field_is_an_integer = None # type: Optional[int]
+    _also_an_integer = None # type: Optional[int]
+    _if_ = None # type: Optional[int]
+    _new = None # type: Optional[int]
+    _interface = None # type: Optional[int]
+    _property = None # type: Optional[int]
 
     @builtins.classmethod
     def _options(cls):
@@ -1526,14 +1526,14 @@ class product_UnionTypeExample(ConjureUnionType):
 
     def __init__(
             self,
-            string_example=None,  # type: product_StringExample
-            set=None,  # type: List[str]
-            this_field_is_an_integer=None,  # type: int
-            also_an_integer=None,  # type: int
-            if_=None,  # type: int
-            new=None,  # type: int
-            interface=None,  # type: int
-            property=None  # type: int
+            string_example=None,  # type: Optional[product_StringExample]
+            set=None,  # type: Optional[List[str]]
+            this_field_is_an_integer=None,  # type: Optional[int]
+            also_an_integer=None,  # type: Optional[int]
+            if_=None,  # type: Optional[int]
+            new=None,  # type: Optional[int]
+            interface=None,  # type: Optional[int]
+            property=None  # type: Optional[int]
             ):
         # type: (...) -> None
         if (string_example is not None) + (set is not None) + (this_field_is_an_integer is not None) + (also_an_integer is not None) + (if_ is not None) + (new is not None) + (interface is not None) + (property is not None) != 1:
@@ -1566,7 +1566,7 @@ class product_UnionTypeExample(ConjureUnionType):
 
     @builtins.property
     def string_example(self):
-        # type: () -> product_StringExample
+        # type: () -> Optional[product_StringExample]
         """
         Docs for when UnionTypeExample is of type StringExample.
         """
@@ -1574,58 +1574,58 @@ class product_UnionTypeExample(ConjureUnionType):
 
     @builtins.property
     def set(self):
-        # type: () -> List[str]
+        # type: () -> Optional[List[str]]
         return self._set
 
     @builtins.property
     def this_field_is_an_integer(self):
-        # type: () -> int
+        # type: () -> Optional[int]
         return self._this_field_is_an_integer
 
     @builtins.property
     def also_an_integer(self):
-        # type: () -> int
+        # type: () -> Optional[int]
         return self._also_an_integer
 
     @builtins.property
     def if_(self):
-        # type: () -> int
+        # type: () -> Optional[int]
         return self._if_
 
     @builtins.property
     def new(self):
-        # type: () -> int
+        # type: () -> Optional[int]
         return self._new
 
     @builtins.property
     def interface(self):
-        # type: () -> int
+        # type: () -> Optional[int]
         return self._interface
 
     @builtins.property
     def property(self):
-        # type: () -> int
+        # type: () -> Optional[int]
         return self._property
 
     def accept(self, visitor):
         # type: (product_UnionTypeExampleVisitor) -> Any
         if not isinstance(visitor, product_UnionTypeExampleVisitor):
             raise ValueError('{} is not an instance of product_UnionTypeExampleVisitor'.format(visitor.__class__.__name__))
-        if self.type == 'stringExample':
+        if self.string_example is not None:
             return visitor._string_example(self.string_example)
-        if self.type == 'set':
+        if self.set is not None:
             return visitor._set(self.set)
-        if self.type == 'thisFieldIsAnInteger':
+        if self.this_field_is_an_integer is not None:
             return visitor._this_field_is_an_integer(self.this_field_is_an_integer)
-        if self.type == 'alsoAnInteger':
+        if self.also_an_integer is not None:
             return visitor._also_an_integer(self.also_an_integer)
-        if self.type == 'if':
+        if self.if_ is not None:
             return visitor._if(self.if_)
-        if self.type == 'new':
+        if self.new is not None:
             return visitor._new(self.new)
-        if self.type == 'interface':
+        if self.interface is not None:
             return visitor._interface(self.interface)
-        if self.type == 'property':
+        if self.property is not None:
             return visitor._property(self.property)
 
 
@@ -1887,8 +1887,8 @@ with_imports_ImportedAliasInMaps.__module__ = "package_name.with_imports"
 
 
 class with_imports_UnionWithImports(ConjureUnionType):
-    _string = None # type: str
-    _imported = None # type: product_AnyMapExample
+    _string = None # type: Optional[str]
+    _imported = None # type: Optional[product_AnyMapExample]
 
     @builtins.classmethod
     def _options(cls):
@@ -1900,8 +1900,8 @@ class with_imports_UnionWithImports(ConjureUnionType):
 
     def __init__(
             self,
-            string=None,  # type: str
-            imported=None  # type: product_AnyMapExample
+            string=None,  # type: Optional[str]
+            imported=None  # type: Optional[product_AnyMapExample]
             ):
         # type: (...) -> None
         if (string is not None) + (imported is not None) != 1:
@@ -1916,21 +1916,21 @@ class with_imports_UnionWithImports(ConjureUnionType):
 
     @builtins.property
     def string(self):
-        # type: () -> str
+        # type: () -> Optional[str]
         return self._string
 
     @builtins.property
     def imported(self):
-        # type: () -> product_AnyMapExample
+        # type: () -> Optional[product_AnyMapExample]
         return self._imported
 
     def accept(self, visitor):
         # type: (with_imports_UnionWithImportsVisitor) -> Any
         if not isinstance(visitor, with_imports_UnionWithImportsVisitor):
             raise ValueError('{} is not an instance of with_imports_UnionWithImportsVisitor'.format(visitor.__class__.__name__))
-        if self.type == 'string':
+        if self.string is not None:
             return visitor._string(self.string)
-        if self.type == 'imported':
+        if self.imported is not None:
             return visitor._imported(self.imported)
 
 
