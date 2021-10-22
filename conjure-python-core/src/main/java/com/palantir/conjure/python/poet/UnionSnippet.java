@@ -117,15 +117,23 @@ public interface UnionSnippet extends PythonSnippet {
 
             poetWriter.writeLine();
             // constructor
-            poetWriter.writeIndentedLine(String.format(
-                    "def __init__(self, %s):",
-                    Joiner.on(", ")
-                            .join(options().stream()
-                                    .map(PythonField::attributeName)
-                                    .map(PythonIdentifierSanitizer::sanitize)
-                                    .map(attributeName -> String.format("%s=None", attributeName))
-                                    .collect(Collectors.toList()))));
+            poetWriter.writeIndentedLine("def __init__(");
             poetWriter.increaseIndent();
+            poetWriter.increaseIndent();
+            poetWriter.writeIndentedLine("self,");
+            for (int i = 0; i < options().size(); i++) {
+                PythonField option = options().get(i);
+
+                poetWriter.writeIndentedLine(String.format(
+                        "%s=None%s  # type: %s",
+                        PythonIdentifierSanitizer.sanitize(option.attributeName()),
+                        i == options().size() - 1 ? "" : ",",
+                        option.myPyType()));
+            }
+            poetWriter.writeIndentedLine("):");
+            poetWriter.decreaseIndent();
+            poetWriter.writeIndentedLine("# type: (...) -> None");
+
             // check we have exactly one non-null
             poetWriter.writeIndentedLine(
                     "if %s != 1:",

@@ -1201,7 +1201,11 @@ class product_OptionsUnion(ConjureUnionType):
             'options': ConjureFieldDefinition('options', str)
         }
 
-    def __init__(self, options=None):
+    def __init__(
+            self,
+            options=None  # type: str
+            ):
+        # type: (...) -> None
         if (options is not None) != 1:
             raise ValueError('a union must contain a single member')
 
@@ -1520,7 +1524,18 @@ class product_UnionTypeExample(ConjureUnionType):
             'property': ConjureFieldDefinition('property', int)
         }
 
-    def __init__(self, string_example=None, set=None, this_field_is_an_integer=None, also_an_integer=None, if_=None, new=None, interface=None, property=None):
+    def __init__(
+            self,
+            string_example=None,  # type: product_StringExample
+            set=None,  # type: List[str]
+            this_field_is_an_integer=None,  # type: int
+            also_an_integer=None,  # type: int
+            if_=None,  # type: int
+            new=None,  # type: int
+            interface=None,  # type: int
+            property=None  # type: int
+            ):
+        # type: (...) -> None
         if (string_example is not None) + (set is not None) + (this_field_is_an_integer is not None) + (also_an_integer is not None) + (if_ is not None) + (new is not None) + (interface is not None) + (property is not None) != 1:
             raise ValueError('a union must contain a single member')
 
@@ -1883,7 +1898,12 @@ class with_imports_UnionWithImports(ConjureUnionType):
             'imported': ConjureFieldDefinition('imported', product_AnyMapExample)
         }
 
-    def __init__(self, string=None, imported=None):
+    def __init__(
+            self,
+            string=None,  # type: str
+            imported=None  # type: product_AnyMapExample
+            ):
+        # type: (...) -> None
         if (string is not None) + (imported is not None) != 1:
             raise ValueError('a union must contain a single member')
 
