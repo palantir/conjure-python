@@ -79,6 +79,7 @@ public final class ConjurePythonGenerator {
         PythonPackage rootPackage = PythonPackage.of(buildPackageNameProcessor().process(""));
         if (!config.generateRawSource()) {
             writer.writePythonFile(buildPythonSetupFile(rootPackage));
+            writer.writePythonFile(buildPyTypedFile());
         }
         if (config.shouldWriteCondaRecipe()) {
             writer.writePythonFile(buildCondaMetaYamlFile(rootPackage));
@@ -251,6 +252,10 @@ public final class ConjurePythonGenerator {
                 .pythonPackage(rootPackage)
                 .putOptions("name", config.packageName().get())
                 .putOptions("version", config.packageVersion().get())
+                .putOptions(
+                        "packageData",
+                        String.format(
+                                "{\"%s\": [\"py.typed\"]}", config.packageName().get()))
                 .addInstallDependencies("requests", "typing")
                 .addInstallDependencies(String.format(
                         "conjure-python-client>=%s,<%s",
@@ -264,6 +269,16 @@ public final class ConjurePythonGenerator {
                 .pythonPackage(PythonPackage.of("."))
                 .fileName("setup.py")
                 .addContents(builder.build())
+                .build();
+    }
+
+    /**
+     * Mark a package as containing type annotations.
+     */
+    private PythonFile buildPyTypedFile() {
+        return PythonFile.builder()
+                .pythonPackage(PythonPackage.of(config.pythonicPackageName().get()))
+                .fileName("py.typed")
                 .build();
     }
 
