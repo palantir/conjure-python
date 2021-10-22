@@ -1,0 +1,6 @@
+type: improvement
+improvement:
+  description: Mark generated python packages as PEP-561 (type information) compliant;
+    include type information in union constructors
+  links:
+  - https://github.com/palantir/conjure-python/pull/467
