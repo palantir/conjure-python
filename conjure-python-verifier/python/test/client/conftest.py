@@ -72,4 +72,4 @@ def confirm_service(config):
 @pytest.fixture(scope='module')
 def test_black_list():
     with open(path.dirname(__file__) + '/../../../resources/ignored_test_cases.yml') as blacklist_file:
-        return yaml.load(blacklist_file)['client']
+        return yaml.safe_load(blacklist_file)['client']
