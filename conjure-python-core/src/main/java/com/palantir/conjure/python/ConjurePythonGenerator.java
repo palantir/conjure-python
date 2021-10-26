@@ -252,7 +252,7 @@ public final class ConjurePythonGenerator {
                 .pythonPackage(rootPackage)
                 .putOptions("name", config.packageName().get())
                 .putOptions("version", config.packageVersion().get())
-                .putOptions(
+                .putRawOptions(
                         "packageData",
                         String.format(
                                 "{\"%s\": [\"py.typed\"]}", config.packageName().get()))

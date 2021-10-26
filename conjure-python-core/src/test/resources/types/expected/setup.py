@@ -7,8 +7,8 @@ from setuptools import (
 setup(
     name='package-name',
     version='0.0.0',
-    packageData='{"package-name": ["py.typed"]}',
     description='project description',
+    packageData={"package-name": ["py.typed"]}
     packages=find_packages(),
     install_requires=[
         'requests',

@@ -43,6 +43,11 @@ public interface PythonSetup extends PythonSnippet {
 
     Map<String, String> options();
 
+    /**
+     * Options that aren't a string value and as such shouldn't be wrapped in quotes.
+     */
+    Map<String, String> rawOptions();
+
     List<String> installDependencies();
 
     @Override
@@ -53,6 +58,9 @@ public interface PythonSetup extends PythonSnippet {
 
             options().forEach((key, value) -> {
                 poetWriter.writeIndentedLine("%s='%s',", key, value);
+            });
+            rawOptions().forEach((key, value) -> {
+                poetWriter.writeIndentedLine("%s=%s,", key, value);
             });
             poetWriter.writeIndentedLine("packages=find_packages(),");
 
