@@ -8,7 +8,7 @@ setup(
     name='package-name',
     version='0.0.0',
     description='project description',
-    packageData={"package-name": ["py.typed"]}
+    package_data={"package-name": ["py.typed"]},
     packages=find_packages(),
     install_requires=[
         'requests',
