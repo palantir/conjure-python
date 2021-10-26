@@ -1,0 +1,6 @@
+type: fix
+fix:
+  description: Fix syntax for packageData in setup.py, correctly including the py.typed
+    tag file in builds
+  links:
+  - https://github.com/palantir/conjure-python/pull/468
