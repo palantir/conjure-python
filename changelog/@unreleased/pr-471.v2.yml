@@ -1,0 +1,5 @@
+type: fix
+fix:
+  description: Include py.typed for all packages
+  links:
+  - https://github.com/palantir/conjure-python/pull/471
