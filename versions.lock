@@ -25,8 +25,8 @@ javax.ws.rs:javax.ws.rs-api:2.0.1 (2 constraints: d8207158)
 org.apache.commons:commons-lang3:3.12.0 (3 constraints: 7b265c65)
 org.checkerframework:checker-qual:3.12.0 (1 constraints: 480a3bbf)
 org.immutables:value:2.8.8 (1 constraints: 14051536)
-org.slf4j:slf4j-api:1.7.25 (5 constraints: 643b923c)
-org.slf4j:slf4j-simple:1.7.25 (1 constraints: 4105483b)
+org.slf4j:slf4j-api:1.7.32 (5 constraints: 603b503b)
+org.slf4j:slf4j-simple:1.7.32 (1 constraints: 3f05473b)
 org.yaml:snakeyaml:1.23 (1 constraints: 6e17f627)
 
 [Test dependencies]
