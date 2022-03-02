@@ -21,6 +21,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.concurrent.atomic.AtomicReference;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -50,8 +51,11 @@ public class ConjurePythonCliTest {
             "--packageVersion",
             "0.0.0",
         };
-        ConjurePythonCli.GenerateCommand cmd =
-                new CommandLine(new ConjurePythonCli()).parse(args).get(1).getCommand();
+        ConjurePythonCli.GenerateCommand cmd = new CommandLine(new ConjurePythonCli())
+                .parseArgs(args)
+                .asCommandLineList()
+                .get(1)
+                .getCommand();
         CliConfiguration expectedConfiguration = CliConfiguration.builder()
                 .input(inputFile)
                 .output(folder.getRoot())
@@ -64,8 +68,11 @@ public class ConjurePythonCliTest {
     @Test
     public void throwsWhenTargetDoesNotExist() {
         String[] args = {"generate", "foo", "bar", "--rawSource"};
-        ConjurePythonCli.GenerateCommand cmd =
-                new CommandLine(new ConjurePythonCli()).parse(args).get(1).getCommand();
+        ConjurePythonCli.GenerateCommand cmd = new CommandLine(new ConjurePythonCli())
+                .parseArgs(args)
+                .asCommandLineList()
+                .get(1)
+                .getCommand();
         assertThatThrownBy(cmd::getConfiguration)
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Target must exist and be a file");
@@ -74,8 +81,11 @@ public class ConjurePythonCliTest {
     @Test
     public void throwsWhenOutputDoesNotExist() {
         String[] args = {"generate", inputFile.getAbsolutePath(), "bar", "--rawSource"};
-        ConjurePythonCli.GenerateCommand cmd =
-                new CommandLine(new ConjurePythonCli()).parse(args).get(1).getCommand();
+        ConjurePythonCli.GenerateCommand cmd = new CommandLine(new ConjurePythonCli())
+                .parseArgs(args)
+                .asCommandLineList()
+                .get(1)
+                .getCommand();
         assertThatThrownBy(cmd::getConfiguration)
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Output must exist and be a directory");
@@ -90,8 +100,11 @@ public class ConjurePythonCliTest {
             "--packageName=package-name",
             "--packageVersion=0.0.0-dev"
         };
-        ConjurePythonCli.GenerateCommand cmd =
-                new CommandLine(new ConjurePythonCli()).parse(args).get(1).getCommand();
+        ConjurePythonCli.GenerateCommand cmd = new CommandLine(new ConjurePythonCli())
+                .parseArgs(args)
+                .asCommandLineList()
+                .get(1)
+                .getCommand();
         CliConfiguration expectedConfiguration = CliConfiguration.builder()
                 .input(inputFile)
                 .output(folder.getRoot())
@@ -134,13 +147,20 @@ public class ConjurePythonCliTest {
             "generate", folder.newFile().getAbsolutePath(), folder.newFolder().getAbsolutePath(), "--rawSource",
         };
 
-        assertThatThrownBy(() -> CommandLine.run(new ConjurePythonCli(), args))
-                .isInstanceOfSatisfying(
-                        RuntimeException.class, e -> assertThat(e.getMessage()).contains("Error parsing definition"));
+        AtomicReference<Exception> executionException = new AtomicReference<>();
+        new CommandLine(new ConjurePythonCli())
+                .setExecutionExceptionHandler((ex, _commandLine, _parseResult) -> {
+                    executionException.set(ex);
+                    throw ex;
+                })
+                .execute(args);
+        assertThat(executionException.get())
+                .isInstanceOf(RuntimeException.class)
+                .hasMessageContaining("Error parsing definition");
     }
 
     @Test
     public void loadBuildConfiguration() {
-        assertThat(BuildConfiguration.load().minConjureClientVersion()).isEqualTo("1.4.0");
+        assertThat(BuildConfiguration.load().minConjureClientVersion()).isEqualTo("2.0.0");
     }
 }
