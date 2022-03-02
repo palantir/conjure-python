@@ -45,6 +45,6 @@ public final class PrefixingPackageNameProcessor implements PackageNameProcessor
 
     @Override
     public int hashCode() {
-        return Objects.hash(topLevelPackageName);
+        return Objects.hashCode(topLevelPackageName);
     }
 }
