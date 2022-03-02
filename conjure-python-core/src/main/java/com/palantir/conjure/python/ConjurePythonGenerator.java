@@ -252,6 +252,7 @@ public final class ConjurePythonGenerator {
                 .pythonPackage(rootPackage)
                 .putOptions("name", config.packageName().get())
                 .putOptions("version", config.packageVersion().get())
+                .putOptions("python_requires", ">=3.8")
                 .putRawOptions("package_data", "{\"\": [\"py.typed\"]}")
                 .addInstallDependencies("requests", "typing")
                 .addInstallDependencies(String.format(

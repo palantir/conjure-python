@@ -87,27 +87,22 @@ public interface PythonEndpointDefinition extends Emittable {
                     : params();
 
             poetWriter.writeIndentedLine(
-                    "def %s(self, %s):",
+                    "def %s(self, %s) -> %s:",
                     pythonMethodName(),
                     Joiner.on(", ")
                             .join(paramsWithHeader.stream()
                                     .sorted(new PythonEndpointParamComparator())
                                     .map(param -> {
+                                        String typedParam =
+                                                String.format("%s:%s", param.pythonParamName(), param.myPyType());
                                         if (param.isOptional()) {
-                                            return String.format("%s=None", param.pythonParamName());
+                                            return String.format("%s=None", typedParam);
                                         }
-                                        return param.pythonParamName();
+                                        return typedParam;
                                     })
-                                    .collect(Collectors.toList())));
-            poetWriter.increaseIndent();
-            poetWriter.writeIndentedLine(
-                    "# type: (%s) -> %s",
-                    Joiner.on(", ")
-                            .join(paramsWithHeader.stream()
-                                    .sorted(new PythonEndpointParamComparator())
-                                    .map(PythonEndpointParam::myPyType)
                                     .collect(Collectors.toList())),
                     myPyReturnType().orElse("None"));
+            poetWriter.increaseIndent();
             docs().ifPresent(docs -> {
                 poetWriter.writeIndentedLine("\"\"\"");
                 poetWriter.writeIndentedLine(docs.get().trim());
@@ -116,7 +111,7 @@ public interface PythonEndpointDefinition extends Emittable {
 
             // header
             poetWriter.writeLine();
-            poetWriter.writeIndentedLine("_headers = {");
+            poetWriter.writeIndentedLine("_headers: Dict[str, Any] = {");
             poetWriter.increaseIndent();
             poetWriter.writeIndentedLine(
                     "'Accept': '%s',", isBinary() ? MediaType.APPLICATION_OCTET_STREAM : MediaType.APPLICATION_JSON);
@@ -141,11 +136,11 @@ public interface PythonEndpointDefinition extends Emittable {
                                 param.pythonParamName());
                     });
             poetWriter.decreaseIndent();
-            poetWriter.writeIndentedLine("} # type: Dict[str, Any]");
+            poetWriter.writeIndentedLine("}");
 
             // params
             poetWriter.writeLine();
-            poetWriter.writeIndentedLine("_params = {");
+            poetWriter.writeIndentedLine("_params: Dict[str, Any] = {");
             poetWriter.increaseIndent();
             paramsWithHeader.stream()
                     .filter(param -> param.paramType().accept(ParameterTypeVisitor.IS_QUERY))
@@ -159,11 +154,11 @@ public interface PythonEndpointDefinition extends Emittable {
                                 param.pythonParamName());
                     });
             poetWriter.decreaseIndent();
-            poetWriter.writeIndentedLine("} # type: Dict[str, Any]");
+            poetWriter.writeIndentedLine("}");
 
             // path params
             poetWriter.writeLine();
-            poetWriter.writeIndentedLine("_path_params = {");
+            poetWriter.writeIndentedLine("_path_params: Dict[str, Any] = {");
             poetWriter.increaseIndent();
             // TODO(qchen): no need for param name twice?
             paramsWithHeader.stream()
@@ -172,16 +167,16 @@ public interface PythonEndpointDefinition extends Emittable {
                         poetWriter.writeIndentedLine("'%s': %s,", param.paramName(), param.pythonParamName());
                     });
             poetWriter.decreaseIndent();
-            poetWriter.writeIndentedLine("} # type: Dict[str, Any]");
+            poetWriter.writeIndentedLine("}");
 
             if (bodyParam.isPresent()) {
                 poetWriter.writeLine();
                 poetWriter.writeIndentedLine(
-                        "_json = ConjureEncoder().default(%s) # type: Any",
+                        "_json: Any = ConjureEncoder().default(%s)",
                         bodyParam.get().pythonParamName());
             } else {
                 poetWriter.writeLine();
-                poetWriter.writeIndentedLine("_json = None # type: Any");
+                poetWriter.writeIndentedLine("_json: Any = None");
             }
 
             // fix the path, add path params

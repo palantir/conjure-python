@@ -49,7 +49,7 @@ jobs:
 
   py3:
     docker:
-      - image: cimg/python:3.6.15
+      - image: cimg/python:3.8.12
     working_directory: ~/project/conjure-python-verifier/python
     steps:
       - checkout:
@@ -60,7 +60,7 @@ jobs:
 
       - run:
           name: Install dependencies
-          command: pip install --user setuptools tox==2.9.1 tox-virtualenv-no-download
+          command: pip install --user setuptools tox==3.24.5 tox-virtualenv-no-download
 
       - restore_cache:
           key: tox-v2-py3-{{ checksum "tox.ini" }}-{{ checksum "setup.py" }}
@@ -86,7 +86,7 @@ jobs:
 
   mypy3:
     docker:
-      - image: cimg/python:3.6.15
+      - image: cimg/python:3.8.12
     working_directory: ~/project/conjure-python-verifier/python
     steps:
       - checkout:
@@ -97,7 +97,7 @@ jobs:
 
       - run:
           name: Install dependencies
-          command: pip install --user setuptools tox==2.9.1 tox-virtualenv-no-download
+          command: pip install --user setuptools tox==3.24.5 tox-virtualenv-no-download
 
       - restore_cache:
           key: tox-v2-mypy3-{{ checksum "tox.ini" }}-({ checksum "setup.py" })
