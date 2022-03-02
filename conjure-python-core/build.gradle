@@ -15,19 +15,19 @@
  */
 
 dependencies {
-    compile 'com.fasterxml.jackson.core:jackson-databind'
-    compile 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml'
-    compile 'com.fasterxml.jackson.datatype:jackson-datatype-jdk8'
-    compile 'com.google.guava:guava'
-    compile 'com.palantir.conjure:conjure-generator-common'
-    compile 'com.palantir.common:streams'
-    compile 'org.apache.commons:commons-lang3'
-    compile 'org.slf4j:slf4j-api'
+    implementation 'com.fasterxml.jackson.core:jackson-databind'
+    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jdk8'
+    implementation 'com.google.guava:guava'
+    implementation 'com.palantir.conjure:conjure-generator-common'
+    implementation 'com.palantir.common:streams'
+    implementation 'org.apache.commons:commons-lang3'
+    implementation 'org.slf4j:slf4j-api'
 
-    testCompile 'com.palantir.conjure:conjure-core'
-    testCompile 'junit:junit'
-    testCompile 'org.assertj:assertj-core'
-    testCompile 'org.mockito:mockito-core'
+    testImplementation 'com.palantir.conjure:conjure-core'
+    testImplementation 'junit:junit'
+    testImplementation 'org.assertj:assertj-core'
+    testImplementation 'org.mockito:mockito-core'
 
     annotationProcessor 'org.immutables:value'
     compileOnly 'org.immutables:value::annotations'
