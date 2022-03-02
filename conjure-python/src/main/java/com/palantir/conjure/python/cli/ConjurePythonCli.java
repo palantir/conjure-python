@@ -35,7 +35,7 @@ import picocli.CommandLine;
         name = "conjure-python",
         description = "CLI to generate Python Classes and interfaces from Conjure API definitions.",
         mixinStandardHelpOptions = true,
-        subcommands = {ConjurePythonCli.GenerateCommand.class})
+        subcommands = ConjurePythonCli.GenerateCommand.class)
 public final class ConjurePythonCli implements Runnable {
     public static void main(String[] args) {
         System.exit(new CommandLine(new ConjurePythonCli()).execute(args));

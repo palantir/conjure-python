@@ -255,7 +255,7 @@ public interface PythonEndpointDefinition extends Emittable {
         }
     }
 
-    class PythonEndpointParamComparator implements Comparator<PythonEndpointParam> {
+    final class PythonEndpointParamComparator implements Comparator<PythonEndpointParam> {
         @Override
         public int compare(PythonEndpointParam o1, PythonEndpointParam o2) {
             if (o1.isOptional() && !o2.isOptional()) {
