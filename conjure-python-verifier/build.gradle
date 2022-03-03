@@ -40,7 +40,7 @@ task copyTestCases(type: Sync) {
 }
 
 task generateVerifierBindings(type: JavaExec, dependsOn: [copyTestCases, ':conjure-python:compileJava']) {
-    main = "com.palantir.conjure.python.cli.ConjurePythonCli"
+    mainClass = "com.palantir.conjure.python.cli.ConjurePythonCli"
     classpath = project(':conjure-python').sourceSets.main.runtimeClasspath
     args 'generate',
             "${-> configurations.verificationApi.singleFile}",
@@ -53,7 +53,7 @@ task generateVerifierBindings(type: JavaExec, dependsOn: [copyTestCases, ':conju
 }
 
 task generateIntegrationTests(type: JavaExec, dependsOn: [compileIr, ':conjure-python:compileJava']) {
-    main = "com.palantir.conjure.python.cli.ConjurePythonCli"
+    mainClass = "com.palantir.conjure.python.cli.ConjurePythonCli"
     classpath = project(':conjure-python').sourceSets.main.runtimeClasspath
     args 'generate',
             'build/conjure-ir/conjure-python-verifier.conjure.json',

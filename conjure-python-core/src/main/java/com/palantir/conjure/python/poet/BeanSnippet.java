@@ -37,7 +37,7 @@ public interface BeanSnippet extends PythonSnippet {
             PythonImport.of("builtins"),
             PythonImport.builder()
                     .moduleSpecifier(ImportTypeVisitor.TYPING)
-                    .addNamedImports(NamedImport.of("Dict"), NamedImport.of("List"))
+                    .addNamedImports(NamedImport.of("Dict"), NamedImport.of("List"), NamedImport.of("Type"))
                     .build());
     ImmutableSet<String> PROTECTED_FIELDS = ImmutableSet.of("fields");
 

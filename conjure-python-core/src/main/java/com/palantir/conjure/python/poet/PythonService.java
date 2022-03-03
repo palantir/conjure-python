@@ -36,7 +36,7 @@ public interface PythonService extends PythonSnippet {
             PythonImport.builder()
                     .moduleSpecifier(ImportTypeVisitor.TYPING)
                     // Used by Endpoints
-                    .addNamedImports(NamedImport.of("Dict"), NamedImport.of("Any"))
+                    .addNamedImports(NamedImport.of("Dict"), NamedImport.of("Any"), NamedImport.of("Type"))
                     .build());
 
     @Override

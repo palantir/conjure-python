@@ -94,7 +94,7 @@ public interface PythonEndpointDefinition extends Emittable {
                                     .sorted(new PythonEndpointParamComparator())
                                     .map(param -> {
                                         String typedParam =
-                                                String.format("%s:%s", param.pythonParamName(), param.myPyType());
+                                                String.format("%s: %s", param.pythonParamName(), param.myPyType());
                                         if (param.isOptional()) {
                                             return String.format("%s=None", typedParam);
                                         }

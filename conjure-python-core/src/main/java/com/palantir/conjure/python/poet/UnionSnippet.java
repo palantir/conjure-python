@@ -40,7 +40,11 @@ public interface UnionSnippet extends PythonSnippet {
                     .build(),
             PythonImport.builder()
                     .moduleSpecifier(ImportTypeVisitor.TYPING)
-                    .addNamedImports(NamedImport.of("Dict"), NamedImport.of("Any"), NamedImport.of("Optional"))
+                    .addNamedImports(
+                            NamedImport.of("Dict"),
+                            NamedImport.of("Any"),
+                            NamedImport.of("Optional"),
+                            NamedImport.of("Type"))
                     .build(),
             PythonImport.of("builtins"));
     ImmutableSet<String> PROTECTED_FIELDS = ImmutableSet.of("options");

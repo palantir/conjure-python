@@ -37,9 +37,9 @@ public final class ImportTypeVisitor implements Type.Visitor<Set<PythonImport>> 
     public static final String CONJURE_PYTHON_CLIENT = "conjure_python_client";
     public static final String TYPING = "typing";
 
-    private TypeName typeName;
-    private TypeNameProcessor typeNameProcessor;
-    private PackageNameProcessor packageNameProcessor;
+    private final TypeName typeName;
+    private final TypeNameProcessor typeNameProcessor;
+    private final PackageNameProcessor packageNameProcessor;
 
     public ImportTypeVisitor(
             TypeName typeName, TypeNameProcessor typeNameProcessor, PackageNameProcessor packageNameProcessor) {

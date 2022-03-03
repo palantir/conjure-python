@@ -37,18 +37,18 @@ public final class PythonTypeNameVisitor implements Type.Visitor<String> {
 
     @Override
     public String visitList(ListType type) {
-        return "ListType(" + type.getItemType().accept(this) + ")";
+        return "Type[ListType(" + type.getItemType().accept(this) + ")]";
     }
 
     @Override
     public String visitMap(MapType type) {
-        return "DictType(" + type.getKeyType().accept(this) + ", "
-                + type.getValueType().accept(this) + ")";
+        return "Type[DictType(" + type.getKeyType().accept(this) + ", "
+                + type.getValueType().accept(this) + ")]";
     }
 
     @Override
     public String visitOptional(OptionalType type) {
-        return "OptionalType(" + type.getItemType().accept(this) + ")";
+        return "Type[OptionalType(" + type.getItemType().accept(this) + ")]";
     }
 
     @Override
@@ -62,7 +62,7 @@ public final class PythonTypeNameVisitor implements Type.Visitor<String> {
             case UUID:
                 return "str";
             case BINARY:
-                return "BinaryType()";
+                return "Type[BinaryType()]";
             case BOOLEAN:
                 return "bool";
             case DOUBLE:
@@ -80,7 +80,7 @@ public final class PythonTypeNameVisitor implements Type.Visitor<String> {
 
     @Override
     public String visitReference(TypeName type) {
-        return typeNameProcessor.process(type);
+        return "\"" + typeNameProcessor.process(type) + "\"";
     }
 
     @Override
