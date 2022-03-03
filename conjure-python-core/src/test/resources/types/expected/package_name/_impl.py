@@ -60,7 +60,7 @@ class another_TestService(Service):
             json=_json)
 
         _decoder = ConjureDecoder()
-        return _decoder.decode(_response.json(), Type[DictType(str, "product_datasets_BackingFileSystem")])
+        return _decoder.decode(_response.json(), Dict[str, "product_datasets_BackingFileSystem"])
 
     def create_dataset(self, auth_header: str, request: "product_CreateDatasetRequest", test_header_arg: str) -> "product_datasets_Dataset":
 
@@ -119,7 +119,7 @@ class another_TestService(Service):
             json=_json)
 
         _decoder = ConjureDecoder()
-        return None if _response.status_code == 204 else _decoder.decode(_response.json(), Type[OptionalType("product_datasets_Dataset")])
+        return None if _response.status_code == 204 else _decoder.decode(_response.json(), Optional["product_datasets_Dataset"])
 
     def get_raw_data(self, auth_header: str, dataset_rid: str) -> Any:
 
@@ -179,7 +179,7 @@ class another_TestService(Service):
             json=_json)
 
         _decoder = ConjureDecoder()
-        return None if _response.status_code == 204 else _decoder.decode(_response.json(), Type[OptionalType(Type[BinaryType()])])
+        return None if _response.status_code == 204 else _decoder.decode(_response.json(), Optional[BinaryType])
 
     def upload_raw_data(self, auth_header: str, input: Any) -> None:
 
@@ -238,7 +238,7 @@ class another_TestService(Service):
             json=_json)
 
         _decoder = ConjureDecoder()
-        return _decoder.decode(_response.json(), Type[ListType(str)])
+        return _decoder.decode(_response.json(), List[str])
 
     def get_branches_deprecated(self, auth_header: str, dataset_rid: str) -> List[str]:
         """
@@ -270,7 +270,7 @@ class another_TestService(Service):
             json=_json)
 
         _decoder = ConjureDecoder()
-        return _decoder.decode(_response.json(), Type[ListType(str)])
+        return _decoder.decode(_response.json(), List[str])
 
     def resolve_branch(self, auth_header: str, branch: str, dataset_rid: str) -> Optional[str]:
 
@@ -300,7 +300,7 @@ class another_TestService(Service):
             json=_json)
 
         _decoder = ConjureDecoder()
-        return None if _response.status_code == 204 else _decoder.decode(_response.json(), Type[OptionalType(str)])
+        return None if _response.status_code == 204 else _decoder.decode(_response.json(), Optional[str])
 
     def test_param(self, auth_header: str, dataset_rid: str) -> Optional[str]:
 
@@ -329,7 +329,7 @@ class another_TestService(Service):
             json=_json)
 
         _decoder = ConjureDecoder()
-        return None if _response.status_code == 204 else _decoder.decode(_response.json(), Type[OptionalType(str)])
+        return None if _response.status_code == 204 else _decoder.decode(_response.json(), Optional[str])
 
     def test_query_params(self, auth_header: str, implicit: str, something: str) -> int:
 
@@ -587,13 +587,13 @@ class product_AliasAsMapKeyExample(ConjureBeanType):
     @builtins.classmethod
     def _fields(cls) -> Dict[str, ConjureFieldDefinition]:
         return {
-            'strings': ConjureFieldDefinition('strings', Type[DictType("product_StringAliasExample", "product_ManyFieldExample")]),
-            'rids': ConjureFieldDefinition('rids', Type[DictType("product_RidAliasExample", "product_ManyFieldExample")]),
-            'bearertokens': ConjureFieldDefinition('bearertokens', Type[DictType("product_BearerTokenAliasExample", "product_ManyFieldExample")]),
-            'integers': ConjureFieldDefinition('integers', Type[DictType("product_IntegerAliasExample", "product_ManyFieldExample")]),
-            'safelongs': ConjureFieldDefinition('safelongs', Type[DictType("product_SafeLongAliasExample", "product_ManyFieldExample")]),
-            'datetimes': ConjureFieldDefinition('datetimes', Type[DictType("product_DateTimeAliasExample", "product_ManyFieldExample")]),
-            'uuids': ConjureFieldDefinition('uuids', Type[DictType("product_UuidAliasExample", "product_ManyFieldExample")])
+            'strings': ConjureFieldDefinition('strings', Dict["product_StringAliasExample", "product_ManyFieldExample"]),
+            'rids': ConjureFieldDefinition('rids', Dict["product_RidAliasExample", "product_ManyFieldExample"]),
+            'bearertokens': ConjureFieldDefinition('bearertokens', Dict["product_BearerTokenAliasExample", "product_ManyFieldExample"]),
+            'integers': ConjureFieldDefinition('integers', Dict["product_IntegerAliasExample", "product_ManyFieldExample"]),
+            'safelongs': ConjureFieldDefinition('safelongs', Dict["product_SafeLongAliasExample", "product_ManyFieldExample"]),
+            'datetimes': ConjureFieldDefinition('datetimes', Dict["product_DateTimeAliasExample", "product_ManyFieldExample"]),
+            'uuids': ConjureFieldDefinition('uuids', Dict["product_UuidAliasExample", "product_ManyFieldExample"])
         }
 
     __slots__: List[str] = ['_strings', '_rids', '_bearertokens', '_integers', '_safelongs', '_datetimes', '_uuids']
@@ -669,7 +669,7 @@ class product_AnyMapExample(ConjureBeanType):
     @builtins.classmethod
     def _fields(cls) -> Dict[str, ConjureFieldDefinition]:
         return {
-            'items': ConjureFieldDefinition('items', Type[DictType(str, object)])
+            'items': ConjureFieldDefinition('items', Dict[str, object])
         }
 
     __slots__: List[str] = ['_items']
@@ -715,7 +715,7 @@ class product_BinaryExample(ConjureBeanType):
     @builtins.classmethod
     def _fields(cls) -> Dict[str, ConjureFieldDefinition]:
         return {
-            'binary': ConjureFieldDefinition('binary', Type[BinaryType()])
+            'binary': ConjureFieldDefinition('binary', BinaryType)
         }
 
     __slots__: List[str] = ['_binary']
@@ -942,9 +942,9 @@ class product_ListExample(ConjureBeanType):
     @builtins.classmethod
     def _fields(cls) -> Dict[str, ConjureFieldDefinition]:
         return {
-            'items': ConjureFieldDefinition('items', Type[ListType(str)]),
-            'primitive_items': ConjureFieldDefinition('primitiveItems', Type[ListType(int)]),
-            'double_items': ConjureFieldDefinition('doubleItems', Type[ListType(float)])
+            'items': ConjureFieldDefinition('items', List[str]),
+            'primitive_items': ConjureFieldDefinition('primitiveItems', List[int]),
+            'double_items': ConjureFieldDefinition('doubleItems', List[float])
         }
 
     __slots__: List[str] = ['_items', '_primitive_items', '_double_items']
@@ -980,10 +980,10 @@ class product_ManyFieldExample(ConjureBeanType):
             'string': ConjureFieldDefinition('string', str),
             'integer': ConjureFieldDefinition('integer', int),
             'double_value': ConjureFieldDefinition('doubleValue', float),
-            'optional_item': ConjureFieldDefinition('optionalItem', Type[OptionalType(str)]),
-            'items': ConjureFieldDefinition('items', Type[ListType(str)]),
-            'set': ConjureFieldDefinition('set', Type[ListType(str)]),
-            'map': ConjureFieldDefinition('map', Type[DictType(str, str)]),
+            'optional_item': ConjureFieldDefinition('optionalItem', Optional[str]),
+            'items': ConjureFieldDefinition('items', List[str]),
+            'set': ConjureFieldDefinition('set', List[str]),
+            'map': ConjureFieldDefinition('map', Dict[str, str]),
             'alias': ConjureFieldDefinition('alias', "product_StringAliasExample")
         }
 
@@ -1066,7 +1066,7 @@ class product_MapExample(ConjureBeanType):
     @builtins.classmethod
     def _fields(cls) -> Dict[str, ConjureFieldDefinition]:
         return {
-            'items': ConjureFieldDefinition('items', Type[DictType(str, str)])
+            'items': ConjureFieldDefinition('items', Dict[str, str])
         }
 
     __slots__: List[str] = ['_items']
@@ -1089,7 +1089,7 @@ class product_OptionalExample(ConjureBeanType):
     @builtins.classmethod
     def _fields(cls) -> Dict[str, ConjureFieldDefinition]:
         return {
-            'item': ConjureFieldDefinition('item', Type[OptionalType(str)])
+            'item': ConjureFieldDefinition('item', Optional[str])
         }
 
     __slots__: List[str] = ['_item']
@@ -1163,13 +1163,13 @@ class product_PrimitiveOptionalsExample(ConjureBeanType):
     @builtins.classmethod
     def _fields(cls) -> Dict[str, ConjureFieldDefinition]:
         return {
-            'num': ConjureFieldDefinition('num', Type[OptionalType(float)]),
-            'bool_': ConjureFieldDefinition('bool', Type[OptionalType(bool)]),
-            'integer': ConjureFieldDefinition('integer', Type[OptionalType(int)]),
-            'safelong': ConjureFieldDefinition('safelong', Type[OptionalType(int)]),
-            'rid': ConjureFieldDefinition('rid', Type[OptionalType(str)]),
-            'bearertoken': ConjureFieldDefinition('bearertoken', Type[OptionalType(str)]),
-            'uuid': ConjureFieldDefinition('uuid', Type[OptionalType(str)])
+            'num': ConjureFieldDefinition('num', Optional[float]),
+            'bool_': ConjureFieldDefinition('bool', Optional[bool]),
+            'integer': ConjureFieldDefinition('integer', Optional[int]),
+            'safelong': ConjureFieldDefinition('safelong', Optional[int]),
+            'rid': ConjureFieldDefinition('rid', Optional[str]),
+            'bearertoken': ConjureFieldDefinition('bearertoken', Optional[str]),
+            'uuid': ConjureFieldDefinition('uuid', Optional[str])
         }
 
     __slots__: List[str] = ['_num', '_bool_', '_integer', '_safelong', '_rid', '_bearertoken', '_uuid']
@@ -1222,7 +1222,7 @@ class product_RecursiveObjectExample(ConjureBeanType):
     @builtins.classmethod
     def _fields(cls) -> Dict[str, ConjureFieldDefinition]:
         return {
-            'recursive_field': ConjureFieldDefinition('recursiveField', Type[OptionalType("product_RecursiveObjectAlias")])
+            'recursive_field': ConjureFieldDefinition('recursiveField', Optional["product_RecursiveObjectAlias"])
         }
 
     __slots__: List[str] = ['_recursive_field']
@@ -1332,8 +1332,8 @@ class product_SetExample(ConjureBeanType):
     @builtins.classmethod
     def _fields(cls) -> Dict[str, ConjureFieldDefinition]:
         return {
-            'items': ConjureFieldDefinition('items', Type[ListType(str)]),
-            'double_items': ConjureFieldDefinition('doubleItems', Type[ListType(float)])
+            'items': ConjureFieldDefinition('items', List[str]),
+            'double_items': ConjureFieldDefinition('doubleItems', List[float])
         }
 
     __slots__: List[str] = ['_items', '_double_items']
@@ -1394,7 +1394,7 @@ class product_UnionTypeExample(ConjureUnionType):
     def _options(cls) -> Dict[str, ConjureFieldDefinition]:
         return {
             'string_example': ConjureFieldDefinition('stringExample', "product_StringExample"),
-            'set': ConjureFieldDefinition('set', Type[ListType(str)]),
+            'set': ConjureFieldDefinition('set', List[str]),
             'this_field_is_an_integer': ConjureFieldDefinition('thisFieldIsAnInteger', int),
             'also_an_integer': ConjureFieldDefinition('alsoAnInteger', int),
             'if_': ConjureFieldDefinition('if', int),
@@ -1576,7 +1576,7 @@ class product_datasets_BackingFileSystem(ConjureBeanType):
         return {
             'file_system_id': ConjureFieldDefinition('fileSystemId', str),
             'base_uri': ConjureFieldDefinition('baseUri', str),
-            'configuration': ConjureFieldDefinition('configuration', Type[DictType(str, str)])
+            'configuration': ConjureFieldDefinition('configuration', Dict[str, str])
         }
 
     __slots__: List[str] = ['_file_system_id', '_base_uri', '_configuration']
@@ -1709,7 +1709,7 @@ class with_imports_ImportedAliasInMaps(ConjureBeanType):
     @builtins.classmethod
     def _fields(cls) -> Dict[str, ConjureFieldDefinition]:
         return {
-            'aliases': ConjureFieldDefinition('aliases', Type[DictType("product_RidAliasExample", "product_DateTimeAliasExample")])
+            'aliases': ConjureFieldDefinition('aliases', Dict["product_RidAliasExample", "product_DateTimeAliasExample"])
         }
 
     __slots__: List[str] = ['_aliases']
@@ -1798,15 +1798,17 @@ product_SafeLongAliasExample = int
 
 product_BearerTokenAliasExample = str
 
+product_BinaryAliasExample = BinaryType
+
 product_BooleanAliasExample = bool
 
 product_StringAliasExample = str
 
 with_imports_AliasImportedPrimitiveAlias = "product_StringAliasExample"
 
-product_IntegerAliasExample = int
+product_MapAliasExample = Dict[str, object]
 
-product_MapAliasExample = Type[DictType(str, object)]
+product_IntegerAliasExample = int
 
 product_ReferenceAliasExample = "product_AnyExample"
 
@@ -1822,13 +1824,11 @@ with_imports_AliasImportedReferenceAlias = "product_ReferenceAliasExample"
 
 package_name_TypeInPackageWithTheSameNameAsRootPackage = str
 
-product_BinaryAliasExample = Type[BinaryType()]
-
 product_RecursiveObjectAlias = "product_RecursiveObjectExample"
 
-product_CollectionAliasExample = Type[DictType("product_StringAliasExample", "product_RecursiveObjectAlias")]
-
 product_NestedAliasExample = "product_RecursiveObjectAlias"
+
+product_CollectionAliasExample = Dict["product_StringAliasExample", "product_RecursiveObjectAlias"]
 
 product_DateTimeAliasExample = str
 

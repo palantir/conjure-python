@@ -54,7 +54,7 @@ class another_TestService(Service):
             json=_json)
 
         _decoder = ConjureDecoder()
-        return _decoder.decode(_response.json(), Type[DictType(str, "product_datasets_BackingFileSystem")])
+        return _decoder.decode(_response.json(), Dict[str, "product_datasets_BackingFileSystem"])
 
     def create_dataset(self, auth_header: str, request: "product_CreateDatasetRequest", test_header_arg: str) -> "product_datasets_Dataset":
 
@@ -113,7 +113,7 @@ class another_TestService(Service):
             json=_json)
 
         _decoder = ConjureDecoder()
-        return None if _response.status_code == 204 else _decoder.decode(_response.json(), Type[OptionalType("product_datasets_Dataset")])
+        return None if _response.status_code == 204 else _decoder.decode(_response.json(), Optional["product_datasets_Dataset"])
 
     def get_raw_data(self, auth_header: str, dataset_rid: str) -> Any:
 
@@ -173,7 +173,7 @@ class another_TestService(Service):
             json=_json)
 
         _decoder = ConjureDecoder()
-        return None if _response.status_code == 204 else _decoder.decode(_response.json(), Type[OptionalType(Type[BinaryType()])])
+        return None if _response.status_code == 204 else _decoder.decode(_response.json(), Optional[BinaryType])
 
     def upload_raw_data(self, auth_header: str, input: Any) -> None:
 
@@ -232,7 +232,7 @@ class another_TestService(Service):
             json=_json)
 
         _decoder = ConjureDecoder()
-        return _decoder.decode(_response.json(), Type[ListType(str)])
+        return _decoder.decode(_response.json(), List[str])
 
     def get_branches_deprecated(self, auth_header: str, dataset_rid: str) -> List[str]:
         """
@@ -264,7 +264,7 @@ class another_TestService(Service):
             json=_json)
 
         _decoder = ConjureDecoder()
-        return _decoder.decode(_response.json(), Type[ListType(str)])
+        return _decoder.decode(_response.json(), List[str])
 
     def resolve_branch(self, auth_header: str, branch: str, dataset_rid: str) -> Optional[str]:
 
@@ -294,7 +294,7 @@ class another_TestService(Service):
             json=_json)
 
         _decoder = ConjureDecoder()
-        return None if _response.status_code == 204 else _decoder.decode(_response.json(), Type[OptionalType(str)])
+        return None if _response.status_code == 204 else _decoder.decode(_response.json(), Optional[str])
 
     def test_param(self, auth_header: str, dataset_rid: str) -> Optional[str]:
 
@@ -323,7 +323,7 @@ class another_TestService(Service):
             json=_json)
 
         _decoder = ConjureDecoder()
-        return None if _response.status_code == 204 else _decoder.decode(_response.json(), Type[OptionalType(str)])
+        return None if _response.status_code == 204 else _decoder.decode(_response.json(), Optional[str])
 
     def test_query_params(self, auth_header: str, implicit: str, something: str) -> int:
 
@@ -481,7 +481,7 @@ class product_datasets_BackingFileSystem(ConjureBeanType):
         return {
             'file_system_id': ConjureFieldDefinition('fileSystemId', str),
             'base_uri': ConjureFieldDefinition('baseUri', str),
-            'configuration': ConjureFieldDefinition('configuration', Type[DictType(str, str)])
+            'configuration': ConjureFieldDefinition('configuration', Dict[str, str])
         }
 
     __slots__: List[str] = ['_file_system_id', '_base_uri', '_configuration']
