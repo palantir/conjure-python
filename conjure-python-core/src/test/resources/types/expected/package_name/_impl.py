@@ -31,7 +31,7 @@ class another_TestService(Service):
     A Markdown description of the service. "Might end with quotes"
     """
 
-    def get_file_systems(self, auth_header: str) -> Dict[str, product_datasets_BackingFileSystem]:
+    def get_file_systems(self, auth_header: str) -> Dict[str, "product_datasets_BackingFileSystem"]:
         """
         Returns a mapping from file system id to backing file system configuration.
         """
@@ -62,7 +62,7 @@ class another_TestService(Service):
         _decoder = ConjureDecoder()
         return _decoder.decode(_response.json(), Type[DictType(str, "product_datasets_BackingFileSystem")])
 
-    def create_dataset(self, auth_header: str, request: product_CreateDatasetRequest, test_header_arg: str) -> product_datasets_Dataset:
+    def create_dataset(self, auth_header: str, request: "product_CreateDatasetRequest", test_header_arg: str) -> "product_datasets_Dataset":
 
         _headers: Dict[str, Any] = {
             'Accept': 'application/json',
@@ -92,7 +92,7 @@ class another_TestService(Service):
         _decoder = ConjureDecoder()
         return _decoder.decode(_response.json(), "product_datasets_Dataset")
 
-    def get_dataset(self, auth_header: str, dataset_rid: str) -> Optional[product_datasets_Dataset]:
+    def get_dataset(self, auth_header: str, dataset_rid: str) -> Optional["product_datasets_Dataset"]:
 
         _headers: Dict[str, Any] = {
             'Accept': 'application/json',
@@ -598,7 +598,7 @@ class product_AliasAsMapKeyExample(ConjureBeanType):
 
     __slots__: List[str] = ['_strings', '_rids', '_bearertokens', '_integers', '_safelongs', '_datetimes', '_uuids']
 
-    def __init__(self, bearertokens: Dict[str, product_ManyFieldExample], datetimes: Dict[str, product_ManyFieldExample], integers: Dict[int, product_ManyFieldExample], rids: Dict[str, product_ManyFieldExample], safelongs: Dict[int, product_ManyFieldExample], strings: Dict[str, product_ManyFieldExample], uuids: Dict[str, product_ManyFieldExample]) -> None:
+    def __init__(self, bearertokens: Dict[str, "product_ManyFieldExample"], datetimes: Dict[str, "product_ManyFieldExample"], integers: Dict[int, "product_ManyFieldExample"], rids: Dict[str, "product_ManyFieldExample"], safelongs: Dict[int, "product_ManyFieldExample"], strings: Dict[str, "product_ManyFieldExample"], uuids: Dict[str, "product_ManyFieldExample"]) -> None:
         self._strings = strings
         self._rids = rids
         self._bearertokens = bearertokens
@@ -608,31 +608,31 @@ class product_AliasAsMapKeyExample(ConjureBeanType):
         self._uuids = uuids
 
     @builtins.property
-    def strings(self) -> Dict[str, product_ManyFieldExample]:
+    def strings(self) -> Dict[str, "product_ManyFieldExample"]:
         return self._strings
 
     @builtins.property
-    def rids(self) -> Dict[str, product_ManyFieldExample]:
+    def rids(self) -> Dict[str, "product_ManyFieldExample"]:
         return self._rids
 
     @builtins.property
-    def bearertokens(self) -> Dict[str, product_ManyFieldExample]:
+    def bearertokens(self) -> Dict[str, "product_ManyFieldExample"]:
         return self._bearertokens
 
     @builtins.property
-    def integers(self) -> Dict[int, product_ManyFieldExample]:
+    def integers(self) -> Dict[int, "product_ManyFieldExample"]:
         return self._integers
 
     @builtins.property
-    def safelongs(self) -> Dict[int, product_ManyFieldExample]:
+    def safelongs(self) -> Dict[int, "product_ManyFieldExample"]:
         return self._safelongs
 
     @builtins.property
-    def datetimes(self) -> Dict[str, product_ManyFieldExample]:
+    def datetimes(self) -> Dict[str, "product_ManyFieldExample"]:
         return self._datetimes
 
     @builtins.property
-    def uuids(self) -> Dict[str, product_ManyFieldExample]:
+    def uuids(self) -> Dict[str, "product_ManyFieldExample"]:
         return self._uuids
 
 
@@ -878,11 +878,11 @@ class product_EnumFieldExample(ConjureBeanType):
 
     __slots__: List[str] = ['_enum']
 
-    def __init__(self, enum: product_EnumExample) -> None:
+    def __init__(self, enum: "product_EnumExample") -> None:
         self._enum = enum
 
     @builtins.property
-    def enum(self) -> product_EnumExample:
+    def enum(self) -> "product_EnumExample":
         return self._enum
 
 
@@ -1227,11 +1227,11 @@ class product_RecursiveObjectExample(ConjureBeanType):
 
     __slots__: List[str] = ['_recursive_field']
 
-    def __init__(self, recursive_field: Optional[product_RecursiveObjectExample]=None) -> None:
+    def __init__(self, recursive_field: Optional["product_RecursiveObjectExample"]=None) -> None:
         self._recursive_field = recursive_field
 
     @builtins.property
-    def recursive_field(self) -> Optional[product_RecursiveObjectExample]:
+    def recursive_field(self) -> Optional["product_RecursiveObjectExample"]:
         return self._recursive_field
 
 
@@ -1381,7 +1381,7 @@ product_StringExample.__module__ = "package_name.product"
 
 class product_UnionTypeExample(ConjureUnionType):
     """A type which can either be a StringExample, a set of strings, or an integer."""
-    _string_example: Optional[product_StringExample] = None
+    _string_example: Optional["product_StringExample"] = None
     _set: Optional[List[str]] = None
     _this_field_is_an_integer: Optional[int] = None
     _also_an_integer: Optional[int] = None
@@ -1405,7 +1405,7 @@ class product_UnionTypeExample(ConjureUnionType):
 
     def __init__(
             self,
-            string_example: Optional[product_StringExample] = None,
+            string_example: Optional["product_StringExample"] = None,
             set: Optional[List[str]] = None,
             this_field_is_an_integer: Optional[int] = None,
             also_an_integer: Optional[int] = None,
@@ -1443,7 +1443,7 @@ class product_UnionTypeExample(ConjureUnionType):
             self._type = 'property'
 
     @builtins.property
-    def string_example(self) -> Optional[product_StringExample]:
+    def string_example(self) -> Optional["product_StringExample"]:
         """
         Docs for when UnionTypeExample is of type StringExample.
         """
@@ -1509,7 +1509,7 @@ product_UnionTypeExampleVisitorBaseClass: Any = ABCMeta('ABC', (object,), {})
 class product_UnionTypeExampleVisitor(product_UnionTypeExampleVisitorBaseClass):
 
     @abstractmethod
-    def _string_example(self, string_example: product_StringExample) -> Any:
+    def _string_example(self, string_example: "product_StringExample") -> Any:
         pass
 
     @abstractmethod
@@ -1650,7 +1650,7 @@ class with_imports_ComplexObjectWithImports(ConjureBeanType):
 
     __slots__: List[str] = ['_string', '_imported']
 
-    def __init__(self, imported: product_StringExample, string: str) -> None:
+    def __init__(self, imported: "product_StringExample", string: str) -> None:
         self._string = string
         self._imported = imported
 
@@ -1659,7 +1659,7 @@ class with_imports_ComplexObjectWithImports(ConjureBeanType):
         return self._string
 
     @builtins.property
-    def imported(self) -> product_StringExample:
+    def imported(self) -> "product_StringExample":
         return self._imported
 
 
@@ -1670,7 +1670,7 @@ with_imports_ComplexObjectWithImports.__module__ = "package_name.with_imports"
 
 class with_imports_ImportService(Service):
 
-    def test_endpoint(self, imported_string: product_StringExample) -> product_datasets_BackingFileSystem:
+    def test_endpoint(self, imported_string: "product_StringExample") -> "product_datasets_BackingFileSystem":
 
         _headers: Dict[str, Any] = {
             'Accept': 'application/json',
@@ -1729,7 +1729,7 @@ with_imports_ImportedAliasInMaps.__module__ = "package_name.with_imports"
 
 class with_imports_UnionWithImports(ConjureUnionType):
     _string: Optional[str] = None
-    _imported: Optional[product_AnyMapExample] = None
+    _imported: Optional["product_AnyMapExample"] = None
 
     @builtins.classmethod
     def _options(cls) -> Dict[str, ConjureFieldDefinition]:
@@ -1741,7 +1741,7 @@ class with_imports_UnionWithImports(ConjureUnionType):
     def __init__(
             self,
             string: Optional[str] = None,
-            imported: Optional[product_AnyMapExample] = None
+            imported: Optional["product_AnyMapExample"] = None
             ) -> None:
         if (string is not None) + (imported is not None) != 1:
             raise ValueError('a union must contain a single member')
@@ -1758,7 +1758,7 @@ class with_imports_UnionWithImports(ConjureUnionType):
         return self._string
 
     @builtins.property
-    def imported(self) -> Optional[product_AnyMapExample]:
+    def imported(self) -> Optional["product_AnyMapExample"]:
         return self._imported
 
     def accept(self, visitor) -> Any:
@@ -1785,7 +1785,7 @@ class with_imports_UnionWithImportsVisitor(with_imports_UnionWithImportsVisitorB
         pass
 
     @abstractmethod
-    def _imported(self, imported: product_AnyMapExample) -> Any:
+    def _imported(self, imported: "product_AnyMapExample") -> Any:
         pass
 
 

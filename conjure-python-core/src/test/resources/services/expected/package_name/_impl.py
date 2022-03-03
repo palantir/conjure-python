@@ -25,7 +25,7 @@ class another_TestService(Service):
     A Markdown description of the service. "Might end with quotes"
     """
 
-    def get_file_systems(self, auth_header: str) -> Dict[str, product_datasets_BackingFileSystem]:
+    def get_file_systems(self, auth_header: str) -> Dict[str, "product_datasets_BackingFileSystem"]:
         """
         Returns a mapping from file system id to backing file system configuration.
         """
@@ -56,7 +56,7 @@ class another_TestService(Service):
         _decoder = ConjureDecoder()
         return _decoder.decode(_response.json(), Type[DictType(str, "product_datasets_BackingFileSystem")])
 
-    def create_dataset(self, auth_header: str, request: product_CreateDatasetRequest, test_header_arg: str) -> product_datasets_Dataset:
+    def create_dataset(self, auth_header: str, request: "product_CreateDatasetRequest", test_header_arg: str) -> "product_datasets_Dataset":
 
         _headers: Dict[str, Any] = {
             'Accept': 'application/json',
@@ -86,7 +86,7 @@ class another_TestService(Service):
         _decoder = ConjureDecoder()
         return _decoder.decode(_response.json(), "product_datasets_Dataset")
 
-    def get_dataset(self, auth_header: str, dataset_rid: str) -> Optional[product_datasets_Dataset]:
+    def get_dataset(self, auth_header: str, dataset_rid: str) -> Optional["product_datasets_Dataset"]:
 
         _headers: Dict[str, Any] = {
             'Accept': 'application/json',

@@ -115,7 +115,9 @@ public final class MyPyTypeNameVisitor implements Type.Visitor<String> {
         };
         return dealiasingTypeVisitor
                 .visitReference(type)
-                .fold(typeDefinition -> typeDefinition.accept(visitor), typeReference -> typeReference.accept(this));
+                .fold(
+                        typeDefinition -> "\"" + typeDefinition.accept(visitor) + "\"",
+                        typeReference -> typeReference.accept(this));
     }
 
     @Override
