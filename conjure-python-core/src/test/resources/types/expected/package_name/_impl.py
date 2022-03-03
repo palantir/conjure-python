@@ -60,7 +60,7 @@ class another_TestService(Service):
             json=_json)
 
         _decoder = ConjureDecoder()
-        return _decoder.decode(_response.json(), Dict[str, "product_datasets_BackingFileSystem"])
+        return _decoder.decode(_response.json(), Dict[str, product_datasets_BackingFileSystem])
 
     def create_dataset(self, auth_header: str, request: "product_CreateDatasetRequest", test_header_arg: str) -> "product_datasets_Dataset":
 
@@ -90,7 +90,7 @@ class another_TestService(Service):
             json=_json)
 
         _decoder = ConjureDecoder()
-        return _decoder.decode(_response.json(), "product_datasets_Dataset")
+        return _decoder.decode(_response.json(), product_datasets_Dataset)
 
     def get_dataset(self, auth_header: str, dataset_rid: str) -> Optional["product_datasets_Dataset"]:
 
@@ -119,7 +119,7 @@ class another_TestService(Service):
             json=_json)
 
         _decoder = ConjureDecoder()
-        return None if _response.status_code == 204 else _decoder.decode(_response.json(), Optional["product_datasets_Dataset"])
+        return None if _response.status_code == 204 else _decoder.decode(_response.json(), Optional[product_datasets_Dataset])
 
     def get_raw_data(self, auth_header: str, dataset_rid: str) -> Any:
 
@@ -587,13 +587,13 @@ class product_AliasAsMapKeyExample(ConjureBeanType):
     @builtins.classmethod
     def _fields(cls) -> Dict[str, ConjureFieldDefinition]:
         return {
-            'strings': ConjureFieldDefinition('strings', Dict["product_StringAliasExample", "product_ManyFieldExample"]),
-            'rids': ConjureFieldDefinition('rids', Dict["product_RidAliasExample", "product_ManyFieldExample"]),
-            'bearertokens': ConjureFieldDefinition('bearertokens', Dict["product_BearerTokenAliasExample", "product_ManyFieldExample"]),
-            'integers': ConjureFieldDefinition('integers', Dict["product_IntegerAliasExample", "product_ManyFieldExample"]),
-            'safelongs': ConjureFieldDefinition('safelongs', Dict["product_SafeLongAliasExample", "product_ManyFieldExample"]),
-            'datetimes': ConjureFieldDefinition('datetimes', Dict["product_DateTimeAliasExample", "product_ManyFieldExample"]),
-            'uuids': ConjureFieldDefinition('uuids', Dict["product_UuidAliasExample", "product_ManyFieldExample"])
+            'strings': ConjureFieldDefinition('strings', Dict[product_StringAliasExample, product_ManyFieldExample]),
+            'rids': ConjureFieldDefinition('rids', Dict[product_RidAliasExample, product_ManyFieldExample]),
+            'bearertokens': ConjureFieldDefinition('bearertokens', Dict[product_BearerTokenAliasExample, product_ManyFieldExample]),
+            'integers': ConjureFieldDefinition('integers', Dict[product_IntegerAliasExample, product_ManyFieldExample]),
+            'safelongs': ConjureFieldDefinition('safelongs', Dict[product_SafeLongAliasExample, product_ManyFieldExample]),
+            'datetimes': ConjureFieldDefinition('datetimes', Dict[product_DateTimeAliasExample, product_ManyFieldExample]),
+            'uuids': ConjureFieldDefinition('uuids', Dict[product_UuidAliasExample, product_ManyFieldExample])
         }
 
     __slots__: List[str] = ['_strings', '_rids', '_bearertokens', '_integers', '_safelongs', '_datetimes', '_uuids']
@@ -873,7 +873,7 @@ class product_EnumFieldExample(ConjureBeanType):
     @builtins.classmethod
     def _fields(cls) -> Dict[str, ConjureFieldDefinition]:
         return {
-            'enum': ConjureFieldDefinition('enum', "product_EnumExample")
+            'enum': ConjureFieldDefinition('enum', product_EnumExample)
         }
 
     __slots__: List[str] = ['_enum']
@@ -984,7 +984,7 @@ class product_ManyFieldExample(ConjureBeanType):
             'items': ConjureFieldDefinition('items', List[str]),
             'set': ConjureFieldDefinition('set', List[str]),
             'map': ConjureFieldDefinition('map', Dict[str, str]),
-            'alias': ConjureFieldDefinition('alias', "product_StringAliasExample")
+            'alias': ConjureFieldDefinition('alias', product_StringAliasExample)
         }
 
     __slots__: List[str] = ['_string', '_integer', '_double_value', '_optional_item', '_items', '_set', '_map', '_alias']
@@ -1222,7 +1222,7 @@ class product_RecursiveObjectExample(ConjureBeanType):
     @builtins.classmethod
     def _fields(cls) -> Dict[str, ConjureFieldDefinition]:
         return {
-            'recursive_field': ConjureFieldDefinition('recursiveField', Optional["product_RecursiveObjectAlias"])
+            'recursive_field': ConjureFieldDefinition('recursiveField', Optional[product_RecursiveObjectAlias])
         }
 
     __slots__: List[str] = ['_recursive_field']
@@ -1393,7 +1393,7 @@ class product_UnionTypeExample(ConjureUnionType):
     @builtins.classmethod
     def _options(cls) -> Dict[str, ConjureFieldDefinition]:
         return {
-            'string_example': ConjureFieldDefinition('stringExample', "product_StringExample"),
+            'string_example': ConjureFieldDefinition('stringExample', product_StringExample),
             'set': ConjureFieldDefinition('set', List[str]),
             'this_field_is_an_integer': ConjureFieldDefinition('thisFieldIsAnInteger', int),
             'also_an_integer': ConjureFieldDefinition('alsoAnInteger', int),
@@ -1645,7 +1645,7 @@ class with_imports_ComplexObjectWithImports(ConjureBeanType):
     def _fields(cls) -> Dict[str, ConjureFieldDefinition]:
         return {
             'string': ConjureFieldDefinition('string', str),
-            'imported': ConjureFieldDefinition('imported', "product_StringExample")
+            'imported': ConjureFieldDefinition('imported', product_StringExample)
         }
 
     __slots__: List[str] = ['_string', '_imported']
@@ -1696,7 +1696,7 @@ class with_imports_ImportService(Service):
             json=_json)
 
         _decoder = ConjureDecoder()
-        return _decoder.decode(_response.json(), "product_datasets_BackingFileSystem")
+        return _decoder.decode(_response.json(), product_datasets_BackingFileSystem)
 
 
 with_imports_ImportService.__name__ = "ImportService"
@@ -1709,7 +1709,7 @@ class with_imports_ImportedAliasInMaps(ConjureBeanType):
     @builtins.classmethod
     def _fields(cls) -> Dict[str, ConjureFieldDefinition]:
         return {
-            'aliases': ConjureFieldDefinition('aliases', Dict["product_RidAliasExample", "product_DateTimeAliasExample"])
+            'aliases': ConjureFieldDefinition('aliases', Dict[product_RidAliasExample, product_DateTimeAliasExample])
         }
 
     __slots__: List[str] = ['_aliases']
@@ -1735,7 +1735,7 @@ class with_imports_UnionWithImports(ConjureUnionType):
     def _options(cls) -> Dict[str, ConjureFieldDefinition]:
         return {
             'string': ConjureFieldDefinition('string', str),
-            'imported': ConjureFieldDefinition('imported', "product_AnyMapExample")
+            'imported': ConjureFieldDefinition('imported', product_AnyMapExample)
         }
 
     def __init__(
@@ -1798,37 +1798,37 @@ product_SafeLongAliasExample = int
 
 product_BearerTokenAliasExample = str
 
+product_ReferenceAliasExample = product_AnyExample
+
 product_BinaryAliasExample = BinaryType
 
 product_BooleanAliasExample = bool
 
 product_StringAliasExample = str
 
-with_imports_AliasImportedPrimitiveAlias = "product_StringAliasExample"
-
 product_MapAliasExample = Dict[str, object]
 
 product_IntegerAliasExample = int
 
-product_ReferenceAliasExample = "product_AnyExample"
-
 product_UuidAliasExample = str
 
-with_imports_AliasImportedObject = "product_ManyFieldExample"
+with_imports_AliasImportedPrimitiveAlias = product_StringAliasExample
 
 product_DoubleAliasExample = float
 
 product_RidAliasExample = str
 
-with_imports_AliasImportedReferenceAlias = "product_ReferenceAliasExample"
-
 package_name_TypeInPackageWithTheSameNameAsRootPackage = str
 
-product_RecursiveObjectAlias = "product_RecursiveObjectExample"
-
-product_NestedAliasExample = "product_RecursiveObjectAlias"
-
-product_CollectionAliasExample = Dict["product_StringAliasExample", "product_RecursiveObjectAlias"]
-
 product_DateTimeAliasExample = str
+
+product_RecursiveObjectAlias = product_RecursiveObjectExample
+
+product_NestedAliasExample = product_RecursiveObjectAlias
+
+product_CollectionAliasExample = Dict[product_StringAliasExample, product_RecursiveObjectAlias]
+
+with_imports_AliasImportedObject = product_ManyFieldExample
+
+with_imports_AliasImportedReferenceAlias = product_ReferenceAliasExample
 

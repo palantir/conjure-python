@@ -54,7 +54,7 @@ class another_TestService(Service):
             json=_json)
 
         _decoder = ConjureDecoder()
-        return _decoder.decode(_response.json(), Dict[str, "product_datasets_BackingFileSystem"])
+        return _decoder.decode(_response.json(), Dict[str, product_datasets_BackingFileSystem])
 
     def create_dataset(self, auth_header: str, request: "product_CreateDatasetRequest", test_header_arg: str) -> "product_datasets_Dataset":
 
@@ -84,7 +84,7 @@ class another_TestService(Service):
             json=_json)
 
         _decoder = ConjureDecoder()
-        return _decoder.decode(_response.json(), "product_datasets_Dataset")
+        return _decoder.decode(_response.json(), product_datasets_Dataset)
 
     def get_dataset(self, auth_header: str, dataset_rid: str) -> Optional["product_datasets_Dataset"]:
 
@@ -113,7 +113,7 @@ class another_TestService(Service):
             json=_json)
 
         _decoder = ConjureDecoder()
-        return None if _response.status_code == 204 else _decoder.decode(_response.json(), Optional["product_datasets_Dataset"])
+        return None if _response.status_code == 204 else _decoder.decode(_response.json(), Optional[product_datasets_Dataset])
 
     def get_raw_data(self, auth_header: str, dataset_rid: str) -> Any:
 

@@ -80,7 +80,7 @@ public final class PythonTypeNameVisitor implements Type.Visitor<String> {
 
     @Override
     public String visitReference(TypeName type) {
-        return "\"" + typeNameProcessor.process(type) + "\"";
+        return typeNameProcessor.process(type);
     }
 
     @Override
