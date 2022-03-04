@@ -36,7 +36,7 @@ public interface UnionSnippet extends PythonSnippet {
                     .build(),
             PythonImport.builder()
                     .moduleSpecifier("abc")
-                    .addNamedImports(NamedImport.of("ABCMeta"), NamedImport.of("abstractmethod"))
+                    .addNamedImports(NamedImport.of("abstractmethod"))
                     .build(),
             PythonImport.builder()
                     .moduleSpecifier(ImportTypeVisitor.TYPING)

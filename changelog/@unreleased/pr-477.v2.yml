@@ -1,0 +1,5 @@
+type: fix
+fix:
+  description: Don't import ABCMeta as we are not using it
+  links:
+  - https://github.com/palantir/conjure-python/pull/476
