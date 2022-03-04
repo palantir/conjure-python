@@ -57,7 +57,7 @@ public final class PythonAliasTopologicalSorter {
                 .collect(Collectors.toSet());
         Map<AliasSnippet, Integer> nonRootsToInDegree = mutableGraph.nodes().stream()
                 .filter(node -> mutableGraph.inDegree(node) > 0)
-                .collect(Collectors.toMap(node -> node, mutableGraph::inDegree, (a, b) -> a));
+                .collect(Collectors.toMap(node -> node, mutableGraph::inDegree, (a, _b) -> a));
 
         // Kahn's Algorithm https://en.wikipedia.org/wiki/Topological_sorting#Kahn's_algorithm
         while (!roots.isEmpty()) {

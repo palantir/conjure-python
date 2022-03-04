@@ -1,0 +1,5 @@
+type: break
+break:
+  description: Stop testing on python 2
+  links:
+  - https://github.com/palantir/conjure-python/pull/475

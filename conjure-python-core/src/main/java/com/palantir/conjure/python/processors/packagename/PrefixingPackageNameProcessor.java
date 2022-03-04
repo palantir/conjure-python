@@ -16,9 +16,11 @@
 
 package com.palantir.conjure.python.processors.packagename;
 
+import java.util.Objects;
+
 public final class PrefixingPackageNameProcessor implements PackageNameProcessor {
 
-    private String topLevelPackageName;
+    private final String topLevelPackageName;
 
     public PrefixingPackageNameProcessor(String topLevelPackageName) {
         this.topLevelPackageName = topLevelPackageName;
@@ -27,5 +29,22 @@ public final class PrefixingPackageNameProcessor implements PackageNameProcessor
     @Override
     public String process(String packageName) {
         return topLevelPackageName + "." + packageName;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        PrefixingPackageNameProcessor that = (PrefixingPackageNameProcessor) obj;
+        return topLevelPackageName.equals(that.topLevelPackageName);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(topLevelPackageName);
     }
 }

@@ -112,7 +112,7 @@ public final class PythonTypeGenerator {
                         .myPyType(entry.getType().accept(myPyTypeNameVisitor))
                         .isOptional(dealiasingTypeVisitor
                                 .dealias(entry.getType())
-                                .fold(typeDefinition -> false, type -> type.accept(TypeVisitor.IS_OPTIONAL)))
+                                .fold(_typeDefinition -> false, type -> type.accept(TypeVisitor.IS_OPTIONAL)))
                         .build())
                 .collect(Collectors.toList());
 
@@ -166,7 +166,7 @@ public final class PythonTypeGenerator {
                             .pythonType(conjureType.accept(pythonTypeNameVisitor))
                             .isOptional(dealiasingTypeVisitor
                                     .dealias(unionMember.getType())
-                                    .fold(typeDefinition -> false, type -> type.accept(TypeVisitor.IS_OPTIONAL)))
+                                    .fold(_typeDefinition -> false, type -> type.accept(TypeVisitor.IS_OPTIONAL)))
                             .build();
                 })
                 .collect(Collectors.toList());
