@@ -35,6 +35,10 @@ public interface UnionSnippet extends PythonSnippet {
                     .addNamedImports(NamedImport.of("ConjureUnionType"), NamedImport.of("ConjureFieldDefinition"))
                     .build(),
             PythonImport.builder()
+                    .moduleSpecifier("abc")
+                    .addNamedImports(NamedImport.of("abstractmethod"))
+                    .build(),
+            PythonImport.builder()
                     .moduleSpecifier(ImportTypeVisitor.TYPING)
                     .addNamedImports(
                             NamedImport.of("Dict"),
