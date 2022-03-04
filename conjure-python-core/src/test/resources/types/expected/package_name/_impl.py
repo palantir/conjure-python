@@ -1964,41 +1964,41 @@ with_imports_UnionWithImportsVisitor.__qualname__ = "UnionWithImportsVisitor"
 with_imports_UnionWithImportsVisitor.__module__ = "package_name.with_imports"
 
 
-product_RecursiveObjectAlias = product_RecursiveObjectExample
-
-product_MapAliasExample = DictType(str, object)
+product_SafeLongAliasExample = int
 
 product_BearerTokenAliasExample = str
 
-product_SafeLongAliasExample = int
+product_MapAliasExample = DictType(str, object)
 
-product_IntegerAliasExample = int
+product_ReferenceAliasExample = product_AnyExample
 
 product_BooleanAliasExample = bool
 
 product_StringAliasExample = str
 
+product_IntegerAliasExample = int
+
 product_UuidAliasExample = str
-
-product_CollectionAliasExample = DictType(product_StringAliasExample, product_RecursiveObjectAlias)
-
-package_name_TypeInPackageWithTheSameNameAsRootPackage = str
-
-product_ReferenceAliasExample = product_AnyExample
-
-product_RidAliasExample = str
-
-product_NestedAliasExample = product_RecursiveObjectAlias
 
 with_imports_AliasImportedPrimitiveAlias = product_StringAliasExample
 
-product_DateTimeAliasExample = str
-
-product_BinaryAliasExample = BinaryType()
-
 product_DoubleAliasExample = float
 
+product_RidAliasExample = str
+
+package_name_TypeInPackageWithTheSameNameAsRootPackage = str
+
+product_DateTimeAliasExample = str
+
+product_RecursiveObjectAlias = product_RecursiveObjectExample
+
+product_CollectionAliasExample = DictType(product_StringAliasExample, product_RecursiveObjectAlias)
+
+product_NestedAliasExample = product_RecursiveObjectAlias
+
 with_imports_AliasImportedObject = product_ManyFieldExample
+
+product_BinaryAliasExample = BinaryType()
 
 with_imports_AliasImportedReferenceAlias = product_ReferenceAliasExample
 

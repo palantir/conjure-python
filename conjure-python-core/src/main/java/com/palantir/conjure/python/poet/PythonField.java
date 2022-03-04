@@ -41,7 +41,7 @@ public interface PythonField {
 
     Optional<Documentation> docs();
 
-    class PythonFieldComparator implements Comparator<PythonField> {
+    final class PythonFieldComparator implements Comparator<PythonField> {
         @Override
         public int compare(PythonField o1, PythonField o2) {
             if (o1.isOptional() && !o2.isOptional()) {

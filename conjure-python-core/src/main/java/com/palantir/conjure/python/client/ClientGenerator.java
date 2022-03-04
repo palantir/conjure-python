@@ -104,7 +104,7 @@ public final class ClientGenerator {
                         .myPyType(argEntry.getType().accept(myPyTypeNameVisitor))
                         .isOptional(dealiasingTypeVisitor
                                 .dealias(argEntry.getType())
-                                .fold(typeDefinition -> false, type -> type.accept(TypeVisitor.IS_OPTIONAL)))
+                                .fold(_typeDefinition -> false, type -> type.accept(TypeVisitor.IS_OPTIONAL)))
                         .isCollection(dealiasingTypeVisitor
                                 .dealias(argEntry.getType())
                                 .fold(
@@ -133,7 +133,7 @@ public final class ClientGenerator {
                         .getReturns()
                         .map(rt -> dealiasingTypeVisitor
                                 .dealias(rt)
-                                .fold(typeDefinition -> false, type -> type.accept(TypeVisitor.IS_OPTIONAL)))
+                                .fold(_typeDefinition -> false, type -> type.accept(TypeVisitor.IS_OPTIONAL)))
                         .orElse(false))
                 .build();
     }
