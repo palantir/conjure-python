@@ -1,4 +1,7 @@
 # coding=utf-8
+from abc import (
+    abstractmethod,
+)
 import builtins
 from conjure_python_client import (
     BinaryType,
