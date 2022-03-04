@@ -40,7 +40,11 @@ public interface UnionSnippet extends PythonSnippet {
                     .build(),
             PythonImport.builder()
                     .moduleSpecifier(ImportTypeVisitor.TYPING)
-                    .addNamedImports(NamedImport.of("Dict"), NamedImport.of("Any"), NamedImport.of("Optional"))
+                    .addNamedImports(
+                            NamedImport.of("Dict"),
+                            NamedImport.of("Any"),
+                            NamedImport.of("Optional"),
+                            NamedImport.of("Type"))
                     .build(),
             PythonImport.of("builtins"));
     ImmutableSet<String> PROTECTED_FIELDS = ImmutableSet.of("options");
@@ -91,15 +95,14 @@ public interface UnionSnippet extends PythonSnippet {
 
             options()
                     .forEach(option -> poetWriter.writeIndentedLine(
-                            "%s = None # type: Optional[%s]", fieldName(option), option.myPyType()));
+                            "%s: Optional[%s] = None", fieldName(option), option.myPyType()));
 
             poetWriter.writeLine();
 
             // record off the options
             poetWriter.writeIndentedLine("@builtins.classmethod");
-            poetWriter.writeIndentedLine("def _options(cls):");
+            poetWriter.writeIndentedLine("def _options(cls) -> Dict[str, ConjureFieldDefinition]:");
             poetWriter.increaseIndent();
-            poetWriter.writeIndentedLine("# type: () -> Dict[str, ConjureFieldDefinition]"); // maybe....?
             poetWriter.writeIndentedLine("return {");
             poetWriter.increaseIndent();
             for (int i = 0; i < options().size(); i++) {
@@ -125,14 +128,13 @@ public interface UnionSnippet extends PythonSnippet {
                 PythonField option = options().get(i);
 
                 poetWriter.writeIndentedLine(String.format(
-                        "%s=None%s  # type: Optional[%s]",
+                        "%s: Optional[%s] = None%s",
                         PythonIdentifierSanitizer.sanitize(option.attributeName()),
-                        i == options().size() - 1 ? "" : ",",
-                        option.myPyType()));
+                        option.myPyType(),
+                        i == options().size() - 1 ? "" : ","));
             }
-            poetWriter.writeIndentedLine("):");
+            poetWriter.writeIndentedLine(") -> None:");
             poetWriter.decreaseIndent();
-            poetWriter.writeIndentedLine("# type: (...) -> None");
 
             // check we have exactly one non-null
             poetWriter.writeIndentedLine(
@@ -161,10 +163,10 @@ public interface UnionSnippet extends PythonSnippet {
                 poetWriter.writeLine();
 
                 poetWriter.writeIndentedLine("@builtins.property");
-                poetWriter.writeIndentedLine(String.format("def %s(self):", propertyName(option)));
+                poetWriter.writeIndentedLine(
+                        String.format("def %s(self) -> Optional[%s]:", propertyName(option), option.myPyType()));
 
                 poetWriter.increaseIndent();
-                poetWriter.writeIndentedLine(String.format("# type: () -> Optional[%s]", option.myPyType()));
                 option.docs().ifPresent(docs -> {
                     poetWriter.writeIndentedLine("\"\"\"");
                     poetWriter.writeIndentedLine(docs.get().trim());
@@ -178,9 +180,8 @@ public interface UnionSnippet extends PythonSnippet {
             String definitionVisitorName = String.format("%sVisitor", definitionName());
 
             poetWriter.writeLine();
-            poetWriter.writeIndentedLine("def accept(self, visitor):");
+            poetWriter.writeIndentedLine("def accept(self, visitor) -> Any:");
             poetWriter.increaseIndent();
-            poetWriter.writeIndentedLine("# type: (%s) -> Any", visitorName);
             poetWriter.writeIndentedLine("if not isinstance(visitor, %s):", visitorName);
             poetWriter.increaseIndent();
             poetWriter.writeIndentedLine(
@@ -200,21 +201,15 @@ public interface UnionSnippet extends PythonSnippet {
 
             PythonClassRenamer.renameClass(poetWriter, className(), definitionPackage(), definitionName());
 
-            // We need to generate this base class to be python 2 compatible
-            String visitorBaseClass = String.format("%sBaseClass", visitorName);
-            poetWriter.writeLine(String.format("%s = ABCMeta('ABC', (object,), {}) # type: Any", visitorBaseClass));
-
-            poetWriter.writeLine();
-            poetWriter.writeLine();
-
-            poetWriter.writeIndentedLine(String.format("class %s(%s):", visitorName, visitorBaseClass));
+            poetWriter.writeIndentedLine(String.format("class %s:", visitorName));
             poetWriter.increaseIndent();
             options().forEach(option -> {
                 poetWriter.writeLine();
                 poetWriter.writeIndentedLine("@abstractmethod");
-                poetWriter.writeIndentedLine("def %s(self, %s):", visitorMethodName(option), parameterName(option));
+                poetWriter.writeIndentedLine(
+                        "def %s(self, %s: %s) -> Any:",
+                        visitorMethodName(option), parameterName(option), option.myPyType());
                 poetWriter.increaseIndent();
-                poetWriter.writeIndentedLine("# type: (%s) -> Any", option.myPyType());
                 poetWriter.writeIndentedLine("pass");
                 poetWriter.decreaseIndent();
             });

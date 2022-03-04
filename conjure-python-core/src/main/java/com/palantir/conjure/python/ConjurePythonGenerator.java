@@ -252,12 +252,12 @@ public final class ConjurePythonGenerator {
                 .pythonPackage(rootPackage)
                 .putOptions("name", config.packageName().get())
                 .putOptions("version", config.packageVersion().get())
+                .putOptions("python_requires", ">=3.8")
                 .putRawOptions("package_data", "{\"\": [\"py.typed\"]}")
-                .addInstallDependencies("requests", "typing")
+                .addInstallDependencies("requests")
                 .addInstallDependencies(String.format(
                         "conjure-python-client>=%s,<%s",
-                        config.minConjureClientVersion(), config.maxConjureClientVersion()))
-                .addInstallDependencies("future");
+                        config.minConjureClientVersion(), config.maxConjureClientVersion()));
         config.packageDescription().ifPresent(value -> builder.putOptions("description", value));
         config.packageUrl().ifPresent(value -> builder.putOptions("url", value));
         config.packageAuthor().ifPresent(value -> builder.putOptions("author", value));
@@ -287,7 +287,7 @@ public final class ConjurePythonGenerator {
                         .pythonPackage(rootPackage)
                         .condaPackageName(config.packageName().get())
                         .packageVersion(config.packageVersion().get())
-                        .addInstallDependencies("requests", "typing")
+                        .addInstallDependencies("requests")
                         .addInstallDependencies(String.format(
                                 "conjure-python-client >=%s,<%s",
                                 config.minConjureClientVersion(), config.maxConjureClientVersion()))

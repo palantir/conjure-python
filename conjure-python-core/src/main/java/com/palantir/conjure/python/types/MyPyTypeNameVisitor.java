@@ -87,11 +87,10 @@ public final class MyPyTypeNameVisitor implements Type.Visitor<String> {
 
     @Override
     public String visitReference(TypeName type) {
-        MyPyTypeNameVisitor myPyTypeNameVisitor = this;
-        TypeDefinition.Visitor<String> visitor = new TypeDefinition.Visitor<String>() {
+        TypeDefinition.Visitor<String> visitor = new TypeDefinition.Visitor<>() {
             @Override
             public String visitAlias(AliasDefinition value) {
-                return value.getAlias().accept(myPyTypeNameVisitor);
+                return value.getAlias().accept(MyPyTypeNameVisitor.this);
             }
 
             @Override
@@ -116,7 +115,9 @@ public final class MyPyTypeNameVisitor implements Type.Visitor<String> {
         };
         return dealiasingTypeVisitor
                 .visitReference(type)
-                .fold(typeDefinition -> typeDefinition.accept(visitor), typeReference -> typeReference.accept(this));
+                .fold(
+                        typeDefinition -> "\"" + typeDefinition.accept(visitor) + "\"",
+                        typeReference -> typeReference.accept(this));
     }
 
     @Override

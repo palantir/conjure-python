@@ -34,7 +34,6 @@ setup(
     install_requires=[
         "conjure-python-client=={}".format(os.environ.get('CONJURE_PYTHON_CLIENT_VERSION')),
         "pyyaml",
-        "future"
     ],
     tests_require=["pytest", "pyyaml"],
 )

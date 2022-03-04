@@ -66,9 +66,9 @@ def run_test(should_pass, is_blacklisted, runnable):
 
 def run_test_with_argument(index, is_blacklisted, service, method_name, value):
     target_method = getattr(service, method_name)
-    target_argspec = inspect.getargspec(target_method)
+    signature = inspect.signature(target_method)
     target_param = [e
-                    for e in target_argspec.args
+                    for e in signature.parameters
                     if e not in ('self', 'index')][0]
     kwargs = {'index': index, target_param: json.loads(value)}
 
@@ -88,10 +88,6 @@ def test_body(
         should_pass):
     body_black_list = test_black_list['autoDeserialize']
     is_blacklisted = endpoint_name in body_black_list and case in body_black_list[endpoint_name]
-
-    # HACKHACK, skip test that fails only in python 2
-    if endpoint_name == 'receiveMapBooleanAliasExample':
-        return
 
     if should_pass:
         run_test(True,

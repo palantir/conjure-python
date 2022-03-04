@@ -41,10 +41,6 @@ client:
     receiveMapEnumExampleAlias:
       - '{"ONE": "", "TWO": "", "UNKNOWN_VARIANT": ""}'
 
-    # We do not encode boolean keys correctly, we encode them as True/False instead of true/false
-    receiveMapBooleanAliasExample:
-      - '{"true": true}'
-
     # We do not fail on duplicate map keys
     receiveMapDoubleAliasExample:
       - '{"10": true, "10e0": false}'
