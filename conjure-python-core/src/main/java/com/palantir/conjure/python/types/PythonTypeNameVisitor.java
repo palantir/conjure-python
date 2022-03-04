@@ -48,7 +48,7 @@ public final class PythonTypeNameVisitor implements Type.Visitor<String> {
 
     @Override
     public String visitOptional(OptionalType type) {
-        return "Optional[" + type.getItemType().accept(this) + "]";
+        return "OptionalTypeWrapper[" + type.getItemType().accept(this) + "]";
     }
 
     @Override

@@ -4,15 +4,23 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-conjure-python-client = "==2.0.0"
+conjure-python-client = ">=2.0.0"
 
 [dev-packages]
+black = "*"
+mypy = "*"
+pycodestyle = "*"
+pylint = "*"
+pytest = "*"
+pytest-html = "*"
+pytest-pylint = "*"
+pyyaml = "*"
+rope = "*"
 setuptools = "*"
 tox = "*"
-rope = "*"
-pylint = "*"
+types-PyYAML = "*"
+types-requests = "*"
 wheel = "*"
-pyyaml = "*"
-black = "*"
-pycodestyle = "*"
-pytest = "*"
+
+[requires]
+python_version = "3.8"

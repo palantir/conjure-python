@@ -6,9 +6,7 @@ from conjure_python_client import (
     ConjureDecoder,
     ConjureEncoder,
     ConjureFieldDefinition,
-    DictType,
-    ListType,
-    OptionalType,
+    OptionalTypeWrapper,
     Service,
 )
 from typing import (
@@ -113,7 +111,7 @@ class another_TestService(Service):
             json=_json)
 
         _decoder = ConjureDecoder()
-        return None if _response.status_code == 204 else _decoder.decode(_response.json(), Optional[product_datasets_Dataset])
+        return None if _response.status_code == 204 else _decoder.decode(_response.json(), OptionalTypeWrapper[product_datasets_Dataset])
 
     def get_raw_data(self, auth_header: str, dataset_rid: str) -> Any:
 
@@ -173,7 +171,7 @@ class another_TestService(Service):
             json=_json)
 
         _decoder = ConjureDecoder()
-        return None if _response.status_code == 204 else _decoder.decode(_response.json(), Optional[BinaryType])
+        return None if _response.status_code == 204 else _decoder.decode(_response.json(), OptionalTypeWrapper[BinaryType])
 
     def upload_raw_data(self, auth_header: str, input: Any) -> None:
 
@@ -294,7 +292,7 @@ class another_TestService(Service):
             json=_json)
 
         _decoder = ConjureDecoder()
-        return None if _response.status_code == 204 else _decoder.decode(_response.json(), Optional[str])
+        return None if _response.status_code == 204 else _decoder.decode(_response.json(), OptionalTypeWrapper[str])
 
     def test_param(self, auth_header: str, dataset_rid: str) -> Optional[str]:
 
@@ -323,7 +321,7 @@ class another_TestService(Service):
             json=_json)
 
         _decoder = ConjureDecoder()
-        return None if _response.status_code == 204 else _decoder.decode(_response.json(), Optional[str])
+        return None if _response.status_code == 204 else _decoder.decode(_response.json(), OptionalTypeWrapper[str])
 
     def test_query_params(self, auth_header: str, implicit: str, something: str) -> int:
 

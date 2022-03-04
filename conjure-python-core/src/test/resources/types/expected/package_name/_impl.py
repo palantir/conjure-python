@@ -12,9 +12,7 @@ from conjure_python_client import (
     ConjureEnumType,
     ConjureFieldDefinition,
     ConjureUnionType,
-    DictType,
-    ListType,
-    OptionalType,
+    OptionalTypeWrapper,
     Service,
 )
 from typing import (
@@ -119,7 +117,7 @@ class another_TestService(Service):
             json=_json)
 
         _decoder = ConjureDecoder()
-        return None if _response.status_code == 204 else _decoder.decode(_response.json(), Optional[product_datasets_Dataset])
+        return None if _response.status_code == 204 else _decoder.decode(_response.json(), OptionalTypeWrapper[product_datasets_Dataset])
 
     def get_raw_data(self, auth_header: str, dataset_rid: str) -> Any:
 
@@ -179,7 +177,7 @@ class another_TestService(Service):
             json=_json)
 
         _decoder = ConjureDecoder()
-        return None if _response.status_code == 204 else _decoder.decode(_response.json(), Optional[BinaryType])
+        return None if _response.status_code == 204 else _decoder.decode(_response.json(), OptionalTypeWrapper[BinaryType])
 
     def upload_raw_data(self, auth_header: str, input: Any) -> None:
 
@@ -300,7 +298,7 @@ class another_TestService(Service):
             json=_json)
 
         _decoder = ConjureDecoder()
-        return None if _response.status_code == 204 else _decoder.decode(_response.json(), Optional[str])
+        return None if _response.status_code == 204 else _decoder.decode(_response.json(), OptionalTypeWrapper[str])
 
     def test_param(self, auth_header: str, dataset_rid: str) -> Optional[str]:
 
@@ -329,7 +327,7 @@ class another_TestService(Service):
             json=_json)
 
         _decoder = ConjureDecoder()
-        return None if _response.status_code == 204 else _decoder.decode(_response.json(), Optional[str])
+        return None if _response.status_code == 204 else _decoder.decode(_response.json(), OptionalTypeWrapper[str])
 
     def test_query_params(self, auth_header: str, implicit: str, something: str) -> int:
 
@@ -980,7 +978,7 @@ class product_ManyFieldExample(ConjureBeanType):
             'string': ConjureFieldDefinition('string', str),
             'integer': ConjureFieldDefinition('integer', int),
             'double_value': ConjureFieldDefinition('doubleValue', float),
-            'optional_item': ConjureFieldDefinition('optionalItem', Optional[str]),
+            'optional_item': ConjureFieldDefinition('optionalItem', OptionalTypeWrapper[str]),
             'items': ConjureFieldDefinition('items', List[str]),
             'set': ConjureFieldDefinition('set', List[str]),
             'map': ConjureFieldDefinition('map', Dict[str, str]),
@@ -1089,7 +1087,7 @@ class product_OptionalExample(ConjureBeanType):
     @builtins.classmethod
     def _fields(cls) -> Dict[str, ConjureFieldDefinition]:
         return {
-            'item': ConjureFieldDefinition('item', Optional[str])
+            'item': ConjureFieldDefinition('item', OptionalTypeWrapper[str])
         }
 
     __slots__: List[str] = ['_item']
@@ -1163,13 +1161,13 @@ class product_PrimitiveOptionalsExample(ConjureBeanType):
     @builtins.classmethod
     def _fields(cls) -> Dict[str, ConjureFieldDefinition]:
         return {
-            'num': ConjureFieldDefinition('num', Optional[float]),
-            'bool_': ConjureFieldDefinition('bool', Optional[bool]),
-            'integer': ConjureFieldDefinition('integer', Optional[int]),
-            'safelong': ConjureFieldDefinition('safelong', Optional[int]),
-            'rid': ConjureFieldDefinition('rid', Optional[str]),
-            'bearertoken': ConjureFieldDefinition('bearertoken', Optional[str]),
-            'uuid': ConjureFieldDefinition('uuid', Optional[str])
+            'num': ConjureFieldDefinition('num', OptionalTypeWrapper[float]),
+            'bool_': ConjureFieldDefinition('bool', OptionalTypeWrapper[bool]),
+            'integer': ConjureFieldDefinition('integer', OptionalTypeWrapper[int]),
+            'safelong': ConjureFieldDefinition('safelong', OptionalTypeWrapper[int]),
+            'rid': ConjureFieldDefinition('rid', OptionalTypeWrapper[str]),
+            'bearertoken': ConjureFieldDefinition('bearertoken', OptionalTypeWrapper[str]),
+            'uuid': ConjureFieldDefinition('uuid', OptionalTypeWrapper[str])
         }
 
     __slots__: List[str] = ['_num', '_bool_', '_integer', '_safelong', '_rid', '_bearertoken', '_uuid']
@@ -1222,7 +1220,7 @@ class product_RecursiveObjectExample(ConjureBeanType):
     @builtins.classmethod
     def _fields(cls) -> Dict[str, ConjureFieldDefinition]:
         return {
-            'recursive_field': ConjureFieldDefinition('recursiveField', Optional[product_RecursiveObjectAlias])
+            'recursive_field': ConjureFieldDefinition('recursiveField', OptionalTypeWrapper[product_RecursiveObjectAlias])
         }
 
     __slots__: List[str] = ['_recursive_field']
@@ -1806,8 +1804,6 @@ product_BooleanAliasExample = bool
 
 product_StringAliasExample = str
 
-product_MapAliasExample = Dict[str, object]
-
 product_IntegerAliasExample = int
 
 product_UuidAliasExample = str
@@ -1824,9 +1820,11 @@ product_DateTimeAliasExample = str
 
 product_RecursiveObjectAlias = product_RecursiveObjectExample
 
+product_CollectionAliasExample = Dict[product_StringAliasExample, product_RecursiveObjectAlias]
+
 product_NestedAliasExample = product_RecursiveObjectAlias
 
-product_CollectionAliasExample = Dict[product_StringAliasExample, product_RecursiveObjectAlias]
+product_MapAliasExample = Dict[str, object]
 
 with_imports_AliasImportedObject = product_ManyFieldExample
 
