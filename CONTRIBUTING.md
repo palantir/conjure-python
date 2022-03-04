@@ -28,12 +28,12 @@ and [Intellij IDEA Community Edition](https://www.jetbrains.com/idea/) for Java 
 1. In `conjure-python-verifier/python`:
 
     ```shell
-    $ PIPENV_VENV_IN_PROJECT=1 pipenv --python 3 shell # create the virtual environment
+    $ PIPENV_VENV_IN_PROJECT=1 pipenv shell # create the virtual environment
     $ pipenv install --dev # install all dependencies
     ```
 
 ### Development tips
 
 - run `./gradlew checkstyleMain checkstyleTest` locally to make sure your code conforms to the code-style.
-- Use `tox` in `conjure-python-verifier/python` to run all tests using both python 2 and 3
+- Use `tox` in `conjure-python-verifier/python` to run all tests
 

@@ -89,10 +89,6 @@ def test_body(
     body_black_list = test_black_list['autoDeserialize']
     is_blacklisted = endpoint_name in body_black_list and case in body_black_list[endpoint_name]
 
-    # HACKHACK, skip test that fails only in python 2
-    if endpoint_name == 'receiveMapBooleanAliasExample':
-        return
-
     if should_pass:
         run_test(True,
                  is_blacklisted,

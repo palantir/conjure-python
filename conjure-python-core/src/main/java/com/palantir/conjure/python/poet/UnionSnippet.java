@@ -201,14 +201,7 @@ public interface UnionSnippet extends PythonSnippet {
 
             PythonClassRenamer.renameClass(poetWriter, className(), definitionPackage(), definitionName());
 
-            // We need to generate this base class to be python 2 compatible
-            String visitorBaseClass = String.format("%sBaseClass", visitorName);
-            poetWriter.writeLine(String.format("%s: Any = ABCMeta('ABC', (object,), {})", visitorBaseClass));
-
-            poetWriter.writeLine();
-            poetWriter.writeLine();
-
-            poetWriter.writeIndentedLine(String.format("class %s(%s):", visitorName, visitorBaseClass));
+            poetWriter.writeIndentedLine(String.format("class %s:", visitorName));
             poetWriter.increaseIndent();
             options().forEach(option -> {
                 poetWriter.writeLine();

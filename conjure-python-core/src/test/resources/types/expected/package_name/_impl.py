@@ -1141,10 +1141,7 @@ product_OptionsUnion.__qualname__ = "OptionsUnion"
 product_OptionsUnion.__module__ = "package_name.product"
 
 
-product_OptionsUnionVisitorBaseClass: Any = ABCMeta('ABC', (object,), {})
-
-
-class product_OptionsUnionVisitor(product_OptionsUnionVisitorBaseClass):
+class product_OptionsUnionVisitor:
 
     @abstractmethod
     def _options(self, options: str) -> Any:
@@ -1501,10 +1498,7 @@ product_UnionTypeExample.__qualname__ = "UnionTypeExample"
 product_UnionTypeExample.__module__ = "package_name.product"
 
 
-product_UnionTypeExampleVisitorBaseClass: Any = ABCMeta('ABC', (object,), {})
-
-
-class product_UnionTypeExampleVisitor(product_UnionTypeExampleVisitorBaseClass):
+class product_UnionTypeExampleVisitor:
 
     @abstractmethod
     def _string_example(self, string_example: "product_StringExample") -> Any:
@@ -1773,10 +1767,7 @@ with_imports_UnionWithImports.__qualname__ = "UnionWithImports"
 with_imports_UnionWithImports.__module__ = "package_name.with_imports"
 
 
-with_imports_UnionWithImportsVisitorBaseClass: Any = ABCMeta('ABC', (object,), {})
-
-
-class with_imports_UnionWithImportsVisitor(with_imports_UnionWithImportsVisitorBaseClass):
+class with_imports_UnionWithImportsVisitor:
 
     @abstractmethod
     def _string(self, string: str) -> Any:
