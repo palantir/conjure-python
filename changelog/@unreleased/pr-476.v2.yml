@@ -1,0 +1,5 @@
+type: break
+break:
+  description: Require python 3.8
+  links:
+  - https://github.com/palantir/conjure-python/pull/476
