@@ -13,6 +13,6 @@ setup(
     packages=find_packages(),
     install_requires=[
         'requests',
-        'conjure-python-client>=2.0.0,<3',
+        'conjure-python-client>=2.1.0,<3',
     ],
 )

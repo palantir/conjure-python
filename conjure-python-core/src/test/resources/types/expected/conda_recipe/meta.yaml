@@ -15,9 +15,9 @@ requirements:
         - python
         - setuptools
         - requests
-        - conjure-python-client >=2.0.0,<3
+        - conjure-python-client >=2.1.0,<3
 
     run:
         - python
         - requests
-        - conjure-python-client >=2.0.0,<3
+        - conjure-python-client >=2.1.0,<3
