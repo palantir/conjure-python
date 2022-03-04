@@ -1,5 +1,5 @@
-type: improvement
-improvement:
-  description: Stop generating visitor base class for unions as we no longer support python 2
+type: fix
+fix:
+  description: Don't import ABCMeta as we are not using it
   links:
   - https://github.com/palantir/conjure-python/pull/476
