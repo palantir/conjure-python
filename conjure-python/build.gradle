@@ -28,12 +28,10 @@ dependencies {
     implementation 'info.picocli:picocli'
     runtimeOnly 'org.slf4j:slf4j-simple'
 
-    testImplementation 'junit:junit'
-    testImplementation 'org.assertj:assertj-core'
-
     annotationProcessor 'org.immutables:value'
     compileOnly 'org.immutables:value::annotations'
     testImplementation 'org.junit.jupiter:junit-jupiter'
+    testImplementation 'org.assertj:assertj-core'
 }
 
 task generateBuildConfiguration {
