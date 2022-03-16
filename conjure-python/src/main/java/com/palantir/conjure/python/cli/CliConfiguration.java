@@ -18,16 +18,17 @@ package com.palantir.conjure.python.cli;
 
 import com.google.common.base.Preconditions;
 import com.palantir.tokens.auth.ImmutablesStyle;
-import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Optional;
 import org.immutables.value.Value;
 
 @Value.Immutable
 @ImmutablesStyle
 public abstract class CliConfiguration {
-    abstract File input();
+    abstract Path input();
 
-    abstract File output();
+    abstract Path output();
 
     abstract Optional<String> packageName();
 
@@ -53,8 +54,8 @@ public abstract class CliConfiguration {
 
     @Value.Check
     final void check() {
-        Preconditions.checkArgument(input().isFile(), "Target must exist and be a file");
-        Preconditions.checkArgument(output().isDirectory(), "Output must exist and be a directory");
+        Preconditions.checkArgument(!Files.isDirectory(input()), "Target must exist and be a file");
+        Preconditions.checkArgument(Files.isDirectory(output()), "Output must exist and be a directory");
     }
 
     static Builder builder() {

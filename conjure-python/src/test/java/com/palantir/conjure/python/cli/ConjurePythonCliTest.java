@@ -21,6 +21,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.concurrent.atomic.AtomicReference;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,21 +32,21 @@ import picocli.CommandLine;
 public class ConjurePythonCliTest {
 
     @TempDir
-    public File folder;
+    public Path folder;
 
-    private File inputFile;
+    private Path inputFile;
 
     @BeforeEach
     public void before() throws IOException {
-        inputFile = folder.newFile();
+        inputFile = folder.resolve("input-file");
     }
 
     @Test
     public void correctlyParseArguments() {
         String[] args = {
             "generate",
-            inputFile.getAbsolutePath(),
-            folder.getRoot().getAbsolutePath(),
+            inputFile.toAbsolutePath().toString(),
+            folder.toAbsolutePath().toString(),
             "--packageName",
             "package-name",
             "--packageVersion",
@@ -79,7 +81,7 @@ public class ConjurePythonCliTest {
 
     @Test
     public void throwsWhenOutputDoesNotExist() {
-        String[] args = {"generate", inputFile.getAbsolutePath(), "bar", "--rawSource"};
+        String[] args = {"generate", inputFile.toAbsolutePath().toString(), "bar", "--rawSource"};
         ConjurePythonCli.GenerateCommand cmd = new CommandLine(new ConjurePythonCli())
                 .parseArgs(args)
                 .asCommandLineList()
@@ -94,8 +96,8 @@ public class ConjurePythonCliTest {
     public void makesPackageVersionPythonic() {
         String[] args = {
             "generate",
-            inputFile.getAbsolutePath(),
-            folder.getRoot().getAbsolutePath(),
+            inputFile.toAbsolutePath().toString(),
+            folder.toAbsolutePath().toString(),
             "--packageName=package-name",
             "--packageVersion=0.0.0-dev"
         };
@@ -114,36 +116,38 @@ public class ConjurePythonCliTest {
     }
 
     @Test
-    public void generatesCode() throws Exception {
-        File output = folder.newFolder();
+    public void generatesCode(@TempDir Path output) throws Exception {
         String[] args = {
             "generate",
             "src/test/resources/conjure-api.json",
-            output.getAbsolutePath(),
+            output.toAbsolutePath().toString(),
             "--packageName",
             "conjure",
             "--packageVersion",
             "0.0.0"
         };
         assertThat(new CommandLine(new ConjurePythonCli()).execute(args)).isZero();
-        assertThat(new File(output, "conjure/conjure_spec/__init__.py").isFile())
+        assertThat(Files.isRegularFile(output.resolve("conjure/conjure_spec/__init__.py")))
                 .isTrue();
     }
 
     @Test
-    public void generatesRawSource() throws IOException {
-        File output = folder.newFolder();
+    public void generatesRawSource(@TempDir Path output) throws IOException {
         String[] args = {
-            "generate", "src/test/resources/conjure-api.json", output.getAbsolutePath(), "--rawSource",
+            "generate",
+            "src/test/resources/conjure-api.json",
+            output.toAbsolutePath().toString(),
+            "--rawSource",
         };
         assertThat(new CommandLine(new ConjurePythonCli()).execute(args)).isZero();
-        assertThat(new File(output, "conjure_spec/__init__.py").isFile()).isTrue();
+        assertThat(Files.isRegularFile(output.resolve("conjure_spec/__init__.py")))
+                .isTrue();
     }
 
     @Test
-    public void throwsWhenInvalidDefinition() throws Exception {
+    public void throwsWhenInvalidDefinition(@TempDir Path output, @TempDir File file) {
         String[] args = {
-            "generate", folder.newFile().getAbsolutePath(), folder.newFolder().getAbsolutePath(), "--rawSource",
+            "generate", file.getAbsolutePath(), output.toAbsolutePath().toString(), "--rawSource",
         };
 
         AtomicReference<Exception> executionException = new AtomicReference<>();

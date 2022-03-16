@@ -24,7 +24,6 @@ import com.palantir.conjure.python.ConjurePythonGenerator;
 import com.palantir.conjure.python.DefaultPythonFileWriter;
 import com.palantir.conjure.python.GeneratorConfiguration;
 import com.palantir.conjure.spec.ConjureDefinition;
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.List;
@@ -99,7 +98,8 @@ public final class ConjurePythonCli implements Runnable {
             GeneratorConfiguration generatorConfig =
                     resolveGeneratorConfiguration(cliConfig, BuildConfiguration.load());
             try {
-                ConjureDefinition conjureDefinition = OBJECT_MAPPER.readValue(new File(input), ConjureDefinition.class);
+                ConjureDefinition conjureDefinition =
+                        OBJECT_MAPPER.readValue(Paths.get(input).toFile(), ConjureDefinition.class);
                 ConjurePythonGenerator generator = new ConjurePythonGenerator(generatorConfig);
                 generator.write(conjureDefinition, new DefaultPythonFileWriter(Paths.get(output)));
             } catch (IOException e) {
@@ -110,8 +110,8 @@ public final class ConjurePythonCli implements Runnable {
         @VisibleForTesting
         CliConfiguration getConfiguration() {
             return CliConfiguration.builder()
-                    .input(new File(input))
-                    .output(new File(output))
+                    .input(Paths.get(input))
+                    .output(Paths.get(output))
                     .packageName(Optional.ofNullable(packageName))
                     .packageVersion(Optional.ofNullable(packageVersion).map(version -> version.replace('-', '_')))
                     .packageDescription(Optional.ofNullable(packageDescription))
