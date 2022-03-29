@@ -34,6 +34,7 @@ import com.palantir.conjure.spec.PrimitiveType;
 import com.palantir.conjure.spec.ServiceDefinition;
 import com.palantir.conjure.spec.Type;
 import com.palantir.conjure.visitor.DealiasingTypeVisitor;
+import com.palantir.conjure.visitor.ParameterTypeVisitor;
 import com.palantir.conjure.visitor.TypeVisitor;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -118,7 +119,10 @@ public final class ClientGenerator {
                 .params(params)
                 .pythonReturnType(endpointDef.getReturns().map(type -> type.accept(pythonTypeNameVisitor)))
                 .myPyReturnType(endpointDef.getReturns().map(type -> type.accept(myPyTypeNameVisitor)))
-                .isBinary(endpointDef
+                .isRequestBinary(endpointDef.getArgs().stream()
+                        .anyMatch(argumentDef -> argumentDef.getParamType().accept(ParameterTypeVisitor.IS_BODY)
+                                && argumentDef.getType().accept(TypeVisitor.IS_BINARY)))
+                .isResponseBinary(endpointDef
                         .getReturns()
                         // We do not need to handle alias of binary since they are treated differently over the wire
                         .map(rt -> rt.accept(TypeVisitor.IS_PRIMITIVE)

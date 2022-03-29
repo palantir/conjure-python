@@ -51,7 +51,9 @@ public interface PythonEndpointDefinition extends Emittable {
 
     List<PythonEndpointParam> params();
 
-    boolean isBinary();
+    boolean isRequestBinary();
+
+    boolean isResponseBinary();
 
     boolean isOptionalReturnType();
 
@@ -114,15 +116,17 @@ public interface PythonEndpointDefinition extends Emittable {
             poetWriter.writeIndentedLine("_headers: Dict[str, Any] = {");
             poetWriter.increaseIndent();
             poetWriter.writeIndentedLine(
-                    "'Accept': '%s',", isBinary() ? MediaType.APPLICATION_OCTET_STREAM : MediaType.APPLICATION_JSON);
+                    "'Accept': '%s',",
+                    isResponseBinary() ? MediaType.APPLICATION_OCTET_STREAM : MediaType.APPLICATION_JSON);
 
             // body
             Optional<PythonEndpointParam> bodyParam = paramsWithHeader.stream()
                     .filter(param -> param.paramType().accept(ParameterTypeVisitor.IS_BODY))
                     .findAny();
-            // TODO(forozco): handle non-json body
             if (bodyParam.isPresent()) {
-                poetWriter.writeIndentedLine("'Content-Type': 'application/json',");
+                poetWriter.writeIndentedLine(
+                        "'Content-Type': '%s',",
+                        isRequestBinary() ? MediaType.APPLICATION_OCTET_STREAM : MediaType.APPLICATION_JSON);
             }
             paramsWithHeader.stream()
                     .filter(param -> param.paramType().accept(ParameterTypeVisitor.IS_HEADER))
@@ -194,14 +198,14 @@ public interface PythonEndpointDefinition extends Emittable {
             poetWriter.writeIndentedLine("self._uri + _path,");
             poetWriter.writeIndentedLine("params=_params,");
             poetWriter.writeIndentedLine("headers=_headers,");
-            if (isBinary()) {
+            if (isResponseBinary()) {
                 poetWriter.writeIndentedLine("stream=True,");
             }
             poetWriter.writeIndentedLine("json=_json)");
             poetWriter.decreaseIndent();
 
             poetWriter.writeLine();
-            if (isBinary()) {
+            if (isResponseBinary()) {
                 poetWriter.writeIndentedLine("_raw = _response.raw");
                 poetWriter.writeIndentedLine("_raw.decode_content = True");
                 poetWriter.writeIndentedLine("return _raw");
