@@ -98,7 +98,7 @@ public interface PythonEndpointDefinition extends Emittable {
                                         String typedParam =
                                                 String.format("%s: %s", param.pythonParamName(), param.myPyType());
                                         if (param.isOptional()) {
-                                            return String.format("%s=None", typedParam);
+                                            return String.format("%s = None", typedParam);
                                         }
                                         return typedParam;
                                     })
@@ -192,7 +192,7 @@ public interface PythonEndpointDefinition extends Emittable {
             poetWriter.writeIndentedLine("_path = _path.format(**_path_params)");
 
             poetWriter.writeLine();
-            poetWriter.writeIndentedLine("_response = self._request( # type: ignore");
+            poetWriter.writeIndentedLine("_response: Response = self._request(");
             poetWriter.increaseIndent();
             poetWriter.writeIndentedLine("'%s',", httpMethod());
             poetWriter.writeIndentedLine("self._uri + _path,");

@@ -34,9 +34,13 @@ public interface PythonService extends PythonSnippet {
                             NamedImport.of("ConjureDecoder"))
                     .build(),
             PythonImport.builder()
+                    .moduleSpecifier("requests.adapters")
+                    .addNamedImports(NamedImport.of("Response"))
+                    .build(),
+            PythonImport.builder()
                     .moduleSpecifier(ImportTypeVisitor.TYPING)
                     // Used by Endpoints
-                    .addNamedImports(NamedImport.of("Dict"), NamedImport.of("Any"), NamedImport.of("Type"))
+                    .addNamedImports(NamedImport.of("Dict"), NamedImport.of("Any"))
                     .build());
 
     @Override
