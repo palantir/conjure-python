@@ -182,7 +182,7 @@ class another_TestService(Service):
 
         _headers: Dict[str, Any] = {
             'Accept': 'application/json',
-            'Content-Type': 'application/json',
+            'Content-Type': 'application/octet-stream',
             'Authorization': auth_header,
         }
 

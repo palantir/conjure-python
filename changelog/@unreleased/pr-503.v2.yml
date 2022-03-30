@@ -1,0 +1,5 @@
+type: fix
+fix:
+  description: Support binary body
+  links:
+  - https://github.com/palantir/conjure-python/pull/503
