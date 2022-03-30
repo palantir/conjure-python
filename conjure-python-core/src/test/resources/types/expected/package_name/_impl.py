@@ -14,13 +14,15 @@ from conjure_python_client import (
     OptionalTypeWrapper,
     Service,
 )
+from requests.adapters import (
+    Response,
+)
 from typing import (
     Any,
     Dict,
     List,
     Optional,
     Set,
-    Type,
 )
 
 class another_TestService(Service):
@@ -49,7 +51,7 @@ class another_TestService(Service):
         _path = '/catalog/fileSystems'
         _path = _path.format(**_path_params)
 
-        _response = self._request( # type: ignore
+        _response: Response = self._request(
             'GET',
             self._uri + _path,
             params=_params,
@@ -79,7 +81,7 @@ class another_TestService(Service):
         _path = '/catalog/datasets'
         _path = _path.format(**_path_params)
 
-        _response = self._request( # type: ignore
+        _response: Response = self._request(
             'POST',
             self._uri + _path,
             params=_params,
@@ -108,7 +110,7 @@ class another_TestService(Service):
         _path = '/catalog/datasets/{datasetRid}'
         _path = _path.format(**_path_params)
 
-        _response = self._request( # type: ignore
+        _response: Response = self._request(
             'GET',
             self._uri + _path,
             params=_params,
@@ -137,7 +139,7 @@ class another_TestService(Service):
         _path = '/catalog/datasets/{datasetRid}/raw'
         _path = _path.format(**_path_params)
 
-        _response = self._request( # type: ignore
+        _response: Response = self._request(
             'GET',
             self._uri + _path,
             params=_params,
@@ -168,7 +170,7 @@ class another_TestService(Service):
         _path = '/catalog/datasets/{datasetRid}/raw-maybe'
         _path = _path.format(**_path_params)
 
-        _response = self._request( # type: ignore
+        _response: Response = self._request(
             'GET',
             self._uri + _path,
             params=_params,
@@ -197,7 +199,7 @@ class another_TestService(Service):
         _path = '/catalog/datasets/upload-raw'
         _path = _path.format(**_path_params)
 
-        _response = self._request( # type: ignore
+        _response: Response = self._request(
             'POST',
             self._uri + _path,
             params=_params,
@@ -206,7 +208,7 @@ class another_TestService(Service):
 
         return
 
-    def get_branches(self, auth_header: str, dataset_rid: str, message: Optional[str]=None, page_size: Optional[int]=None) -> List[str]:
+    def get_branches(self, auth_header: str, dataset_rid: str, message: Optional[str] = None, page_size: Optional[int] = None) -> List[str]:
 
         _headers: Dict[str, Any] = {
             'Accept': 'application/json',
@@ -227,7 +229,7 @@ class another_TestService(Service):
         _path = '/catalog/datasets/{datasetRid}/branches'
         _path = _path.format(**_path_params)
 
-        _response = self._request( # type: ignore
+        _response: Response = self._request(
             'GET',
             self._uri + _path,
             params=_params,
@@ -259,7 +261,7 @@ class another_TestService(Service):
         _path = '/catalog/datasets/{datasetRid}/branchesDeprecated'
         _path = _path.format(**_path_params)
 
-        _response = self._request( # type: ignore
+        _response: Response = self._request(
             'GET',
             self._uri + _path,
             params=_params,
@@ -289,7 +291,7 @@ class another_TestService(Service):
         _path = '/catalog/datasets/{datasetRid}/branches/{branch}/resolve'
         _path = _path.format(**_path_params)
 
-        _response = self._request( # type: ignore
+        _response: Response = self._request(
             'GET',
             self._uri + _path,
             params=_params,
@@ -318,7 +320,7 @@ class another_TestService(Service):
         _path = '/catalog/datasets/{datasetRid}/testParam'
         _path = _path.format(**_path_params)
 
-        _response = self._request( # type: ignore
+        _response: Response = self._request(
             'GET',
             self._uri + _path,
             params=_params,
@@ -348,7 +350,7 @@ class another_TestService(Service):
         _path = '/catalog/test-query-params'
         _path = _path.format(**_path_params)
 
-        _response = self._request( # type: ignore
+        _response: Response = self._request(
             'GET',
             self._uri + _path,
             params=_params,
@@ -376,7 +378,7 @@ class another_TestService(Service):
         _path = '/catalog/boolean'
         _path = _path.format(**_path_params)
 
-        _response = self._request( # type: ignore
+        _response: Response = self._request(
             'GET',
             self._uri + _path,
             params=_params,
@@ -404,7 +406,7 @@ class another_TestService(Service):
         _path = '/catalog/double'
         _path = _path.format(**_path_params)
 
-        _response = self._request( # type: ignore
+        _response: Response = self._request(
             'GET',
             self._uri + _path,
             params=_params,
@@ -432,7 +434,7 @@ class another_TestService(Service):
         _path = '/catalog/integer'
         _path = _path.format(**_path_params)
 
-        _response = self._request( # type: ignore
+        _response: Response = self._request(
             'GET',
             self._uri + _path,
             params=_params,
@@ -468,7 +470,7 @@ class nested_deeply_nested_service_DeeplyNestedService(Service):
         _path = '/catalog/testEndpoint'
         _path = _path.format(**_path_params)
 
-        _response = self._request( # type: ignore
+        _response: Response = self._request(
             'POST',
             self._uri + _path,
             params=_params,
@@ -504,7 +506,7 @@ class nested_service2_SimpleNestedService2(Service):
         _path = '/catalog/testEndpoint'
         _path = _path.format(**_path_params)
 
-        _response = self._request( # type: ignore
+        _response: Response = self._request(
             'POST',
             self._uri + _path,
             params=_params,
@@ -540,7 +542,7 @@ class nested_service_SimpleNestedService(Service):
         _path = '/catalog/testEndpoint'
         _path = _path.format(**_path_params)
 
-        _response = self._request( # type: ignore
+        _response: Response = self._request(
             'POST',
             self._uri + _path,
             params=_params,
@@ -986,7 +988,7 @@ class product_ManyFieldExample(ConjureBeanType):
 
     __slots__: List[str] = ['_string', '_integer', '_double_value', '_optional_item', '_items', '_set', '_map', '_alias']
 
-    def __init__(self, alias: str, double_value: float, integer: int, items: List[str], map: Dict[str, str], set: List[str], string: str, optional_item: Optional[str]=None) -> None:
+    def __init__(self, alias: str, double_value: float, integer: int, items: List[str], map: Dict[str, str], set: List[str], string: str, optional_item: Optional[str] = None) -> None:
         self._string = string
         self._integer = integer
         self._double_value = double_value
@@ -1091,7 +1093,7 @@ class product_OptionalExample(ConjureBeanType):
 
     __slots__: List[str] = ['_item']
 
-    def __init__(self, item: Optional[str]=None) -> None:
+    def __init__(self, item: Optional[str] = None) -> None:
         self._item = item
 
     @builtins.property
@@ -1168,7 +1170,7 @@ class product_PrimitiveOptionalsExample(ConjureBeanType):
 
     __slots__: List[str] = ['_num', '_bool_', '_integer', '_safelong', '_rid', '_bearertoken', '_uuid']
 
-    def __init__(self, bearertoken: Optional[str]=None, bool_: Optional[bool]=None, integer: Optional[int]=None, num: Optional[float]=None, rid: Optional[str]=None, safelong: Optional[int]=None, uuid: Optional[str]=None) -> None:
+    def __init__(self, bearertoken: Optional[str] = None, bool_: Optional[bool] = None, integer: Optional[int] = None, num: Optional[float] = None, rid: Optional[str] = None, safelong: Optional[int] = None, uuid: Optional[str] = None) -> None:
         self._num = num
         self._bool_ = bool_
         self._integer = integer
@@ -1221,7 +1223,7 @@ class product_RecursiveObjectExample(ConjureBeanType):
 
     __slots__: List[str] = ['_recursive_field']
 
-    def __init__(self, recursive_field: Optional["product_RecursiveObjectExample"]=None) -> None:
+    def __init__(self, recursive_field: Optional["product_RecursiveObjectExample"] = None) -> None:
         self._recursive_field = recursive_field
 
     @builtins.property
@@ -1679,7 +1681,7 @@ class with_imports_ImportService(Service):
         _path = '/catalog/testEndpoint'
         _path = _path.format(**_path_params)
 
-        _response = self._request( # type: ignore
+        _response: Response = self._request(
             'POST',
             self._uri + _path,
             params=_params,

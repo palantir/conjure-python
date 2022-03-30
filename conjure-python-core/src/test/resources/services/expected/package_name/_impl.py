@@ -9,13 +9,15 @@ from conjure_python_client import (
     OptionalTypeWrapper,
     Service,
 )
+from requests.adapters import (
+    Response,
+)
 from typing import (
     Any,
     Dict,
     List,
     Optional,
     Set,
-    Type,
 )
 
 class another_TestService(Service):
@@ -44,7 +46,7 @@ class another_TestService(Service):
         _path = '/catalog/fileSystems'
         _path = _path.format(**_path_params)
 
-        _response = self._request( # type: ignore
+        _response: Response = self._request(
             'GET',
             self._uri + _path,
             params=_params,
@@ -74,7 +76,7 @@ class another_TestService(Service):
         _path = '/catalog/datasets'
         _path = _path.format(**_path_params)
 
-        _response = self._request( # type: ignore
+        _response: Response = self._request(
             'POST',
             self._uri + _path,
             params=_params,
@@ -103,7 +105,7 @@ class another_TestService(Service):
         _path = '/catalog/datasets/{datasetRid}'
         _path = _path.format(**_path_params)
 
-        _response = self._request( # type: ignore
+        _response: Response = self._request(
             'GET',
             self._uri + _path,
             params=_params,
@@ -132,7 +134,7 @@ class another_TestService(Service):
         _path = '/catalog/datasets/{datasetRid}/raw'
         _path = _path.format(**_path_params)
 
-        _response = self._request( # type: ignore
+        _response: Response = self._request(
             'GET',
             self._uri + _path,
             params=_params,
@@ -163,7 +165,7 @@ class another_TestService(Service):
         _path = '/catalog/datasets/{datasetRid}/raw-maybe'
         _path = _path.format(**_path_params)
 
-        _response = self._request( # type: ignore
+        _response: Response = self._request(
             'GET',
             self._uri + _path,
             params=_params,
@@ -192,7 +194,7 @@ class another_TestService(Service):
         _path = '/catalog/datasets/upload-raw'
         _path = _path.format(**_path_params)
 
-        _response = self._request( # type: ignore
+        _response: Response = self._request(
             'POST',
             self._uri + _path,
             params=_params,
@@ -201,7 +203,7 @@ class another_TestService(Service):
 
         return
 
-    def get_branches(self, auth_header: str, dataset_rid: str, message: Optional[str]=None, page_size: Optional[int]=None) -> List[str]:
+    def get_branches(self, auth_header: str, dataset_rid: str, message: Optional[str] = None, page_size: Optional[int] = None) -> List[str]:
 
         _headers: Dict[str, Any] = {
             'Accept': 'application/json',
@@ -222,7 +224,7 @@ class another_TestService(Service):
         _path = '/catalog/datasets/{datasetRid}/branches'
         _path = _path.format(**_path_params)
 
-        _response = self._request( # type: ignore
+        _response: Response = self._request(
             'GET',
             self._uri + _path,
             params=_params,
@@ -254,7 +256,7 @@ class another_TestService(Service):
         _path = '/catalog/datasets/{datasetRid}/branchesDeprecated'
         _path = _path.format(**_path_params)
 
-        _response = self._request( # type: ignore
+        _response: Response = self._request(
             'GET',
             self._uri + _path,
             params=_params,
@@ -284,7 +286,7 @@ class another_TestService(Service):
         _path = '/catalog/datasets/{datasetRid}/branches/{branch}/resolve'
         _path = _path.format(**_path_params)
 
-        _response = self._request( # type: ignore
+        _response: Response = self._request(
             'GET',
             self._uri + _path,
             params=_params,
@@ -313,7 +315,7 @@ class another_TestService(Service):
         _path = '/catalog/datasets/{datasetRid}/testParam'
         _path = _path.format(**_path_params)
 
-        _response = self._request( # type: ignore
+        _response: Response = self._request(
             'GET',
             self._uri + _path,
             params=_params,
@@ -343,7 +345,7 @@ class another_TestService(Service):
         _path = '/catalog/test-query-params'
         _path = _path.format(**_path_params)
 
-        _response = self._request( # type: ignore
+        _response: Response = self._request(
             'GET',
             self._uri + _path,
             params=_params,
@@ -371,7 +373,7 @@ class another_TestService(Service):
         _path = '/catalog/boolean'
         _path = _path.format(**_path_params)
 
-        _response = self._request( # type: ignore
+        _response: Response = self._request(
             'GET',
             self._uri + _path,
             params=_params,
@@ -399,7 +401,7 @@ class another_TestService(Service):
         _path = '/catalog/double'
         _path = _path.format(**_path_params)
 
-        _response = self._request( # type: ignore
+        _response: Response = self._request(
             'GET',
             self._uri + _path,
             params=_params,
@@ -427,7 +429,7 @@ class another_TestService(Service):
         _path = '/catalog/integer'
         _path = _path.format(**_path_params)
 
-        _response = self._request( # type: ignore
+        _response: Response = self._request(
             'GET',
             self._uri + _path,
             params=_params,
