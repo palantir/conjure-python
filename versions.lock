@@ -1,7 +1,7 @@
 # Run ./gradlew --write-locks to regenerate this file
 com.fasterxml.jackson.core:jackson-annotations:2.13.2 (4 constraints: 304349f0)
 com.fasterxml.jackson.core:jackson-core:2.13.2 (3 constraints: 52406070)
-com.fasterxml.jackson.core:jackson-databind:2.13.2 (8 constraints: 1d81dfb8)
+com.fasterxml.jackson.core:jackson-databind:2.13.2.1 (8 constraints: 7c81ac47)
 com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.13.2 (2 constraints: fb135a82)
 com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.13.2 (2 constraints: fb135a82)
 com.google.code.findbugs:jsr305:3.0.2 (3 constraints: b41e96b5)
