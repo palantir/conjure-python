@@ -1,0 +1,5 @@
+type: fix
+fix:
+  description: Stop importing Type in generated code and type requests response object
+  links:
+  - https://github.com/palantir/conjure-python/pull/504

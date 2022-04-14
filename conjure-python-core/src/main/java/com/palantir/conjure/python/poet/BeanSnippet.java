@@ -37,7 +37,7 @@ public interface BeanSnippet extends PythonSnippet {
             PythonImport.of("builtins"),
             PythonImport.builder()
                     .moduleSpecifier(ImportTypeVisitor.TYPING)
-                    .addNamedImports(NamedImport.of("Dict"), NamedImport.of("List"), NamedImport.of("Type"))
+                    .addNamedImports(NamedImport.of("Dict"), NamedImport.of("List"))
                     .build());
     ImmutableSet<String> PROTECTED_FIELDS = ImmutableSet.of("fields");
 
@@ -112,7 +112,7 @@ public interface BeanSnippet extends PythonSnippet {
                                                 PythonIdentifierSanitizer.sanitize(field.attributeName()),
                                                 field.myPyType());
                                         if (field.isOptional()) {
-                                            return String.format("%s=None", name);
+                                            return String.format("%s = None", name);
                                         }
                                         return name;
                                     })

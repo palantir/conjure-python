@@ -54,7 +54,7 @@ public final class ConjureSubfolderRunner extends ParentRunner<Path> {
     public @interface ParentFolder {
         /** Parent folder to list. */
         String value();
-        /** Whether tests should be executed indepenently on a CachedThreadPool. */
+        /** Whether tests should be executed independently on a CachedThreadPool. */
         boolean parallel() default false;
     }
 
