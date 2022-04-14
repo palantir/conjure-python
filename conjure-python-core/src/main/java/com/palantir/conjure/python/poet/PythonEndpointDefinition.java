@@ -174,10 +174,16 @@ public interface PythonEndpointDefinition extends Emittable {
             poetWriter.writeIndentedLine("}");
 
             if (bodyParam.isPresent()) {
-                poetWriter.writeLine();
-                poetWriter.writeIndentedLine(
-                        "_json: Any = ConjureEncoder().default(%s)",
-                        bodyParam.get().pythonParamName());
+                if (!isRequestBinary()) {
+                    poetWriter.writeLine();
+                    poetWriter.writeIndentedLine(
+                            "_json: Any = ConjureEncoder().default(%s)",
+                            bodyParam.get().pythonParamName());
+                } else {
+                    poetWriter.writeLine();
+                    poetWriter.writeIndentedLine(
+                            "_data: Any = %s", bodyParam.get().pythonParamName());
+                }
             } else {
                 poetWriter.writeLine();
                 poetWriter.writeIndentedLine("_json: Any = None");
@@ -187,7 +193,7 @@ public interface PythonEndpointDefinition extends Emittable {
             poetWriter.writeLine();
 
             HttpPath fullPath = httpPath();
-            String fixedPath = fullPath.toString().replaceAll("\\{(.*):[^}]*\\}", "{$1}");
+            String fixedPath = fullPath.toString().replaceAll("\\{(.*):[^}]*}", "{$1}");
             poetWriter.writeIndentedLine("_path = '%s'", fixedPath);
             poetWriter.writeIndentedLine("_path = _path.format(**_path_params)");
 
@@ -201,7 +207,11 @@ public interface PythonEndpointDefinition extends Emittable {
             if (isResponseBinary()) {
                 poetWriter.writeIndentedLine("stream=True,");
             }
-            poetWriter.writeIndentedLine("json=_json)");
+            if (!isRequestBinary()) {
+                poetWriter.writeIndentedLine("json=_json)");
+            } else {
+                poetWriter.writeIndentedLine("data=_data)");
+            }
             poetWriter.decreaseIndent();
 
             poetWriter.writeLine();
