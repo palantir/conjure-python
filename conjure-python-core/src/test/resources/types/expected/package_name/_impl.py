@@ -192,7 +192,7 @@ class another_TestService(Service):
         _path_params: Dict[str, Any] = {
         }
 
-        _json: Any = ConjureEncoder().default(input)
+        _data: Any = input
 
         _path = '/catalog/datasets/upload-raw'
         _path = _path.format(**_path_params)
@@ -202,7 +202,7 @@ class another_TestService(Service):
             self._uri + _path,
             params=_params,
             headers=_headers,
-            json=_json)
+            data=_data)
 
         return
 
