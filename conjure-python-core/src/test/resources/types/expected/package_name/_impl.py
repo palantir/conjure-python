@@ -1782,31 +1782,35 @@ with_imports_UnionWithImportsVisitor.__qualname__ = "UnionWithImportsVisitor"
 with_imports_UnionWithImportsVisitor.__module__ = "package_name.with_imports"
 
 
-product_SafeLongAliasExample = int
+product_IntegerAliasExample = int
 
-product_BearerTokenAliasExample = str
-
-product_ReferenceAliasExample = product_AnyExample
-
-product_BinaryAliasExample = BinaryType
+with_imports_AliasImportedObject = product_ManyFieldExample
 
 product_BooleanAliasExample = bool
 
-product_StringAliasExample = str
-
-product_IntegerAliasExample = int
-
-product_UuidAliasExample = str
-
-with_imports_AliasImportedPrimitiveAlias = product_StringAliasExample
-
-product_DoubleAliasExample = float
-
 product_RidAliasExample = str
+
+product_BearerTokenAliasExample = str
+
+product_BinaryAliasExample = BinaryType
+
+product_DateTimeAliasExample = str
+
+product_MapAliasExample = Dict[str, object]
 
 package_name_TypeInPackageWithTheSameNameAsRootPackage = str
 
-product_DateTimeAliasExample = str
+product_ReferenceAliasExample = product_AnyExample
+
+product_UuidAliasExample = str
+
+product_StringAliasExample = str
+
+with_imports_AliasImportedPrimitiveAlias = product_StringAliasExample
+
+with_imports_AliasImportedReferenceAlias = product_ReferenceAliasExample
+
+product_DoubleAliasExample = float
 
 product_RecursiveObjectAlias = product_RecursiveObjectExample
 
@@ -1814,9 +1818,5 @@ product_CollectionAliasExample = Dict[product_StringAliasExample, product_Recurs
 
 product_NestedAliasExample = product_RecursiveObjectAlias
 
-product_MapAliasExample = Dict[str, object]
-
-with_imports_AliasImportedObject = product_ManyFieldExample
-
-with_imports_AliasImportedReferenceAlias = product_ReferenceAliasExample
+product_SafeLongAliasExample = int
 
