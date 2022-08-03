@@ -164,6 +164,7 @@ public final class ConjurePythonGenerator {
                         .pythonPackage(rootPackage)
                         .fileName(IMPL_PY)
                         .contents(pythonSnippets)
+                        .generatorVersion(config.generatorVersion())
                         .build())
                 .values()
                 .collect(Collectors.toList());
@@ -214,6 +215,7 @@ public final class ConjurePythonGenerator {
                         .pythonPackage(pythonPackage)
                         .fileName(INIT_PY)
                         .contents(pythonSnippets)
+                        .generatorVersion(config.generatorVersion())
                         .build())
                 .values()
                 .collect(Collectors.toList());
@@ -224,6 +226,7 @@ public final class ConjurePythonGenerator {
         PythonFile.Builder builder = PythonFile.builder()
                 .pythonPackage(PythonPackage.of(config.pythonicPackageName().orElse(".")))
                 .fileName(INIT_PY)
+                .generatorVersion(config.generatorVersion())
                 .addContents(AllSnippet.builder()
                         .pythonPackage(rootPackage)
                         .contents(packageNames.stream()
@@ -266,6 +269,7 @@ public final class ConjurePythonGenerator {
                 .pythonPackage(PythonPackage.of("."))
                 .fileName("setup.py")
                 .addContents(builder.build())
+                .generatorVersion(config.generatorVersion())
                 .build();
     }
 
@@ -276,6 +280,7 @@ public final class ConjurePythonGenerator {
         return PythonFile.builder()
                 .pythonPackage(PythonPackage.of(config.pythonicPackageName().get()))
                 .fileName("py.typed")
+                .generatorVersion(config.generatorVersion())
                 .build();
     }
 
@@ -292,6 +297,7 @@ public final class ConjurePythonGenerator {
                                 "conjure-python-client >=%s,<%s",
                                 config.minConjureClientVersion(), config.maxConjureClientVersion()))
                         .build())
+                .generatorVersion(config.generatorVersion())
                 .build();
     }
 
