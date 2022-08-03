@@ -12,6 +12,9 @@ from conjure_python_client import (
 from requests.adapters import (
     Response,
 )
+from requests.utils import (
+    quote,
+)
 from typing import (
     Any,
     Dict,
@@ -97,7 +100,7 @@ class another_TestService(Service):
         }
 
         _path_params: Dict[str, Any] = {
-            'datasetRid': dataset_rid,
+            'datasetRid': quote(dataset_rid, safe=''),
         }
 
         _json: Any = None
@@ -126,7 +129,7 @@ class another_TestService(Service):
         }
 
         _path_params: Dict[str, Any] = {
-            'datasetRid': dataset_rid,
+            'datasetRid': quote(dataset_rid, safe=''),
         }
 
         _json: Any = None
@@ -157,7 +160,7 @@ class another_TestService(Service):
         }
 
         _path_params: Dict[str, Any] = {
-            'datasetRid': dataset_rid,
+            'datasetRid': quote(dataset_rid, safe=''),
         }
 
         _json: Any = None
@@ -216,7 +219,7 @@ class another_TestService(Service):
         }
 
         _path_params: Dict[str, Any] = {
-            'datasetRid': dataset_rid,
+            'datasetRid': quote(dataset_rid, safe=''),
         }
 
         _json: Any = None
@@ -248,7 +251,7 @@ class another_TestService(Service):
         }
 
         _path_params: Dict[str, Any] = {
-            'datasetRid': dataset_rid,
+            'datasetRid': quote(dataset_rid, safe=''),
         }
 
         _json: Any = None
@@ -277,8 +280,8 @@ class another_TestService(Service):
         }
 
         _path_params: Dict[str, Any] = {
-            'datasetRid': dataset_rid,
-            'branch': branch,
+            'datasetRid': quote(dataset_rid, safe=''),
+            'branch': quote(branch, safe=''),
         }
 
         _json: Any = None
@@ -307,7 +310,7 @@ class another_TestService(Service):
         }
 
         _path_params: Dict[str, Any] = {
-            'datasetRid': dataset_rid,
+            'datasetRid': quote(dataset_rid, safe=''),
         }
 
         _json: Any = None

@@ -168,7 +168,8 @@ public interface PythonEndpointDefinition extends Emittable {
             paramsWithHeader.stream()
                     .filter(param -> param.paramType().accept(ParameterTypeVisitor.IS_PATH))
                     .forEach(param -> {
-                        poetWriter.writeIndentedLine("'%s': %s,", param.paramName(), param.pythonParamName());
+                        poetWriter.writeIndentedLine(
+                                "'%s': quote(%s, safe=''),", param.paramName(), param.pythonParamName());
                     });
             poetWriter.decreaseIndent();
             poetWriter.writeIndentedLine("}");

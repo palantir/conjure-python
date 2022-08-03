@@ -38,6 +38,10 @@ public interface PythonService extends PythonSnippet {
                     .addNamedImports(NamedImport.of("Response"))
                     .build(),
             PythonImport.builder()
+                    .moduleSpecifier("requests.utils")
+                    .addNamedImports(NamedImport.of("quote"))
+                    .build(),
+            PythonImport.builder()
                     .moduleSpecifier(ImportTypeVisitor.TYPING)
                     // Used by Endpoints
                     .addNamedImports(NamedImport.of("Dict"), NamedImport.of("Any"))
