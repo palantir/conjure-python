@@ -12,15 +12,15 @@ from conjure_python_client import (
 from requests.adapters import (
     Response,
 )
-from requests.utils import (
-    quote,
-)
 from typing import (
     Any,
     Dict,
     List,
     Optional,
     Set,
+)
+from urllib.parse import (
+    quote,
 )
 
 class another_TestService(Service):

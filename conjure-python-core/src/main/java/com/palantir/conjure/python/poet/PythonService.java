@@ -38,7 +38,7 @@ public interface PythonService extends PythonSnippet {
                     .addNamedImports(NamedImport.of("Response"))
                     .build(),
             PythonImport.builder()
-                    .moduleSpecifier("requests.utils")
+                    .moduleSpecifier("urllib.parse")
                     .addNamedImports(NamedImport.of("quote"))
                     .build(),
             PythonImport.builder()
