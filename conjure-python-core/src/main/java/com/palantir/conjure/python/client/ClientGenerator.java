@@ -29,14 +29,24 @@ import com.palantir.conjure.python.processors.typename.TypeNameProcessor;
 import com.palantir.conjure.python.types.ImportTypeVisitor;
 import com.palantir.conjure.python.types.MyPyTypeNameVisitor;
 import com.palantir.conjure.python.types.PythonTypeNameVisitor;
+import com.palantir.conjure.spec.ArgumentDefinition;
 import com.palantir.conjure.spec.EndpointDefinition;
+import com.palantir.conjure.spec.ExternalReference;
+import com.palantir.conjure.spec.ListType;
+import com.palantir.conjure.spec.MapType;
+import com.palantir.conjure.spec.OptionalType;
 import com.palantir.conjure.spec.PrimitiveType;
 import com.palantir.conjure.spec.ServiceDefinition;
+import com.palantir.conjure.spec.SetType;
 import com.palantir.conjure.spec.Type;
+import com.palantir.conjure.spec.Type.Visitor;
+import com.palantir.conjure.spec.TypeName;
 import com.palantir.conjure.visitor.DealiasingTypeVisitor;
 import com.palantir.conjure.visitor.ParameterTypeVisitor;
 import com.palantir.conjure.visitor.TypeVisitor;
+import com.palantir.logsafe.Safe;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public final class ClientGenerator {
@@ -103,6 +113,7 @@ public final class ClientGenerator {
                                 CaseConverter.toCase(argEntry.getArgName().get(), CaseConverter.Case.SNAKE_CASE))
                         .paramType(argEntry.getParamType())
                         .myPyType(argEntry.getType().accept(myPyTypeNameVisitor))
+                        .defaultValue(getDefaultValue(argEntry))
                         .isOptional(dealiasingTypeVisitor
                                 .dealias(argEntry.getType())
                                 .fold(_typeDefinition -> false, type -> type.accept(TypeVisitor.IS_OPTIONAL)))
@@ -135,5 +146,54 @@ public final class ClientGenerator {
                                 .fold(_typeDefinition -> false, type -> type.accept(TypeVisitor.IS_OPTIONAL)))
                         .orElse(false))
                 .build();
+    }
+
+    private static Optional<String> getDefaultValue(ArgumentDefinition argumentDefinition) {
+        Optional<String> emptyValue = argumentDefinition.getType().accept(new Visitor<Optional<String>>() {
+            @Override
+            public Optional<String> visitPrimitive(PrimitiveType _value) {
+                return Optional.empty();
+            }
+
+            @Override
+            public Optional<String> visitOptional(OptionalType _value) {
+                return Optional.empty();
+            }
+
+            @Override
+            public Optional<String> visitList(ListType _value) {
+                return Optional.of("[]");
+            }
+
+            @Override
+            public Optional<String> visitSet(SetType _value) {
+                return Optional.of("[]");
+            }
+
+            @Override
+            public Optional<String> visitMap(MapType _value) {
+                return Optional.empty();
+            }
+
+            @Override
+            public Optional<String> visitReference(TypeName _value) {
+                return Optional.empty();
+            }
+
+            @Override
+            public Optional<String> visitExternal(ExternalReference _value) {
+                return Optional.empty();
+            }
+
+            @Override
+            public Optional<String> visitUnknown(@Safe String _unknownType) {
+                return Optional.empty();
+            }
+        });
+
+        return emptyValue.flatMap(value -> argumentDefinition.getParamType().accept(ParameterTypeVisitor.IS_HEADER)
+                        || argumentDefinition.getParamType().accept(ParameterTypeVisitor.IS_QUERY)
+                ? Optional.of(value)
+                : Optional.empty());
     }
 }
