@@ -162,12 +162,12 @@ public final class ClientGenerator {
 
             @Override
             public Optional<String> visitList(ListType _value) {
-                return Optional.of("[]");
+                return Optional.of("None");
             }
 
             @Override
             public Optional<String> visitSet(SetType _value) {
-                return Optional.of("[]");
+                return Optional.of("None");
             }
 
             @Override
