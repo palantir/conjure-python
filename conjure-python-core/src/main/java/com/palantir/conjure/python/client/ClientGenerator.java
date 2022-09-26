@@ -149,7 +149,7 @@ public final class ClientGenerator {
     }
 
     private static Optional<String> getDefaultValue(ArgumentDefinition argumentDefinition) {
-        Optional<String> emptyValue = argumentDefinition.getType().accept(new Visitor<Optional<String>>() {
+        Optional<String> emptyValue = argumentDefinition.getType().accept(new Visitor<>() {
             @Override
             public Optional<String> visitPrimitive(PrimitiveType _value) {
                 return Optional.empty();

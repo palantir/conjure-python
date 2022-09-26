@@ -279,6 +279,12 @@ public interface PythonEndpointDefinition extends Emittable {
             if (!o1.isOptional() && o2.isOptional()) {
                 return -1;
             }
+            if (o1.defaultValue().isPresent() && o2.defaultValue().isEmpty()) {
+                return 1;
+            }
+            if (o1.defaultValue().isEmpty() && o2.defaultValue().isPresent()) {
+                return -1;
+            }
             return o1.pythonParamName().compareTo(o2.pythonParamName());
         }
     }
