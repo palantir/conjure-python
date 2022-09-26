@@ -95,8 +95,12 @@ public interface PythonEndpointDefinition extends Emittable {
                             .join(paramsWithHeader.stream()
                                     .sorted(new PythonEndpointParamComparator())
                                     .map(param -> {
-                                        String typedParam =
-                                                String.format("%s: %s", param.pythonParamName(), param.myPyType());
+                                        String defaultValuePart = param.defaultValue()
+                                                .map(value -> "=" + value)
+                                                .orElse("");
+                                        String typedParam = String.format(
+                                                "%s: %s%s",
+                                                param.pythonParamName(), param.myPyType(), defaultValuePart);
                                         if (param.isOptional()) {
                                             return String.format("%s = None", typedParam);
                                         }
@@ -252,6 +256,8 @@ public interface PythonEndpointDefinition extends Emittable {
         String pythonParamName();
 
         String myPyType();
+
+        Optional<String> defaultValue();
 
         ParameterType paramType();
 
