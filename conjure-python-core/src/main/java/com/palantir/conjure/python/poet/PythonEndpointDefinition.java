@@ -81,6 +81,7 @@ public interface PythonEndpointDefinition extends Emittable {
                                     .pythonParamName("auth_header")
                                     .myPyType("str")
                                     .isOptional(false)
+                                    .isCollection(false)
                                     .paramType(ParameterType.header(
                                             HeaderParameterType.of(ParameterId.of("Authorization"))))
                                     .build())
@@ -95,13 +96,9 @@ public interface PythonEndpointDefinition extends Emittable {
                             .join(paramsWithHeader.stream()
                                     .sorted(new PythonEndpointParamComparator())
                                     .map(param -> {
-                                        String defaultValuePart = param.defaultValue()
-                                                .map(value -> "=" + value)
-                                                .orElse("");
-                                        String typedParam = String.format(
-                                                "%s: %s%s",
-                                                param.pythonParamName(), param.myPyType(), defaultValuePart);
-                                        if (param.isOptional()) {
+                                        String typedParam =
+                                                String.format("%s: %s", param.pythonParamName(), param.myPyType());
+                                        if (param.isOptional() || param.isCollection()) {
                                             return String.format("%s = None", typedParam);
                                         }
                                         return typedParam;
@@ -257,11 +254,11 @@ public interface PythonEndpointDefinition extends Emittable {
 
         String myPyType();
 
-        Optional<String> defaultValue();
-
         ParameterType paramType();
 
         boolean isOptional();
+
+        boolean isCollection();
 
         class Builder extends ImmutablePythonEndpointParam.Builder {}
 
@@ -279,10 +276,10 @@ public interface PythonEndpointDefinition extends Emittable {
             if (!o1.isOptional() && o2.isOptional()) {
                 return -1;
             }
-            if (o1.defaultValue().isPresent() && o2.defaultValue().isEmpty()) {
+            if (o1.isCollection() && !o2.isCollection()) {
                 return 1;
             }
-            if (o1.defaultValue().isEmpty() && o2.defaultValue().isPresent()) {
+            if (!o1.isCollection() && o2.isCollection()) {
                 return -1;
             }
             return o1.pythonParamName().compareTo(o2.pythonParamName());
