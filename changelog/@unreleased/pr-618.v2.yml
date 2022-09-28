@@ -2,9 +2,5 @@ type: improvement
 improvement:
   description: |-
     Default values for list/set query&header params
-
-    Handle adding default query/header list/set parameters without breaking function callers
-
-    Fix https://github.com/palantir/conjure-python/issues/615
   links:
   - https://github.com/palantir/conjure-python/pull/618
