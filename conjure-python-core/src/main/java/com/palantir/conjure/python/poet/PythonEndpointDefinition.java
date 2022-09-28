@@ -112,6 +112,15 @@ public interface PythonEndpointDefinition extends Emittable {
                 poetWriter.writeIndentedLine("\"\"\"");
             });
 
+            // replace "None" with "[]"
+            for (PythonEndpointParam param : paramsWithHeader) {
+                if (param.isCollection()) {
+                    poetWriter.writeIndentedLine(String.format(
+                            "%s = %s if %s is not None else []",
+                            param.pythonParamName(), param.pythonParamName(), param.pythonParamName()));
+                }
+            }
+
             // header
             poetWriter.writeLine();
             poetWriter.writeIndentedLine("_headers: Dict[str, Any] = {");
