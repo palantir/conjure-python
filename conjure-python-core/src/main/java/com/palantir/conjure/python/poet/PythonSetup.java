@@ -62,6 +62,7 @@ public interface PythonSetup extends PythonSnippet {
             rawOptions().forEach((key, value) -> {
                 poetWriter.writeIndentedLine("%s=%s,", key, value);
             });
+            poetWriter.writeIndentedLine("python_requires='>=3.8',");
             poetWriter.writeIndentedLine("packages=find_packages(),");
 
             poetWriter.writeIndentedLine("install_requires=[");

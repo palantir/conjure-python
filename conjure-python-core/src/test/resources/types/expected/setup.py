@@ -9,6 +9,7 @@ setup(
     version='0.0.0',
     description='project description',
     package_data={"": ["py.typed"]},
+    python_requires='>=3.8',
     packages=find_packages(),
     install_requires=[
         'requests',
