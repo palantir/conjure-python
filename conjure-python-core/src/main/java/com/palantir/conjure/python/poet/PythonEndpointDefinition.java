@@ -81,6 +81,7 @@ public interface PythonEndpointDefinition extends Emittable {
                                     .pythonParamName("auth_header")
                                     .myPyType("str")
                                     .isOptional(false)
+                                    .isCollection(false)
                                     .paramType(ParameterType.header(
                                             HeaderParameterType.of(ParameterId.of("Authorization"))))
                                     .build())
@@ -97,7 +98,7 @@ public interface PythonEndpointDefinition extends Emittable {
                                     .map(param -> {
                                         String typedParam =
                                                 String.format("%s: %s", param.pythonParamName(), param.myPyType());
-                                        if (param.isOptional()) {
+                                        if (param.isOptional() || param.isCollection()) {
                                             return String.format("%s = None", typedParam);
                                         }
                                         return typedParam;
@@ -110,6 +111,15 @@ public interface PythonEndpointDefinition extends Emittable {
                 poetWriter.writeIndentedLine(docs.get().trim());
                 poetWriter.writeIndentedLine("\"\"\"");
             });
+
+            // replace "None" with "[]"
+            for (PythonEndpointParam param : paramsWithHeader) {
+                if (param.isCollection()) {
+                    poetWriter.writeIndentedLine(String.format(
+                            "%s = %s if %s is not None else []",
+                            param.pythonParamName(), param.pythonParamName(), param.pythonParamName()));
+                }
+            }
 
             // header
             poetWriter.writeLine();
@@ -257,6 +267,8 @@ public interface PythonEndpointDefinition extends Emittable {
 
         boolean isOptional();
 
+        boolean isCollection();
+
         class Builder extends ImmutablePythonEndpointParam.Builder {}
 
         static Builder builder() {
@@ -271,6 +283,12 @@ public interface PythonEndpointDefinition extends Emittable {
                 return 1;
             }
             if (!o1.isOptional() && o2.isOptional()) {
+                return -1;
+            }
+            if (o1.isCollection() && !o2.isCollection()) {
+                return 1;
+            }
+            if (!o1.isCollection() && o2.isCollection()) {
                 return -1;
             }
             return o1.pythonParamName().compareTo(o2.pythonParamName());
