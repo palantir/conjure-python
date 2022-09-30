@@ -340,8 +340,10 @@ class another_TestService(Service):
         _decoder = ConjureDecoder()
         return None if _response.status_code == 204 else _decoder.decode(_response.json(), OptionalType(str))
 
-    def test_query_params(self, auth_header, implicit, something):
-        # type: (str, str, str) -> int
+    def test_query_params(self, auth_header, implicit, something, list=None, set=None):
+        # type: (str, str, str, List[int], List[int]) -> int
+        list = list if list is not None else []
+        set = set if set is not None else []
 
         _headers = {
             'Accept': 'application/json',
@@ -351,6 +353,8 @@ class another_TestService(Service):
         _params = {
             'different': something,
             'implicit': implicit,
+            'list': list,
+            'set': set,
         } # type: Dict[str, Any]
 
         _path_params = {

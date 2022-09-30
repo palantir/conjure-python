@@ -178,6 +178,12 @@ services:
           implicit:
             type: rid
             param-type: query
+          list:
+            type: list<integer>
+            param-type: query
+          set:
+            type: set<integer>
+            param-type: query
         returns: integer
 
       testBoolean:
