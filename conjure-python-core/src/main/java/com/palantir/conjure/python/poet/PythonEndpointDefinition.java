@@ -80,7 +80,7 @@ public interface PythonEndpointDefinition extends Emittable {
                                     .paramName("authHeader")
                                     .pythonParamName("auth_header")
                                     .myPyType("str")
-                                    .isOptional(false)
+                                    .isOptional(true)
                                     .isCollection(false)
                                     .paramType(ParameterType.header(
                                             HeaderParameterType.of(ParameterId.of("Authorization"))))
@@ -165,7 +165,7 @@ public interface PythonEndpointDefinition extends Emittable {
                         );
                         poetWriter.increaseIndent();
                         poetWriter.writeIndentedLine(
-                                "_header['%s'] = %s",
+                                "_headers['%s'] = %s",
                                 param.paramType()
                                         .accept(ParameterTypeVisitor.HEADER)
                                         .getParamId()
