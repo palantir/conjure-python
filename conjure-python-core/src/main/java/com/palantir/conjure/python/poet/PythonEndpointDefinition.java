@@ -140,6 +140,7 @@ public interface PythonEndpointDefinition extends Emittable {
             }
             paramsWithHeader.stream()
                     .filter(param -> param.paramType().accept(ParameterTypeVisitor.IS_HEADER))
+                    .filter(param -> !param.paramName().contentEquals("authHeader"))
                     .forEach(param -> {
                         poetWriter.writeIndentedLine(
                                 "'%s': %s,",
@@ -151,6 +152,27 @@ public interface PythonEndpointDefinition extends Emittable {
                     });
             poetWriter.decreaseIndent();
             poetWriter.writeIndentedLine("}");
+
+            // optional auth_header
+            paramsWithHeader.stream()
+                    .filter(param -> param.paramName().contentEquals("authHeader"))
+                    .findFirst()
+                    .ifPresent(param -> {
+                        poetWriter.writeLine();
+                        poetWriter.writeIndentedLine(
+                                "if %s is not None:",
+                                param.pythonParamName()
+                        );
+                        poetWriter.increaseIndent();
+                        poetWriter.writeIndentedLine(
+                                "_header['%s'] = %s",
+                                param.paramType()
+                                        .accept(ParameterTypeVisitor.HEADER)
+                                        .getParamId()
+                                        .get(),
+                                param.pythonParamName());
+                        poetWriter.decreaseIndent();
+                    });
 
             // params
             poetWriter.writeLine();
