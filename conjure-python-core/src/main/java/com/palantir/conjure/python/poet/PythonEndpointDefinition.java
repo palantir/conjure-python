@@ -79,7 +79,7 @@ public interface PythonEndpointDefinition extends Emittable {
                             .add(PythonEndpointParam.builder()
                                     .paramName("authHeader")
                                     .pythonParamName("auth_header")
-                                    .myPyType("str")
+                                    .myPyType("Optional[str]")
                                     .isOptional(true)
                                     .isCollection(false)
                                     .paramType(ParameterType.header(
@@ -98,9 +98,8 @@ public interface PythonEndpointDefinition extends Emittable {
                                     .map(param -> {
                                         String typedParam =
                                                 String.format("%s: %s", param.pythonParamName(), param.myPyType());
-                                        if (param.isOptional()
-                                                || param.paramType().accept(ParameterTypeVisitor.IS_HEADER)) {
-                                            return String.format("Optional[%s] = None", typedParam);
+                                        if (param.isOptional()) {
+                                            return String.format("%s = None", typedParam);
                                         } else if (param.isCollection()) {
                                             return String.format("%s = []", typedParam);
                                         }
@@ -136,24 +135,22 @@ public interface PythonEndpointDefinition extends Emittable {
             poetWriter.writeIndentedLine("}");
 
             // optional header params
+            poetWriter.writeLine();
+            poetWriter.writeIndentedLine("_header_params: Dict[str, Any] = {");
+            poetWriter.increaseIndent();
             paramsWithHeader.stream()
                     .filter(param -> param.paramType().accept(ParameterTypeVisitor.IS_HEADER))
-                    .forEach(param -> {
-                        poetWriter.writeLine();
-                        poetWriter.writeIndentedLine(
-                                "if %s is not None:",
-                                param.pythonParamName()
-                        );
-                        poetWriter.increaseIndent();
-                        poetWriter.writeIndentedLine(
-                                "_headers['%s'] = %s",
-                                param.paramType()
-                                        .accept(ParameterTypeVisitor.HEADER)
-                                        .getParamId()
-                                        .get(),
-                                param.pythonParamName());
-                        poetWriter.decreaseIndent();
-                    });
+                    .forEach(param -> poetWriter.writeIndentedLine(
+                            "'%s': %s,",
+                            param.paramType()
+                                    .accept(ParameterTypeVisitor.HEADER)
+                                    .getParamId()
+                                    .get(),
+                            param.pythonParamName()));
+            poetWriter.decreaseIndent();
+            poetWriter.writeIndentedLine("}");
+            poetWriter.writeLine();
+            poetWriter.writeIndentedLine("_headers.update({k, v} for k, v in _header_params.items() if v is not None)");
 
             // params
             poetWriter.writeLine();
