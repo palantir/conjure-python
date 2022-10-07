@@ -98,8 +98,11 @@ public interface PythonEndpointDefinition extends Emittable {
                                     .map(param -> {
                                         String typedParam =
                                                 String.format("%s: %s", param.pythonParamName(), param.myPyType());
-                                        if (param.isOptional() || param.isCollection()) {
-                                            return String.format("%s = None", typedParam);
+                                        if (param.isOptional()
+                                                || param.paramType().accept(ParameterTypeVisitor.IS_HEADER)) {
+                                            return String.format("Optional[%s] = None", typedParam);
+                                        } else if (param.isCollection()) {
+                                            return String.format("%s = []", typedParam);
                                         }
                                         return typedParam;
                                     })
@@ -111,15 +114,6 @@ public interface PythonEndpointDefinition extends Emittable {
                 poetWriter.writeIndentedLine(docs.get().trim());
                 poetWriter.writeIndentedLine("\"\"\"");
             });
-
-            // replace "None" with "[]"
-            for (PythonEndpointParam param : paramsWithHeader) {
-                if (param.isCollection()) {
-                    poetWriter.writeIndentedLine(String.format(
-                            "%s = %s if %s is not None else []",
-                            param.pythonParamName(), param.pythonParamName(), param.pythonParamName()));
-                }
-            }
 
             // header
             poetWriter.writeLine();
@@ -138,26 +132,13 @@ public interface PythonEndpointDefinition extends Emittable {
                         "'Content-Type': '%s',",
                         isRequestBinary() ? MediaType.APPLICATION_OCTET_STREAM : MediaType.APPLICATION_JSON);
             }
-            paramsWithHeader.stream()
-                    .filter(param -> param.paramType().accept(ParameterTypeVisitor.IS_HEADER))
-                    .filter(param -> !param.paramName().contentEquals("authHeader"))
-                    .forEach(param -> {
-                        poetWriter.writeIndentedLine(
-                                "'%s': %s,",
-                                param.paramType()
-                                        .accept(ParameterTypeVisitor.HEADER)
-                                        .getParamId()
-                                        .get(),
-                                param.pythonParamName());
-                    });
             poetWriter.decreaseIndent();
             poetWriter.writeIndentedLine("}");
 
-            // optional auth_header
+            // optional header params
             paramsWithHeader.stream()
-                    .filter(param -> param.paramName().contentEquals("authHeader"))
-                    .findFirst()
-                    .ifPresent(param -> {
+                    .filter(param -> param.paramType().accept(ParameterTypeVisitor.IS_HEADER))
+                    .forEach(param -> {
                         poetWriter.writeLine();
                         poetWriter.writeIndentedLine(
                                 "if %s is not None:",

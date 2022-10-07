@@ -63,7 +63,7 @@ class another_TestService(Service):
         _decoder = ConjureDecoder()
         return _decoder.decode(_response.json(), Dict[str, product_datasets_BackingFileSystem])
 
-    def create_dataset(self, auth_header: str = None, request: "product_CreateDatasetRequest", test_header_arg: str) -> "product_datasets_Dataset":
+    def create_dataset(self, request: "product_CreateDatasetRequest", test_header_arg: str, auth_header: str = None) -> "product_datasets_Dataset":
 
         _headers: Dict[str, Any] = {
             'Accept': 'application/json',
