@@ -30,7 +30,7 @@ class another_TestService(Service):
     A Markdown description of the service. "Might end with quotes"
     """
 
-    def get_file_systems(self, auth_header: str = None) -> Dict[str, "product_datasets_BackingFileSystem"]:
+    def get_file_systems(self, auth_header: Optional[str] = None) -> Dict[str, "product_datasets_BackingFileSystem"]:
         """
         Returns a mapping from file system id to backing file system configuration.
         """
@@ -39,8 +39,11 @@ class another_TestService(Service):
             'Accept': 'application/json',
         }
 
-        if auth_header is not None:
-            _headers['Authorization'] = auth_header
+        _header_params: Dict[str, Any] = {
+            'Authorization': auth_header,
+        }
+
+        _headers.update((k, v) for k, v in _header_params.items() if v is not None)
 
         _params: Dict[str, Any] = {
         }
@@ -63,16 +66,19 @@ class another_TestService(Service):
         _decoder = ConjureDecoder()
         return _decoder.decode(_response.json(), Dict[str, product_datasets_BackingFileSystem])
 
-    def create_dataset(self, request: "product_CreateDatasetRequest", test_header_arg: str, auth_header: str = None) -> "product_datasets_Dataset":
+    def create_dataset(self, request: "product_CreateDatasetRequest", test_header_arg: Optional[str] = None, auth_header: Optional[str] = None) -> "product_datasets_Dataset":
 
         _headers: Dict[str, Any] = {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
+        }
+
+        _header_params: Dict[str, Any] = {
+            'Authorization': auth_header,
             'Test-Header': test_header_arg,
         }
 
-        if auth_header is not None:
-            _headers['Authorization'] = auth_header
+        _headers.update((k, v) for k, v in _header_params.items() if v is not None)
 
         _params: Dict[str, Any] = {
         }
@@ -95,14 +101,17 @@ class another_TestService(Service):
         _decoder = ConjureDecoder()
         return _decoder.decode(_response.json(), product_datasets_Dataset)
 
-    def get_dataset(self, auth_header: str = None, dataset_rid: str) -> Optional["product_datasets_Dataset"]:
+    def get_dataset(self, dataset_rid: str, auth_header: Optional[str] = None) -> Optional["product_datasets_Dataset"]:
 
         _headers: Dict[str, Any] = {
             'Accept': 'application/json',
         }
 
-        if auth_header is not None:
-            _headers['Authorization'] = auth_header
+        _header_params: Dict[str, Any] = {
+            'Authorization': auth_header,
+        }
+
+        _headers.update((k, v) for k, v in _header_params.items() if v is not None)
 
         _params: Dict[str, Any] = {
         }
@@ -126,14 +135,17 @@ class another_TestService(Service):
         _decoder = ConjureDecoder()
         return None if _response.status_code == 204 else _decoder.decode(_response.json(), OptionalTypeWrapper[product_datasets_Dataset])
 
-    def get_raw_data(self, auth_header: str = None, dataset_rid: str) -> Any:
+    def get_raw_data(self, dataset_rid: str, auth_header: Optional[str] = None) -> Any:
 
         _headers: Dict[str, Any] = {
             'Accept': 'application/octet-stream',
         }
 
-        if auth_header is not None:
-            _headers['Authorization'] = auth_header
+        _header_params: Dict[str, Any] = {
+            'Authorization': auth_header,
+        }
+
+        _headers.update((k, v) for k, v in _header_params.items() if v is not None)
 
         _params: Dict[str, Any] = {
         }
@@ -159,14 +171,17 @@ class another_TestService(Service):
         _raw.decode_content = True
         return _raw
 
-    def maybe_get_raw_data(self, auth_header: str = None, dataset_rid: str) -> Optional[Any]:
+    def maybe_get_raw_data(self, dataset_rid: str, auth_header: Optional[str] = None) -> Optional[Any]:
 
         _headers: Dict[str, Any] = {
             'Accept': 'application/json',
         }
 
-        if auth_header is not None:
-            _headers['Authorization'] = auth_header
+        _header_params: Dict[str, Any] = {
+            'Authorization': auth_header,
+        }
+
+        _headers.update((k, v) for k, v in _header_params.items() if v is not None)
 
         _params: Dict[str, Any] = {
         }
@@ -190,15 +205,18 @@ class another_TestService(Service):
         _decoder = ConjureDecoder()
         return None if _response.status_code == 204 else _decoder.decode(_response.json(), OptionalTypeWrapper[BinaryType])
 
-    def upload_raw_data(self, auth_header: str = None, input: Any) -> None:
+    def upload_raw_data(self, input: Any, auth_header: Optional[str] = None) -> None:
 
         _headers: Dict[str, Any] = {
             'Accept': 'application/json',
             'Content-Type': 'application/octet-stream',
         }
 
-        if auth_header is not None:
-            _headers['Authorization'] = auth_header
+        _header_params: Dict[str, Any] = {
+            'Authorization': auth_header,
+        }
+
+        _headers.update((k, v) for k, v in _header_params.items() if v is not None)
 
         _params: Dict[str, Any] = {
         }
@@ -220,15 +238,18 @@ class another_TestService(Service):
 
         return
 
-    def get_branches(self, auth_header: str = None, dataset_rid: str, message: Optional[str] = None, page_size: Optional[int] = None) -> List[str]:
+    def get_branches(self, dataset_rid: str, page_size: Optional[int] = None, auth_header: Optional[str] = None, message: Optional[str] = None) -> List[str]:
 
         _headers: Dict[str, Any] = {
             'Accept': 'application/json',
+        }
+
+        _header_params: Dict[str, Any] = {
+            'Authorization': auth_header,
             'Special-Message': message,
         }
 
-        if auth_header is not None:
-            _headers['Authorization'] = auth_header
+        _headers.update((k, v) for k, v in _header_params.items() if v is not None)
 
         _params: Dict[str, Any] = {
             'pageSize': page_size,
@@ -253,7 +274,7 @@ class another_TestService(Service):
         _decoder = ConjureDecoder()
         return _decoder.decode(_response.json(), List[str])
 
-    def get_branches_deprecated(self, auth_header: str = None, dataset_rid: str) -> List[str]:
+    def get_branches_deprecated(self, dataset_rid: str, auth_header: Optional[str] = None) -> List[str]:
         """
         Gets all branches of this dataset.
         """
@@ -262,8 +283,11 @@ class another_TestService(Service):
             'Accept': 'application/json',
         }
 
-        if auth_header is not None:
-            _headers['Authorization'] = auth_header
+        _header_params: Dict[str, Any] = {
+            'Authorization': auth_header,
+        }
+
+        _headers.update((k, v) for k, v in _header_params.items() if v is not None)
 
         _params: Dict[str, Any] = {
         }
@@ -287,14 +311,17 @@ class another_TestService(Service):
         _decoder = ConjureDecoder()
         return _decoder.decode(_response.json(), List[str])
 
-    def resolve_branch(self, auth_header: str = None, branch: str, dataset_rid: str) -> Optional[str]:
+    def resolve_branch(self, branch: str, dataset_rid: str, auth_header: Optional[str] = None) -> Optional[str]:
 
         _headers: Dict[str, Any] = {
             'Accept': 'application/json',
         }
 
-        if auth_header is not None:
-            _headers['Authorization'] = auth_header
+        _header_params: Dict[str, Any] = {
+            'Authorization': auth_header,
+        }
+
+        _headers.update((k, v) for k, v in _header_params.items() if v is not None)
 
         _params: Dict[str, Any] = {
         }
@@ -319,14 +346,17 @@ class another_TestService(Service):
         _decoder = ConjureDecoder()
         return None if _response.status_code == 204 else _decoder.decode(_response.json(), OptionalTypeWrapper[str])
 
-    def test_param(self, auth_header: str = None, dataset_rid: str) -> Optional[str]:
+    def test_param(self, dataset_rid: str, auth_header: Optional[str] = None) -> Optional[str]:
 
         _headers: Dict[str, Any] = {
             'Accept': 'application/json',
         }
 
-        if auth_header is not None:
-            _headers['Authorization'] = auth_header
+        _header_params: Dict[str, Any] = {
+            'Authorization': auth_header,
+        }
+
+        _headers.update((k, v) for k, v in _header_params.items() if v is not None)
 
         _params: Dict[str, Any] = {
         }
@@ -350,16 +380,17 @@ class another_TestService(Service):
         _decoder = ConjureDecoder()
         return None if _response.status_code == 204 else _decoder.decode(_response.json(), OptionalTypeWrapper[str])
 
-    def test_query_params(self, auth_header: str = None, implicit: str, something: str, list: List[int] = None, set: List[int] = None) -> int:
-        list = list if list is not None else []
-        set = set if set is not None else []
+    def test_query_params(self, implicit: str, something: str, list: List[int] = [], set: List[int] = [], auth_header: Optional[str] = None) -> int:
 
         _headers: Dict[str, Any] = {
             'Accept': 'application/json',
         }
 
-        if auth_header is not None:
-            _headers['Authorization'] = auth_header
+        _header_params: Dict[str, Any] = {
+            'Authorization': auth_header,
+        }
+
+        _headers.update((k, v) for k, v in _header_params.items() if v is not None)
 
         _params: Dict[str, Any] = {
             'different': something,
@@ -386,14 +417,17 @@ class another_TestService(Service):
         _decoder = ConjureDecoder()
         return _decoder.decode(_response.json(), int)
 
-    def test_boolean(self, auth_header: str = None) -> bool:
+    def test_boolean(self, auth_header: Optional[str] = None) -> bool:
 
         _headers: Dict[str, Any] = {
             'Accept': 'application/json',
         }
 
-        if auth_header is not None:
-            _headers['Authorization'] = auth_header
+        _header_params: Dict[str, Any] = {
+            'Authorization': auth_header,
+        }
+
+        _headers.update((k, v) for k, v in _header_params.items() if v is not None)
 
         _params: Dict[str, Any] = {
         }
@@ -416,14 +450,17 @@ class another_TestService(Service):
         _decoder = ConjureDecoder()
         return _decoder.decode(_response.json(), bool)
 
-    def test_double(self, auth_header: str = None) -> float:
+    def test_double(self, auth_header: Optional[str] = None) -> float:
 
         _headers: Dict[str, Any] = {
             'Accept': 'application/json',
         }
 
-        if auth_header is not None:
-            _headers['Authorization'] = auth_header
+        _header_params: Dict[str, Any] = {
+            'Authorization': auth_header,
+        }
+
+        _headers.update((k, v) for k, v in _header_params.items() if v is not None)
 
         _params: Dict[str, Any] = {
         }
@@ -446,14 +483,17 @@ class another_TestService(Service):
         _decoder = ConjureDecoder()
         return _decoder.decode(_response.json(), float)
 
-    def test_integer(self, auth_header: str = None) -> int:
+    def test_integer(self, auth_header: Optional[str] = None) -> int:
 
         _headers: Dict[str, Any] = {
             'Accept': 'application/json',
         }
 
-        if auth_header is not None:
-            _headers['Authorization'] = auth_header
+        _header_params: Dict[str, Any] = {
+            'Authorization': auth_header,
+        }
+
+        _headers.update((k, v) for k, v in _header_params.items() if v is not None)
 
         _params: Dict[str, Any] = {
         }
@@ -491,6 +531,11 @@ class nested_deeply_nested_service_DeeplyNestedService(Service):
             'Content-Type': 'application/json',
         }
 
+        _header_params: Dict[str, Any] = {
+        }
+
+        _headers.update((k, v) for k, v in _header_params.items() if v is not None)
+
         _params: Dict[str, Any] = {
         }
 
@@ -527,6 +572,11 @@ class nested_service2_SimpleNestedService2(Service):
             'Content-Type': 'application/json',
         }
 
+        _header_params: Dict[str, Any] = {
+        }
+
+        _headers.update((k, v) for k, v in _header_params.items() if v is not None)
+
         _params: Dict[str, Any] = {
         }
 
@@ -562,6 +612,11 @@ class nested_service_SimpleNestedService(Service):
             'Accept': 'application/json',
             'Content-Type': 'application/json',
         }
+
+        _header_params: Dict[str, Any] = {
+        }
+
+        _headers.update((k, v) for k, v in _header_params.items() if v is not None)
 
         _params: Dict[str, Any] = {
         }
@@ -1701,6 +1756,11 @@ class with_imports_ImportService(Service):
             'Accept': 'application/json',
             'Content-Type': 'application/json',
         }
+
+        _header_params: Dict[str, Any] = {
+        }
+
+        _headers.update((k, v) for k, v in _header_params.items() if v is not None)
 
         _params: Dict[str, Any] = {
         }

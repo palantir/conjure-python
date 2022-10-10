@@ -102,6 +102,11 @@ public interface PythonEndpointDefinition extends Emittable {
                                             return String.format("%s = None", typedParam);
                                         } else if (param.isCollection()) {
                                             return String.format("%s = []", typedParam);
+                                        } else if (param.paramType().accept(ParameterTypeVisitor.IS_HEADER)) {
+                                            return String.format(
+                                                    "%s: Optional[%s] = None",
+                                                    param.pythonParamName(),
+                                                    param.myPyType());
                                         }
                                         return typedParam;
                                     })
@@ -150,7 +155,7 @@ public interface PythonEndpointDefinition extends Emittable {
             poetWriter.decreaseIndent();
             poetWriter.writeIndentedLine("}");
             poetWriter.writeLine();
-            poetWriter.writeIndentedLine("_headers.update({k, v} for k, v in _header_params.items() if v is not None)");
+            poetWriter.writeIndentedLine("_headers.update((k, v) for k, v in _header_params.items() if v is not None)");
 
             // params
             poetWriter.writeLine();
@@ -289,6 +294,12 @@ public interface PythonEndpointDefinition extends Emittable {
                 return 1;
             }
             if (!o1.isCollection() && o2.isCollection()) {
+                return -1;
+            }
+            if (o1.paramType().accept(ParameterTypeVisitor.IS_HEADER) && !o2.paramType().accept(ParameterTypeVisitor.IS_HEADER)) {
+                return 1;
+            }
+            if (!o1.paramType().accept(ParameterTypeVisitor.IS_HEADER) && o2.paramType().accept(ParameterTypeVisitor.IS_HEADER)) {
                 return -1;
             }
             return o1.pythonParamName().compareTo(o2.pythonParamName());
