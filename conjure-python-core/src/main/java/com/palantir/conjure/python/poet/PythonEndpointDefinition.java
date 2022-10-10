@@ -105,8 +105,7 @@ public interface PythonEndpointDefinition extends Emittable {
                                         } else if (param.paramType().accept(ParameterTypeVisitor.IS_HEADER)) {
                                             return String.format(
                                                     "%s: Optional[%s] = None",
-                                                    param.pythonParamName(),
-                                                    param.myPyType());
+                                                    param.pythonParamName(), param.myPyType());
                                         }
                                         return typedParam;
                                     })
@@ -296,10 +295,12 @@ public interface PythonEndpointDefinition extends Emittable {
             if (!o1.isCollection() && o2.isCollection()) {
                 return -1;
             }
-            if (o1.paramType().accept(ParameterTypeVisitor.IS_HEADER) && !o2.paramType().accept(ParameterTypeVisitor.IS_HEADER)) {
+            if (o1.paramType().accept(ParameterTypeVisitor.IS_HEADER)
+                    && !o2.paramType().accept(ParameterTypeVisitor.IS_HEADER)) {
                 return 1;
             }
-            if (!o1.paramType().accept(ParameterTypeVisitor.IS_HEADER) && o2.paramType().accept(ParameterTypeVisitor.IS_HEADER)) {
+            if (!o1.paramType().accept(ParameterTypeVisitor.IS_HEADER)
+                    && o2.paramType().accept(ParameterTypeVisitor.IS_HEADER)) {
                 return -1;
             }
             return o1.pythonParamName().compareTo(o2.pythonParamName());
