@@ -340,8 +340,10 @@ class another_TestService(Service):
         _decoder = ConjureDecoder()
         return None if _response.status_code == 204 else _decoder.decode(_response.json(), OptionalType(str))
 
-    def test_query_params(self, auth_header, implicit, something):
-        # type: (str, str, str) -> int
+    def test_query_params(self, auth_header, implicit, something, list=None, set=None):
+        # type: (str, str, str, List[int], List[int]) -> int
+        list = list if list is not None else []
+        set = set if set is not None else []
 
         _headers = {
             'Accept': 'application/json',
@@ -351,6 +353,8 @@ class another_TestService(Service):
         _params = {
             'different': something,
             'implicit': implicit,
+            'list': list,
+            'set': set,
         } # type: Dict[str, Any]
 
         _path_params = {
@@ -1960,41 +1964,41 @@ with_imports_UnionWithImportsVisitor.__qualname__ = "UnionWithImportsVisitor"
 with_imports_UnionWithImportsVisitor.__module__ = "package_name.with_imports"
 
 
-product_RecursiveObjectAlias = product_RecursiveObjectExample
-
-product_MapAliasExample = DictType(str, object)
+product_SafeLongAliasExample = int
 
 product_BearerTokenAliasExample = str
 
-product_SafeLongAliasExample = int
+product_MapAliasExample = DictType(str, object)
 
-product_IntegerAliasExample = int
+product_ReferenceAliasExample = product_AnyExample
 
 product_BooleanAliasExample = bool
 
 product_StringAliasExample = str
 
+product_IntegerAliasExample = int
+
 product_UuidAliasExample = str
-
-product_CollectionAliasExample = DictType(product_StringAliasExample, product_RecursiveObjectAlias)
-
-package_name_TypeInPackageWithTheSameNameAsRootPackage = str
-
-product_ReferenceAliasExample = product_AnyExample
-
-product_RidAliasExample = str
-
-product_NestedAliasExample = product_RecursiveObjectAlias
 
 with_imports_AliasImportedPrimitiveAlias = product_StringAliasExample
 
-product_DateTimeAliasExample = str
-
-product_BinaryAliasExample = BinaryType()
-
 product_DoubleAliasExample = float
 
+product_RidAliasExample = str
+
+package_name_TypeInPackageWithTheSameNameAsRootPackage = str
+
+product_DateTimeAliasExample = str
+
+product_RecursiveObjectAlias = product_RecursiveObjectExample
+
+product_CollectionAliasExample = DictType(product_StringAliasExample, product_RecursiveObjectAlias)
+
+product_NestedAliasExample = product_RecursiveObjectAlias
+
 with_imports_AliasImportedObject = product_ManyFieldExample
+
+product_BinaryAliasExample = BinaryType()
 
 with_imports_AliasImportedReferenceAlias = product_ReferenceAliasExample
 
