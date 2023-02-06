@@ -59,6 +59,10 @@ jobs:
           at: '~/project'
 
       - run:
+          name: Install rust toolchain (required for python cryptography)
+          command: apt-get install rustc
+
+      - run:
           name: Install dependencies
           command: pip install --user setuptools tox==2.9.1 tox-virtualenv-no-download
 
@@ -94,6 +98,10 @@ jobs:
 
       - attach_workspace:
           at: '~/project'
+
+      - run:
+          name: Install rust toolchain (required for python cryptography)
+          command: apt-get install rustc
 
       - run:
           name: Install dependencies
