@@ -137,7 +137,7 @@ public interface UnionSnippet extends PythonSnippet {
                 poetWriter.writeIndentedLine("if type_of_union == '%s':", parameterName(option));
                 poetWriter.increaseIndent();
                
-                if (parameterName(option) != "optional" && parameterName(option) != "collection") {
+                if (!parameterName(option).equals("optional") && !parameterName(option).equals("collection")) {
                     poetWriter.writeIndentedLine("if %s is None:", parameterName(option));
                     poetWriter.increaseIndent();
                     poetWriter.writeIndentedLine("raise ValueError('a union value must not be None')");
