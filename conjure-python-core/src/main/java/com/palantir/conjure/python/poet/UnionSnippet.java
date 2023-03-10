@@ -16,7 +16,6 @@
 
 package com.palantir.conjure.python.poet;
 
-import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.palantir.conjure.python.processors.PythonIdentifierSanitizer;
@@ -24,7 +23,6 @@ import com.palantir.conjure.python.types.ImportTypeVisitor;
 import com.palantir.conjure.spec.Documentation;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import org.immutables.value.Value;
 
 @Value.Immutable
@@ -136,7 +134,7 @@ public interface UnionSnippet extends PythonSnippet {
             options().forEach(option -> {
                 poetWriter.writeIndentedLine("if type_of_union == '%s':", parameterName(option));
                 poetWriter.increaseIndent();
-               
+
                 if (!parameterName(option).equals("optional") && !parameterName(option).equals("collection")) {
                     poetWriter.writeIndentedLine("if %s is None:", parameterName(option));
                     poetWriter.increaseIndent();
