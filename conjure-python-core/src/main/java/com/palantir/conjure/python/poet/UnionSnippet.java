@@ -124,30 +124,26 @@ public interface UnionSnippet extends PythonSnippet {
                 PythonField option = options().get(i);
 
                 poetWriter.writeIndentedLine(String.format(
-                        "%s: Optional[%s] = None%s",
+                        "%s: Optional[%s] = None,",
                         PythonIdentifierSanitizer.sanitize(option.attributeName()),
-                        option.myPyType(),
-                        i == options().size() - 1 ? "" : ","));
+                        option.myPyType()));
             }
+            poetWriter.writeIndentedLine("type_of_union: str");
             poetWriter.writeIndentedLine(") -> None:");
             poetWriter.decreaseIndent();
 
-            // check we have exactly one non-null
-            poetWriter.writeIndentedLine(
-                    "if %s != 1:",
-                    Joiner.on(" + ")
-                            .join(options().stream()
-                                    .map(option -> String.format("(%s is not None)", parameterName(option)))
-                                    .collect(Collectors.toList())));
-            poetWriter.increaseIndent();
-            poetWriter.writeIndentedLine("raise ValueError('a union must contain a single member')");
-            poetWriter.decreaseIndent();
-            // keep track of how many non-null there are
-            poetWriter.writeLine();
             // save off
             options().forEach(option -> {
-                poetWriter.writeIndentedLine("if %s is not None:", parameterName(option));
+                poetWriter.writeIndentedLine("if type_of_union == '%s':", parameterName(option));
                 poetWriter.increaseIndent();
+               
+                if (parameterName(option) != "optional" && parameterName(option) != "collection") {
+                    poetWriter.writeIndentedLine("if %s is None:", parameterName(option));
+                    poetWriter.increaseIndent();
+                    poetWriter.writeIndentedLine("raise ValueError('a union value must not be None')");
+                    poetWriter.decreaseIndent();
+                }
+
                 poetWriter.writeIndentedLine("self.%s = %s", fieldName(option), parameterName(option));
                 poetWriter.writeIndentedLine("self._type = '%s'", option.jsonIdentifier());
                 poetWriter.decreaseIndent();
