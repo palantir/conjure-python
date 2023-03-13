@@ -1122,7 +1122,7 @@ class product_OptionsUnion(ConjureUnionType):
     def __init__(
             self,
             options: Optional[str] = None,
-            type_of_union: str = ""
+            type_of_union: Optional[str] = None
             ) -> None:
         if type_of_union == 'options':
             if options is None:
@@ -1137,7 +1137,7 @@ class product_OptionsUnion(ConjureUnionType):
     def accept(self, visitor) -> Any:
         if not isinstance(visitor, product_OptionsUnionVisitor):
             raise ValueError('{} is not an instance of product_OptionsUnionVisitor'.format(visitor.__class__.__name__))
-        if self.options is not None:
+        if self._type == 'options':
             return visitor._options(self.options)
 
 
@@ -1413,7 +1413,7 @@ class product_UnionTypeExample(ConjureUnionType):
             new: Optional[int] = None,
             interface: Optional[int] = None,
             property: Optional[int] = None,
-            type_of_union: str = ""
+            type_of_union: Optional[str] = None
             ) -> None:
         if type_of_union == 'string_example':
             if string_example is None:
@@ -1494,21 +1494,21 @@ class product_UnionTypeExample(ConjureUnionType):
     def accept(self, visitor) -> Any:
         if not isinstance(visitor, product_UnionTypeExampleVisitor):
             raise ValueError('{} is not an instance of product_UnionTypeExampleVisitor'.format(visitor.__class__.__name__))
-        if self.string_example is not None:
+        if self._type == 'string_example':
             return visitor._string_example(self.string_example)
-        if self.set is not None:
+        if self._type == 'set':
             return visitor._set(self.set)
-        if self.this_field_is_an_integer is not None:
+        if self._type == 'this_field_is_an_integer':
             return visitor._this_field_is_an_integer(self.this_field_is_an_integer)
-        if self.also_an_integer is not None:
+        if self._type == 'also_an_integer':
             return visitor._also_an_integer(self.also_an_integer)
-        if self.if_ is not None:
+        if self._type == 'if_':
             return visitor._if(self.if_)
-        if self.new is not None:
+        if self._type == 'new':
             return visitor._new(self.new)
-        if self.interface is not None:
+        if self._type == 'interface':
             return visitor._interface(self.interface)
-        if self.property is not None:
+        if self._type == 'property':
             return visitor._property(self.property)
 
 
@@ -1753,7 +1753,7 @@ class with_imports_UnionWithImports(ConjureUnionType):
             self,
             string: Optional[str] = None,
             imported: Optional["product_AnyMapExample"] = None,
-            type_of_union: str = ""
+            type_of_union: Optional[str] = None
             ) -> None:
         if type_of_union == 'string':
             if string is None:
@@ -1777,9 +1777,9 @@ class with_imports_UnionWithImports(ConjureUnionType):
     def accept(self, visitor) -> Any:
         if not isinstance(visitor, with_imports_UnionWithImportsVisitor):
             raise ValueError('{} is not an instance of with_imports_UnionWithImportsVisitor'.format(visitor.__class__.__name__))
-        if self.string is not None:
+        if self._type == 'string':
             return visitor._string(self.string)
-        if self.imported is not None:
+        if self._type == 'imported':
             return visitor._imported(self.imported)
 
 

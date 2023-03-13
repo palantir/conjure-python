@@ -125,7 +125,7 @@ public interface UnionSnippet extends PythonSnippet {
                         "%s: Optional[%s] = None,",
                         PythonIdentifierSanitizer.sanitize(option.attributeName()), option.myPyType()));
             }
-            poetWriter.writeIndentedLine("type_of_union: str = \"\"");
+            poetWriter.writeIndentedLine("type_of_union: Optional[str] = None");
             poetWriter.writeIndentedLine(") -> None:");
             poetWriter.decreaseIndent();
 
@@ -178,7 +178,7 @@ public interface UnionSnippet extends PythonSnippet {
                     "raise ValueError('{} is not an instance of %s'.format(visitor.__class__.__name__))", visitorName);
             poetWriter.decreaseIndent();
             options().forEach(option -> {
-                poetWriter.writeIndentedLine("if self.%s is not None:", propertyName(option));
+                poetWriter.writeIndentedLine("if self._type == '%s':", parameterName(option));
                 poetWriter.increaseIndent();
                 poetWriter.writeIndentedLine(
                         "return visitor.%s(self.%s)", visitorMethodName(option), propertyName(option));
