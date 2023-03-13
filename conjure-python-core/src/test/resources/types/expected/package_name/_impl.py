@@ -1137,7 +1137,7 @@ class product_OptionsUnion(ConjureUnionType):
     def accept(self, visitor) -> Any:
         if not isinstance(visitor, product_OptionsUnionVisitor):
             raise ValueError('{} is not an instance of product_OptionsUnionVisitor'.format(visitor.__class__.__name__))
-        if self._type == 'options':
+        if self._type == 'options' and self.options is not None:
             return visitor._options(self.options)
 
 
@@ -1494,21 +1494,21 @@ class product_UnionTypeExample(ConjureUnionType):
     def accept(self, visitor) -> Any:
         if not isinstance(visitor, product_UnionTypeExampleVisitor):
             raise ValueError('{} is not an instance of product_UnionTypeExampleVisitor'.format(visitor.__class__.__name__))
-        if self._type == 'string_example':
+        if self._type == 'string_example' and self.string_example is not None:
             return visitor._string_example(self.string_example)
-        if self._type == 'set':
+        if self._type == 'set' and self.set is not None:
             return visitor._set(self.set)
-        if self._type == 'this_field_is_an_integer':
+        if self._type == 'this_field_is_an_integer' and self.this_field_is_an_integer is not None:
             return visitor._this_field_is_an_integer(self.this_field_is_an_integer)
-        if self._type == 'also_an_integer':
+        if self._type == 'also_an_integer' and self.also_an_integer is not None:
             return visitor._also_an_integer(self.also_an_integer)
-        if self._type == 'if_':
+        if self._type == 'if_' and self.if_ is not None:
             return visitor._if(self.if_)
-        if self._type == 'new':
+        if self._type == 'new' and self.new is not None:
             return visitor._new(self.new)
-        if self._type == 'interface':
+        if self._type == 'interface' and self.interface is not None:
             return visitor._interface(self.interface)
-        if self._type == 'property':
+        if self._type == 'property' and self.property is not None:
             return visitor._property(self.property)
 
 
@@ -1777,9 +1777,9 @@ class with_imports_UnionWithImports(ConjureUnionType):
     def accept(self, visitor) -> Any:
         if not isinstance(visitor, with_imports_UnionWithImportsVisitor):
             raise ValueError('{} is not an instance of with_imports_UnionWithImportsVisitor'.format(visitor.__class__.__name__))
-        if self._type == 'string':
+        if self._type == 'string' and self.string is not None:
             return visitor._string(self.string)
-        if self._type == 'imported':
+        if self._type == 'imported' and self.imported is not None:
             return visitor._imported(self.imported)
 
 
