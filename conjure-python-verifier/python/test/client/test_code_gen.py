@@ -48,4 +48,4 @@ def test_union_visitor():
         def _options(self, value):
             return value
 
-    assert OptionsUnion(options="options").accept(TestOptionsUnionVisitor()) == "options"
+    assert OptionsUnion(options="options", type_of_union="options").accept(TestOptionsUnionVisitor()) == "options"
