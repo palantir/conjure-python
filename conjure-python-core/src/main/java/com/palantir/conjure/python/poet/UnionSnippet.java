@@ -125,7 +125,7 @@ public interface UnionSnippet extends PythonSnippet {
                         "%s: Optional[%s] = None,",
                         PythonIdentifierSanitizer.sanitize(option.attributeName()), option.myPyType()));
             }
-            poetWriter.writeIndentedLine("type_of_union: str");
+            poetWriter.writeIndentedLine("type_of_union: str = \"\"");
             poetWriter.writeIndentedLine(") -> None:");
             poetWriter.decreaseIndent();
 
