@@ -1,0 +1,5 @@
+type: fix
+fix:
+  description: Use type_of_union to determine the union variant if parameter is passed in.
+  links:
+    - https://github.com/palantir/conjure-java/pull/681
