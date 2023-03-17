@@ -1124,7 +1124,15 @@ class product_OptionsUnion(ConjureUnionType):
             options: Optional[str] = None,
             type_of_union: Optional[str] = None
             ) -> None:
-        if type_of_union == 'options':
+        if type_of_union is None:
+            if (options is not None) != 1:
+                raise ValueError('a union must contain a single member')
+
+            if options is not None:
+                self._options_ = options
+                self._type = 'options'
+
+        elif type_of_union == 'options':
             if options is None:
                 raise ValueError('a union value must not be None')
             self._options_ = options
@@ -1415,42 +1423,71 @@ class product_UnionTypeExample(ConjureUnionType):
             property: Optional[int] = None,
             type_of_union: Optional[str] = None
             ) -> None:
-        if type_of_union == 'string_example':
+        if type_of_union is None:
+            if (string_example is not None) + (set is not None) + (this_field_is_an_integer is not None) + (also_an_integer is not None) + (if_ is not None) + (new is not None) + (interface is not None) + (property is not None) != 1:
+                raise ValueError('a union must contain a single member')
+
+            if string_example is not None:
+                self._string_example = string_example
+                self._type = 'stringExample'
+            if set is not None:
+                self._set = set
+                self._type = 'set'
+            if this_field_is_an_integer is not None:
+                self._this_field_is_an_integer = this_field_is_an_integer
+                self._type = 'thisFieldIsAnInteger'
+            if also_an_integer is not None:
+                self._also_an_integer = also_an_integer
+                self._type = 'alsoAnInteger'
+            if if_ is not None:
+                self._if_ = if_
+                self._type = 'if'
+            if new is not None:
+                self._new = new
+                self._type = 'new'
+            if interface is not None:
+                self._interface = interface
+                self._type = 'interface'
+            if property is not None:
+                self._property = property
+                self._type = 'property'
+
+        elif type_of_union == 'string_example':
             if string_example is None:
                 raise ValueError('a union value must not be None')
             self._string_example = string_example
             self._type = 'stringExample'
-        if type_of_union == 'set':
+        elif type_of_union == 'set':
             if set is None:
                 raise ValueError('a union value must not be None')
             self._set = set
             self._type = 'set'
-        if type_of_union == 'this_field_is_an_integer':
+        elif type_of_union == 'this_field_is_an_integer':
             if this_field_is_an_integer is None:
                 raise ValueError('a union value must not be None')
             self._this_field_is_an_integer = this_field_is_an_integer
             self._type = 'thisFieldIsAnInteger'
-        if type_of_union == 'also_an_integer':
+        elif type_of_union == 'also_an_integer':
             if also_an_integer is None:
                 raise ValueError('a union value must not be None')
             self._also_an_integer = also_an_integer
             self._type = 'alsoAnInteger'
-        if type_of_union == 'if_':
+        elif type_of_union == 'if_':
             if if_ is None:
                 raise ValueError('a union value must not be None')
             self._if_ = if_
             self._type = 'if'
-        if type_of_union == 'new':
+        elif type_of_union == 'new':
             if new is None:
                 raise ValueError('a union value must not be None')
             self._new = new
             self._type = 'new'
-        if type_of_union == 'interface':
+        elif type_of_union == 'interface':
             if interface is None:
                 raise ValueError('a union value must not be None')
             self._interface = interface
             self._type = 'interface'
-        if type_of_union == 'property':
+        elif type_of_union == 'property':
             if property is None:
                 raise ValueError('a union value must not be None')
             self._property = property
@@ -1755,12 +1792,23 @@ class with_imports_UnionWithImports(ConjureUnionType):
             imported: Optional["product_AnyMapExample"] = None,
             type_of_union: Optional[str] = None
             ) -> None:
-        if type_of_union == 'string':
+        if type_of_union is None:
+            if (string is not None) + (imported is not None) != 1:
+                raise ValueError('a union must contain a single member')
+
+            if string is not None:
+                self._string = string
+                self._type = 'string'
+            if imported is not None:
+                self._imported = imported
+                self._type = 'imported'
+
+        elif type_of_union == 'string':
             if string is None:
                 raise ValueError('a union value must not be None')
             self._string = string
             self._type = 'string'
-        if type_of_union == 'imported':
+        elif type_of_union == 'imported':
             if imported is None:
                 raise ValueError('a union value must not be None')
             self._imported = imported

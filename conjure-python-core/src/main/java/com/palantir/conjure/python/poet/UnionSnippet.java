@@ -16,6 +16,7 @@
 
 package com.palantir.conjure.python.poet;
 
+import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.palantir.conjure.python.processors.PythonIdentifierSanitizer;
@@ -23,6 +24,7 @@ import com.palantir.conjure.python.types.ImportTypeVisitor;
 import com.palantir.conjure.spec.Documentation;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import org.immutables.value.Value;
 
 @Value.Immutable
@@ -80,6 +82,7 @@ public interface UnionSnippet extends PythonSnippet {
     }
 
     @Override
+    @SuppressWarnings("checkstyle:methodlength")
     default void emit(PythonPoetWriter poetWriter) {
         poetWriter.maintainingIndent(() -> {
             poetWriter.writeIndentedLine(String.format("class %s(ConjureUnionType):", className()));
@@ -129,9 +132,36 @@ public interface UnionSnippet extends PythonSnippet {
             poetWriter.writeIndentedLine(") -> None:");
             poetWriter.decreaseIndent();
 
+            // --back-compat to determine union type if type_of_union isn't passed in--
+            // check we have exactly one non-null
+            poetWriter.writeIndentedLine("if type_of_union is None:");
+            poetWriter.increaseIndent();
+            poetWriter.writeIndentedLine(
+                    "if %s != 1:",
+                    Joiner.on(" + ")
+                            .join(options().stream()
+                                    .map(option -> String.format("(%s is not None)", parameterName(option)))
+                                    .collect(Collectors.toList())));
+            poetWriter.increaseIndent();
+            poetWriter.writeIndentedLine("raise ValueError('a union must contain a single member')");
+            poetWriter.decreaseIndent();
+            // keep track of how many non-null there are
+            poetWriter.writeLine();
             // save off
             options().forEach(option -> {
-                poetWriter.writeIndentedLine("if type_of_union == '%s':", parameterName(option));
+                poetWriter.writeIndentedLine("if %s is not None:", parameterName(option));
+                poetWriter.increaseIndent();
+                poetWriter.writeIndentedLine("self.%s = %s", fieldName(option), parameterName(option));
+                poetWriter.writeIndentedLine("self._type = '%s'", option.jsonIdentifier());
+                poetWriter.decreaseIndent();
+            });
+            poetWriter.decreaseIndent();
+            poetWriter.writeLine();
+
+            // --proper way of determining union type using type_of_union--
+            // save off
+            options().forEach(option -> {
+                poetWriter.writeIndentedLine("elif type_of_union == '%s':", parameterName(option));
                 poetWriter.increaseIndent();
 
                 if (!parameterName(option).equals("optional")) {
