@@ -129,7 +129,7 @@ public interface UnionSnippet extends PythonSnippet {
                         PythonIdentifierSanitizer.sanitize(option.attributeName()), option.myPyType()));
             }
             poetWriter.writeIndentedLine("type_of_union=None  # type: Optional[str]");
-            poetWriter.writeIndentedLine("):");
+            poetWriter.writeIndentedLine(") -> None:");
             poetWriter.decreaseIndent();
 
             // --back-compat to determine union type if type_of_union isn't passed in--

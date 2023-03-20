@@ -1209,7 +1209,7 @@ class product_OptionsUnion(ConjureUnionType):
             self,
             options=None,  # type: Optional[str]
             type_of_union=None  # type: Optional[str]
-            ):
+            ) -> None:
         if type_of_union is None:
             if (options is not None) != 1:
                 raise ValueError('a union must contain a single member')
@@ -1546,7 +1546,7 @@ class product_UnionTypeExample(ConjureUnionType):
             interface=None,  # type: Optional[int]
             property=None,  # type: Optional[int]
             type_of_union=None  # type: Optional[str]
-            ):
+            ) -> None:
         if type_of_union is None:
             if (string_example is not None) + (set is not None) + (this_field_is_an_integer is not None) + (also_an_integer is not None) + (if_ is not None) + (new is not None) + (interface is not None) + (property is not None) != 1:
                 raise ValueError('a union must contain a single member')
@@ -1956,7 +1956,7 @@ class with_imports_UnionWithImports(ConjureUnionType):
             string=None,  # type: Optional[str]
             imported=None,  # type: Optional[product_AnyMapExample]
             type_of_union=None  # type: Optional[str]
-            ):
+            ) -> None:
         if type_of_union is None:
             if (string is not None) + (imported is not None) != 1:
                 raise ValueError('a union must contain a single member')
