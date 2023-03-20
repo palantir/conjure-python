@@ -126,8 +126,7 @@ public interface UnionSnippet extends PythonSnippet {
                 PythonField option = options().get(i);
                 poetWriter.writeIndentedLine(String.format(
                         "%s=None,  # type: Optional[%s]",
-                        PythonIdentifierSanitizer.sanitize(option.attributeName()),
-                        option.myPyType()));
+                        PythonIdentifierSanitizer.sanitize(option.attributeName()), option.myPyType()));
             }
             poetWriter.writeIndentedLine("type_of_union=None  # type: Optional[str]");
             poetWriter.writeIndentedLine("):");
