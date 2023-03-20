@@ -82,6 +82,7 @@ public interface UnionSnippet extends PythonSnippet {
     }
 
     @Override
+    @SuppressWarnings("checkstyle:methodlength")
     default void emit(PythonPoetWriter poetWriter) {
         poetWriter.maintainingIndent(() -> {
             poetWriter.writeIndentedLine(String.format("class %s(ConjureUnionType):", className()));
@@ -123,18 +124,18 @@ public interface UnionSnippet extends PythonSnippet {
             poetWriter.writeIndentedLine("self,");
             for (int i = 0; i < options().size(); i++) {
                 PythonField option = options().get(i);
-
                 poetWriter.writeIndentedLine(String.format(
-                        "%s=None%s  # type: Optional[%s]",
-                        PythonIdentifierSanitizer.sanitize(option.attributeName()),
-                        i == options().size() - 1 ? "" : ",",
-                        option.myPyType()));
+                        "%s=None,  # type: Optional[%s]",
+                        PythonIdentifierSanitizer.sanitize(option.attributeName()), option.myPyType()));
             }
-            poetWriter.writeIndentedLine("):");
+            poetWriter.writeIndentedLine("type_of_union=None  # type: Optional[str]");
+            poetWriter.writeIndentedLine(") -> None:");
             poetWriter.decreaseIndent();
-            poetWriter.writeIndentedLine("# type: (...) -> None");
 
+            // --back-compat to determine union type if type_of_union isn't passed in--
             // check we have exactly one non-null
+            poetWriter.writeIndentedLine("if type_of_union is None:");
+            poetWriter.increaseIndent();
             poetWriter.writeIndentedLine(
                     "if %s != 1:",
                     Joiner.on(" + ")
@@ -150,6 +151,26 @@ public interface UnionSnippet extends PythonSnippet {
             options().forEach(option -> {
                 poetWriter.writeIndentedLine("if %s is not None:", parameterName(option));
                 poetWriter.increaseIndent();
+                poetWriter.writeIndentedLine("self.%s = %s", fieldName(option), parameterName(option));
+                poetWriter.writeIndentedLine("self._type = '%s'", option.jsonIdentifier());
+                poetWriter.decreaseIndent();
+            });
+            poetWriter.decreaseIndent();
+            poetWriter.writeLine();
+
+            // --proper way of determining union type using type_of_union--
+            // save off
+            options().forEach(option -> {
+                poetWriter.writeIndentedLine("elif type_of_union == '%s':", parameterName(option));
+                poetWriter.increaseIndent();
+
+                if (!parameterName(option).equals("optional")) {
+                    poetWriter.writeIndentedLine("if %s is None:", parameterName(option));
+                    poetWriter.increaseIndent();
+                    poetWriter.writeIndentedLine("raise ValueError('a union value must not be None')");
+                    poetWriter.decreaseIndent();
+                }
+
                 poetWriter.writeIndentedLine("self.%s = %s", fieldName(option), parameterName(option));
                 poetWriter.writeIndentedLine("self._type = '%s'", option.jsonIdentifier());
                 poetWriter.decreaseIndent();
@@ -187,7 +208,13 @@ public interface UnionSnippet extends PythonSnippet {
                     "raise ValueError('{} is not an instance of %s'.format(visitor.__class__.__name__))", visitorName);
             poetWriter.decreaseIndent();
             options().forEach(option -> {
-                poetWriter.writeIndentedLine("if self.%s is not None:", propertyName(option));
+                if (parameterName(option).equals("optional")) {
+                    poetWriter.writeIndentedLine("if self._type == '%s':", parameterName(option));
+                } else {
+                    poetWriter.writeIndentedLine(
+                            "if self._type == '%s' and self.%s is not None:",
+                            parameterName(option), propertyName(option));
+                }
                 poetWriter.increaseIndent();
                 poetWriter.writeIndentedLine(
                         "return visitor.%s(self.%s)", visitorMethodName(option), propertyName(option));
