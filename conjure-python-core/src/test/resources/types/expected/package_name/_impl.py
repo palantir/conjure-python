@@ -1531,15 +1531,15 @@ class product_UnionTypeExample(ConjureUnionType):
     def accept(self, visitor) -> Any:
         if not isinstance(visitor, product_UnionTypeExampleVisitor):
             raise ValueError('{} is not an instance of product_UnionTypeExampleVisitor'.format(visitor.__class__.__name__))
-        if self._type == 'string_example' and self.string_example is not None:
+        if self._type == 'stringExample' and self.string_example is not None:
             return visitor._string_example(self.string_example)
         if self._type == 'set' and self.set is not None:
             return visitor._set(self.set)
-        if self._type == 'this_field_is_an_integer' and self.this_field_is_an_integer is not None:
+        if self._type == 'thisFieldIsAnInteger' and self.this_field_is_an_integer is not None:
             return visitor._this_field_is_an_integer(self.this_field_is_an_integer)
-        if self._type == 'also_an_integer' and self.also_an_integer is not None:
+        if self._type == 'alsoAnInteger' and self.also_an_integer is not None:
             return visitor._also_an_integer(self.also_an_integer)
-        if self._type == 'if_' and self.if_ is not None:
+        if self._type == 'if' and self.if_ is not None:
             return visitor._if(self.if_)
         if self._type == 'new' and self.new is not None:
             return visitor._new(self.new)
