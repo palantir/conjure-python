@@ -212,7 +212,7 @@ public interface UnionSnippet extends PythonSnippet {
                 } else {
                     poetWriter.writeIndentedLine(
                             "if self._type == '%s' and self.%s is not None:",
-                            parameterName(option), propertyName(option));
+                            option.jsonIdentifier(), propertyName(option));
                 }
                 poetWriter.increaseIndent();
                 poetWriter.writeIndentedLine(
