@@ -1,0 +1,5 @@
+type: fix
+fix:
+  description: Fix casing in type_of_union for union types
+  links:
+    - https://github.com/palantir/conjure-python/pull/698
