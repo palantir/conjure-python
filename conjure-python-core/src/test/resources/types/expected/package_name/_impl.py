@@ -1472,7 +1472,7 @@ class product_UnionTypeExample(ConjureUnionType):
                 raise ValueError('a union value must not be None')
             self._also_an_integer = also_an_integer
             self._type = 'alsoAnInteger'
-        elif type_of_union == 'if_':
+        elif type_of_union == 'if':
             if if_ is None:
                 raise ValueError('a union value must not be None')
             self._if_ = if_
