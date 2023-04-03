@@ -161,7 +161,7 @@ public interface UnionSnippet extends PythonSnippet {
             // --proper way of determining union type using type_of_union--
             // save off
             options().forEach(option -> {
-                poetWriter.writeIndentedLine("elif type_of_union == '%s':", parameterName(option));
+                poetWriter.writeIndentedLine("elif type_of_union == '%s':", option.jsonIdentifier());
                 poetWriter.increaseIndent();
 
                 if (!parameterName(option).equals("optional")) {
