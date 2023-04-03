@@ -1452,7 +1452,7 @@ class product_UnionTypeExample(ConjureUnionType):
                 self._property = property
                 self._type = 'property'
 
-        elif type_of_union == 'string_example':
+        elif type_of_union == 'stringExample':
             if string_example is None:
                 raise ValueError('a union value must not be None')
             self._string_example = string_example
@@ -1462,12 +1462,12 @@ class product_UnionTypeExample(ConjureUnionType):
                 raise ValueError('a union value must not be None')
             self._set = set
             self._type = 'set'
-        elif type_of_union == 'this_field_is_an_integer':
+        elif type_of_union == 'thisFieldIsAnInteger':
             if this_field_is_an_integer is None:
                 raise ValueError('a union value must not be None')
             self._this_field_is_an_integer = this_field_is_an_integer
             self._type = 'thisFieldIsAnInteger'
-        elif type_of_union == 'also_an_integer':
+        elif type_of_union == 'alsoAnInteger':
             if also_an_integer is None:
                 raise ValueError('a union value must not be None')
             self._also_an_integer = also_an_integer
