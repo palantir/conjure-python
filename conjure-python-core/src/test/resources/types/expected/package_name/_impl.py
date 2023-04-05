@@ -1576,7 +1576,7 @@ class product_UnionTypeExample(ConjureUnionType):
                 self._property = property
                 self._type = 'property'
 
-        elif type_of_union == 'string_example':
+        elif type_of_union == 'stringExample':
             if string_example is None:
                 raise ValueError('a union value must not be None')
             self._string_example = string_example
@@ -1586,17 +1586,17 @@ class product_UnionTypeExample(ConjureUnionType):
                 raise ValueError('a union value must not be None')
             self._set = set
             self._type = 'set'
-        elif type_of_union == 'this_field_is_an_integer':
+        elif type_of_union == 'thisFieldIsAnInteger':
             if this_field_is_an_integer is None:
                 raise ValueError('a union value must not be None')
             self._this_field_is_an_integer = this_field_is_an_integer
             self._type = 'thisFieldIsAnInteger'
-        elif type_of_union == 'also_an_integer':
+        elif type_of_union == 'alsoAnInteger':
             if also_an_integer is None:
                 raise ValueError('a union value must not be None')
             self._also_an_integer = also_an_integer
             self._type = 'alsoAnInteger'
-        elif type_of_union == 'if_':
+        elif type_of_union == 'if':
             if if_ is None:
                 raise ValueError('a union value must not be None')
             self._if_ = if_
@@ -1664,15 +1664,15 @@ class product_UnionTypeExample(ConjureUnionType):
         # type: (product_UnionTypeExampleVisitor) -> Any
         if not isinstance(visitor, product_UnionTypeExampleVisitor):
             raise ValueError('{} is not an instance of product_UnionTypeExampleVisitor'.format(visitor.__class__.__name__))
-        if self._type == 'string_example' and self.string_example is not None:
+        if self._type == 'stringExample' and self.string_example is not None:
             return visitor._string_example(self.string_example)
         if self._type == 'set' and self.set is not None:
             return visitor._set(self.set)
-        if self._type == 'this_field_is_an_integer' and self.this_field_is_an_integer is not None:
+        if self._type == 'thisFieldIsAnInteger' and self.this_field_is_an_integer is not None:
             return visitor._this_field_is_an_integer(self.this_field_is_an_integer)
-        if self._type == 'also_an_integer' and self.also_an_integer is not None:
+        if self._type == 'alsoAnInteger' and self.also_an_integer is not None:
             return visitor._also_an_integer(self.also_an_integer)
-        if self._type == 'if_' and self.if_ is not None:
+        if self._type == 'if' and self.if_ is not None:
             return visitor._if(self.if_)
         if self._type == 'new' and self.new is not None:
             return visitor._new(self.new)
@@ -2025,31 +2025,35 @@ with_imports_UnionWithImportsVisitor.__qualname__ = "UnionWithImportsVisitor"
 with_imports_UnionWithImportsVisitor.__module__ = "package_name.with_imports"
 
 
-product_SafeLongAliasExample = int
+product_IntegerAliasExample = int
 
-product_BearerTokenAliasExample = str
-
-product_MapAliasExample = DictType(str, object)
-
-product_ReferenceAliasExample = product_AnyExample
+with_imports_AliasImportedObject = product_ManyFieldExample
 
 product_BooleanAliasExample = bool
 
-product_StringAliasExample = str
+product_BinaryAliasExample = BinaryType()
 
-product_IntegerAliasExample = int
-
-product_UuidAliasExample = str
-
-with_imports_AliasImportedPrimitiveAlias = product_StringAliasExample
-
-product_DoubleAliasExample = float
+product_MapAliasExample = DictType(str, object)
 
 product_RidAliasExample = str
 
-package_name_TypeInPackageWithTheSameNameAsRootPackage = str
+product_BearerTokenAliasExample = str
 
 product_DateTimeAliasExample = str
+
+package_name_TypeInPackageWithTheSameNameAsRootPackage = str
+
+product_ReferenceAliasExample = product_AnyExample
+
+product_UuidAliasExample = str
+
+product_StringAliasExample = str
+
+with_imports_AliasImportedPrimitiveAlias = product_StringAliasExample
+
+with_imports_AliasImportedReferenceAlias = product_ReferenceAliasExample
+
+product_DoubleAliasExample = float
 
 product_RecursiveObjectAlias = product_RecursiveObjectExample
 
@@ -2057,9 +2061,5 @@ product_CollectionAliasExample = DictType(product_StringAliasExample, product_Re
 
 product_NestedAliasExample = product_RecursiveObjectAlias
 
-with_imports_AliasImportedObject = product_ManyFieldExample
-
-product_BinaryAliasExample = BinaryType()
-
-with_imports_AliasImportedReferenceAlias = product_ReferenceAliasExample
+product_SafeLongAliasExample = int
 
