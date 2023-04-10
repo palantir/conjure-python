@@ -24,7 +24,7 @@ import com.palantir.conjure.python.processors.packagename.FlatteningPackageNameP
 import com.palantir.conjure.python.processors.packagename.PackageNameProcessor;
 import com.palantir.conjure.python.processors.packagename.PrefixingPackageNameProcessor;
 import com.palantir.conjure.python.processors.packagename.TwoComponentStrippingPackageNameProcessor;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public final class PackageNameProcessorTests {
 
