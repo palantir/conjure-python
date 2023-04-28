@@ -233,11 +233,12 @@ public interface PythonEndpointDefinition extends Emittable {
                 poetWriter.writeIndentedLine("_decoder = ConjureDecoder()");
                 if (isOptionalReturnType()) {
                     poetWriter.writeIndentedLine(
-                            "return None if _response.status_code == 204 else _decoder.decode(_response.json(), %s)",
+                            "return None if _response.status_code == 204 else _decoder.decode(_response.json()"
+                                    + ", %s, self._return_none_for_unknown_union_types)",
                             pythonReturnType().get());
                 } else {
                     poetWriter.writeIndentedLine(
-                            "return _decoder.decode(_response.json(), %s)",
+                            "return _decoder.decode(_response.json(), %s, self._return_none_for_unknown_union_types)",
                             pythonReturnType().get());
                 }
             } else {
