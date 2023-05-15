@@ -1,0 +1,5 @@
+type: improvement
+improvement:
+  description: Add option to return none on unknown union variants
+  links:
+  - https://github.com/palantir/conjure-python/pull/714
