@@ -161,6 +161,6 @@ public class ConjurePythonCliTest {
 
     @Test
     public void loadBuildConfiguration() {
-        assertThat(BuildConfiguration.load().minConjureClientVersion()).isEqualTo("2.1.0");
+        assertThat(BuildConfiguration.load().minConjureClientVersion()).isEqualTo("2.8.0");
     }
 }
