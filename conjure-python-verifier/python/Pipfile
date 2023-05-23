@@ -4,7 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-conjure-python-client = "==1.4.0"
+conjure-python-client = "==1.10.8"
 
 [dev-packages]
 setuptools = "*"

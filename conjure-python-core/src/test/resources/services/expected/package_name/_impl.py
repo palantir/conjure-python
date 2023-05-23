@@ -54,7 +54,7 @@ class another_TestService(Service):
             json=_json)
 
         _decoder = ConjureDecoder()
-        return _decoder.decode(_response.json(), DictType(str, product_datasets_BackingFileSystem))
+        return _decoder.decode(_response.json(), DictType(str, product_datasets_BackingFileSystem), self._return_none_for_unknown_union_types)
 
     def create_dataset(self, auth_header, request, test_header_arg):
         # type: (str, product_CreateDatasetRequest, str) -> product_datasets_Dataset
@@ -85,7 +85,7 @@ class another_TestService(Service):
             json=_json)
 
         _decoder = ConjureDecoder()
-        return _decoder.decode(_response.json(), product_datasets_Dataset)
+        return _decoder.decode(_response.json(), product_datasets_Dataset, self._return_none_for_unknown_union_types)
 
     def get_dataset(self, auth_header, dataset_rid):
         # type: (str, str) -> Optional[product_datasets_Dataset]
@@ -115,7 +115,7 @@ class another_TestService(Service):
             json=_json)
 
         _decoder = ConjureDecoder()
-        return None if _response.status_code == 204 else _decoder.decode(_response.json(), OptionalType(product_datasets_Dataset))
+        return None if _response.status_code == 204 else _decoder.decode(_response.json(), OptionalType(product_datasets_Dataset), self._return_none_for_unknown_union_types)
 
     def get_raw_data(self, auth_header, dataset_rid):
         # type: (str, str) -> Any
@@ -177,7 +177,7 @@ class another_TestService(Service):
             json=_json)
 
         _decoder = ConjureDecoder()
-        return None if _response.status_code == 204 else _decoder.decode(_response.json(), OptionalType(BinaryType()))
+        return None if _response.status_code == 204 else _decoder.decode(_response.json(), OptionalType(BinaryType()), self._return_none_for_unknown_union_types)
 
     def upload_raw_data(self, auth_header, input):
         # type: (str, Any) -> None
@@ -238,7 +238,7 @@ class another_TestService(Service):
             json=_json)
 
         _decoder = ConjureDecoder()
-        return _decoder.decode(_response.json(), ListType(str))
+        return _decoder.decode(_response.json(), ListType(str), self._return_none_for_unknown_union_types)
 
     def get_branches_deprecated(self, auth_header, dataset_rid):
         # type: (str, str) -> List[str]
@@ -271,7 +271,7 @@ class another_TestService(Service):
             json=_json)
 
         _decoder = ConjureDecoder()
-        return _decoder.decode(_response.json(), ListType(str))
+        return _decoder.decode(_response.json(), ListType(str), self._return_none_for_unknown_union_types)
 
     def resolve_branch(self, auth_header, branch, dataset_rid):
         # type: (str, str, str) -> Optional[str]
@@ -302,7 +302,7 @@ class another_TestService(Service):
             json=_json)
 
         _decoder = ConjureDecoder()
-        return None if _response.status_code == 204 else _decoder.decode(_response.json(), OptionalType(str))
+        return None if _response.status_code == 204 else _decoder.decode(_response.json(), OptionalType(str), self._return_none_for_unknown_union_types)
 
     def test_param(self, auth_header, dataset_rid):
         # type: (str, str) -> Optional[str]
@@ -332,7 +332,7 @@ class another_TestService(Service):
             json=_json)
 
         _decoder = ConjureDecoder()
-        return None if _response.status_code == 204 else _decoder.decode(_response.json(), OptionalType(str))
+        return None if _response.status_code == 204 else _decoder.decode(_response.json(), OptionalType(str), self._return_none_for_unknown_union_types)
 
     def test_query_params(self, auth_header, implicit, something, list=None, set=None):
         # type: (str, str, str, List[int], List[int]) -> int
@@ -367,7 +367,7 @@ class another_TestService(Service):
             json=_json)
 
         _decoder = ConjureDecoder()
-        return _decoder.decode(_response.json(), int)
+        return _decoder.decode(_response.json(), int, self._return_none_for_unknown_union_types)
 
     def test_boolean(self, auth_header):
         # type: (str) -> bool
@@ -396,7 +396,7 @@ class another_TestService(Service):
             json=_json)
 
         _decoder = ConjureDecoder()
-        return _decoder.decode(_response.json(), bool)
+        return _decoder.decode(_response.json(), bool, self._return_none_for_unknown_union_types)
 
     def test_double(self, auth_header):
         # type: (str) -> float
@@ -425,7 +425,7 @@ class another_TestService(Service):
             json=_json)
 
         _decoder = ConjureDecoder()
-        return _decoder.decode(_response.json(), float)
+        return _decoder.decode(_response.json(), float, self._return_none_for_unknown_union_types)
 
     def test_integer(self, auth_header):
         # type: (str) -> int
@@ -454,7 +454,7 @@ class another_TestService(Service):
             json=_json)
 
         _decoder = ConjureDecoder()
-        return _decoder.decode(_response.json(), int)
+        return _decoder.decode(_response.json(), int, self._return_none_for_unknown_union_types)
 
 
 another_TestService.__name__ = "TestService"
