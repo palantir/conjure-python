@@ -39,7 +39,7 @@ public final class ConjurePythonGeneratorTest {
             .packageName("package-name")
             .packageVersion("0.0.0")
             .packageDescription("project description")
-            .minConjureClientVersion("1.0.0")
+            .minConjureClientVersion("1.10.8")
             .generatorVersion("0.0.0")
             .shouldWriteCondaRecipe(true)
             .generateRawSource(false)
