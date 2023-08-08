@@ -1594,6 +1594,83 @@ product_UnionTypeExampleVisitor.__qualname__ = "UnionTypeExampleVisitor"
 product_UnionTypeExampleVisitor.__module__ = "package_name.product"
 
 
+class product_UnionWithBuiltinVariantName(ConjureUnionType):
+    _float: Optional[float] = None
+    _double: Optional[float] = None
+
+    @builtins.classmethod
+    def _options(cls) -> Dict[str, ConjureFieldDefinition]:
+        return {
+            'float': ConjureFieldDefinition('float', float),
+            'double': ConjureFieldDefinition('double', float)
+        }
+
+    def __init__(
+            self,
+            float: Optional[float] = None,
+            double: Optional[float] = None,
+            type_of_union: Optional[str] = None
+            ) -> None:
+        if type_of_union is None:
+            if (float is not None) + (double is not None) != 1:
+                raise ValueError('a union must contain a single member')
+
+            if float is not None:
+                self._float = float
+                self._type = 'float'
+            if double is not None:
+                self._double = double
+                self._type = 'double'
+
+        elif type_of_union == 'float':
+            if float is None:
+                raise ValueError('a union value must not be None')
+            self._float = float
+            self._type = 'float'
+        elif type_of_union == 'double':
+            if double is None:
+                raise ValueError('a union value must not be None')
+            self._double = double
+            self._type = 'double'
+
+    @builtins.property
+    def float(self) -> Optional[float]:
+        return self._float
+
+    @builtins.property
+    def double(self) -> Optional[float]:
+        return self._double
+
+    def accept(self, visitor) -> Any:
+        if not isinstance(visitor, product_UnionWithBuiltinVariantNameVisitor):
+            raise ValueError('{} is not an instance of product_UnionWithBuiltinVariantNameVisitor'.format(visitor.__class__.__name__))
+        if self._type == 'float' and self.float is not None:
+            return visitor._float(self.float)
+        if self._type == 'double' and self.double is not None:
+            return visitor._double(self.double)
+
+
+product_UnionWithBuiltinVariantName.__name__ = "UnionWithBuiltinVariantName"
+product_UnionWithBuiltinVariantName.__qualname__ = "UnionWithBuiltinVariantName"
+product_UnionWithBuiltinVariantName.__module__ = "package_name.product"
+
+
+class product_UnionWithBuiltinVariantNameVisitor:
+
+    @abstractmethod
+    def _float(self, float: float) -> Any:
+        pass
+
+    @abstractmethod
+    def _double(self, double: float) -> Any:
+        pass
+
+
+product_UnionWithBuiltinVariantNameVisitor.__name__ = "UnionWithBuiltinVariantNameVisitor"
+product_UnionWithBuiltinVariantNameVisitor.__qualname__ = "UnionWithBuiltinVariantNameVisitor"
+product_UnionWithBuiltinVariantNameVisitor.__module__ = "package_name.product"
+
+
 class product_UuidExample(ConjureBeanType):
 
     @builtins.classmethod
