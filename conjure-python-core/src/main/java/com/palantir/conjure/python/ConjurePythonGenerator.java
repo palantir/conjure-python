@@ -164,6 +164,10 @@ public final class ConjurePythonGenerator {
                         .pythonPackage(rootPackage)
                         .fileName(IMPL_PY)
                         .contents(pythonSnippets)
+                        .addContents(PythonLine.builder()
+                                .pythonPackage(rootPackage)
+                                .text("ConjureDoubleType = float")
+                                .build())
                         .build())
                 .values()
                 .collect(Collectors.toList());
