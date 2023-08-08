@@ -25,6 +25,8 @@ from typing import (
     Set,
 )
 
+ConjureDoubleType = float
+
 class another_TestService(Service):
     """
     A Markdown description of the service. "Might end with quotes"
@@ -392,7 +394,7 @@ class another_TestService(Service):
         _decoder = ConjureDecoder()
         return _decoder.decode(_response.json(), bool, self._return_none_for_unknown_union_types)
 
-    def test_double(self, auth_header: str) -> float:
+    def test_double(self, auth_header: str) -> ConjureDoubleType:
 
         _headers: Dict[str, Any] = {
             'Accept': 'application/json',
@@ -418,7 +420,7 @@ class another_TestService(Service):
             json=_json)
 
         _decoder = ConjureDecoder()
-        return _decoder.decode(_response.json(), float, self._return_none_for_unknown_union_types)
+        return _decoder.decode(_response.json(), ConjureDoubleType, self._return_none_for_unknown_union_types)
 
     def test_integer(self, auth_header: str) -> int:
 
@@ -816,16 +818,16 @@ class product_DoubleExample(ConjureBeanType):
     @builtins.classmethod
     def _fields(cls) -> Dict[str, ConjureFieldDefinition]:
         return {
-            'double_value': ConjureFieldDefinition('doubleValue', float)
+            'double_value': ConjureFieldDefinition('doubleValue', ConjureDoubleType)
         }
 
     __slots__: List[str] = ['_double_value']
 
-    def __init__(self, double_value: float) -> None:
+    def __init__(self, double_value: ConjureDoubleType) -> None:
         self._double_value = double_value
 
     @builtins.property
-    def double_value(self) -> float:
+    def double_value(self) -> ConjureDoubleType:
         return self._double_value
 
 
@@ -947,12 +949,12 @@ class product_ListExample(ConjureBeanType):
         return {
             'items': ConjureFieldDefinition('items', List[str]),
             'primitive_items': ConjureFieldDefinition('primitiveItems', List[int]),
-            'double_items': ConjureFieldDefinition('doubleItems', List[float])
+            'double_items': ConjureFieldDefinition('doubleItems', List[ConjureDoubleType])
         }
 
     __slots__: List[str] = ['_items', '_primitive_items', '_double_items']
 
-    def __init__(self, double_items: List[float], items: List[str], primitive_items: List[int]) -> None:
+    def __init__(self, double_items: List[ConjureDoubleType], items: List[str], primitive_items: List[int]) -> None:
         self._items = items
         self._primitive_items = primitive_items
         self._double_items = double_items
@@ -966,7 +968,7 @@ class product_ListExample(ConjureBeanType):
         return self._primitive_items
 
     @builtins.property
-    def double_items(self) -> List[float]:
+    def double_items(self) -> List[ConjureDoubleType]:
         return self._double_items
 
 
@@ -982,7 +984,7 @@ class product_ManyFieldExample(ConjureBeanType):
         return {
             'string': ConjureFieldDefinition('string', str),
             'integer': ConjureFieldDefinition('integer', int),
-            'double_value': ConjureFieldDefinition('doubleValue', float),
+            'double_value': ConjureFieldDefinition('doubleValue', ConjureDoubleType),
             'optional_item': ConjureFieldDefinition('optionalItem', OptionalTypeWrapper[str]),
             'items': ConjureFieldDefinition('items', List[str]),
             'set': ConjureFieldDefinition('set', List[str]),
@@ -992,7 +994,7 @@ class product_ManyFieldExample(ConjureBeanType):
 
     __slots__: List[str] = ['_string', '_integer', '_double_value', '_optional_item', '_items', '_set', '_map', '_alias']
 
-    def __init__(self, alias: str, double_value: float, integer: int, items: List[str], map: Dict[str, str], set: List[str], string: str, optional_item: Optional[str] = None) -> None:
+    def __init__(self, alias: str, double_value: ConjureDoubleType, integer: int, items: List[str], map: Dict[str, str], set: List[str], string: str, optional_item: Optional[str] = None) -> None:
         self._string = string
         self._integer = integer
         self._double_value = double_value
@@ -1017,7 +1019,7 @@ class product_ManyFieldExample(ConjureBeanType):
         return self._integer
 
     @builtins.property
-    def double_value(self) -> float:
+    def double_value(self) -> ConjureDoubleType:
         """
         docs for doubleValue field
         """
@@ -1171,7 +1173,7 @@ class product_PrimitiveOptionalsExample(ConjureBeanType):
     @builtins.classmethod
     def _fields(cls) -> Dict[str, ConjureFieldDefinition]:
         return {
-            'num': ConjureFieldDefinition('num', OptionalTypeWrapper[float]),
+            'num': ConjureFieldDefinition('num', OptionalTypeWrapper[ConjureDoubleType]),
             'bool_': ConjureFieldDefinition('bool', OptionalTypeWrapper[bool]),
             'integer': ConjureFieldDefinition('integer', OptionalTypeWrapper[int]),
             'safelong': ConjureFieldDefinition('safelong', OptionalTypeWrapper[int]),
@@ -1182,7 +1184,7 @@ class product_PrimitiveOptionalsExample(ConjureBeanType):
 
     __slots__: List[str] = ['_num', '_bool_', '_integer', '_safelong', '_rid', '_bearertoken', '_uuid']
 
-    def __init__(self, bearertoken: Optional[str] = None, bool_: Optional[bool] = None, integer: Optional[int] = None, num: Optional[float] = None, rid: Optional[str] = None, safelong: Optional[int] = None, uuid: Optional[str] = None) -> None:
+    def __init__(self, bearertoken: Optional[str] = None, bool_: Optional[bool] = None, integer: Optional[int] = None, num: Optional[ConjureDoubleType] = None, rid: Optional[str] = None, safelong: Optional[int] = None, uuid: Optional[str] = None) -> None:
         self._num = num
         self._bool_ = bool_
         self._integer = integer
@@ -1192,7 +1194,7 @@ class product_PrimitiveOptionalsExample(ConjureBeanType):
         self._uuid = uuid
 
     @builtins.property
-    def num(self) -> Optional[float]:
+    def num(self) -> Optional[ConjureDoubleType]:
         return self._num
 
     @builtins.property
@@ -1341,12 +1343,12 @@ class product_SetExample(ConjureBeanType):
     def _fields(cls) -> Dict[str, ConjureFieldDefinition]:
         return {
             'items': ConjureFieldDefinition('items', List[str]),
-            'double_items': ConjureFieldDefinition('doubleItems', List[float])
+            'double_items': ConjureFieldDefinition('doubleItems', List[ConjureDoubleType])
         }
 
     __slots__: List[str] = ['_items', '_double_items']
 
-    def __init__(self, double_items: List[float], items: List[str]) -> None:
+    def __init__(self, double_items: List[ConjureDoubleType], items: List[str]) -> None:
         self._items = items
         self._double_items = double_items
 
@@ -1355,7 +1357,7 @@ class product_SetExample(ConjureBeanType):
         return self._items
 
     @builtins.property
-    def double_items(self) -> List[float]:
+    def double_items(self) -> List[ConjureDoubleType]:
         return self._double_items
 
 
@@ -1595,20 +1597,20 @@ product_UnionTypeExampleVisitor.__module__ = "package_name.product"
 
 
 class product_UnionWithBuiltinVariantName(ConjureUnionType):
-    _float: Optional[float] = None
-    _double: Optional[float] = None
+    _float: Optional[ConjureDoubleType] = None
+    _double: Optional[ConjureDoubleType] = None
 
     @builtins.classmethod
     def _options(cls) -> Dict[str, ConjureFieldDefinition]:
         return {
-            'float': ConjureFieldDefinition('float', float),
-            'double': ConjureFieldDefinition('double', float)
+            'float': ConjureFieldDefinition('float', ConjureDoubleType),
+            'double': ConjureFieldDefinition('double', ConjureDoubleType)
         }
 
     def __init__(
             self,
-            float: Optional[float] = None,
-            double: Optional[float] = None,
+            float: Optional[ConjureDoubleType] = None,
+            double: Optional[ConjureDoubleType] = None,
             type_of_union: Optional[str] = None
             ) -> None:
         if type_of_union is None:
@@ -1634,11 +1636,11 @@ class product_UnionWithBuiltinVariantName(ConjureUnionType):
             self._type = 'double'
 
     @builtins.property
-    def float(self) -> Optional[float]:
+    def float(self) -> Optional[ConjureDoubleType]:
         return self._float
 
     @builtins.property
-    def double(self) -> Optional[float]:
+    def double(self) -> Optional[ConjureDoubleType]:
         return self._double
 
     def accept(self, visitor) -> Any:
@@ -1658,11 +1660,11 @@ product_UnionWithBuiltinVariantName.__module__ = "package_name.product"
 class product_UnionWithBuiltinVariantNameVisitor:
 
     @abstractmethod
-    def _float(self, float: float) -> Any:
+    def _float(self, float: ConjureDoubleType) -> Any:
         pass
 
     @abstractmethod
-    def _double(self, double: float) -> Any:
+    def _double(self, double: ConjureDoubleType) -> Any:
         pass
 
 
@@ -1935,6 +1937,8 @@ with_imports_AliasImportedObject = product_ManyFieldExample
 
 product_BooleanAliasExample = bool
 
+product_DoubleAliasExample = ConjureDoubleType
+
 product_RidAliasExample = str
 
 product_BearerTokenAliasExample = str
@@ -1956,8 +1960,6 @@ product_StringAliasExample = str
 with_imports_AliasImportedPrimitiveAlias = product_StringAliasExample
 
 with_imports_AliasImportedReferenceAlias = product_ReferenceAliasExample
-
-product_DoubleAliasExample = float
 
 product_RecursiveObjectAlias = product_RecursiveObjectExample
 
