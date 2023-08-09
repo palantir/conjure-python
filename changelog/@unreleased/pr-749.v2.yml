@@ -1,0 +1,5 @@
+type: fix
+fix:
+  description: order union properties to avoid type collision
+  links:
+  - https://github.com/palantir/conjure-python/pull/749
