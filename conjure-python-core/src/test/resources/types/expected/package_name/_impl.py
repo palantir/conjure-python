@@ -418,7 +418,7 @@ class another_TestService(Service):
             json=_json)
 
         _decoder = ConjureDecoder()
-        return _decoder.decode(_response.json(), 'float', self._return_none_for_unknown_union_types)
+        return _decoder.decode(_response.json(), float, self._return_none_for_unknown_union_types)
 
     def test_integer(self, auth_header: str) -> int:
 
@@ -816,7 +816,7 @@ class product_DoubleExample(ConjureBeanType):
     @builtins.classmethod
     def _fields(cls) -> Dict[str, ConjureFieldDefinition]:
         return {
-            'double_value': ConjureFieldDefinition('doubleValue', 'float')
+            'double_value': ConjureFieldDefinition('doubleValue', float)
         }
 
     __slots__: List[str] = ['_double_value']
@@ -947,7 +947,7 @@ class product_ListExample(ConjureBeanType):
         return {
             'items': ConjureFieldDefinition('items', List[str]),
             'primitive_items': ConjureFieldDefinition('primitiveItems', List[int]),
-            'double_items': ConjureFieldDefinition('doubleItems', List['float'])
+            'double_items': ConjureFieldDefinition('doubleItems', List[float])
         }
 
     __slots__: List[str] = ['_items', '_primitive_items', '_double_items']
@@ -982,7 +982,7 @@ class product_ManyFieldExample(ConjureBeanType):
         return {
             'string': ConjureFieldDefinition('string', str),
             'integer': ConjureFieldDefinition('integer', int),
-            'double_value': ConjureFieldDefinition('doubleValue', 'float'),
+            'double_value': ConjureFieldDefinition('doubleValue', float),
             'optional_item': ConjureFieldDefinition('optionalItem', OptionalTypeWrapper[str]),
             'items': ConjureFieldDefinition('items', List[str]),
             'set': ConjureFieldDefinition('set', List[str]),
@@ -1171,7 +1171,7 @@ class product_PrimitiveOptionalsExample(ConjureBeanType):
     @builtins.classmethod
     def _fields(cls) -> Dict[str, ConjureFieldDefinition]:
         return {
-            'num': ConjureFieldDefinition('num', OptionalTypeWrapper['float']),
+            'num': ConjureFieldDefinition('num', OptionalTypeWrapper[float]),
             'bool_': ConjureFieldDefinition('bool', OptionalTypeWrapper[bool]),
             'integer': ConjureFieldDefinition('integer', OptionalTypeWrapper[int]),
             'safelong': ConjureFieldDefinition('safelong', OptionalTypeWrapper[int]),
@@ -1341,7 +1341,7 @@ class product_SetExample(ConjureBeanType):
     def _fields(cls) -> Dict[str, ConjureFieldDefinition]:
         return {
             'items': ConjureFieldDefinition('items', List[str]),
-            'double_items': ConjureFieldDefinition('doubleItems', List['float'])
+            'double_items': ConjureFieldDefinition('doubleItems', List[float])
         }
 
     __slots__: List[str] = ['_items', '_double_items']
@@ -1601,8 +1601,8 @@ class product_UnionWithBuiltinVariantName(ConjureUnionType):
     @builtins.classmethod
     def _options(cls) -> Dict[str, ConjureFieldDefinition]:
         return {
-            'float': ConjureFieldDefinition('float', 'float'),
-            'double': ConjureFieldDefinition('double', 'float')
+            'float': ConjureFieldDefinition('float', float),
+            'double': ConjureFieldDefinition('double', float)
         }
 
     def __init__(
@@ -1941,8 +1941,6 @@ product_BearerTokenAliasExample = str
 
 product_BinaryAliasExample = BinaryType
 
-product_DoubleAliasExample = 'float'
-
 product_DateTimeAliasExample = str
 
 product_MapAliasExample = Dict[str, object]
@@ -1958,6 +1956,8 @@ product_StringAliasExample = str
 with_imports_AliasImportedPrimitiveAlias = product_StringAliasExample
 
 with_imports_AliasImportedReferenceAlias = product_ReferenceAliasExample
+
+product_DoubleAliasExample = float
 
 product_RecursiveObjectAlias = product_RecursiveObjectExample
 

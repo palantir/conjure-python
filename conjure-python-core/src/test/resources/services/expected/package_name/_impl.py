@@ -413,7 +413,7 @@ class another_TestService(Service):
             json=_json)
 
         _decoder = ConjureDecoder()
-        return _decoder.decode(_response.json(), 'float', self._return_none_for_unknown_union_types)
+        return _decoder.decode(_response.json(), float, self._return_none_for_unknown_union_types)
 
     def test_integer(self, auth_header: str) -> int:
 
