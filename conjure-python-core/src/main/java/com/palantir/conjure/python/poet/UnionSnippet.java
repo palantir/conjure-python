@@ -183,6 +183,8 @@ public interface UnionSnippet extends PythonSnippet {
                     .forEach(option -> emitProperty(poetWriter, option));
 
             // properties with builtin names must come after other properties
+            // can be removed once these names are properly sanitized but
+            // that will require a breaking change and major version bump
             options().stream()
                     .filter(option -> propertyName(option).equals("float"))
                     .forEach(option -> emitProperty(poetWriter, option));
