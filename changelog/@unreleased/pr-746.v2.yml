@@ -1,0 +1,5 @@
+type: fix
+fix:
+  description: union with builtin variant name bug
+  links:
+  - https://github.com/palantir/conjure-python/pull/746
