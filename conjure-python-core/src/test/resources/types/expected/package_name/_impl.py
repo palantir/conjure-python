@@ -1634,12 +1634,12 @@ class product_UnionWithBuiltinVariantName(ConjureUnionType):
             self._type = 'double'
 
     @builtins.property
-    def float(self) -> Optional[float]:
-        return self._float
-
-    @builtins.property
     def double(self) -> Optional[float]:
         return self._double
+
+    @builtins.property
+    def float(self) -> Optional[float]:
+        return self._float
 
     def accept(self, visitor) -> Any:
         if not isinstance(visitor, product_UnionWithBuiltinVariantNameVisitor):
