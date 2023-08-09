@@ -66,7 +66,7 @@ public final class PythonTypeNameVisitor implements Type.Visitor<String> {
             case BOOLEAN:
                 return "bool";
             case DOUBLE:
-                return "ConjureDoubleType";
+                return "float";
             case INTEGER:
             case SAFELONG:
                 return "int";
