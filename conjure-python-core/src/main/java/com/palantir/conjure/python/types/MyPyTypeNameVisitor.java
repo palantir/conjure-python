@@ -72,7 +72,7 @@ public final class MyPyTypeNameVisitor implements Type.Visitor<String> {
             case BOOLEAN:
                 return "bool";
             case DOUBLE:
-                return "float";
+                return "'float'";
             case INTEGER:
             case SAFELONG:
                 return "int";

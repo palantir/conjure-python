@@ -37,7 +37,6 @@ public final class PythonIdentifierSanitizer {
             "except",
             "exec",
             "finally",
-            "float",
             "for",
             "from",
             "global",
