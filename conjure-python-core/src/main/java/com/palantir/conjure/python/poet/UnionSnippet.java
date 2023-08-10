@@ -178,22 +178,16 @@ public interface UnionSnippet extends PythonSnippet {
             poetWriter.decreaseIndent();
 
             // python @builtins.property for each member of the union
-            options().forEach(option -> {
-                poetWriter.writeLine();
+            options().stream()
+                    .filter(option -> !propertyName(option).equals("float"))
+                    .forEach(option -> emitProperty(poetWriter, option));
 
-                poetWriter.writeIndentedLine("@builtins.property");
-                poetWriter.writeIndentedLine(
-                        String.format("def %s(self) -> Optional[%s]:", propertyName(option), option.myPyType()));
-
-                poetWriter.increaseIndent();
-                option.docs().ifPresent(docs -> {
-                    poetWriter.writeIndentedLine("\"\"\"");
-                    poetWriter.writeIndentedLine(docs.get().trim());
-                    poetWriter.writeIndentedLine("\"\"\"");
-                });
-                poetWriter.writeIndentedLine(String.format("return self.%s", fieldName(option)));
-                poetWriter.decreaseIndent();
-            });
+            // properties with builtin names must come after other properties
+            // can be removed once these names are properly sanitized but
+            // that will require a breaking change and major version bump
+            options().stream()
+                    .filter(option -> propertyName(option).equals("float"))
+                    .forEach(option -> emitProperty(poetWriter, option));
 
             String visitorName = String.format("%sVisitor", className());
             String definitionVisitorName = String.format("%sVisitor", definitionName());
@@ -244,6 +238,23 @@ public interface UnionSnippet extends PythonSnippet {
 
             PythonClassRenamer.renameClass(poetWriter, visitorName, definitionPackage(), definitionVisitorName);
         });
+    }
+
+    private static void emitProperty(PythonPoetWriter poetWriter, PythonField option) {
+        poetWriter.writeLine();
+
+        poetWriter.writeIndentedLine("@builtins.property");
+        poetWriter.writeIndentedLine(
+                String.format("def %s(self) -> Optional[%s]:", propertyName(option), option.myPyType()));
+
+        poetWriter.increaseIndent();
+        option.docs().ifPresent(docs -> {
+            poetWriter.writeIndentedLine("\"\"\"");
+            poetWriter.writeIndentedLine(docs.get().trim());
+            poetWriter.writeIndentedLine("\"\"\"");
+        });
+        poetWriter.writeIndentedLine(String.format("return self.%s", fieldName(option)));
+        poetWriter.decreaseIndent();
     }
 
     class Builder extends ImmutableUnionSnippet.Builder {}

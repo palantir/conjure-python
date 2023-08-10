@@ -43,6 +43,8 @@ from .._impl import (
     product_StringExample as StringExample,
     product_UnionTypeExample as UnionTypeExample,
     product_UnionTypeExampleVisitor as UnionTypeExampleVisitor,
+    product_UnionWithBuiltinVariantName as UnionWithBuiltinVariantName,
+    product_UnionWithBuiltinVariantNameVisitor as UnionWithBuiltinVariantNameVisitor,
     product_UuidAliasExample as UuidAliasExample,
     product_UuidExample as UuidExample,
 )

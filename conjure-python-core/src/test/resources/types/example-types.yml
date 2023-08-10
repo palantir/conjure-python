@@ -172,3 +172,9 @@ types:
         alias: RecursiveObjectAlias
       CollectionAliasExample:
         alias: map<StringAliasExample, RecursiveObjectAlias>
+      UnionWithBuiltinVariantName:
+        union:
+          # the name of this variant is 'float' which conflicts with the python type 'float'
+          float: double
+          # the python type for this field is 'float' which conflicts with the variant name above
+          double: double
