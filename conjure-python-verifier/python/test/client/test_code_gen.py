@@ -51,3 +51,16 @@ def test_union_visitor():
     # test for backwards compatibility
     assert OptionsUnion(options="options").accept(TestOptionsUnionVisitor()) == "options"
     assert OptionsUnion(options="options", type_of_union="options").accept(TestOptionsUnionVisitor()) == "options"
+
+
+def test_union_visitor_for_empty_type():
+    from generated_integration.product import UnionTypeExample, UnionTypeExampleVisitor, EmptyObjectExample
+
+    class TestUnionTypeExampleVisitor(UnionTypeExampleVisitor):
+        def _empty(self, value):
+            return value
+
+    # test for backwards compatibility
+    emptyExample = EmptyObjectExample()
+    assert UnionTypeExample(empty=emptyExample).accept(TestUnionTypeExampleVisitor()) == emptyExample
+    assert UnionTypeExample(empty=emptyExample, type_of_union="empty").accept(TestUnionTypeExampleVisitor()) == emptyExample

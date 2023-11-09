@@ -121,6 +121,8 @@ types:
           alias:
             type: StringAliasExample
             docs: docs for alias field
+      EmptyObjectExample:
+        fields: {}
       UnionTypeExample:
         docs: A type which can either be a StringExample, a set of strings, or an integer.
         union:
@@ -134,8 +136,7 @@ types:
           new: integer
           interface: integer
           property: integer
-      EmptyObjectExample:
-        fields: {}
+          empty: EmptyObjectExample
       AliasAsMapKeyExample:
         fields:
           strings: map<StringAliasExample, ManyFieldExample>

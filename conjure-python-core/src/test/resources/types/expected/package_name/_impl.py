@@ -1397,6 +1397,7 @@ class product_UnionTypeExample(ConjureUnionType):
     _new: Optional[int] = None
     _interface: Optional[int] = None
     _property: Optional[int] = None
+    _empty: Optional["product_EmptyObjectExample"] = None
 
     @builtins.classmethod
     def _options(cls) -> Dict[str, ConjureFieldDefinition]:
@@ -1408,7 +1409,8 @@ class product_UnionTypeExample(ConjureUnionType):
             'if_': ConjureFieldDefinition('if', int),
             'new': ConjureFieldDefinition('new', int),
             'interface': ConjureFieldDefinition('interface', int),
-            'property': ConjureFieldDefinition('property', int)
+            'property': ConjureFieldDefinition('property', int),
+            'empty': ConjureFieldDefinition('empty', product_EmptyObjectExample)
         }
 
     def __init__(
@@ -1421,10 +1423,11 @@ class product_UnionTypeExample(ConjureUnionType):
             new: Optional[int] = None,
             interface: Optional[int] = None,
             property: Optional[int] = None,
+            empty: Optional["product_EmptyObjectExample"] = None,
             type_of_union: Optional[str] = None
             ) -> None:
         if type_of_union is None:
-            if (string_example is not None) + (set is not None) + (this_field_is_an_integer is not None) + (also_an_integer is not None) + (if_ is not None) + (new is not None) + (interface is not None) + (property is not None) != 1:
+            if (string_example is not None) + (set is not None) + (this_field_is_an_integer is not None) + (also_an_integer is not None) + (if_ is not None) + (new is not None) + (interface is not None) + (property is not None) + (empty is not None) != 1:
                 raise ValueError('a union must contain a single member')
 
             if string_example is not None:
@@ -1451,6 +1454,9 @@ class product_UnionTypeExample(ConjureUnionType):
             if property is not None:
                 self._property = property
                 self._type = 'property'
+            if empty is not None:
+                self._empty = empty
+                self._type = 'empty'
 
         elif type_of_union == 'stringExample':
             if string_example is None:
@@ -1492,6 +1498,11 @@ class product_UnionTypeExample(ConjureUnionType):
                 raise ValueError('a union value must not be None')
             self._property = property
             self._type = 'property'
+        elif type_of_union == 'empty':
+            if empty is None:
+                raise ValueError('a union value must not be None')
+            self._empty = empty
+            self._type = 'empty'
 
     @builtins.property
     def string_example(self) -> Optional["product_StringExample"]:
@@ -1528,6 +1539,10 @@ class product_UnionTypeExample(ConjureUnionType):
     def property(self) -> Optional[int]:
         return self._property
 
+    @builtins.property
+    def empty(self) -> Optional["product_EmptyObjectExample"]:
+        return self._empty
+
     def accept(self, visitor) -> Any:
         if not isinstance(visitor, product_UnionTypeExampleVisitor):
             raise ValueError('{} is not an instance of product_UnionTypeExampleVisitor'.format(visitor.__class__.__name__))
@@ -1547,6 +1562,8 @@ class product_UnionTypeExample(ConjureUnionType):
             return visitor._interface(self.interface)
         if self._type == 'property' and self.property is not None:
             return visitor._property(self.property)
+        if self._type == 'empty' and self.empty is not None:
+            return visitor._empty(self.empty)
 
 
 product_UnionTypeExample.__name__ = "UnionTypeExample"
@@ -1586,6 +1603,10 @@ class product_UnionTypeExampleVisitor:
 
     @abstractmethod
     def _property(self, property: int) -> Any:
+        pass
+
+    @abstractmethod
+    def _empty(self, empty: "product_EmptyObjectExample") -> Any:
         pass
 
 
