@@ -79,8 +79,8 @@ public interface PythonEndpointDefinition extends Emittable {
                             .add(PythonEndpointParam.builder()
                                     .paramName("authHeader")
                                     .pythonParamName("auth_header")
-                                    .myPyType("str")
-                                    .isOptional(false)
+                                    .myPyType("Optional[str]")
+                                    .isOptional(true)
                                     .isCollection(false)
                                     .paramType(ParameterType.header(
                                             HeaderParameterType.of(ParameterId.of("Authorization"))))
@@ -98,8 +98,14 @@ public interface PythonEndpointDefinition extends Emittable {
                                     .map(param -> {
                                         String typedParam =
                                                 String.format("%s: %s", param.pythonParamName(), param.myPyType());
-                                        if (param.isOptional() || param.isCollection()) {
+                                        if (param.isOptional()) {
                                             return String.format("%s = None", typedParam);
+                                        } else if (param.isCollection()) {
+                                            return String.format("%s = []", typedParam);
+                                        } else if (param.paramType().accept(ParameterTypeVisitor.IS_HEADER)) {
+                                            return String.format(
+                                                    "%s: Optional[%s] = None",
+                                                    param.pythonParamName(), param.myPyType());
                                         }
                                         return typedParam;
                                     })
@@ -111,15 +117,6 @@ public interface PythonEndpointDefinition extends Emittable {
                 poetWriter.writeIndentedLine(docs.get().trim());
                 poetWriter.writeIndentedLine("\"\"\"");
             });
-
-            // replace "None" with "[]"
-            for (PythonEndpointParam param : paramsWithHeader) {
-                if (param.isCollection()) {
-                    poetWriter.writeIndentedLine(String.format(
-                            "%s = %s if %s is not None else []",
-                            param.pythonParamName(), param.pythonParamName(), param.pythonParamName()));
-                }
-            }
 
             // header
             poetWriter.writeLine();
@@ -138,19 +135,26 @@ public interface PythonEndpointDefinition extends Emittable {
                         "'Content-Type': '%s',",
                         isRequestBinary() ? MediaType.APPLICATION_OCTET_STREAM : MediaType.APPLICATION_JSON);
             }
-            paramsWithHeader.stream()
-                    .filter(param -> param.paramType().accept(ParameterTypeVisitor.IS_HEADER))
-                    .forEach(param -> {
-                        poetWriter.writeIndentedLine(
-                                "'%s': %s,",
-                                param.paramType()
-                                        .accept(ParameterTypeVisitor.HEADER)
-                                        .getParamId()
-                                        .get(),
-                                param.pythonParamName());
-                    });
             poetWriter.decreaseIndent();
             poetWriter.writeIndentedLine("}");
+
+            // optional header params
+            poetWriter.writeLine();
+            poetWriter.writeIndentedLine("_header_params: Dict[str, Any] = {");
+            poetWriter.increaseIndent();
+            paramsWithHeader.stream()
+                    .filter(param -> param.paramType().accept(ParameterTypeVisitor.IS_HEADER))
+                    .forEach(param -> poetWriter.writeIndentedLine(
+                            "'%s': %s,",
+                            param.paramType()
+                                    .accept(ParameterTypeVisitor.HEADER)
+                                    .getParamId()
+                                    .get(),
+                            param.pythonParamName()));
+            poetWriter.decreaseIndent();
+            poetWriter.writeIndentedLine("}");
+            poetWriter.writeLine();
+            poetWriter.writeIndentedLine("_headers.update((k, v) for k, v in _header_params.items() if v is not None)");
 
             // params
             poetWriter.writeLine();
@@ -280,16 +284,46 @@ public interface PythonEndpointDefinition extends Emittable {
     final class PythonEndpointParamComparator implements Comparator<PythonEndpointParam> {
         @Override
         public int compare(PythonEndpointParam o1, PythonEndpointParam o2) {
+            if (o1.isOptional() || o2.isOptional()) {
+                return compareOptional(o1, o2);
+            }
+            if (o1.isCollection() || o2.isCollection()) {
+                return compareCollection(o1, o2);
+            }
+            if (o1.paramType().accept(ParameterTypeVisitor.IS_HEADER)
+                    || o2.paramType().accept(ParameterTypeVisitor.IS_HEADER)) {
+                return compareHeader(o1, o2);
+            }
+            return o1.pythonParamName().compareTo(o2.pythonParamName());
+        }
+
+        private int compareOptional(PythonEndpointParam o1, PythonEndpointParam o2) {
             if (o1.isOptional() && !o2.isOptional()) {
                 return 1;
             }
             if (!o1.isOptional() && o2.isOptional()) {
                 return -1;
             }
+            return o1.pythonParamName().compareTo(o2.pythonParamName());
+        }
+
+        private int compareCollection(PythonEndpointParam o1, PythonEndpointParam o2) {
             if (o1.isCollection() && !o2.isCollection()) {
                 return 1;
             }
             if (!o1.isCollection() && o2.isCollection()) {
+                return -1;
+            }
+            return o1.pythonParamName().compareTo(o2.pythonParamName());
+        }
+
+        private int compareHeader(PythonEndpointParam o1, PythonEndpointParam o2) {
+            if (o1.paramType().accept(ParameterTypeVisitor.IS_HEADER)
+                    && !o2.paramType().accept(ParameterTypeVisitor.IS_HEADER)) {
+                return 1;
+            }
+            if (!o1.paramType().accept(ParameterTypeVisitor.IS_HEADER)
+                    && o2.paramType().accept(ParameterTypeVisitor.IS_HEADER)) {
                 return -1;
             }
             return o1.pythonParamName().compareTo(o2.pythonParamName());
