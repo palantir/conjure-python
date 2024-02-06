@@ -1,0 +1,5 @@
+type: fix
+fix:
+  description: Pin pylint to the last functioning release to unblock contributions
+  links:
+  - https://github.com/palantir/conjure-python/pull/778
