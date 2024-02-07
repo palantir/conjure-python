@@ -134,6 +134,11 @@ types:
           new: integer
           interface: integer
           property: integer
+      SimpleTypeWithWeirdDocExample:
+        docs: \"Weird \"\"\" quotes \"everywhere\"also \"\"at the end\"
+        fields:
+          field:
+            type: string
       EmptyObjectExample:
         fields: {}
       AliasAsMapKeyExample:

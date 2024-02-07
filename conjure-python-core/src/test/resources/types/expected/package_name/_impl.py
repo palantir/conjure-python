@@ -831,6 +831,29 @@ product_DoubleExample.__qualname__ = "DoubleExample"
 product_DoubleExample.__module__ = "package_name.product"
 
 
+class product_SimpleTypeWithWeirdDocExample(ConjureBeanType):
+    """""Weird ''' quotes "everywhere"also ""at the end"
+    """
+    @builtins.classmethod
+    def _fields(cls) -> Dict[str, ConjureFieldDefinition]:
+        return {
+            'field': ConjureFieldDefinition('field', str)
+        }
+
+    __slots__: List[str] = ['_field']
+
+    def __init__(self, field: str) -> None:
+        self._field = field
+
+    @builtins.property
+    def field(self) -> str:
+        return self._field
+
+product_SimpleTypeWithWeirdDocExample.__name__ = "SimpleTypeWithWeirdDocExample"
+product_SimpleTypeWithWeirdDocExample.__qualname__ = "SimpleTypeWithWeirdDocExample"
+product_SimpleTypeWithWeirdDocExample.__module__ = "package_name.product"
+
+
 class product_EmptyObjectExample(ConjureBeanType):
 
     @builtins.classmethod
