@@ -53,14 +53,12 @@ Example service interface: [TestService](https://github.com/palantir/conjure-pyt
 
 ```python
 class TestService(Service):
-    """
-    A Markdown description of the service. "Might end with quotes"
+    """A Markdown description of the service. "Might end with quotes"
     """
 
     def get_file_systems(self, auth_header):
         # type: (str) -> Dict[str, BackingFileSystem]
-        """
-        Returns a mapping from file system id to backing file system configuration.
+        """Returns a mapping from file system id to backing file system configuration.
         """
 
         _headers = {

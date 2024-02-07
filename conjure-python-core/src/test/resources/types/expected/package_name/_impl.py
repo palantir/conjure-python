@@ -26,13 +26,11 @@ from typing import (
 )
 
 class another_TestService(Service):
-    """
-    A Markdown description of the service. "Might end with quotes"
+    """A Markdown description of the service. "Might end with quotes"
     """
 
     def get_file_systems(self, auth_header: str) -> Dict[str, "product_datasets_BackingFileSystem"]:
-        """
-        Returns a mapping from file system id to backing file system configuration.
+        """Returns a mapping from file system id to backing file system configuration.
         """
 
         _headers: Dict[str, Any] = {
@@ -240,8 +238,7 @@ class another_TestService(Service):
         return _decoder.decode(_response.json(), List[str], self._return_none_for_unknown_union_types)
 
     def get_branches_deprecated(self, auth_header: str, dataset_rid: str) -> List[str]:
-        """
-        Gets all branches of this dataset.
+        """Gets all branches of this dataset.
         """
 
         _headers: Dict[str, Any] = {
@@ -851,8 +848,7 @@ product_EmptyObjectExample.__module__ = "package_name.product"
 
 
 class product_EnumExample(ConjureEnumType):
-    """
-    This enumerates the numbers 1:2.
+    """This enumerates the numbers 1:2.
     """
 
     ONE = 'ONE'
@@ -1004,57 +1000,49 @@ class product_ManyFieldExample(ConjureBeanType):
 
     @builtins.property
     def string(self) -> str:
-        """
-        docs for string field
+        """docs for string field
         """
         return self._string
 
     @builtins.property
     def integer(self) -> int:
-        """
-        docs for integer field
+        """docs for integer field
         """
         return self._integer
 
     @builtins.property
     def double_value(self) -> float:
-        """
-        docs for doubleValue field
+        """docs for doubleValue field
         """
         return self._double_value
 
     @builtins.property
     def optional_item(self) -> Optional[str]:
-        """
-        docs for optionalItem field
+        """docs for optionalItem field
         """
         return self._optional_item
 
     @builtins.property
     def items(self) -> List[str]:
-        """
-        docs for items field
+        """docs for items field
         """
         return self._items
 
     @builtins.property
     def set(self) -> List[str]:
-        """
-        docs for set field
+        """docs for set field
         """
         return self._set
 
     @builtins.property
     def map(self) -> Dict[str, str]:
-        """
-        docs for map field
+        """docs for map field
         """
         return self._map
 
     @builtins.property
     def alias(self) -> str:
-        """
-        docs for alias field
+        """docs for alias field
         """
         return self._alias
 
@@ -1388,8 +1376,7 @@ product_StringExample.__module__ = "package_name.product"
 
 
 class product_UnionTypeExample(ConjureUnionType):
-    """
-    A type which can either be a StringExample, a set of strings, or an integer.
+    """A type which can either be a StringExample, a set of strings, or an integer.
     """
     _string_example: Optional["product_StringExample"] = None
     _set: Optional[List[str]] = None
@@ -1497,8 +1484,7 @@ class product_UnionTypeExample(ConjureUnionType):
 
     @builtins.property
     def string_example(self) -> Optional["product_StringExample"]:
-        """
-        Docs for when UnionTypeExample is of type StringExample.
+        """Docs for when UnionTypeExample is of type StringExample.
         """
         return self._string_example
 
@@ -1715,8 +1701,7 @@ class product_datasets_BackingFileSystem(ConjureBeanType):
 
     @builtins.property
     def file_system_id(self) -> str:
-        """
-        The name by which this file system is identified.
+        """The name by which this file system is identified.
         """
         return self._file_system_id
 
@@ -1755,8 +1740,7 @@ class product_datasets_Dataset(ConjureBeanType):
 
     @builtins.property
     def rid(self) -> str:
-        """
-        Uniquely identifies this dataset.
+        """Uniquely identifies this dataset.
         """
         return self._rid
 
