@@ -64,11 +64,7 @@ public interface PythonService extends PythonSnippet {
         poetWriter.maintainingIndent(() -> {
             poetWriter.writeIndentedLine(String.format("class %s(Service):", className()));
             poetWriter.increaseIndent();
-            docs().ifPresent(docs -> {
-                poetWriter.writeIndentedLine("\"\"\"");
-                poetWriter.writeIndentedLine(docs.get().trim());
-                poetWriter.writeIndentedLine("\"\"\"");
-            });
+            docs().ifPresent(poetWriter::writeDocs);
 
             endpointDefinitions().forEach(endpointDefinition -> {
                 poetWriter.writeLine();

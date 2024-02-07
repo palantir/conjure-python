@@ -1388,7 +1388,9 @@ product_StringExample.__module__ = "package_name.product"
 
 
 class product_UnionTypeExample(ConjureUnionType):
-    """A type which can either be a StringExample, a set of strings, or an integer."""
+    """
+    A type which can either be a StringExample, a set of strings, or an integer.
+    """
     _string_example: Optional["product_StringExample"] = None
     _set: Optional[List[str]] = None
     _this_field_is_an_integer: Optional[int] = None
