@@ -98,9 +98,12 @@ public final class PythonPoetWriter {
         return this;
     }
 
+    /**
+     * Write docs in pythonic style, with triple quotes leading the docstring and newline preceding the closing triple.
+     * Replaces all inner occurence of triple quotes with a triple single quote to avoid closing the docstring early.
+     */
     public PythonPoetWriter writeDocs(Documentation docs) {
-        writeIndentedLine("\"\"\"");
-        writeIndentedLine(docs.get().trim());
+        writeIndentedLine("\"\"\"" + docs.get().replace("\"\"\"", "'''").trim());
         writeIndentedLine("\"\"\"");
         return this;
     }

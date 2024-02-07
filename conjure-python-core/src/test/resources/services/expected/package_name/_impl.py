@@ -21,13 +21,11 @@ from typing import (
 )
 
 class another_TestService(Service):
-    """
-    A Markdown description of the service. "Might end with quotes"
+    """A Markdown description of the service. "Might end with quotes"
     """
 
     def get_file_systems(self, auth_header: str) -> Dict[str, "product_datasets_BackingFileSystem"]:
-        """
-        Returns a mapping from file system id to backing file system configuration.
+        """Returns a mapping from file system id to backing file system configuration.
         """
 
         _headers: Dict[str, Any] = {
@@ -235,8 +233,7 @@ class another_TestService(Service):
         return _decoder.decode(_response.json(), List[str], self._return_none_for_unknown_union_types)
 
     def get_branches_deprecated(self, auth_header: str, dataset_rid: str) -> List[str]:
-        """
-        Gets all branches of this dataset.
+        """Gets all branches of this dataset.
         """
 
         _headers: Dict[str, Any] = {
@@ -497,8 +494,7 @@ class product_datasets_BackingFileSystem(ConjureBeanType):
 
     @builtins.property
     def file_system_id(self) -> str:
-        """
-        The name by which this file system is identified.
+        """The name by which this file system is identified.
         """
         return self._file_system_id
 
@@ -537,8 +533,7 @@ class product_datasets_Dataset(ConjureBeanType):
 
     @builtins.property
     def rid(self) -> str:
-        """
-        Uniquely identifies this dataset.
+        """Uniquely identifies this dataset.
         """
         return self._rid
 
