@@ -39,6 +39,7 @@ from .._impl import (
     product_SafeLongAliasExample as SafeLongAliasExample,
     product_SafeLongExample as SafeLongExample,
     product_SetExample as SetExample,
+    product_SimpleTypeWithWeirdDocExample as SimpleTypeWithWeirdDocExample,
     product_StringAliasExample as StringAliasExample,
     product_StringExample as StringExample,
     product_UnionTypeExample as UnionTypeExample,
