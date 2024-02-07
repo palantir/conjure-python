@@ -850,6 +850,7 @@ class product_SimpleTypeWithWeirdDocExample(ConjureBeanType):
     def field(self) -> str:
         return self._field
 
+
 product_SimpleTypeWithWeirdDocExample.__name__ = "SimpleTypeWithWeirdDocExample"
 product_SimpleTypeWithWeirdDocExample.__qualname__ = "SimpleTypeWithWeirdDocExample"
 product_SimpleTypeWithWeirdDocExample.__module__ = "package_name.product"
