@@ -135,7 +135,7 @@ types:
           interface: integer
           property: integer
       SimpleTypeWithWeirdDocExample:
-        docs: "Weird """ quotes "everywhere"also ""at the end"
+        docs: Weird """ quotes "everywhere"also ""at the end"
         fields:
           field:
             type: string
