@@ -19,6 +19,7 @@ package com.palantir.conjure.python.poet;
 import static com.google.common.base.Preconditions.checkState;
 
 import com.google.errorprone.annotations.FormatMethod;
+import com.palantir.conjure.spec.Documentation;
 import java.io.PrintStream;
 
 public final class PythonPoetWriter {
@@ -94,6 +95,13 @@ public final class PythonPoetWriter {
 
     public PythonPoetWriter emit(Emittable emittable) {
         emittable.emit(this);
+        return this;
+    }
+
+    public PythonPoetWriter writeDocs(Documentation docs) {
+        writeIndentedLine("\"\"\"");
+        writeIndentedLine(docs.get().trim());
+        writeIndentedLine("\"\"\"");
         return this;
     }
 }

@@ -109,11 +109,7 @@ public interface PythonEndpointDefinition extends Emittable {
                                     .map(PythonEndpointParam::myPyType)
                                     .collect(Collectors.toList())),
                     myPyReturnType().orElse("None"));
-            docs().ifPresent(docs -> {
-                poetWriter.writeIndentedLine("\"\"\"");
-                poetWriter.writeIndentedLine(docs.get().trim());
-                poetWriter.writeIndentedLine("\"\"\"");
-            });
+            docs().ifPresent(poetWriter::writeDocs);
 
             // replace "None" with "[]"
             for (PythonEndpointParam param : paramsWithHeader) {
