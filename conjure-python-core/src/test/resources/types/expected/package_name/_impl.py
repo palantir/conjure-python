@@ -834,6 +834,7 @@ product_DoubleExample.__module__ = "package_name.product"
 class product_SimpleTypeWithWeirdDocExample(ConjureBeanType):
     """Weird ''' quotes "everywhere"also ""at the end"
     """
+
     @builtins.classmethod
     def _fields(cls) -> Dict[str, ConjureFieldDefinition]:
         return {
