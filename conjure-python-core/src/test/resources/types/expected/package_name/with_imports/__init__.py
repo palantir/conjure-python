@@ -10,3 +10,14 @@ from .._impl import (
     with_imports_UnionWithImportsVisitor as UnionWithImportsVisitor,
 )
 
+__all__ = [
+    'AliasImportedObject',
+    'AliasImportedPrimitiveAlias',
+    'AliasImportedReferenceAlias',
+    'ComplexObjectWithImports',
+    'ImportedAliasInMaps',
+    'UnionWithImports',
+    'UnionWithImportsVisitor',
+    'ImportService',
+]
+

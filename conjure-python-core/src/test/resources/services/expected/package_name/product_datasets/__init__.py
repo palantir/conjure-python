@@ -4,3 +4,8 @@ from .._impl import (
     product_datasets_Dataset as Dataset,
 )
 
+__all__ = [
+    'BackingFileSystem',
+    'Dataset',
+]
+

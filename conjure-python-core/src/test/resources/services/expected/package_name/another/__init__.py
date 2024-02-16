@@ -3,3 +3,7 @@ from .._impl import (
     another_TestService as TestService,
 )
 
+__all__ = [
+    'TestService',
+]
+

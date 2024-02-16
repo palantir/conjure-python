@@ -22,22 +22,8 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import com.palantir.common.streams.KeyedStream;
 import com.palantir.conjure.python.client.ClientGenerator;
-import com.palantir.conjure.python.poet.AllSnippet;
-import com.palantir.conjure.python.poet.EmptySnippet;
-import com.palantir.conjure.python.poet.NamedImport;
-import com.palantir.conjure.python.poet.PythonFile;
-import com.palantir.conjure.python.poet.PythonImport;
-import com.palantir.conjure.python.poet.PythonLine;
-import com.palantir.conjure.python.poet.PythonMetaYaml;
-import com.palantir.conjure.python.poet.PythonPackage;
-import com.palantir.conjure.python.poet.PythonSetup;
-import com.palantir.conjure.python.poet.PythonSnippet;
-import com.palantir.conjure.python.processors.packagename.CompoundPackageNameProcessor;
-import com.palantir.conjure.python.processors.packagename.ConstantPackageNameProcessor;
-import com.palantir.conjure.python.processors.packagename.FlatteningPackageNameProcessor;
-import com.palantir.conjure.python.processors.packagename.PackageNameProcessor;
-import com.palantir.conjure.python.processors.packagename.PrefixingPackageNameProcessor;
-import com.palantir.conjure.python.processors.packagename.TwoComponentStrippingPackageNameProcessor;
+import com.palantir.conjure.python.poet.*;
+import com.palantir.conjure.python.processors.packagename.*;
 import com.palantir.conjure.python.processors.typename.NameOnlyTypeNameProcessor;
 import com.palantir.conjure.python.processors.typename.PackagePrependingTypeNameProcessor;
 import com.palantir.conjure.python.processors.typename.TypeNameProcessor;
@@ -47,6 +33,7 @@ import com.palantir.conjure.spec.ConjureDefinition;
 import com.palantir.conjure.spec.TypeName;
 import com.palantir.conjure.visitor.DealiasingTypeVisitor;
 import com.palantir.conjure.visitor.TypeDefinitionVisitor;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -204,6 +191,23 @@ public final class ConjurePythonGenerator {
                                         implTypeNameProcessor.process(serviceDefinition.getServiceName()),
                                         definitionTypeNameProcessor.process(serviceDefinition.getServiceName()))))
                         .build())
+                .collect(Collectors.toList()));
+
+        Map<PythonPackage, List<String>> importsByPackage = KeyedStream.stream(
+                        snippets.stream().collect(Collectors.groupingBy(PythonSnippet::pythonPackage)))
+                .map(pythonSnippets -> pythonSnippets.stream()
+                        .flatMap(snippet -> snippet.imports().stream())
+                        .flatMap(pythonImport -> pythonImport.namedImports().stream())
+                        .map(namedImport -> namedImport.alias().orElseGet(namedImport::name))
+                        .collect(Collectors.toList()))
+                .collectToMap();
+
+        snippets.addAll(KeyedStream.stream(importsByPackage)
+                .map((pythonPackage, imports) -> AllSnippet.builder()
+                        .pythonPackage(pythonPackage)
+                        .contents(imports)
+                        .build())
+                .values()
                 .collect(Collectors.toList()));
 
         Map<PythonPackage, List<PythonSnippet>> snippetsByPackage =
