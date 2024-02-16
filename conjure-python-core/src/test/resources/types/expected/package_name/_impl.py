@@ -24,6 +24,9 @@ from typing import (
     Optional,
     Set,
 )
+from urllib.parse import (
+    quote,
+)
 
 class another_TestService(Service):
     """A Markdown description of the service. "Might end with quotes"
@@ -41,7 +44,7 @@ class another_TestService(Service):
         _params: Dict[str, Any] = {
         }
 
-        _path_params: Dict[str, Any] = {
+        _path_params: Dict[str, str] = {
         }
 
         _json: Any = None
@@ -71,7 +74,7 @@ class another_TestService(Service):
         _params: Dict[str, Any] = {
         }
 
-        _path_params: Dict[str, Any] = {
+        _path_params: Dict[str, str] = {
         }
 
         _json: Any = ConjureEncoder().default(request)
@@ -99,8 +102,8 @@ class another_TestService(Service):
         _params: Dict[str, Any] = {
         }
 
-        _path_params: Dict[str, Any] = {
-            'datasetRid': dataset_rid,
+        _path_params: Dict[str, str] = {
+            'datasetRid': quote(str(dataset_rid), safe=''),
         }
 
         _json: Any = None
@@ -128,8 +131,8 @@ class another_TestService(Service):
         _params: Dict[str, Any] = {
         }
 
-        _path_params: Dict[str, Any] = {
-            'datasetRid': dataset_rid,
+        _path_params: Dict[str, str] = {
+            'datasetRid': quote(str(dataset_rid), safe=''),
         }
 
         _json: Any = None
@@ -159,8 +162,8 @@ class another_TestService(Service):
         _params: Dict[str, Any] = {
         }
 
-        _path_params: Dict[str, Any] = {
-            'datasetRid': dataset_rid,
+        _path_params: Dict[str, str] = {
+            'datasetRid': quote(str(dataset_rid), safe=''),
         }
 
         _json: Any = None
@@ -189,7 +192,7 @@ class another_TestService(Service):
         _params: Dict[str, Any] = {
         }
 
-        _path_params: Dict[str, Any] = {
+        _path_params: Dict[str, str] = {
         }
 
         _data: Any = input
@@ -218,8 +221,8 @@ class another_TestService(Service):
             'pageSize': page_size,
         }
 
-        _path_params: Dict[str, Any] = {
-            'datasetRid': dataset_rid,
+        _path_params: Dict[str, str] = {
+            'datasetRid': quote(str(dataset_rid), safe=''),
         }
 
         _json: Any = None
@@ -249,8 +252,8 @@ class another_TestService(Service):
         _params: Dict[str, Any] = {
         }
 
-        _path_params: Dict[str, Any] = {
-            'datasetRid': dataset_rid,
+        _path_params: Dict[str, str] = {
+            'datasetRid': quote(str(dataset_rid), safe=''),
         }
 
         _json: Any = None
@@ -278,9 +281,9 @@ class another_TestService(Service):
         _params: Dict[str, Any] = {
         }
 
-        _path_params: Dict[str, Any] = {
-            'datasetRid': dataset_rid,
-            'branch': branch,
+        _path_params: Dict[str, str] = {
+            'datasetRid': quote(str(dataset_rid), safe=''),
+            'branch': quote(str(branch), safe=''),
         }
 
         _json: Any = None
@@ -308,8 +311,8 @@ class another_TestService(Service):
         _params: Dict[str, Any] = {
         }
 
-        _path_params: Dict[str, Any] = {
-            'datasetRid': dataset_rid,
+        _path_params: Dict[str, str] = {
+            'datasetRid': quote(str(dataset_rid), safe=''),
         }
 
         _json: Any = None
@@ -343,7 +346,7 @@ class another_TestService(Service):
             'set': set,
         }
 
-        _path_params: Dict[str, Any] = {
+        _path_params: Dict[str, str] = {
         }
 
         _json: Any = None
@@ -371,7 +374,7 @@ class another_TestService(Service):
         _params: Dict[str, Any] = {
         }
 
-        _path_params: Dict[str, Any] = {
+        _path_params: Dict[str, str] = {
         }
 
         _json: Any = None
@@ -399,7 +402,7 @@ class another_TestService(Service):
         _params: Dict[str, Any] = {
         }
 
-        _path_params: Dict[str, Any] = {
+        _path_params: Dict[str, str] = {
         }
 
         _json: Any = None
@@ -427,7 +430,7 @@ class another_TestService(Service):
         _params: Dict[str, Any] = {
         }
 
-        _path_params: Dict[str, Any] = {
+        _path_params: Dict[str, str] = {
         }
 
         _json: Any = None
@@ -463,7 +466,7 @@ class nested_deeply_nested_service_DeeplyNestedService(Service):
         _params: Dict[str, Any] = {
         }
 
-        _path_params: Dict[str, Any] = {
+        _path_params: Dict[str, str] = {
         }
 
         _json: Any = ConjureEncoder().default(string)
@@ -499,7 +502,7 @@ class nested_service2_SimpleNestedService2(Service):
         _params: Dict[str, Any] = {
         }
 
-        _path_params: Dict[str, Any] = {
+        _path_params: Dict[str, str] = {
         }
 
         _json: Any = ConjureEncoder().default(string)
@@ -535,7 +538,7 @@ class nested_service_SimpleNestedService(Service):
         _params: Dict[str, Any] = {
         }
 
-        _path_params: Dict[str, Any] = {
+        _path_params: Dict[str, str] = {
         }
 
         _json: Any = ConjureEncoder().default(string)
@@ -1816,7 +1819,7 @@ class with_imports_ImportService(Service):
         _params: Dict[str, Any] = {
         }
 
-        _path_params: Dict[str, Any] = {
+        _path_params: Dict[str, str] = {
         }
 
         _json: Any = ConjureEncoder().default(imported_string)
