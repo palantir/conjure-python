@@ -4,3 +4,8 @@ from .._impl import (
     nested_service_SimpleObject as SimpleObject,
 )
 
+__all__ = [
+    'SimpleObject',
+    'SimpleNestedService',
+]
+

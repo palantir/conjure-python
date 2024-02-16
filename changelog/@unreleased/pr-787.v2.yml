@@ -1,0 +1,5 @@
+type: fix
+fix:
+  description: Make exports compliant with static checkers
+  links:
+  - https://github.com/palantir/conjure-python/pull/787
