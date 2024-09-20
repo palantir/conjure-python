@@ -69,3 +69,6 @@ coverage.xml
 *,cover
 .hypothesis/
 pytest.xml
+
+# Gradle JDKs setup
+!gradle/*
