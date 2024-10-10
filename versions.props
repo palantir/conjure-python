@@ -14,4 +14,4 @@ org.assertj:* = 3.26.3
 org.immutables:value = 2.10.1
 org.mockito:mockito-core = 5.14.1
 org.slf4j:* = 1.7.36
-
+javax.ws.rs:javax.ws.rs-api = 2.1.1
