@@ -135,6 +135,13 @@ jobs:
           at: '.'
       - deploy:
           command: ./gradlew --stacktrace --continue publish
+  circle-all:
+    docker:
+    - image: busybox:1.34.1
+    resource_class: small
+    steps:
+    - run:
+        command: echo "All required jobs finished successfully"
 
 workflows:
   version: 2
@@ -158,6 +165,14 @@ workflows:
           filters:
             branches:
               ignore: /.*/
+            tags:
+              only: /.*/
+      - circle-all:
+          requires:
+          - build
+          - mypy3
+          - py3
+          filters:
             tags:
               only: /.*/
 
