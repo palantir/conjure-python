@@ -327,7 +327,7 @@ class another_TestService(Service):
         _decoder = ConjureDecoder()
         return None if _response.status_code == 204 else _decoder.decode(_response.json(), OptionalTypeWrapper[str], self._return_none_for_unknown_union_types)
 
-    def test_query_params(self, auth_header: str, implicit: str, something: str, list: List[int] = None, set: List[int] = None) -> int:
+    def test_query_params(self, auth_header: str, implicit: str, nonlocal_: int, something: str, list: List[int] = None, set: List[int] = None) -> int:
         list = list if list is not None else []
         set = set if set is not None else []
 
@@ -341,6 +341,7 @@ class another_TestService(Service):
             'implicit': implicit,
             'list': list,
             'set': set,
+            'nonlocal': nonlocal_,
         }
 
         _path_params: Dict[str, Any] = {
@@ -1165,12 +1166,13 @@ class product_PrimitiveOptionalsExample(ConjureBeanType):
             'safelong': ConjureFieldDefinition('safelong', OptionalTypeWrapper[int]),
             'rid': ConjureFieldDefinition('rid', OptionalTypeWrapper[str]),
             'bearertoken': ConjureFieldDefinition('bearertoken', OptionalTypeWrapper[str]),
-            'uuid': ConjureFieldDefinition('uuid', OptionalTypeWrapper[str])
+            'uuid': ConjureFieldDefinition('uuid', OptionalTypeWrapper[str]),
+            'async_': ConjureFieldDefinition('async', OptionalTypeWrapper[str])
         }
 
-    __slots__: List[str] = ['_num', '_bool_', '_integer', '_safelong', '_rid', '_bearertoken', '_uuid']
+    __slots__: List[str] = ['_num', '_bool_', '_integer', '_safelong', '_rid', '_bearertoken', '_uuid', '_async_']
 
-    def __init__(self, bearertoken: Optional[str] = None, bool_: Optional[bool] = None, integer: Optional[int] = None, num: Optional[float] = None, rid: Optional[str] = None, safelong: Optional[int] = None, uuid: Optional[str] = None) -> None:
+    def __init__(self, async_: Optional[str] = None, bearertoken: Optional[str] = None, bool_: Optional[bool] = None, integer: Optional[int] = None, num: Optional[float] = None, rid: Optional[str] = None, safelong: Optional[int] = None, uuid: Optional[str] = None) -> None:
         self._num = num
         self._bool_ = bool_
         self._integer = integer
@@ -1178,6 +1180,7 @@ class product_PrimitiveOptionalsExample(ConjureBeanType):
         self._rid = rid
         self._bearertoken = bearertoken
         self._uuid = uuid
+        self._async_ = async_
 
     @builtins.property
     def num(self) -> Optional[float]:
@@ -1206,6 +1209,10 @@ class product_PrimitiveOptionalsExample(ConjureBeanType):
     @builtins.property
     def uuid(self) -> Optional[str]:
         return self._uuid
+
+    @builtins.property
+    def async_(self) -> Optional[str]:
+        return self._async_
 
 
 product_PrimitiveOptionalsExample.__name__ = "PrimitiveOptionalsExample"

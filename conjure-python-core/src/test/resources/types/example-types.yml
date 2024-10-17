@@ -95,6 +95,7 @@ types:
           rid: optional<rid>
           bearertoken: optional<bearertoken>
           uuid: optional<uuid>
+          async: optional<string>
       ManyFieldExample:
         fields:
           string:

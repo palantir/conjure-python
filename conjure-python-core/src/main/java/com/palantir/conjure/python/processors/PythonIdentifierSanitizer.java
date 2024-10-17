@@ -22,10 +22,14 @@ import java.util.Set;
 
 public final class PythonIdentifierSanitizer {
 
+    // Includes python keywords https://docs.python.org/3/reference/lexical_analysis.html#keywords
+    // except those that are capitalized as these are not valid conjure fields/args.
     private static final ImmutableSet<String> pythonKeywords = ImmutableSet.of(
             "and",
             "as",
             "assert",
+            "async",
+            "await",
             "bool",
             "break",
             "class",
@@ -46,6 +50,7 @@ public final class PythonIdentifierSanitizer {
             "int",
             "is",
             "lambda",
+            "nonlocal",
             "not",
             "or",
             "pass",

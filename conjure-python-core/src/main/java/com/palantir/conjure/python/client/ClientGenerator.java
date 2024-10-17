@@ -24,6 +24,7 @@ import com.palantir.conjure.python.poet.PythonImport;
 import com.palantir.conjure.python.poet.PythonPackage;
 import com.palantir.conjure.python.poet.PythonService;
 import com.palantir.conjure.python.poet.PythonSnippet;
+import com.palantir.conjure.python.processors.PythonIdentifierSanitizer;
 import com.palantir.conjure.python.processors.packagename.PackageNameProcessor;
 import com.palantir.conjure.python.processors.typename.TypeNameProcessor;
 import com.palantir.conjure.python.types.ImportTypeVisitor;
@@ -99,8 +100,8 @@ public final class ClientGenerator {
         List<PythonEndpointParam> params = endpointDef.getArgs().stream()
                 .map(argEntry -> PythonEndpointParam.builder()
                         .paramName(argEntry.getArgName().get())
-                        .pythonParamName(
-                                CaseConverter.toCase(argEntry.getArgName().get(), CaseConverter.Case.SNAKE_CASE))
+                        .pythonParamName(PythonIdentifierSanitizer.sanitize(
+                                CaseConverter.toCase(argEntry.getArgName().get(), CaseConverter.Case.SNAKE_CASE)))
                         .paramType(argEntry.getParamType())
                         .myPyType(argEntry.getType().accept(myPyTypeNameVisitor))
                         .isOptional(dealiasingTypeVisitor
