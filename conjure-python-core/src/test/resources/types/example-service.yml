@@ -184,6 +184,9 @@ services:
           set:
             type: set<integer>
             param-type: query
+          nonlocal:
+            type: integer
+            param-type: query
         returns: integer
 
       testBoolean:
