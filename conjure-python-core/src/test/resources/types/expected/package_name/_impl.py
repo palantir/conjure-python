@@ -327,9 +327,9 @@ class another_TestService(Service):
         _decoder = ConjureDecoder()
         return None if _response.status_code == 204 else _decoder.decode(_response.json(), OptionalTypeWrapper[str], self._return_none_for_unknown_union_types)
 
-    def test_query_params(self, auth_header: str, implicit: str, something: str, list_: List[int] = None, set_: List[int] = None) -> int:
-        list_ = list_ if list_ is not None else []
-        set_ = set_ if set_ is not None else []
+    def test_query_params(self, auth_header: str, implicit: str, something: str, list: List[int] = None, set: List[int] = None) -> int:
+        list = list if list is not None else []
+        set = set if set is not None else []
 
         _headers: Dict[str, Any] = {
             'Accept': 'application/json',
@@ -339,8 +339,8 @@ class another_TestService(Service):
         _params: Dict[str, Any] = {
             'different': something,
             'implicit': implicit,
-            'list': list_,
-            'set': set_,
+            'list': list,
+            'set': set,
         }
 
         _path_params: Dict[str, Any] = {
@@ -981,20 +981,20 @@ class product_ManyFieldExample(ConjureBeanType):
             'double_value': ConjureFieldDefinition('doubleValue', float),
             'optional_item': ConjureFieldDefinition('optionalItem', OptionalTypeWrapper[str]),
             'items': ConjureFieldDefinition('items', List[str]),
-            'set_': ConjureFieldDefinition('set', List[str]),
+            'set': ConjureFieldDefinition('set', List[str]),
             'map': ConjureFieldDefinition('map', Dict[str, str]),
             'alias': ConjureFieldDefinition('alias', product_StringAliasExample)
         }
 
-    __slots__: List[str] = ['_string', '_integer', '_double_value', '_optional_item', '_items', '_set_', '_map', '_alias']
+    __slots__: List[str] = ['_string', '_integer', '_double_value', '_optional_item', '_items', '_set', '_map', '_alias']
 
-    def __init__(self, alias: str, double_value: float, integer: int, items: List[str], map: Dict[str, str], set_: List[str], string: str, optional_item: Optional[str] = None) -> None:
+    def __init__(self, alias: str, double_value: float, integer: int, items: List[str], map: Dict[str, str], set: List[str], string: str, optional_item: Optional[str] = None) -> None:
         self._string = string
         self._integer = integer
         self._double_value = double_value
         self._optional_item = optional_item
         self._items = items
-        self._set_ = set_
+        self._set = set
         self._map = map
         self._alias = alias
 
@@ -1029,10 +1029,10 @@ class product_ManyFieldExample(ConjureBeanType):
         return self._items
 
     @builtins.property
-    def set_(self) -> List[str]:
+    def set(self) -> List[str]:
         """docs for set field
         """
-        return self._set_
+        return self._set
 
     @builtins.property
     def map(self) -> Dict[str, str]:
@@ -1410,7 +1410,7 @@ class product_UnionTypeExample(ConjureUnionType):
     """A type which can either be a StringExample, a set of strings, or an integer.
     """
     _string_example: Optional["product_StringExample"] = None
-    _set_: Optional[List[str]] = None
+    _set: Optional[List[str]] = None
     _this_field_is_an_integer: Optional[int] = None
     _also_an_integer: Optional[int] = None
     _if_: Optional[int] = None
@@ -1422,7 +1422,7 @@ class product_UnionTypeExample(ConjureUnionType):
     def _options(cls) -> Dict[str, ConjureFieldDefinition]:
         return {
             'string_example': ConjureFieldDefinition('stringExample', product_StringExample),
-            'set_': ConjureFieldDefinition('set', List[str]),
+            'set': ConjureFieldDefinition('set', List[str]),
             'this_field_is_an_integer': ConjureFieldDefinition('thisFieldIsAnInteger', int),
             'also_an_integer': ConjureFieldDefinition('alsoAnInteger', int),
             'if_': ConjureFieldDefinition('if', int),
@@ -1434,7 +1434,7 @@ class product_UnionTypeExample(ConjureUnionType):
     def __init__(
             self,
             string_example: Optional["product_StringExample"] = None,
-            set_: Optional[List[str]] = None,
+            set: Optional[List[str]] = None,
             this_field_is_an_integer: Optional[int] = None,
             also_an_integer: Optional[int] = None,
             if_: Optional[int] = None,
@@ -1444,14 +1444,14 @@ class product_UnionTypeExample(ConjureUnionType):
             type_of_union: Optional[str] = None
             ) -> None:
         if type_of_union is None:
-            if (string_example is not None) + (set_ is not None) + (this_field_is_an_integer is not None) + (also_an_integer is not None) + (if_ is not None) + (new is not None) + (interface is not None) + (property is not None) != 1:
+            if (string_example is not None) + (set is not None) + (this_field_is_an_integer is not None) + (also_an_integer is not None) + (if_ is not None) + (new is not None) + (interface is not None) + (property is not None) != 1:
                 raise ValueError('a union must contain a single member')
 
             if string_example is not None:
                 self._string_example = string_example
                 self._type = 'stringExample'
-            if set_ is not None:
-                self._set_ = set_
+            if set is not None:
+                self._set = set
                 self._type = 'set'
             if this_field_is_an_integer is not None:
                 self._this_field_is_an_integer = this_field_is_an_integer
@@ -1478,9 +1478,9 @@ class product_UnionTypeExample(ConjureUnionType):
             self._string_example = string_example
             self._type = 'stringExample'
         elif type_of_union == 'set':
-            if set_ is None:
+            if set is None:
                 raise ValueError('a union value must not be None')
-            self._set_ = set_
+            self._set = set
             self._type = 'set'
         elif type_of_union == 'thisFieldIsAnInteger':
             if this_field_is_an_integer is None:
@@ -1520,8 +1520,8 @@ class product_UnionTypeExample(ConjureUnionType):
         return self._string_example
 
     @builtins.property
-    def set_(self) -> Optional[List[str]]:
-        return self._set_
+    def set(self) -> Optional[List[str]]:
+        return self._set
 
     @builtins.property
     def this_field_is_an_integer(self) -> Optional[int]:
@@ -1552,8 +1552,8 @@ class product_UnionTypeExample(ConjureUnionType):
             raise ValueError('{} is not an instance of product_UnionTypeExampleVisitor'.format(visitor.__class__.__name__))
         if self._type == 'stringExample' and self.string_example is not None:
             return visitor._string_example(self.string_example)
-        if self._type == 'set' and self.set_ is not None:
-            return visitor._set(self.set_)
+        if self._type == 'set' and self.set is not None:
+            return visitor._set(self.set)
         if self._type == 'thisFieldIsAnInteger' and self.this_field_is_an_integer is not None:
             return visitor._this_field_is_an_integer(self.this_field_is_an_integer)
         if self._type == 'alsoAnInteger' and self.also_an_integer is not None:
@@ -1580,7 +1580,7 @@ class product_UnionTypeExampleVisitor:
         pass
 
     @abstractmethod
-    def _set(self, set_: List[str]) -> Any:
+    def _set(self, set: List[str]) -> Any:
         pass
 
     @abstractmethod
@@ -1614,37 +1614,37 @@ product_UnionTypeExampleVisitor.__module__ = "package_name.product"
 
 
 class product_UnionWithBuiltinVariantName(ConjureUnionType):
-    _float_: Optional[float] = None
+    _float: Optional[float] = None
     _double: Optional[float] = None
 
     @builtins.classmethod
     def _options(cls) -> Dict[str, ConjureFieldDefinition]:
         return {
-            'float_': ConjureFieldDefinition('float', float),
+            'float': ConjureFieldDefinition('float', float),
             'double': ConjureFieldDefinition('double', float)
         }
 
     def __init__(
             self,
-            float_: Optional[float] = None,
+            float: Optional[float] = None,
             double: Optional[float] = None,
             type_of_union: Optional[str] = None
             ) -> None:
         if type_of_union is None:
-            if (float_ is not None) + (double is not None) != 1:
+            if (float is not None) + (double is not None) != 1:
                 raise ValueError('a union must contain a single member')
 
-            if float_ is not None:
-                self._float_ = float_
+            if float is not None:
+                self._float = float
                 self._type = 'float'
             if double is not None:
                 self._double = double
                 self._type = 'double'
 
         elif type_of_union == 'float':
-            if float_ is None:
+            if float is None:
                 raise ValueError('a union value must not be None')
-            self._float_ = float_
+            self._float = float
             self._type = 'float'
         elif type_of_union == 'double':
             if double is None:
@@ -1653,18 +1653,18 @@ class product_UnionWithBuiltinVariantName(ConjureUnionType):
             self._type = 'double'
 
     @builtins.property
-    def float_(self) -> Optional[float]:
-        return self._float_
-
-    @builtins.property
     def double(self) -> Optional[float]:
         return self._double
+
+    @builtins.property
+    def float(self) -> Optional[float]:
+        return self._float
 
     def accept(self, visitor) -> Any:
         if not isinstance(visitor, product_UnionWithBuiltinVariantNameVisitor):
             raise ValueError('{} is not an instance of product_UnionWithBuiltinVariantNameVisitor'.format(visitor.__class__.__name__))
-        if self._type == 'float' and self.float_ is not None:
-            return visitor._float(self.float_)
+        if self._type == 'float' and self.float is not None:
+            return visitor._float(self.float)
         if self._type == 'double' and self.double is not None:
             return visitor._double(self.double)
 
@@ -1677,7 +1677,7 @@ product_UnionWithBuiltinVariantName.__module__ = "package_name.product"
 class product_UnionWithBuiltinVariantNameVisitor:
 
     @abstractmethod
-    def _float(self, float_: float) -> Any:
+    def _float(self, float: float) -> Any:
         pass
 
     @abstractmethod
