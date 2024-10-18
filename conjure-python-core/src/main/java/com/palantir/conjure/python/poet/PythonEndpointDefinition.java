@@ -168,13 +168,14 @@ public interface PythonEndpointDefinition extends Emittable {
 
             // path params
             poetWriter.writeLine();
-            poetWriter.writeIndentedLine("_path_params: Dict[str, Any] = {");
+            poetWriter.writeIndentedLine("_path_params: Dict[str, str] = {");
             poetWriter.increaseIndent();
             // TODO(qchen): no need for param name twice?
             paramsWithHeader.stream()
                     .filter(param -> param.paramType().accept(ParameterTypeVisitor.IS_PATH))
                     .forEach(param -> {
-                        poetWriter.writeIndentedLine("'%s': %s,", param.paramName(), param.pythonParamName());
+                        poetWriter.writeIndentedLine(
+                                "'%s': quote(str(%s), safe=''),", param.paramName(), param.pythonParamName());
                     });
             poetWriter.decreaseIndent();
             poetWriter.writeIndentedLine("}");
