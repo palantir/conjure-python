@@ -36,7 +36,8 @@ public class ConjurePythonCliTest {
 
     @BeforeEach
     public void before() throws IOException {
-        inputFile = folder.newFile();
+        inputFile = new File(folder, "file");
+        assertThat(inputFile.createNewFile()).isTrue();
     }
 
     @Test
@@ -44,7 +45,7 @@ public class ConjurePythonCliTest {
         String[] args = {
             "generate",
             inputFile.getAbsolutePath(),
-            folder.getRoot().getAbsolutePath(),
+            folder.getAbsolutePath(),
             "--packageName",
             "package-name",
             "--packageVersion",
@@ -57,7 +58,7 @@ public class ConjurePythonCliTest {
                 .getCommand();
         CliConfiguration expectedConfiguration = CliConfiguration.builder()
                 .input(inputFile)
-                .output(folder.getRoot())
+                .output(folder)
                 .packageName("package-name")
                 .packageVersion("0.0.0")
                 .build();
@@ -95,7 +96,7 @@ public class ConjurePythonCliTest {
         String[] args = {
             "generate",
             inputFile.getAbsolutePath(),
-            folder.getRoot().getAbsolutePath(),
+            folder.getAbsolutePath(),
             "--packageName=package-name",
             "--packageVersion=0.0.0-dev"
         };
@@ -106,7 +107,7 @@ public class ConjurePythonCliTest {
                 .getCommand();
         CliConfiguration expectedConfiguration = CliConfiguration.builder()
                 .input(inputFile)
-                .output(folder.getRoot())
+                .output(folder)
                 .packageName("package-name")
                 .packageVersion("0.0.0_dev")
                 .build();
@@ -115,35 +116,37 @@ public class ConjurePythonCliTest {
 
     @Test
     public void generatesCode() throws Exception {
-        File output = folder.newFolder();
         String[] args = {
             "generate",
             "src/test/resources/conjure-api.json",
-            output.getAbsolutePath(),
+            folder.getAbsolutePath(),
             "--packageName",
             "conjure",
             "--packageVersion",
             "0.0.0"
         };
         assertThat(new CommandLine(new ConjurePythonCli()).execute(args)).isZero();
-        assertThat(new File(output, "conjure/conjure_spec/__init__.py").isFile())
+        assertThat(new File(folder, "conjure/conjure_spec/__init__.py").isFile())
                 .isTrue();
     }
 
     @Test
     public void generatesRawSource() throws IOException {
-        File output = folder.newFolder();
         String[] args = {
-            "generate", "src/test/resources/conjure-api.json", output.getAbsolutePath(), "--rawSource",
+            "generate", "src/test/resources/conjure-api.json", folder.getAbsolutePath(), "--rawSource",
         };
         assertThat(new CommandLine(new ConjurePythonCli()).execute(args)).isZero();
-        assertThat(new File(output, "conjure_spec/__init__.py").isFile()).isTrue();
+        assertThat(new File(folder, "conjure_spec/__init__.py").isFile()).isTrue();
     }
 
     @Test
     public void throwsWhenInvalidDefinition() throws Exception {
+        File input = new File(folder, "input");
+        File outputDir = new File(folder, "outputDir");
+        assertThat(input.createNewFile()).isTrue();
+        assertThat(outputDir.mkdir()).isTrue();
         String[] args = {
-            "generate", folder.newFile().getAbsolutePath(), folder.newFolder().getAbsolutePath(), "--rawSource",
+            "generate", input.getAbsolutePath(), outputDir.getAbsolutePath(), "--rawSource",
         };
 
         AtomicReference<Exception> executionException = new AtomicReference<>();

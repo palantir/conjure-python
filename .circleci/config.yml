@@ -159,9 +159,7 @@ workflows:
           <<: *always-run
       - publish:
           requires:
-            - build
-            - py3
-            - mypy3
+            - circle-all
           filters:
             branches:
               ignore: /.*/

@@ -1,0 +1,5 @@
+type: fix
+fix:
+  description: Fix develop branch by changing file operations
+  links:
+  - https://github.com/palantir/conjure-python/pull/914
