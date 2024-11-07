@@ -160,15 +160,13 @@ public interface PythonEndpointDefinition extends Emittable {
             poetWriter.increaseIndent();
             paramsWithHeader.stream()
                     .filter(param -> param.paramType().accept(ParameterTypeVisitor.IS_QUERY))
-                    .forEach(param -> {
-                        poetWriter.writeIndentedLine(
-                                "'%s': _conjure_encoder.default(%s),",
-                                param.paramType()
-                                        .accept(ParameterTypeVisitor.QUERY)
-                                        .getParamId()
-                                        .get(),
-                                param.pythonParamName());
-                    });
+                    .forEach(param -> poetWriter.writeIndentedLine(
+                            "'%s': _conjure_encoder.default(%s),",
+                            param.paramType()
+                                    .accept(ParameterTypeVisitor.QUERY)
+                                    .getParamId()
+                                    .get(),
+                            param.pythonParamName()));
             poetWriter.decreaseIndent();
             poetWriter.writeIndentedLine("}");
 
@@ -179,11 +177,9 @@ public interface PythonEndpointDefinition extends Emittable {
             // TODO(qchen): no need for param name twice?
             paramsWithHeader.stream()
                     .filter(param -> param.paramType().accept(ParameterTypeVisitor.IS_PATH))
-                    .forEach(param -> {
-                        poetWriter.writeIndentedLine(
-                                "'%s': quote(str(_conjure_encoder.default(%s)), safe=''),",
-                                param.paramName(), param.pythonParamName());
-                    });
+                    .forEach(param -> poetWriter.writeIndentedLine(
+                            "'%s': quote(str(_conjure_encoder.default(%s)), safe=''),",
+                            param.paramName(), param.pythonParamName()));
             poetWriter.decreaseIndent();
             poetWriter.writeIndentedLine("}");
 
