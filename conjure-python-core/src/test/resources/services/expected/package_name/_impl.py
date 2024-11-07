@@ -5,6 +5,7 @@ from conjure_python_client import (
     ConjureBeanType,
     ConjureDecoder,
     ConjureEncoder,
+    ConjureEnumType,
     ConjureFieldDefinition,
     OptionalTypeWrapper,
     Service,
@@ -19,6 +20,9 @@ from typing import (
     Optional,
     Set,
 )
+from urllib.parse import (
+    quote,
+)
 
 class another_TestService(Service):
     """A Markdown description of the service. "Might end with quotes"
@@ -27,6 +31,7 @@ class another_TestService(Service):
     def get_file_systems(self, auth_header: str) -> Dict[str, "product_datasets_BackingFileSystem"]:
         """Returns a mapping from file system id to backing file system configuration.
         """
+        _conjure_encoder = ConjureEncoder()
 
         _headers: Dict[str, Any] = {
             'Accept': 'application/json',
@@ -36,7 +41,7 @@ class another_TestService(Service):
         _params: Dict[str, Any] = {
         }
 
-        _path_params: Dict[str, Any] = {
+        _path_params: Dict[str, str] = {
         }
 
         _json: Any = None
@@ -55,21 +60,22 @@ class another_TestService(Service):
         return _decoder.decode(_response.json(), Dict[str, product_datasets_BackingFileSystem], self._return_none_for_unknown_union_types)
 
     def create_dataset(self, auth_header: str, request: "product_CreateDatasetRequest", test_header_arg: str) -> "product_datasets_Dataset":
+        _conjure_encoder = ConjureEncoder()
 
         _headers: Dict[str, Any] = {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
             'Authorization': auth_header,
-            'Test-Header': test_header_arg,
+            'Test-Header': _conjure_encoder.default(test_header_arg),
         }
 
         _params: Dict[str, Any] = {
         }
 
-        _path_params: Dict[str, Any] = {
+        _path_params: Dict[str, str] = {
         }
 
-        _json: Any = ConjureEncoder().default(request)
+        _json: Any = _conjure_encoder.default(request)
 
         _path = '/catalog/datasets'
         _path = _path.format(**_path_params)
@@ -85,6 +91,7 @@ class another_TestService(Service):
         return _decoder.decode(_response.json(), product_datasets_Dataset, self._return_none_for_unknown_union_types)
 
     def get_dataset(self, auth_header: str, dataset_rid: str) -> Optional["product_datasets_Dataset"]:
+        _conjure_encoder = ConjureEncoder()
 
         _headers: Dict[str, Any] = {
             'Accept': 'application/json',
@@ -94,8 +101,8 @@ class another_TestService(Service):
         _params: Dict[str, Any] = {
         }
 
-        _path_params: Dict[str, Any] = {
-            'datasetRid': dataset_rid,
+        _path_params: Dict[str, str] = {
+            'datasetRid': quote(str(_conjure_encoder.default(dataset_rid)), safe=''),
         }
 
         _json: Any = None
@@ -114,6 +121,7 @@ class another_TestService(Service):
         return None if _response.status_code == 204 else _decoder.decode(_response.json(), OptionalTypeWrapper[product_datasets_Dataset], self._return_none_for_unknown_union_types)
 
     def get_raw_data(self, auth_header: str, dataset_rid: str) -> Any:
+        _conjure_encoder = ConjureEncoder()
 
         _headers: Dict[str, Any] = {
             'Accept': 'application/octet-stream',
@@ -123,8 +131,8 @@ class another_TestService(Service):
         _params: Dict[str, Any] = {
         }
 
-        _path_params: Dict[str, Any] = {
-            'datasetRid': dataset_rid,
+        _path_params: Dict[str, str] = {
+            'datasetRid': quote(str(_conjure_encoder.default(dataset_rid)), safe=''),
         }
 
         _json: Any = None
@@ -145,6 +153,7 @@ class another_TestService(Service):
         return _raw
 
     def maybe_get_raw_data(self, auth_header: str, dataset_rid: str) -> Optional[Any]:
+        _conjure_encoder = ConjureEncoder()
 
         _headers: Dict[str, Any] = {
             'Accept': 'application/json',
@@ -154,8 +163,8 @@ class another_TestService(Service):
         _params: Dict[str, Any] = {
         }
 
-        _path_params: Dict[str, Any] = {
-            'datasetRid': dataset_rid,
+        _path_params: Dict[str, str] = {
+            'datasetRid': quote(str(_conjure_encoder.default(dataset_rid)), safe=''),
         }
 
         _json: Any = None
@@ -174,6 +183,7 @@ class another_TestService(Service):
         return None if _response.status_code == 204 else _decoder.decode(_response.json(), OptionalTypeWrapper[BinaryType], self._return_none_for_unknown_union_types)
 
     def upload_raw_data(self, auth_header: str, input: Any) -> None:
+        _conjure_encoder = ConjureEncoder()
 
         _headers: Dict[str, Any] = {
             'Accept': 'application/json',
@@ -184,7 +194,7 @@ class another_TestService(Service):
         _params: Dict[str, Any] = {
         }
 
-        _path_params: Dict[str, Any] = {
+        _path_params: Dict[str, str] = {
         }
 
         _data: Any = input
@@ -201,20 +211,54 @@ class another_TestService(Service):
 
         return
 
+    def upload_python_package(self, auth_header: str, upload_type: "product_UploadType", upload_type_header: "product_UploadType", upload_types_query: List["product_UploadType"] = None, upload_type_body: Optional["product_UploadType"] = None) -> None:
+        upload_types_query = upload_types_query if upload_types_query is not None else []
+        _conjure_encoder = ConjureEncoder()
+
+        _headers: Dict[str, Any] = {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': auth_header,
+            'Upload-Type': _conjure_encoder.default(upload_type_header),
+        }
+
+        _params: Dict[str, Any] = {
+            'uploadTypesQuery': _conjure_encoder.default(upload_types_query),
+        }
+
+        _path_params: Dict[str, str] = {
+            'uploadType': quote(str(_conjure_encoder.default(upload_type)), safe=''),
+        }
+
+        _json: Any = _conjure_encoder.default(upload_type_body)
+
+        _path = '/catalog/data/python/{uploadType}'
+        _path = _path.format(**_path_params)
+
+        _response: Response = self._request(
+            'POST',
+            self._uri + _path,
+            params=_params,
+            headers=_headers,
+            json=_json)
+
+        return
+
     def get_branches(self, auth_header: str, dataset_rid: str, message: Optional[str] = None, page_size: Optional[int] = None) -> List[str]:
+        _conjure_encoder = ConjureEncoder()
 
         _headers: Dict[str, Any] = {
             'Accept': 'application/json',
             'Authorization': auth_header,
-            'Special-Message': message,
+            'Special-Message': _conjure_encoder.default(message),
         }
 
         _params: Dict[str, Any] = {
-            'pageSize': page_size,
+            'pageSize': _conjure_encoder.default(page_size),
         }
 
-        _path_params: Dict[str, Any] = {
-            'datasetRid': dataset_rid,
+        _path_params: Dict[str, str] = {
+            'datasetRid': quote(str(_conjure_encoder.default(dataset_rid)), safe=''),
         }
 
         _json: Any = None
@@ -235,6 +279,7 @@ class another_TestService(Service):
     def get_branches_deprecated(self, auth_header: str, dataset_rid: str) -> List[str]:
         """Gets all branches of this dataset.
         """
+        _conjure_encoder = ConjureEncoder()
 
         _headers: Dict[str, Any] = {
             'Accept': 'application/json',
@@ -244,8 +289,8 @@ class another_TestService(Service):
         _params: Dict[str, Any] = {
         }
 
-        _path_params: Dict[str, Any] = {
-            'datasetRid': dataset_rid,
+        _path_params: Dict[str, str] = {
+            'datasetRid': quote(str(_conjure_encoder.default(dataset_rid)), safe=''),
         }
 
         _json: Any = None
@@ -264,6 +309,7 @@ class another_TestService(Service):
         return _decoder.decode(_response.json(), List[str], self._return_none_for_unknown_union_types)
 
     def resolve_branch(self, auth_header: str, branch: str, dataset_rid: str) -> Optional[str]:
+        _conjure_encoder = ConjureEncoder()
 
         _headers: Dict[str, Any] = {
             'Accept': 'application/json',
@@ -273,9 +319,9 @@ class another_TestService(Service):
         _params: Dict[str, Any] = {
         }
 
-        _path_params: Dict[str, Any] = {
-            'datasetRid': dataset_rid,
-            'branch': branch,
+        _path_params: Dict[str, str] = {
+            'datasetRid': quote(str(_conjure_encoder.default(dataset_rid)), safe=''),
+            'branch': quote(str(_conjure_encoder.default(branch)), safe=''),
         }
 
         _json: Any = None
@@ -294,6 +340,7 @@ class another_TestService(Service):
         return None if _response.status_code == 204 else _decoder.decode(_response.json(), OptionalTypeWrapper[str], self._return_none_for_unknown_union_types)
 
     def test_param(self, auth_header: str, dataset_rid: str) -> Optional[str]:
+        _conjure_encoder = ConjureEncoder()
 
         _headers: Dict[str, Any] = {
             'Accept': 'application/json',
@@ -303,8 +350,8 @@ class another_TestService(Service):
         _params: Dict[str, Any] = {
         }
 
-        _path_params: Dict[str, Any] = {
-            'datasetRid': dataset_rid,
+        _path_params: Dict[str, str] = {
+            'datasetRid': quote(str(_conjure_encoder.default(dataset_rid)), safe=''),
         }
 
         _json: Any = None
@@ -325,6 +372,7 @@ class another_TestService(Service):
     def test_query_params(self, auth_header: str, implicit: str, nonlocal_: int, something: str, list: List[int] = None, set: List[int] = None) -> int:
         list = list if list is not None else []
         set = set if set is not None else []
+        _conjure_encoder = ConjureEncoder()
 
         _headers: Dict[str, Any] = {
             'Accept': 'application/json',
@@ -332,14 +380,14 @@ class another_TestService(Service):
         }
 
         _params: Dict[str, Any] = {
-            'different': something,
-            'implicit': implicit,
-            'list': list,
-            'set': set,
-            'nonlocal': nonlocal_,
+            'different': _conjure_encoder.default(something),
+            'implicit': _conjure_encoder.default(implicit),
+            'list': _conjure_encoder.default(list),
+            'set': _conjure_encoder.default(set),
+            'nonlocal': _conjure_encoder.default(nonlocal_),
         }
 
-        _path_params: Dict[str, Any] = {
+        _path_params: Dict[str, str] = {
         }
 
         _json: Any = None
@@ -358,6 +406,7 @@ class another_TestService(Service):
         return _decoder.decode(_response.json(), int, self._return_none_for_unknown_union_types)
 
     def test_boolean(self, auth_header: str) -> bool:
+        _conjure_encoder = ConjureEncoder()
 
         _headers: Dict[str, Any] = {
             'Accept': 'application/json',
@@ -367,7 +416,7 @@ class another_TestService(Service):
         _params: Dict[str, Any] = {
         }
 
-        _path_params: Dict[str, Any] = {
+        _path_params: Dict[str, str] = {
         }
 
         _json: Any = None
@@ -386,6 +435,7 @@ class another_TestService(Service):
         return _decoder.decode(_response.json(), bool, self._return_none_for_unknown_union_types)
 
     def test_double(self, auth_header: str) -> float:
+        _conjure_encoder = ConjureEncoder()
 
         _headers: Dict[str, Any] = {
             'Accept': 'application/json',
@@ -395,7 +445,7 @@ class another_TestService(Service):
         _params: Dict[str, Any] = {
         }
 
-        _path_params: Dict[str, Any] = {
+        _path_params: Dict[str, str] = {
         }
 
         _json: Any = None
@@ -414,6 +464,7 @@ class another_TestService(Service):
         return _decoder.decode(_response.json(), float, self._return_none_for_unknown_union_types)
 
     def test_integer(self, auth_header: str) -> int:
+        _conjure_encoder = ConjureEncoder()
 
         _headers: Dict[str, Any] = {
             'Accept': 'application/json',
@@ -423,7 +474,7 @@ class another_TestService(Service):
         _params: Dict[str, Any] = {
         }
 
-        _path_params: Dict[str, Any] = {
+        _path_params: Dict[str, str] = {
         }
 
         _json: Any = None
@@ -474,6 +525,24 @@ class product_CreateDatasetRequest(ConjureBeanType):
 product_CreateDatasetRequest.__name__ = "CreateDatasetRequest"
 product_CreateDatasetRequest.__qualname__ = "CreateDatasetRequest"
 product_CreateDatasetRequest.__module__ = "package_name.product"
+
+
+class product_UploadType(ConjureEnumType):
+
+    PYPI = 'PYPI'
+    '''PYPI'''
+    CONDA = 'CONDA'
+    '''CONDA'''
+    UNKNOWN = 'UNKNOWN'
+    '''UNKNOWN'''
+
+    def __reduce_ex__(self, proto):
+        return self.__class__, (self.name,)
+
+
+product_UploadType.__name__ = "UploadType"
+product_UploadType.__qualname__ = "UploadType"
+product_UploadType.__module__ = "package_name.product"
 
 
 class product_datasets_BackingFileSystem(ConjureBeanType):

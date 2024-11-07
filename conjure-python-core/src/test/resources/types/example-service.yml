@@ -47,6 +47,11 @@ types:
         package: com.palantir.package.name
         alias: string
 
+      UploadType:
+        values:
+          - value: PYPI
+          - value: CONDA
+
 services:
   TestService:
     name: Test Service
@@ -107,6 +112,25 @@ services:
         args:
           input:
             type: binary
+            param-type: body
+
+      uploadPythonPackage:
+        http: POST /data/python/{uploadType}
+        args:
+          uploadType: UploadType
+          uploadTypeHeader:
+            type: UploadType
+            param-id: Upload-Type
+            param-type: header
+            markers:
+              - Safe
+          uploadTypesQuery:
+            docs: |
+              The upload types of the python package.
+            type: list<UploadType>
+            param-type: query
+          uploadTypeBody:
+            type: optional<UploadType>
             param-type: body
 
       getBranches:

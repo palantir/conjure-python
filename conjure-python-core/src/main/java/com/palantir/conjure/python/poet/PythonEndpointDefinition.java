@@ -38,6 +38,7 @@ import org.immutables.value.Value;
 
 @Value.Immutable
 public interface PythonEndpointDefinition extends Emittable {
+    String AUTH_HEADER_PYTHON_PARAM_NAME = "auth_header";
 
     String pythonMethodName();
 
@@ -78,7 +79,7 @@ public interface PythonEndpointDefinition extends Emittable {
                     ? ImmutableList.<PythonEndpointParam>builder()
                             .add(PythonEndpointParam.builder()
                                     .paramName("authHeader")
-                                    .pythonParamName("auth_header")
+                                    .pythonParamName(AUTH_HEADER_PYTHON_PARAM_NAME)
                                     .myPyType("str")
                                     .isOptional(false)
                                     .isCollection(false)
@@ -117,6 +118,8 @@ public interface PythonEndpointDefinition extends Emittable {
                 }
             }
 
+            poetWriter.writeIndentedLine("_conjure_encoder = ConjureEncoder()");
+
             // header
             poetWriter.writeLine();
             poetWriter.writeIndentedLine("_headers: Dict[str, Any] = {");
@@ -137,13 +140,16 @@ public interface PythonEndpointDefinition extends Emittable {
             paramsWithHeader.stream()
                     .filter(param -> param.paramType().accept(ParameterTypeVisitor.IS_HEADER))
                     .forEach(param -> {
-                        poetWriter.writeIndentedLine(
-                                "'%s': %s,",
-                                param.paramType()
-                                        .accept(ParameterTypeVisitor.HEADER)
-                                        .getParamId()
-                                        .get(),
-                                param.pythonParamName());
+                        String headerParamId = param.paramType()
+                                .accept(ParameterTypeVisitor.HEADER)
+                                .getParamId()
+                                .get();
+                        if (param.pythonParamName().equals(AUTH_HEADER_PYTHON_PARAM_NAME)) {
+                            poetWriter.writeIndentedLine("'%s': %s,", headerParamId, param.pythonParamName());
+                        } else {
+                            poetWriter.writeIndentedLine(
+                                    "'%s': _conjure_encoder.default(%s),", headerParamId, param.pythonParamName());
+                        }
                     });
             poetWriter.decreaseIndent();
             poetWriter.writeIndentedLine("}");
@@ -156,7 +162,7 @@ public interface PythonEndpointDefinition extends Emittable {
                     .filter(param -> param.paramType().accept(ParameterTypeVisitor.IS_QUERY))
                     .forEach(param -> {
                         poetWriter.writeIndentedLine(
-                                "'%s': %s,",
+                                "'%s': _conjure_encoder.default(%s),",
                                 param.paramType()
                                         .accept(ParameterTypeVisitor.QUERY)
                                         .getParamId()
@@ -168,13 +174,15 @@ public interface PythonEndpointDefinition extends Emittable {
 
             // path params
             poetWriter.writeLine();
-            poetWriter.writeIndentedLine("_path_params: Dict[str, Any] = {");
+            poetWriter.writeIndentedLine("_path_params: Dict[str, str] = {");
             poetWriter.increaseIndent();
             // TODO(qchen): no need for param name twice?
             paramsWithHeader.stream()
                     .filter(param -> param.paramType().accept(ParameterTypeVisitor.IS_PATH))
                     .forEach(param -> {
-                        poetWriter.writeIndentedLine("'%s': %s,", param.paramName(), param.pythonParamName());
+                        poetWriter.writeIndentedLine(
+                                "'%s': quote(str(_conjure_encoder.default(%s)), safe=''),",
+                                param.paramName(), param.pythonParamName());
                     });
             poetWriter.decreaseIndent();
             poetWriter.writeIndentedLine("}");
@@ -183,7 +191,7 @@ public interface PythonEndpointDefinition extends Emittable {
                 if (!isRequestBinary()) {
                     poetWriter.writeLine();
                     poetWriter.writeIndentedLine(
-                            "_json: Any = ConjureEncoder().default(%s)",
+                            "_json: Any = _conjure_encoder.default(%s)",
                             bodyParam.get().pythonParamName());
                 } else {
                     poetWriter.writeLine();

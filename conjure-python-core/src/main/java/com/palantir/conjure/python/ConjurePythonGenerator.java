@@ -150,10 +150,10 @@ public final class ConjurePythonGenerator {
         List<PythonSnippet> snippets = new ArrayList<>();
         snippets.addAll(conjureDefinition.getTypes().stream()
                 .map(beanGenerator::generateType)
-                .collect(Collectors.toList()));
+                .toList());
         snippets.addAll(conjureDefinition.getServices().stream()
                 .map(clientGenerator::generateClient)
-                .collect(Collectors.toList()));
+                .toList());
 
         Map<PythonPackage, List<PythonSnippet>> snippetsByPackage =
                 snippets.stream().collect(Collectors.groupingBy(PythonSnippet::pythonPackage));
