@@ -41,6 +41,10 @@ public interface PythonService extends PythonSnippet {
                     .moduleSpecifier(ImportTypeVisitor.TYPING)
                     // Used by Endpoints
                     .addNamedImports(NamedImport.of("Dict"), NamedImport.of("Any"))
+                    .build(),
+            PythonImport.builder()
+                    .moduleSpecifier("urllib.parse")
+                    .addNamedImports(NamedImport.of("quote"))
                     .build());
 
     @Override

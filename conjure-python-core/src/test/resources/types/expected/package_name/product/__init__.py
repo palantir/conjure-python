@@ -46,6 +46,7 @@ from .._impl import (
     product_UnionTypeExampleVisitor as UnionTypeExampleVisitor,
     product_UnionWithBuiltinVariantName as UnionWithBuiltinVariantName,
     product_UnionWithBuiltinVariantNameVisitor as UnionWithBuiltinVariantNameVisitor,
+    product_UploadType as UploadType,
     product_UuidAliasExample as UuidAliasExample,
     product_UuidExample as UuidExample,
 )
@@ -97,6 +98,7 @@ __all__ = [
     'UnionTypeExampleVisitor',
     'UnionWithBuiltinVariantName',
     'UnionWithBuiltinVariantNameVisitor',
+    'UploadType',
     'UuidAliasExample',
     'UuidExample',
 ]
