@@ -74,6 +74,10 @@ public interface PythonService extends PythonSnippet {
                 poetWriter.writeLine();
                 endpointDefinition.emit(poetWriter);
             });
+            if (endpointDefinitions().isEmpty()) {
+                poetWriter.writeIndentedLine("pass");
+            }
+
             poetWriter.writeLine();
             poetWriter.writeLine();
 
