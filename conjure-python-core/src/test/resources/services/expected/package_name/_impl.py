@@ -24,6 +24,15 @@ from urllib.parse import (
     quote,
 )
 
+class another_TestEmptyService(Service):
+    pass
+
+
+another_TestEmptyService.__name__ = "TestEmptyService"
+another_TestEmptyService.__qualname__ = "TestEmptyService"
+another_TestEmptyService.__module__ = "package_name.another"
+
+
 class another_TestService(Service):
     """A Markdown description of the service. "Might end with quotes"
     """
