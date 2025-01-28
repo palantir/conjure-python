@@ -224,3 +224,7 @@ services:
       testInteger:
         http: GET /integer
         returns: integer
+
+  TestEmptyService:
+    package: com.palantir.another
+    endpoints: {}

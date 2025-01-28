@@ -1,0 +1,5 @@
+type: fix
+fix:
+  description: Fix codegen for services without endpoints
+  links:
+  - https://github.com/palantir/conjure-python/pull/960
