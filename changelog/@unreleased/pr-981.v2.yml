@@ -1,0 +1,5 @@
+type: fix
+fix:
+  description: Missing `Bearer` in header authorization
+  links:
+  - https://github.com/palantir/conjure-python/pull/981
