@@ -145,7 +145,7 @@ public interface PythonEndpointDefinition extends Emittable {
                                 .getParamId()
                                 .get();
                         if (param.pythonParamName().equals(AUTH_HEADER_PYTHON_PARAM_NAME)) {
-                            poetWriter.writeIndentedLine("'%s': %s,", headerParamId, param.pythonParamName());
+                            poetWriter.writeIndentedLine("'%s': Bearer %s,", headerParamId, param.pythonParamName());
                         } else {
                             poetWriter.writeIndentedLine(
                                     "'%s': _conjure_encoder.default(%s),", headerParamId, param.pythonParamName());
