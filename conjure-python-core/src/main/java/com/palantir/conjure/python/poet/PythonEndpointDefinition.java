@@ -40,6 +40,8 @@ import org.immutables.value.Value;
 public interface PythonEndpointDefinition extends Emittable {
     String AUTH_HEADER_PYTHON_PARAM_NAME = "auth_header";
 
+    String AUTH_HEADER_BEARER_PREFIX = "Bearer ";
+
     String pythonMethodName();
 
     HttpMethod httpMethod();
@@ -146,7 +148,13 @@ public interface PythonEndpointDefinition extends Emittable {
                                 .get();
                         if (param.pythonParamName().equals(AUTH_HEADER_PYTHON_PARAM_NAME)) {
                             poetWriter.writeIndentedLine(
-                                    "'%s': f'Bearer {%s}',", headerParamId, param.pythonParamName());
+                                    "'%s': %s if %s.startswith('%s') else f'%s{%s}',",
+                                    headerParamId,
+                                    param.pythonParamName(),
+                                    param.pythonParamName(),
+                                    AUTH_HEADER_BEARER_PREFIX,
+                                    AUTH_HEADER_BEARER_PREFIX,
+                                    param.pythonParamName());
                         } else {
                             poetWriter.writeIndentedLine(
                                     "'%s': _conjure_encoder.default(%s),", headerParamId, param.pythonParamName());

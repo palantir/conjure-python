@@ -44,7 +44,7 @@ class another_TestService(Service):
 
         _headers: Dict[str, Any] = {
             'Accept': 'application/json',
-            'Authorization': f'Bearer {auth_header}',
+            'Authorization': auth_header if auth_header.startswith('Bearer ') else f'Bearer {auth_header}',
         }
 
         _params: Dict[str, Any] = {
@@ -74,7 +74,7 @@ class another_TestService(Service):
         _headers: Dict[str, Any] = {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
-            'Authorization': f'Bearer {auth_header}',
+            'Authorization': auth_header if auth_header.startswith('Bearer ') else f'Bearer {auth_header}',
             'Test-Header': _conjure_encoder.default(test_header_arg),
         }
 
@@ -104,7 +104,7 @@ class another_TestService(Service):
 
         _headers: Dict[str, Any] = {
             'Accept': 'application/json',
-            'Authorization': f'Bearer {auth_header}',
+            'Authorization': auth_header if auth_header.startswith('Bearer ') else f'Bearer {auth_header}',
         }
 
         _params: Dict[str, Any] = {
@@ -134,7 +134,7 @@ class another_TestService(Service):
 
         _headers: Dict[str, Any] = {
             'Accept': 'application/octet-stream',
-            'Authorization': f'Bearer {auth_header}',
+            'Authorization': auth_header if auth_header.startswith('Bearer ') else f'Bearer {auth_header}',
         }
 
         _params: Dict[str, Any] = {
@@ -166,7 +166,7 @@ class another_TestService(Service):
 
         _headers: Dict[str, Any] = {
             'Accept': 'application/json',
-            'Authorization': f'Bearer {auth_header}',
+            'Authorization': auth_header if auth_header.startswith('Bearer ') else f'Bearer {auth_header}',
         }
 
         _params: Dict[str, Any] = {
@@ -197,7 +197,7 @@ class another_TestService(Service):
         _headers: Dict[str, Any] = {
             'Accept': 'application/json',
             'Content-Type': 'application/octet-stream',
-            'Authorization': f'Bearer {auth_header}',
+            'Authorization': auth_header if auth_header.startswith('Bearer ') else f'Bearer {auth_header}',
         }
 
         _params: Dict[str, Any] = {
@@ -227,7 +227,7 @@ class another_TestService(Service):
         _headers: Dict[str, Any] = {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
-            'Authorization': f'Bearer {auth_header}',
+            'Authorization': auth_header if auth_header.startswith('Bearer ') else f'Bearer {auth_header}',
             'Upload-Type': _conjure_encoder.default(upload_type_header),
         }
 
@@ -258,7 +258,7 @@ class another_TestService(Service):
 
         _headers: Dict[str, Any] = {
             'Accept': 'application/json',
-            'Authorization': f'Bearer {auth_header}',
+            'Authorization': auth_header if auth_header.startswith('Bearer ') else f'Bearer {auth_header}',
             'Special-Message': _conjure_encoder.default(message),
         }
 
@@ -292,7 +292,7 @@ class another_TestService(Service):
 
         _headers: Dict[str, Any] = {
             'Accept': 'application/json',
-            'Authorization': f'Bearer {auth_header}',
+            'Authorization': auth_header if auth_header.startswith('Bearer ') else f'Bearer {auth_header}',
         }
 
         _params: Dict[str, Any] = {
@@ -322,7 +322,7 @@ class another_TestService(Service):
 
         _headers: Dict[str, Any] = {
             'Accept': 'application/json',
-            'Authorization': f'Bearer {auth_header}',
+            'Authorization': auth_header if auth_header.startswith('Bearer ') else f'Bearer {auth_header}',
         }
 
         _params: Dict[str, Any] = {
@@ -353,7 +353,7 @@ class another_TestService(Service):
 
         _headers: Dict[str, Any] = {
             'Accept': 'application/json',
-            'Authorization': f'Bearer {auth_header}',
+            'Authorization': auth_header if auth_header.startswith('Bearer ') else f'Bearer {auth_header}',
         }
 
         _params: Dict[str, Any] = {
@@ -385,7 +385,7 @@ class another_TestService(Service):
 
         _headers: Dict[str, Any] = {
             'Accept': 'application/json',
-            'Authorization': f'Bearer {auth_header}',
+            'Authorization': auth_header if auth_header.startswith('Bearer ') else f'Bearer {auth_header}',
         }
 
         _params: Dict[str, Any] = {
@@ -419,7 +419,7 @@ class another_TestService(Service):
 
         _headers: Dict[str, Any] = {
             'Accept': 'application/json',
-            'Authorization': f'Bearer {auth_header}',
+            'Authorization': auth_header if auth_header.startswith('Bearer ') else f'Bearer {auth_header}',
         }
 
         _params: Dict[str, Any] = {
@@ -448,7 +448,7 @@ class another_TestService(Service):
 
         _headers: Dict[str, Any] = {
             'Accept': 'application/json',
-            'Authorization': f'Bearer {auth_header}',
+            'Authorization': auth_header if auth_header.startswith('Bearer ') else f'Bearer {auth_header}',
         }
 
         _params: Dict[str, Any] = {
@@ -477,7 +477,7 @@ class another_TestService(Service):
 
         _headers: Dict[str, Any] = {
             'Accept': 'application/json',
-            'Authorization': f'Bearer {auth_header}',
+            'Authorization': auth_header if auth_header.startswith('Bearer ') else f'Bearer {auth_header}',
         }
 
         _params: Dict[str, Any] = {
