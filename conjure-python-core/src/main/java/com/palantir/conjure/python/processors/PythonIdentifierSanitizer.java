@@ -57,6 +57,7 @@ public final class PythonIdentifierSanitizer {
             "print",
             "raise",
             "return",
+            "self",
             "str",
             "try",
             "while",
