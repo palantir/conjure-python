@@ -1,0 +1,5 @@
+type: fix
+fix:
+  description: Handle empty union type
+  links:
+  - https://github.com/palantir/conjure-python/pull/1005
