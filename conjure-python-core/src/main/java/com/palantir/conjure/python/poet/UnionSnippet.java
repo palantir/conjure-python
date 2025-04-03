@@ -133,29 +133,33 @@ public interface UnionSnippet extends PythonSnippet {
 
             // --back-compat to determine union type if type_of_union isn't passed in--
             // check we have exactly one non-null
-            poetWriter.writeIndentedLine("if type_of_union is None:");
-            poetWriter.increaseIndent();
-            poetWriter.writeIndentedLine(
-                    "if %s != 1:",
-                    Joiner.on(" + ")
-                            .join(options().stream()
-                                    .map(option -> String.format("(%s is not None)", parameterName(option)))
-                                    .collect(Collectors.toList())));
-            poetWriter.increaseIndent();
-            poetWriter.writeIndentedLine("raise ValueError('a union must contain a single member')");
-            poetWriter.decreaseIndent();
-            // keep track of how many non-null there are
-            poetWriter.writeLine();
-            // save off
-            options().forEach(option -> {
-                poetWriter.writeIndentedLine("if %s is not None:", parameterName(option));
+            if (options().isEmpty()) {
+                poetWriter.writeIndentedLine("raise ValueError('an empty union is not allowed')");
+            } else {
+                poetWriter.writeIndentedLine("if type_of_union is None:");
                 poetWriter.increaseIndent();
-                poetWriter.writeIndentedLine("self.%s = %s", fieldName(option), parameterName(option));
-                poetWriter.writeIndentedLine("self._type = '%s'", option.jsonIdentifier());
+                poetWriter.writeIndentedLine(
+                        "if %s != 1:",
+                        Joiner.on(" + ")
+                                .join(options().stream()
+                                        .map(option -> String.format("(%s is not None)", parameterName(option)))
+                                        .collect(Collectors.toList())));
+                poetWriter.increaseIndent();
+                poetWriter.writeIndentedLine("raise ValueError('a union must contain a single member')");
                 poetWriter.decreaseIndent();
-            });
-            poetWriter.decreaseIndent();
-            poetWriter.writeLine();
+                // keep track of how many non-null there are
+                poetWriter.writeLine();
+                // save off
+                options().forEach(option -> {
+                    poetWriter.writeIndentedLine("if %s is not None:", parameterName(option));
+                    poetWriter.increaseIndent();
+                    poetWriter.writeIndentedLine("self.%s = %s", fieldName(option), parameterName(option));
+                    poetWriter.writeIndentedLine("self._type = '%s'", option.jsonIdentifier());
+                    poetWriter.decreaseIndent();
+                });
+                poetWriter.decreaseIndent();
+                poetWriter.writeLine();
+            }
 
             // --proper way of determining union type using type_of_union--
             // save off
@@ -221,16 +225,20 @@ public interface UnionSnippet extends PythonSnippet {
 
             poetWriter.writeIndentedLine(String.format("class %s:", visitorName));
             poetWriter.increaseIndent();
-            options().forEach(option -> {
-                poetWriter.writeLine();
-                poetWriter.writeIndentedLine("@abstractmethod");
-                poetWriter.writeIndentedLine(
-                        "def %s(self, %s: %s) -> Any:",
-                        visitorMethodName(option), parameterName(option), option.myPyType());
-                poetWriter.increaseIndent();
+            if (options().isEmpty()) {
                 poetWriter.writeIndentedLine("pass");
-                poetWriter.decreaseIndent();
-            });
+            } else {
+                options().forEach(option -> {
+                    poetWriter.writeLine();
+                    poetWriter.writeIndentedLine("@abstractmethod");
+                    poetWriter.writeIndentedLine(
+                            "def %s(self, %s: %s) -> Any:",
+                            visitorMethodName(option), parameterName(option), option.myPyType());
+                    poetWriter.increaseIndent();
+                    poetWriter.writeIndentedLine("pass");
+                    poetWriter.decreaseIndent();
+                });
+            }
             poetWriter.decreaseIndent();
             poetWriter.writeLine();
             poetWriter.writeLine();
