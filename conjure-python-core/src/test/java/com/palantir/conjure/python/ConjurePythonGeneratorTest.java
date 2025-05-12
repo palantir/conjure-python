@@ -40,6 +40,7 @@ public final class ConjurePythonGeneratorTest {
             .packageVersion("0.0.0")
             .packageDescription("project description")
             .minConjureClientVersion("2.8.0")
+            .maxConjureClientVersion("4")
             .generatorVersion("0.0.0")
             .shouldWriteCondaRecipe(true)
             .generateRawSource(false)
@@ -60,7 +61,7 @@ public final class ConjurePythonGeneratorTest {
         Set<Path> generatedButNotExpected = pythonFileWriter.getPythonFiles().keySet();
         long count = 0;
         try (Stream<Path> walk = Files.walk(expected)) {
-            for (Path path : walk.collect(Collectors.toList())) {
+            for (Path path : walk.toList()) {
                 if (!path.toFile().isFile()) {
                     continue;
                 }
@@ -76,7 +77,7 @@ public final class ConjurePythonGeneratorTest {
     }
 
     private void maybeResetExpectedDirectory(Path expected, ConjureDefinition definition) throws IOException {
-        if (Boolean.valueOf(System.getProperty("recreate", "false"))
+        if (Boolean.parseBoolean(System.getProperty("recreate", "false"))
                 || !expected.toFile().isDirectory()) {
             Files.createDirectories(expected);
             try (Stream<Path> walk = Files.walk(expected)) {

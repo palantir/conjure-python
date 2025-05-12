@@ -126,6 +126,7 @@ public final class ConjurePythonCli implements Runnable {
             return GeneratorConfiguration.builder()
                     .generatorVersion(buildConfig.generatorVersion())
                     .minConjureClientVersion(buildConfig.minConjureClientVersion())
+                    .maxConjureClientVersion(buildConfig.maxConjureClientVersion())
                     .packageAuthor(cliConfig.packageAuthor())
                     .packageDescription(cliConfig.packageDescription())
                     .packageName(cliConfig.packageName())

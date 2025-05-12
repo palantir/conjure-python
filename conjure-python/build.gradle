@@ -42,10 +42,12 @@ dependencies {
 task generateBuildConfiguration {
     doLast {
         def minConjureClientVersion = conjurePythonClientVersion
+        def maxConjureClientVersion = maxConjurePythonClientVersion
         def props = new File("$projectDir/src/main/resources/buildConfiguration.yml")
         props.getParentFile().mkdirs()
         props.text = "generatorVersion: ${project.version}\n"
         props.text += "minConjureClientVersion: $minConjureClientVersion\n"
+        props.text += "maxConjureClientVersion: $maxConjureClientVersion\n"
     }
 }
 

@@ -34,6 +34,8 @@ public abstract class BuildConfiguration {
 
     abstract String minConjureClientVersion();
 
+    abstract String maxConjureClientVersion();
+
     static BuildConfiguration load() {
         try {
             return OBJECT_MAPPER.readValue(
