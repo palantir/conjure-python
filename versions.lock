@@ -31,8 +31,8 @@ org.eclipse.collections:eclipse-collections-api:11.1.0 (2 constraints: f8229c26)
 org.immutables:value:2.10.1 (2 constraints: fc1456c1)
 org.jetbrains:annotations:24.1.0 (3 constraints: 6432e0c8)
 org.jspecify:jspecify:1.0.0 (1 constraints: 130ae0b4)
-org.slf4j:slf4j-api:2.0.11 (5 constraints: 4d3c1113)
-org.slf4j:slf4j-simple:2.0.11 (1 constraints: 43054b3b)
+org.slf4j:slf4j-api:2.0.17 (5 constraints: 4c3c820e)
+org.slf4j:slf4j-simple:2.0.17 (1 constraints: 3c05323b)
 org.yaml:snakeyaml:2.3 (1 constraints: 3d178c10)
 
 [Test dependencies]

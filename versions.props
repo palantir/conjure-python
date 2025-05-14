@@ -16,5 +16,5 @@ org.junit.jupiter:* = 5.12.2
 org.junit.platform:* = 1.12.2
 org.junit.vintage:* = 5.12.2
 org.mockito:* = 5.17.0
-org.slf4j:* = 1.7.36
+org.slf4j:* = 2.0.17
 javax.ws.rs:javax.ws.rs-api = 2.1.1
