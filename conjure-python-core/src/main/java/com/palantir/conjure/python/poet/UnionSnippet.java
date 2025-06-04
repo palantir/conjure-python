@@ -163,7 +163,7 @@ public interface UnionSnippet extends PythonSnippet {
                 poetWriter.writeIndentedLine("elif type_of_union == '%s':", option.jsonIdentifier());
                 poetWriter.increaseIndent();
 
-                if (!parameterName(option).equals("optional")) {
+                if (!option.isOptional()) {
                     poetWriter.writeIndentedLine("if %s is None:", parameterName(option));
                     poetWriter.increaseIndent();
                     poetWriter.writeIndentedLine("raise ValueError('a union value must not be None')");
