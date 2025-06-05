@@ -200,7 +200,7 @@ public interface UnionSnippet extends PythonSnippet {
                     "raise ValueError('{} is not an instance of %s'.format(visitor.__class__.__name__))", visitorName);
             poetWriter.decreaseIndent();
             options().forEach(option -> {
-                if (!option.isOptional()) {
+                if (option.isOptional()) {
                     poetWriter.writeIndentedLine("if self._type == '%s':", parameterName(option));
                 } else {
                     poetWriter.writeIndentedLine(
