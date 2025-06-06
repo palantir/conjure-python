@@ -130,7 +130,8 @@ public final class ClientGenerator {
                                 && dealiasingTypeVisitor
                                         .dealias(argumentDef.getType())
                                         .fold(_typeDefinition -> false, type -> type.accept(TypeVisitor.IS_BINARY))))
-                // Set to true iff 1) the de-aliased type is binary or 2) the de-aliased type is optional<binary> (both outer and inner type de-aliased).
+                // Set to true iff 1) the de-aliased type is binary or 2) the de-aliased type is optional<binary> (both
+                // outer and inner type de-aliased).
                 .isResponseBinary(endpointDef
                         .getReturns()
                         .map(rt -> dealiasingTypeVisitor
