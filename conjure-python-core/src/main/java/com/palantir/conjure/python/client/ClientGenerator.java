@@ -124,11 +124,13 @@ public final class ClientGenerator {
                 .params(params)
                 .pythonReturnType(endpointDef.getReturns().map(type -> type.accept(pythonTypeNameVisitor)))
                 .myPyReturnType(endpointDef.getReturns().map(type -> type.accept(myPyTypeNameVisitor)))
+                // Set to true iff the de-aliased type is binary.
                 .isRequestBinary(endpointDef.getArgs().stream()
                         .anyMatch(argumentDef -> argumentDef.getParamType().accept(ParameterTypeVisitor.IS_BODY)
                                 && dealiasingTypeVisitor
                                         .dealias(argumentDef.getType())
                                         .fold(_typeDefinition -> false, type -> type.accept(TypeVisitor.IS_BINARY))))
+                // Set to true iff 1) the de-aliased type is binary or 2) the de-aliased type is optional<binary> (both outer and inner type de-aliased).
                 .isResponseBinary(endpointDef
                         .getReturns()
                         .map(rt -> dealiasingTypeVisitor
