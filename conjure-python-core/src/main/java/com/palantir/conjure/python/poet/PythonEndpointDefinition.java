@@ -225,22 +225,21 @@ public interface PythonEndpointDefinition extends Emittable {
             poetWriter.decreaseIndent();
 
             poetWriter.writeLine();
+            if (isOptionalReturnType()) {
+                poetWriter.writeIndentedLine("if _response.status_code == 204:");
+                poetWriter.increaseIndent();
+                poetWriter.writeIndentedLine("return None");
+                poetWriter.decreaseIndent();
+            }
             if (isResponseBinary()) {
                 poetWriter.writeIndentedLine("_raw = _response.raw");
                 poetWriter.writeIndentedLine("_raw.decode_content = True");
                 poetWriter.writeIndentedLine("return _raw");
             } else if (pythonReturnType().isPresent()) {
                 poetWriter.writeIndentedLine("_decoder = ConjureDecoder()");
-                if (isOptionalReturnType()) {
-                    poetWriter.writeIndentedLine(
-                            "return None if _response.status_code == 204 else _decoder.decode(_response.json()"
-                                    + ", %s, self._return_none_for_unknown_union_types)",
-                            pythonReturnType().get());
-                } else {
-                    poetWriter.writeIndentedLine(
-                            "return _decoder.decode(_response.json(), %s, self._return_none_for_unknown_union_types)",
-                            pythonReturnType().get());
-                }
+                poetWriter.writeIndentedLine(
+                        "return _decoder.decode(_response.json(), %s, self._return_none_for_unknown_union_types)",
+                        pythonReturnType().get());
             } else {
                 poetWriter.writeIndentedLine("return");
             }

@@ -52,6 +52,12 @@ types:
           - value: PYPI
           - value: CONDA
 
+      BinaryAlias:
+        alias: binary
+
+      OptionalStringAlias:
+        alias: optional<string>
+
 services:
   TestService:
     name: Test Service
@@ -98,6 +104,10 @@ services:
              - Safe
         returns: binary
 
+      getAliasedRawData:
+        http: GET /get-aliased-raw
+        returns: BinaryAlias
+
       maybeGetRawData:
         http: GET /datasets/{datasetRid}/raw-maybe
         args:
@@ -107,11 +117,31 @@ services:
              - Safe
         returns: optional<binary>
 
+      maybeGetAliasedRawData:
+        http: GET /datasets/{datasetRid}/raw-maybe-alias
+        args:
+          datasetRid:
+            type: rid
+            markers:
+              - Safe
+        returns: optional<BinaryAlias>
+
+      getAliasedReturn:
+        http: GET /aliased-return
+        returns: OptionalStringAlias
+
       uploadRawData:
         http: POST /datasets/upload-raw
         args:
           input:
             type: binary
+            param-type: body
+
+      uploadAliasedRawData:
+        http: POST /datasets/upload-raw-alias
+        args:
+          input:
+            type: BinaryAlias
             param-type: body
 
       uploadPythonPackage:

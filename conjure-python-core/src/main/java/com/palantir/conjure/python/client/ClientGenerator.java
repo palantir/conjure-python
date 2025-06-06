@@ -31,7 +31,6 @@ import com.palantir.conjure.python.types.ImportTypeVisitor;
 import com.palantir.conjure.python.types.MyPyTypeNameVisitor;
 import com.palantir.conjure.python.types.PythonTypeNameVisitor;
 import com.palantir.conjure.spec.EndpointDefinition;
-import com.palantir.conjure.spec.PrimitiveType;
 import com.palantir.conjure.spec.ServiceDefinition;
 import com.palantir.conjure.spec.Type;
 import com.palantir.conjure.visitor.DealiasingTypeVisitor;
@@ -127,12 +126,24 @@ public final class ClientGenerator {
                 .myPyReturnType(endpointDef.getReturns().map(type -> type.accept(myPyTypeNameVisitor)))
                 .isRequestBinary(endpointDef.getArgs().stream()
                         .anyMatch(argumentDef -> argumentDef.getParamType().accept(ParameterTypeVisitor.IS_BODY)
-                                && argumentDef.getType().accept(TypeVisitor.IS_BINARY)))
+                                && dealiasingTypeVisitor
+                                        .dealias(argumentDef.getType())
+                                        .fold(_typeDefinition -> false, type -> type.accept(TypeVisitor.IS_BINARY))))
                 .isResponseBinary(endpointDef
                         .getReturns()
-                        // We do not need to handle alias of binary since they are treated differently over the wire
-                        .map(rt -> rt.accept(TypeVisitor.IS_PRIMITIVE)
-                                && rt.accept(TypeVisitor.PRIMITIVE).get() == PrimitiveType.Value.BINARY)
+                        .map(rt -> dealiasingTypeVisitor
+                                .dealias(rt)
+                                .fold(
+                                        _typeDefinition -> false,
+                                        type -> type.accept(TypeVisitor.IS_BINARY)
+                                                || (type.accept(TypeVisitor.IS_OPTIONAL)
+                                                        && dealiasingTypeVisitor
+                                                                .dealias(type.accept(TypeVisitor.OPTIONAL)
+                                                                        .getItemType())
+                                                                .fold(
+                                                                        _typeDefinition -> false,
+                                                                        itemType -> itemType.accept(
+                                                                                TypeVisitor.IS_BINARY)))))
                         .orElse(false))
                 .isOptionalReturnType(endpointDef
                         .getReturns()
