@@ -130,8 +130,10 @@ class another_TestService(Service):
             headers=_headers,
             json=_json)
 
+        if _response.status_code == 204:
+            return None
         _decoder = ConjureDecoder()
-        return None if _response.status_code == 204 else _decoder.decode(_response.json(), OptionalTypeWrapper[product_datasets_Dataset], self._return_none_for_unknown_union_types)
+        return _decoder.decode(_response.json(), OptionalTypeWrapper[product_datasets_Dataset], self._return_none_for_unknown_union_types)
 
     def get_raw_data(self, auth_header: str, dataset_rid: str) -> Any:
         _conjure_encoder = ConjureEncoder()
@@ -165,11 +167,42 @@ class another_TestService(Service):
         _raw.decode_content = True
         return _raw
 
+    def get_aliased_raw_data(self, auth_header: str) -> Any:
+        _conjure_encoder = ConjureEncoder()
+
+        _headers: Dict[str, Any] = {
+            'Accept': 'application/octet-stream',
+            'Authorization': auth_header,
+        }
+
+        _params: Dict[str, Any] = {
+        }
+
+        _path_params: Dict[str, str] = {
+        }
+
+        _json: Any = None
+
+        _path = '/catalog/get-aliased-raw'
+        _path = _path.format(**_path_params)
+
+        _response: Response = self._request(
+            'GET',
+            self._uri + _path,
+            params=_params,
+            headers=_headers,
+            stream=True,
+            json=_json)
+
+        _raw = _response.raw
+        _raw.decode_content = True
+        return _raw
+
     def maybe_get_raw_data(self, auth_header: str, dataset_rid: str) -> Optional[Any]:
         _conjure_encoder = ConjureEncoder()
 
         _headers: Dict[str, Any] = {
-            'Accept': 'application/json',
+            'Accept': 'application/octet-stream',
             'Authorization': auth_header,
         }
 
@@ -190,10 +223,79 @@ class another_TestService(Service):
             self._uri + _path,
             params=_params,
             headers=_headers,
+            stream=True,
             json=_json)
 
+        if _response.status_code == 204:
+            return None
+        _raw = _response.raw
+        _raw.decode_content = True
+        return _raw
+
+    def maybe_get_aliased_raw_data(self, auth_header: str, dataset_rid: str) -> Optional[Any]:
+        _conjure_encoder = ConjureEncoder()
+
+        _headers: Dict[str, Any] = {
+            'Accept': 'application/octet-stream',
+            'Authorization': auth_header,
+        }
+
+        _params: Dict[str, Any] = {
+        }
+
+        _path_params: Dict[str, str] = {
+            'datasetRid': quote(str(_conjure_encoder.default(dataset_rid)), safe=''),
+        }
+
+        _json: Any = None
+
+        _path = '/catalog/datasets/{datasetRid}/raw-maybe-alias'
+        _path = _path.format(**_path_params)
+
+        _response: Response = self._request(
+            'GET',
+            self._uri + _path,
+            params=_params,
+            headers=_headers,
+            stream=True,
+            json=_json)
+
+        if _response.status_code == 204:
+            return None
+        _raw = _response.raw
+        _raw.decode_content = True
+        return _raw
+
+    def get_aliased_return(self, auth_header: str) -> Optional[str]:
+        _conjure_encoder = ConjureEncoder()
+
+        _headers: Dict[str, Any] = {
+            'Accept': 'application/json',
+            'Authorization': auth_header,
+        }
+
+        _params: Dict[str, Any] = {
+        }
+
+        _path_params: Dict[str, str] = {
+        }
+
+        _json: Any = None
+
+        _path = '/catalog/aliased-return'
+        _path = _path.format(**_path_params)
+
+        _response: Response = self._request(
+            'GET',
+            self._uri + _path,
+            params=_params,
+            headers=_headers,
+            json=_json)
+
+        if _response.status_code == 204:
+            return None
         _decoder = ConjureDecoder()
-        return None if _response.status_code == 204 else _decoder.decode(_response.json(), OptionalTypeWrapper[BinaryType], self._return_none_for_unknown_union_types)
+        return _decoder.decode(_response.json(), product_OptionalStringAlias, self._return_none_for_unknown_union_types)
 
     def upload_raw_data(self, auth_header: str, input: Any) -> None:
         _conjure_encoder = ConjureEncoder()
@@ -213,6 +315,35 @@ class another_TestService(Service):
         _data: Any = input
 
         _path = '/catalog/datasets/upload-raw'
+        _path = _path.format(**_path_params)
+
+        _response: Response = self._request(
+            'POST',
+            self._uri + _path,
+            params=_params,
+            headers=_headers,
+            data=_data)
+
+        return
+
+    def upload_aliased_raw_data(self, auth_header: str, input: Any) -> None:
+        _conjure_encoder = ConjureEncoder()
+
+        _headers: Dict[str, Any] = {
+            'Accept': 'application/json',
+            'Content-Type': 'application/octet-stream',
+            'Authorization': auth_header,
+        }
+
+        _params: Dict[str, Any] = {
+        }
+
+        _path_params: Dict[str, str] = {
+        }
+
+        _data: Any = input
+
+        _path = '/catalog/datasets/upload-raw-alias'
         _path = _path.format(**_path_params)
 
         _response: Response = self._request(
@@ -349,8 +480,10 @@ class another_TestService(Service):
             headers=_headers,
             json=_json)
 
+        if _response.status_code == 204:
+            return None
         _decoder = ConjureDecoder()
-        return None if _response.status_code == 204 else _decoder.decode(_response.json(), OptionalTypeWrapper[str], self._return_none_for_unknown_union_types)
+        return _decoder.decode(_response.json(), OptionalTypeWrapper[str], self._return_none_for_unknown_union_types)
 
     def test_param(self, auth_header: str, dataset_rid: str) -> Optional[str]:
         _conjure_encoder = ConjureEncoder()
@@ -379,8 +512,10 @@ class another_TestService(Service):
             headers=_headers,
             json=_json)
 
+        if _response.status_code == 204:
+            return None
         _decoder = ConjureDecoder()
-        return None if _response.status_code == 204 else _decoder.decode(_response.json(), OptionalTypeWrapper[str], self._return_none_for_unknown_union_types)
+        return _decoder.decode(_response.json(), OptionalTypeWrapper[str], self._return_none_for_unknown_union_types)
 
     def test_query_params(self, auth_header: str, implicit: str, nonlocal_: int, something: str, list: List[int] = None, set: List[int] = None) -> int:
         list = list if list is not None else []
@@ -2050,11 +2185,15 @@ product_ReferenceAliasExample = product_AnyExample
 
 product_UuidAliasExample = str
 
+product_OptionalStringAlias = OptionalTypeWrapper[str]
+
 product_StringAliasExample = str
 
 with_imports_AliasImportedPrimitiveAlias = product_StringAliasExample
 
 with_imports_AliasImportedReferenceAlias = product_ReferenceAliasExample
+
+product_BinaryAlias = BinaryType
 
 product_DoubleAliasExample = float
 
