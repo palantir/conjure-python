@@ -41,6 +41,7 @@ public final class ConjurePythonCli implements Runnable {
         System.exit(new CommandLine(new ConjurePythonCli()).execute(args));
     }
 
+    @SuppressWarnings("for-rollout:SystemOut")
     @Override
     public void run() {
         CommandLine.usage(this, System.out);
@@ -93,6 +94,7 @@ public final class ConjurePythonCli implements Runnable {
         @SuppressWarnings("StrictUnusedVariable")
         private List<String> unmatchedOptions;
 
+        @SuppressWarnings("for-rollout:ThrowSpecificExceptions")
         @Override
         public void run() {
             CliConfiguration cliConfig = getConfiguration();

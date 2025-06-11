@@ -104,6 +104,7 @@ public final class ConjureSubfolderRunner extends ParentRunner<Path> {
         }
     }
 
+    @SuppressWarnings("for-rollout:UnnecessarilyFullyQualified")
     private Object createTestClassInstance()
             throws InstantiationException, IllegalAccessException, java.lang.reflect.InvocationTargetException {
         return getTestClass().getOnlyConstructor().newInstance();

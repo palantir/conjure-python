@@ -33,6 +33,7 @@ public final class DefaultPythonFileWriter implements PythonFileWriter {
         this.basePath = basePath;
     }
 
+    @SuppressWarnings("for-rollout:ThrowSpecificExceptions")
     @Override
     public void writePythonFile(PythonFile file) {
         Path filePath = basePath.resolve(PythonFileWriter.getPath(file));
