@@ -55,6 +55,7 @@ public interface EnumSnippet extends PythonSnippet {
 
             poetWriter.writeLine();
 
+            @SuppressWarnings("for-rollout:PreferredInterfaceType")
             List<PythonEnumValue> allValues = ImmutableList.<PythonEnumValue>builder()
                     .addAll(values())
                     .add(PythonEnumValue.of("UNKNOWN", Optional.empty()))

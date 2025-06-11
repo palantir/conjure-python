@@ -41,6 +41,7 @@ import java.util.stream.Collectors;
 public final class PythonAliasTopologicalSorter {
     private PythonAliasTopologicalSorter() {}
 
+    @SuppressWarnings("for-rollout:PreferredInterfaceType")
     public static List<AliasSnippet> getSortedSnippets(List<AliasSnippet> snippets) {
         AliasEdgeVisitor aliasEdgeVisitor = new AliasEdgeVisitor(snippets);
         MutableGraph<AliasSnippet> mutableGraph =

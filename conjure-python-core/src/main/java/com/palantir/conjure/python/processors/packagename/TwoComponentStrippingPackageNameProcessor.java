@@ -25,6 +25,7 @@ public final class TwoComponentStrippingPackageNameProcessor implements PackageN
 
     @Override
     public String process(String packageName) {
+        @SuppressWarnings("for-rollout:PreferredInterfaceType")
         List<String> components = ImmutableList.copyOf(Splitter.on('.').split(packageName));
 
         if (components.size() > 2) {

@@ -52,7 +52,7 @@ public final class PythonTypeNameVisitor implements Type.Visitor<String> {
     }
 
     @Override
-    @SuppressWarnings("checkstyle:cyclomaticcomplexity")
+    @SuppressWarnings({"checkstyle:cyclomaticcomplexity", "for-rollout:StatementSwitchToExpressionSwitch"})
     public String visitPrimitive(PrimitiveType type) {
         switch (type.get()) {
             case STRING:

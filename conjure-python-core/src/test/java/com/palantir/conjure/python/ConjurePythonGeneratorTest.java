@@ -57,6 +57,7 @@ public final class ConjurePythonGeneratorTest {
         assertFoldersEqual(expected);
     }
 
+    @SuppressWarnings("for-rollout:SystemOut")
     private void assertFoldersEqual(Path expected) throws IOException {
         Set<Path> generatedButNotExpected = pythonFileWriter.getPythonFiles().keySet();
         long count = 0;
