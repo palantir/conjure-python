@@ -94,7 +94,6 @@ public final class ConjurePythonCli implements Runnable {
         @SuppressWarnings("StrictUnusedVariable")
         private List<String> unmatchedOptions;
 
-        @SuppressWarnings("for-rollout:ThrowSpecificExceptions")
         @Override
         public void run() {
             CliConfiguration cliConfig = getConfiguration();

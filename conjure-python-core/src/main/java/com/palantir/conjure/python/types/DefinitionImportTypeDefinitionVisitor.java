@@ -43,25 +43,21 @@ public final class DefinitionImportTypeDefinitionVisitor implements TypeDefiniti
         this.definitionTypeNameProcessor = definitionTypeNameProcessor;
     }
 
-    @SuppressWarnings("for-rollout:PreferredInterfaceType")
     @Override
     public List<PythonImport> visitAlias(AliasDefinition value) {
         return ImmutableList.of(getTypeImport(value.getTypeName()));
     }
 
-    @SuppressWarnings("for-rollout:PreferredInterfaceType")
     @Override
     public List<PythonImport> visitEnum(EnumDefinition value) {
         return ImmutableList.of(getTypeImport(value.getTypeName()));
     }
 
-    @SuppressWarnings("for-rollout:PreferredInterfaceType")
     @Override
     public List<PythonImport> visitObject(ObjectDefinition value) {
         return ImmutableList.of(getTypeImport(value.getTypeName()));
     }
 
-    @SuppressWarnings("for-rollout:PreferredInterfaceType")
     @Override
     public List<PythonImport> visitUnion(UnionDefinition value) {
         PythonImport unionImport = PythonImport.of(

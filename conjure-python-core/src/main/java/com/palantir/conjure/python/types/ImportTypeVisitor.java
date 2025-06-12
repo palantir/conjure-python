@@ -48,7 +48,6 @@ public final class ImportTypeVisitor implements Type.Visitor<Set<PythonImport>> 
         this.packageNameProcessor = packageNameProcessor;
     }
 
-    @SuppressWarnings("for-rollout:PreferredInterfaceType")
     @Override
     public Set<PythonImport> visitPrimitive(PrimitiveType value) {
         if (value.get() == PrimitiveType.Value.ANY) {
@@ -59,7 +58,6 @@ public final class ImportTypeVisitor implements Type.Visitor<Set<PythonImport>> 
         return ImmutableSet.of();
     }
 
-    @SuppressWarnings("for-rollout:PreferredInterfaceType")
     @Override
     public Set<PythonImport> visitOptional(OptionalType value) {
         return ImmutableSet.<PythonImport>builder()
@@ -69,7 +67,6 @@ public final class ImportTypeVisitor implements Type.Visitor<Set<PythonImport>> 
                 .build();
     }
 
-    @SuppressWarnings("for-rollout:PreferredInterfaceType")
     @Override
     public Set<PythonImport> visitList(ListType value) {
         return ImmutableSet.<PythonImport>builder()
@@ -78,7 +75,6 @@ public final class ImportTypeVisitor implements Type.Visitor<Set<PythonImport>> 
                 .build();
     }
 
-    @SuppressWarnings("for-rollout:PreferredInterfaceType")
     @Override
     public Set<PythonImport> visitSet(SetType value) {
         return ImmutableSet.<PythonImport>builder()
@@ -87,7 +83,6 @@ public final class ImportTypeVisitor implements Type.Visitor<Set<PythonImport>> 
                 .build();
     }
 
-    @SuppressWarnings("for-rollout:PreferredInterfaceType")
     @Override
     public Set<PythonImport> visitMap(MapType value) {
         return ImmutableSet.<PythonImport>builder()
@@ -97,7 +92,6 @@ public final class ImportTypeVisitor implements Type.Visitor<Set<PythonImport>> 
                 .build();
     }
 
-    @SuppressWarnings("for-rollout:PreferredInterfaceType")
     @Override
     public Set<PythonImport> visitReference(TypeName value) {
         if (typeName.getPackage().equals(value.getPackage())) {
