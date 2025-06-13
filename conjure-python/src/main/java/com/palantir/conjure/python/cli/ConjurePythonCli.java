@@ -41,7 +41,6 @@ public final class ConjurePythonCli implements Runnable {
         System.exit(new CommandLine(new ConjurePythonCli()).execute(args));
     }
 
-    @SuppressWarnings("for-rollout:SystemOut")
     @Override
     public void run() {
         CommandLine.usage(this, System.out);
