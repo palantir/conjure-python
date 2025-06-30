@@ -33,7 +33,6 @@ buildscript {
         classpath 'com.palantir.gradle.conjure:gradle-conjure:5.57.0'
         classpath 'com.palantir.gradle.gitversion:gradle-git-version:4.0.0'
         classpath 'com.palantir.gradle.idea-configuration:gradle-idea-configuration:0.4.0'
-        classpath 'gradle.plugin.org.inferred:gradle-processors:3.7.0'
     }
 }
 
@@ -61,7 +60,6 @@ import net.ltgt.gradle.errorprone.CheckSeverity;
 
 subprojects {
     apply plugin: 'java-library'
-    apply plugin: 'org.inferred.processors'
 
 
     tasks.withType(JavaCompile) {
