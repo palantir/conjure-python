@@ -36,6 +36,7 @@ public abstract class BuildConfiguration {
 
     abstract String maxConjureClientVersion();
 
+    @SuppressWarnings("for-rollout:PreferUncheckedIoException")
     static BuildConfiguration load() {
         try {
             return OBJECT_MAPPER.readValue(

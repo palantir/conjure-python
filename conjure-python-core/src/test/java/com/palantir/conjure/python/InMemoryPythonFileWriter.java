@@ -34,6 +34,7 @@ public final class InMemoryPythonFileWriter implements PythonFileWriter {
         return pythonFiles;
     }
 
+    @SuppressWarnings("for-rollout:PreferUncheckedIoException")
     @Override
     public void writePythonFile(PythonFile pythonFile) {
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
