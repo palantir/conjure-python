@@ -21,6 +21,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.palantir.tokens.auth.ImmutablesStyle;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import org.immutables.value.Value;
 
 @Value.Immutable
@@ -36,13 +37,12 @@ public abstract class BuildConfiguration {
 
     abstract String maxConjureClientVersion();
 
-    @SuppressWarnings("for-rollout:PreferUncheckedIoException")
     static BuildConfiguration load() {
         try {
             return OBJECT_MAPPER.readValue(
                     BuildConfiguration.class.getResourceAsStream("/buildConfiguration.yml"), BuildConfiguration.class);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new UncheckedIOException(e);
         }
     }
 }
