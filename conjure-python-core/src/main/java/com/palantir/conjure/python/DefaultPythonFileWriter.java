@@ -21,6 +21,7 @@ import com.palantir.conjure.python.poet.PythonPoetWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -33,7 +34,6 @@ public final class DefaultPythonFileWriter implements PythonFileWriter {
         this.basePath = basePath;
     }
 
-    @SuppressWarnings("for-rollout:PreferUncheckedIoException")
     @Override
     public void writePythonFile(PythonFile file) {
         Path filePath = basePath.resolve(PythonFileWriter.getPath(file));
@@ -45,7 +45,7 @@ public final class DefaultPythonFileWriter implements PythonFileWriter {
                 writer.emit(file);
             }
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new UncheckedIOException(e);
         }
     }
 }
