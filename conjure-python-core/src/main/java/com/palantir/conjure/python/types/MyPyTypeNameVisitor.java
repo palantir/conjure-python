@@ -60,29 +60,16 @@ public final class MyPyTypeNameVisitor implements Type.Visitor<String> {
     }
 
     @Override
-    @SuppressWarnings({"checkstyle:cyclomaticcomplexity", "for-rollout:StatementSwitchToExpressionSwitch"})
+    @SuppressWarnings("checkstyle:cyclomaticcomplexity")
     public String visitPrimitive(PrimitiveType type) {
-        switch (type.get()) {
-            case STRING:
-            case RID:
-            case BEARERTOKEN:
-            case UUID:
-            case DATETIME:
-                return "str";
-            case BOOLEAN:
-                return "bool";
-            case DOUBLE:
-                return "float";
-            case INTEGER:
-            case SAFELONG:
-                return "int";
-            case ANY:
-            case BINARY:
-                return "Any";
-            case UNKNOWN:
-                throw new IllegalArgumentException("unknown type: " + type);
-        }
-        throw new IllegalArgumentException("unknown type: " + type);
+        return switch (type.get()) {
+            case STRING, RID, BEARERTOKEN, UUID, DATETIME -> "str";
+            case BOOLEAN -> "bool";
+            case DOUBLE -> "float";
+            case INTEGER, SAFELONG -> "int";
+            case ANY, BINARY -> "Any";
+            case UNKNOWN -> throw new IllegalArgumentException("unknown type: " + type);
+        };
     }
 
     @Override
