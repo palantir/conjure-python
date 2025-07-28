@@ -16,6 +16,7 @@
 
 package com.palantir.conjure.python.processors.typename;
 
+import com.palantir.conjure.python.processors.PythonIdentifierSanitizer;
 import com.palantir.conjure.python.processors.packagename.PackageNameProcessor;
 import com.palantir.conjure.spec.TypeName;
 
@@ -29,6 +30,9 @@ public final class PackagePrependingTypeNameProcessor implements TypeNameProcess
 
     @Override
     public String process(TypeName typeName) {
-        return String.format("%s_%s", packageNameProcessor.process(typeName.getPackage()), typeName.getName());
+        return String.format(
+                "%s_%s",
+                packageNameProcessor.process(typeName.getPackage()),
+                PythonIdentifierSanitizer.sanitize(typeName.getName()));
     }
 }

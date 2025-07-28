@@ -258,3 +258,7 @@ services:
   TestEmptyService:
     package: com.palantir.another
     endpoints: {}
+
+  True:
+    package: com.palantir.another
+    endpoints: { }

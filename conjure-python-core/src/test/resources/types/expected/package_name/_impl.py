@@ -646,6 +646,15 @@ another_TestService.__qualname__ = "TestService"
 another_TestService.__module__ = "package_name.another"
 
 
+class another_True_(Service):
+    pass
+
+
+another_True_.__name__ = "True_"
+another_True_.__qualname__ = "True_"
+another_True_.__module__ = "package_name.another"
+
+
 class nested_deeply_nested_service_DeeplyNestedService(Service):
 
     def test_endpoint(self, string: str) -> str:
@@ -1271,6 +1280,24 @@ class product_MapExample(ConjureBeanType):
 product_MapExample.__name__ = "MapExample"
 product_MapExample.__qualname__ = "MapExample"
 product_MapExample.__module__ = "package_name.product"
+
+
+class product_None_(ConjureBeanType):
+    """in this mode all columns are set to strings
+    """
+
+    @builtins.classmethod
+    def _fields(cls) -> Dict[str, ConjureFieldDefinition]:
+        return {
+        }
+
+    __slots__: List[str] = []
+
+
+
+product_None_.__name__ = "None_"
+product_None_.__qualname__ = "None_"
+product_None_.__module__ = "package_name.product"
 
 
 class product_OptionalExample(ConjureBeanType):
@@ -2167,8 +2194,6 @@ product_IntegerAliasExample = int
 
 with_imports_AliasImportedObject = product_ManyFieldExample
 
-product_BooleanAliasExample = bool
-
 product_RidAliasExample = str
 
 product_BearerTokenAliasExample = str
@@ -2196,6 +2221,8 @@ with_imports_AliasImportedReferenceAlias = product_ReferenceAliasExample
 product_BinaryAlias = BinaryType
 
 product_DoubleAliasExample = float
+
+product_False_ = bool
 
 product_RecursiveObjectAlias = product_RecursiveObjectExample
 
