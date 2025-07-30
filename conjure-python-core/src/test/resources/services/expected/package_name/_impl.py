@@ -642,6 +642,15 @@ another_TestService.__qualname__ = "TestService"
 another_TestService.__module__ = "package_name.another"
 
 
+class another_True_(Service):
+    pass
+
+
+another_True_.__name__ = "True_"
+another_True_.__qualname__ = "True_"
+another_True_.__module__ = "package_name.another"
+
+
 class product_CreateDatasetRequest(ConjureBeanType):
 
     @builtins.classmethod

@@ -68,7 +68,7 @@ types:
         alias: double
       IntegerAliasExample:
         alias: integer
-      BooleanAliasExample:
+      False:
         alias: boolean
       SafeLongAliasExample:
         alias: safelong
@@ -184,3 +184,6 @@ types:
           float: double
           # the python type for this field is 'float' which conflicts with the variant name above
           double: double
+      None:
+        docs: in this mode all columns are set to strings
+        fields: { }

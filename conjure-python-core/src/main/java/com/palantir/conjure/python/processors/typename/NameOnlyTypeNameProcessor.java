@@ -16,6 +16,7 @@
 
 package com.palantir.conjure.python.processors.typename;
 
+import com.palantir.conjure.python.processors.PythonIdentifierSanitizer;
 import com.palantir.conjure.spec.TypeName;
 
 public enum NameOnlyTypeNameProcessor implements TypeNameProcessor {
@@ -23,6 +24,6 @@ public enum NameOnlyTypeNameProcessor implements TypeNameProcessor {
 
     @Override
     public String process(TypeName typeName) {
-        return typeName.getName();
+        return PythonIdentifierSanitizer.sanitize(typeName.getName());
     }
 }
