@@ -1054,6 +1054,38 @@ product_EmptyObjectExample.__qualname__ = "EmptyObjectExample"
 product_EmptyObjectExample.__module__ = "package_name.product"
 
 
+class product_EmptyUnionTypeExample(ConjureUnionType):
+
+    @builtins.classmethod
+    def _options(cls) -> Dict[str, ConjureFieldDefinition]:
+        return {
+        }
+
+    def __init__(
+            self,
+            type_of_union: Optional[str] = None
+            ) -> None:
+        raise ValueError('an empty union is not allowed')
+
+    def accept(self, visitor) -> Any:
+        if not isinstance(visitor, product_EmptyUnionTypeExampleVisitor):
+            raise ValueError('{} is not an instance of product_EmptyUnionTypeExampleVisitor'.format(visitor.__class__.__name__))
+
+
+product_EmptyUnionTypeExample.__name__ = "EmptyUnionTypeExample"
+product_EmptyUnionTypeExample.__qualname__ = "EmptyUnionTypeExample"
+product_EmptyUnionTypeExample.__module__ = "package_name.product"
+
+
+class product_EmptyUnionTypeExampleVisitor:
+    pass
+
+
+product_EmptyUnionTypeExampleVisitor.__name__ = "EmptyUnionTypeExampleVisitor"
+product_EmptyUnionTypeExampleVisitor.__qualname__ = "EmptyUnionTypeExampleVisitor"
+product_EmptyUnionTypeExampleVisitor.__module__ = "package_name.product"
+
+
 class product_EnumExample(ConjureEnumType):
     """This enumerates the numbers 1:2.
     """

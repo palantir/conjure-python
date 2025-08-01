@@ -140,6 +140,8 @@ types:
         fields:
           field:
             type: string
+      EmptyUnionTypeExample:
+        union: {}
       EmptyObjectExample:
         fields: {}
       AliasAsMapKeyExample:
