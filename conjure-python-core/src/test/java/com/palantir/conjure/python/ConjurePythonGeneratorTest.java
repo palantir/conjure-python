@@ -93,6 +93,7 @@ public final class ConjurePythonGeneratorTest {
         }
     }
 
+    @SuppressWarnings("for-rollout:deprecation")
     private ConjureDefinition getInputDefinitions(Path folder) throws IOException {
         Files.createDirectories(folder);
         try (Stream<Path> walk = Files.walk(folder)) {
