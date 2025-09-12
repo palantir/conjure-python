@@ -33,5 +33,5 @@ and [Intellij IDEA Community Edition](https://www.jetbrains.com/idea/) for Java 
 ### Development tips
 
 - Run `./gradlew checkstyleMain checkstyleTest` locally to make sure your code conforms to the code-style.
-- Run `pipenv run pytest tests/` in `conjure-python-verifier/python` to run all Python tests.
+- Run `pipenv run tox` in `conjure-python-verifier/python` to run all Python tests.
 
