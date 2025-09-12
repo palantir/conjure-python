@@ -44,12 +44,12 @@ task generateVerifierBindings(type: JavaExec, dependsOn: [copyTestCases, ':conju
     classpath = project(':conjure-python').sourceSets.main.runtimeClasspath
     args 'generate',
             "${-> configurations.verificationApi.singleFile}",
-            'python/test',
+            'python/tests',
             '--packageName', 'generated_verifier',
             '--packageVersion', '0.0.0'
 
     inputs.files configurations.verificationApi
-    doLast { delete "python/test/setup.py" }
+    doLast { delete "python/tests/setup.py" }
 }
 
 task generateIntegrationTests(type: JavaExec, dependsOn: [compileIr, ':conjure-python:compileJava']) {
@@ -57,12 +57,12 @@ task generateIntegrationTests(type: JavaExec, dependsOn: [compileIr, ':conjure-p
     classpath = project(':conjure-python').sourceSets.main.runtimeClasspath
     args 'generate',
             'build/conjure-ir/conjure-python-verifier.conjure.json',
-            'python/test',
+            'python/tests',
             '--packageName', 'generated_integration',
             '--packageVersion', '0.0.0'
 
     inputs.files configurations.verificationApi
-    doLast { delete "python/test/setup.py" }
+    doLast { delete "python/tests/setup.py" }
 }
 
 task generate() {
