@@ -32,9 +32,7 @@ setup(
     # requirements files see:
     # https://packaging.python.org/en/latest/requirements.html
     install_requires=[
-        "conjure-python-client=={}".format(
-            os.environ.get("CONJURE_PYTHON_CLIENT_VERSION")
-        ),
+        "conjure-python-client=={}".format(os.environ.get('CONJURE_PYTHON_CLIENT_VERSION')),
         "pyyaml",
     ],
     tests_require=["pytest", "pyyaml"],
