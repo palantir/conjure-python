@@ -58,7 +58,7 @@ org.eclipse.collections:eclipse-collections:11.1.0 (1 constraints: 1b108aa9)
 
 org.eclipse.collections:eclipse-collections-api:11.1.0 (2 constraints: f8229c26)
 
-org.immutables:value:2.11.4 (2 constraints: 001514c2)
+org.immutables:value:2.11.5 (2 constraints: 011543c2)
 
 org.jetbrains:annotations:26.0.2 (3 constraints: 6d32abca)
 
