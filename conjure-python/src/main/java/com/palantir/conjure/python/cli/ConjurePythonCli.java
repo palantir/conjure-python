@@ -92,7 +92,8 @@ public final class ConjurePythonCli implements Runnable {
         @CommandLine.Option(
                 names = "--preserve-field-order",
                 defaultValue = "false",
-                description = "Preserve field order from Conjure definitions. Will become default in v5.0.")
+                description = "Preserve field order from Conjure definitions as opposed to alphabetical order."
+                        + " Will become the default in a future major release.")
         private boolean preserveFieldOrder;
 
         @CommandLine.Unmatched
