@@ -89,6 +89,12 @@ public final class ConjurePythonCli implements Runnable {
                 description = "Generate a `conda_recipe/meta.yaml`")
         private boolean writeCondaRecipe;
 
+        @CommandLine.Option(
+                names = "--preserve-field-order",
+                defaultValue = "false",
+                description = "Preserve field order from Conjure definitions. Will become default in v5.0.")
+        private boolean preserveFieldOrder;
+
         @CommandLine.Unmatched
         @SuppressWarnings("StrictUnusedVariable")
         private List<String> unmatchedOptions;
@@ -118,6 +124,7 @@ public final class ConjurePythonCli implements Runnable {
                     .packageUrl(Optional.ofNullable(packageUrl))
                     .generateRawSource(rawSource)
                     .shouldWriteCondaRecipe(writeCondaRecipe)
+                    .preserveFieldOrder(preserveFieldOrder)
                     .build();
         }
 
@@ -134,6 +141,7 @@ public final class ConjurePythonCli implements Runnable {
                     .packageUrl(cliConfig.packageUrl())
                     .shouldWriteCondaRecipe(cliConfig.shouldWriteCondaRecipe())
                     .generateRawSource(cliConfig.generateRawSource())
+                    .preserveFieldOrder(cliConfig.preserveFieldOrder())
                     .build();
         }
     }

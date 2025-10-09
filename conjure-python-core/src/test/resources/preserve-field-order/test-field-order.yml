@@ -1,0 +1,10 @@
+types:
+  definitions:
+    default-package: test.api
+    objects:
+      FieldOrderTest:
+        fields:
+          zebra: string
+          apple: string
+          middle: string
+          banana: string

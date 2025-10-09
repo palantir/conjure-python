@@ -50,18 +50,21 @@ public final class PythonTypeGenerator {
     private final DealiasingTypeVisitor dealiasingTypeVisitor;
     private final PythonTypeNameVisitor pythonTypeNameVisitor;
     private final MyPyTypeNameVisitor myPyTypeNameVisitor;
+    private final boolean preserveFieldOrder;
 
     public PythonTypeGenerator(
             PackageNameProcessor implPackageNameProcessor,
             TypeNameProcessor implTypeNameProcessor,
             PackageNameProcessor definitionPackageNameProcessor,
             TypeNameProcessor definitionTypeNameProcessor,
-            DealiasingTypeVisitor dealiasingTypeVisitor) {
+            DealiasingTypeVisitor dealiasingTypeVisitor,
+            boolean preserveFieldOrder) {
         this.implPackageNameProcessor = implPackageNameProcessor;
         this.implTypeNameProcessor = implTypeNameProcessor;
         this.definitionPackageNameProcessor = definitionPackageNameProcessor;
         this.definitionTypeNameProcessor = definitionTypeNameProcessor;
         this.dealiasingTypeVisitor = dealiasingTypeVisitor;
+        this.preserveFieldOrder = preserveFieldOrder;
         pythonTypeNameVisitor = new PythonTypeNameVisitor(implTypeNameProcessor);
         myPyTypeNameVisitor = new MyPyTypeNameVisitor(dealiasingTypeVisitor, implTypeNameProcessor);
     }
@@ -127,6 +130,7 @@ public final class PythonTypeGenerator {
                 .addAllImports(imports)
                 .docs(typeDef.getDocs())
                 .fields(fields)
+                .preserveFieldOrder(preserveFieldOrder)
                 .build();
     }
 

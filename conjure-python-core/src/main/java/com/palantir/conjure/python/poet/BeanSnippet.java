@@ -57,6 +57,11 @@ public interface BeanSnippet extends PythonSnippet {
 
     List<PythonField> fields();
 
+    @Value.Default
+    default boolean preserveFieldOrder() {
+        return false;
+    }
+
     @Override
     default void emit(PythonPoetWriter poetWriter) {
         poetWriter.writeIndentedLine(String.format("class %s(ConjureBeanType):", className()));
@@ -97,11 +102,15 @@ public interface BeanSnippet extends PythonSnippet {
 
         // constructor -- only if there are fields
         if (!fields().isEmpty()) {
+            // Sort fields alphabetically unless preserveFieldOrder is true
+            java.util.stream.Stream<PythonField> fieldStream = preserveFieldOrder()
+                    ? fields().stream()
+                    : fields().stream().sorted(new PythonField.PythonFieldComparator());
+
             poetWriter.writeIndentedLine(String.format(
                     "def __init__(self, %s) -> None:",
                     Joiner.on(", ")
-                            .join(fields().stream()
-                                    .sorted(new PythonField.PythonFieldComparator())
+                            .join(fieldStream
                                     .map(field -> {
                                         String name = String.format(
                                                 "%s: %s",

@@ -139,7 +139,8 @@ public final class ConjurePythonGenerator {
                 implTypeNameProcessor,
                 definitionPackageNameProcessor,
                 definitionTypeNameProcessor,
-                dealiasingTypeVisitor);
+                dealiasingTypeVisitor,
+                config.preserveFieldOrder());
         ClientGenerator clientGenerator = new ClientGenerator(
                 implPackageNameProcessor,
                 implTypeNameProcessor,
