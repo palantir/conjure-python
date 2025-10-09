@@ -51,6 +51,7 @@ public final class PreserveFieldOrderTest {
         assertThat(generated.indexOf("middle:")).isLessThan(generated.indexOf("zebra:"));
     }
 
+    @SuppressWarnings("for-rollout:deprecation")
     private String generateCode(boolean preserveFieldOrder) throws IOException {
         ConjurePythonGenerator generator = new ConjurePythonGenerator(GeneratorConfiguration.builder()
                 .packageName("test")
