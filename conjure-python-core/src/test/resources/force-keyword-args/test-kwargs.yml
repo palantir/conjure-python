@@ -1,0 +1,29 @@
+types:
+  definitions:
+    default-package: test.api
+    objects:
+      KeywordArgsTest:
+        fields:
+          name: string
+          age: integer
+          email: string
+      UnionTest:
+        union:
+          foo: string
+          bar: integer
+services:
+  TestService:
+    name: Test Service
+    package: test.api
+    base-path: /test
+    endpoints:
+      testEndpoint:
+        http: POST /test
+        args:
+          param1:
+            type: string
+            param-type: query
+          param2:
+            type: integer
+            param-type: query
+        returns: string

@@ -139,13 +139,15 @@ public final class ConjurePythonGenerator {
                 implTypeNameProcessor,
                 definitionPackageNameProcessor,
                 definitionTypeNameProcessor,
-                dealiasingTypeVisitor);
+                dealiasingTypeVisitor,
+                config.forceKeywordArgs());
         ClientGenerator clientGenerator = new ClientGenerator(
                 implPackageNameProcessor,
                 implTypeNameProcessor,
                 definitionPackageNameProcessor,
                 definitionTypeNameProcessor,
-                dealiasingTypeVisitor);
+                dealiasingTypeVisitor,
+                config.forceKeywordArgs());
 
         List<PythonSnippet> snippets = new ArrayList<>();
         snippets.addAll(conjureDefinition.getTypes().stream()

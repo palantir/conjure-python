@@ -89,6 +89,12 @@ public final class ConjurePythonCli implements Runnable {
                 description = "Generate a `conda_recipe/meta.yaml`")
         private boolean writeCondaRecipe;
 
+        @CommandLine.Option(
+                names = "--force-keyword-args",
+                defaultValue = "false",
+                description = "Force keyword-only arguments in generated constructors. Will become default in v5.0.")
+        private boolean forceKeywordArgs;
+
         @CommandLine.Unmatched
         @SuppressWarnings("StrictUnusedVariable")
         private List<String> unmatchedOptions;
@@ -118,6 +124,7 @@ public final class ConjurePythonCli implements Runnable {
                     .packageUrl(Optional.ofNullable(packageUrl))
                     .generateRawSource(rawSource)
                     .shouldWriteCondaRecipe(writeCondaRecipe)
+                    .forceKeywordArgs(forceKeywordArgs)
                     .build();
         }
 
@@ -134,6 +141,7 @@ public final class ConjurePythonCli implements Runnable {
                     .packageUrl(cliConfig.packageUrl())
                     .shouldWriteCondaRecipe(cliConfig.shouldWriteCondaRecipe())
                     .generateRawSource(cliConfig.generateRawSource())
+                    .forceKeywordArgs(cliConfig.forceKeywordArgs())
                     .build();
         }
     }

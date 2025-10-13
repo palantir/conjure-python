@@ -57,6 +57,11 @@ public interface BeanSnippet extends PythonSnippet {
 
     List<PythonField> fields();
 
+    @Value.Default
+    default boolean forceKeywordArgs() {
+        return false;
+    }
+
     @Override
     default void emit(PythonPoetWriter poetWriter) {
         poetWriter.writeIndentedLine(String.format("class %s(ConjureBeanType):", className()));
@@ -97,22 +102,25 @@ public interface BeanSnippet extends PythonSnippet {
 
         // constructor -- only if there are fields
         if (!fields().isEmpty()) {
-            poetWriter.writeIndentedLine(String.format(
-                    "def __init__(self, %s) -> None:",
-                    Joiner.on(", ")
-                            .join(fields().stream()
-                                    .sorted(new PythonField.PythonFieldComparator())
-                                    .map(field -> {
-                                        String name = String.format(
-                                                "%s: %s",
-                                                PythonIdentifierSanitizer.sanitize(field.attributeName()),
-                                                field.myPyType());
-                                        if (field.isOptional()) {
-                                            return String.format("%s = None", name);
-                                        }
-                                        return name;
-                                    })
-                                    .collect(Collectors.toList()))));
+            String argsString = Joiner.on(", ")
+                    .join(fields().stream()
+                            .sorted(new PythonField.PythonFieldComparator())
+                            .map(field -> {
+                                String name = String.format(
+                                        "%s: %s",
+                                        PythonIdentifierSanitizer.sanitize(field.attributeName()), field.myPyType());
+                                if (field.isOptional()) {
+                                    return String.format("%s = None", name);
+                                }
+                                return name;
+                            })
+                            .collect(Collectors.toList()));
+
+            String initSignature = forceKeywordArgs()
+                    ? String.format("def __init__(self, *, %s) -> None:", argsString)
+                    : String.format("def __init__(self, %s) -> None:", argsString);
+
+            poetWriter.writeIndentedLine(initSignature);
             poetWriter.increaseIndent();
             fields().forEach(field -> poetWriter.writeIndentedLine(String.format(
                     "self._%s = %s",
