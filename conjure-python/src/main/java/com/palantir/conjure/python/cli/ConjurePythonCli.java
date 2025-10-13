@@ -92,7 +92,8 @@ public final class ConjurePythonCli implements Runnable {
         @CommandLine.Option(
                 names = "--force-keyword-args",
                 defaultValue = "false",
-                description = "Force keyword-only arguments in generated constructors. Will become default in v5.0.")
+                description = "Force keyword-only arguments in generated constructors. "
+                        + "Will become default in the next major release.")
         private boolean forceKeywordArgs;
 
         @CommandLine.Unmatched
