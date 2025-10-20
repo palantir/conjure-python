@@ -21,17 +21,46 @@ from urllib.parse import (
     quote,
 )
 
-class product_CategoryNotFound(ConjureHTTPError):
-    """Thrown when the requested recipe category doesn't exist
+class product_Dataset(ConjureBeanType):
+
+    @builtins.classmethod
+    def _fields(cls) -> Dict[str, ConjureFieldDefinition]:
+        return {
+            'file_system_id': ConjureFieldDefinition('fileSystemId', str),
+            'rid': ConjureFieldDefinition('rid', str)
+        }
+
+    __slots__: List[str] = ['_file_system_id', '_rid']
+
+    def __init__(self, file_system_id: str, rid: str) -> None:
+        self._file_system_id = file_system_id
+        self._rid = rid
+
+    @builtins.property
+    def file_system_id(self) -> str:
+        return self._file_system_id
+
+    @builtins.property
+    def rid(self) -> str:
+        return self._rid
+
+
+product_Dataset.__name__ = "Dataset"
+product_Dataset.__qualname__ = "Dataset"
+product_Dataset.__module__ = "package_name.product"
+
+
+class product_DatasetNotFound(ConjureHTTPError):
+    """Thrown when the requested dataset does not exist
     """
 
     ERROR_CODE = "NOT_FOUND"
-    ERROR_NAMESPACE = "Recipe"
-    ERROR_NAME = "CategoryNotFound"
+    ERROR_NAMESPACE = "Datasets"
+    ERROR_NAME = "DatasetNotFound"
 
     class SafeArgs(TypedDict):
-        category_id: str
-        available_categories: List[str]
+        dataset_rid: str
+        available_datasets: List[str]
 
     def __init__(self, base_error: ConjureHTTPError) -> None:
         super().__init__(
@@ -41,42 +70,79 @@ class product_CategoryNotFound(ConjureHTTPError):
             error_instance_id=base_error.error_instance_id,
             parameters=base_error.parameters
         )
-        self.safe_args: product_CategoryNotFound.SafeArgs = {
-            'category_id': base_error.parameters['categoryId'],
-            'available_categories': base_error.parameters['availableCategories']
+        self.safe_args: product_DatasetNotFound.SafeArgs = {
+            'dataset_rid': base_error.parameters['datasetRid'],
+            'available_datasets': base_error.parameters['availableDatasets']
         }
 
     @classmethod
     def is_instance(cls, error: ConjureHTTPError) -> bool:
-        """Check if a ConjureHTTPError is this specific error type"""
         return (
             error.error_name == cls.ERROR_NAME and
             error.error_code == cls.ERROR_CODE
         )
 
     @classmethod
-    def from_error(cls, error: ConjureHTTPError) -> 'product_CategoryNotFound':
-        """Convert a generic ConjureHTTPError to this typed error"""
+    def from_error(cls, error: ConjureHTTPError) -> 'product_DatasetNotFound':
         if not cls.is_instance(error):
             raise ValueError(f"Error is not a {cls.ERROR_NAME}")
         return cls(error)
 
 
-product_CategoryNotFound.__name__ = "CategoryNotFound"
-product_CategoryNotFound.__qualname__ = "CategoryNotFound"
-product_CategoryNotFound.__module__ = "package_name.product"
+product_DatasetNotFound.__name__ = "DatasetNotFound"
+product_DatasetNotFound.__qualname__ = "DatasetNotFound"
+product_DatasetNotFound.__module__ = "package_name.product"
 
 
-class product_InvalidIngredient(ConjureHTTPError):
-    """Thrown when an ingredient is invalid for the recipe
+class product_DatasetService(Service):
+
+    def get_datasets_by_file_system(self, file_system_id: str) -> List["product_Dataset"]:
+        """Get datasets by file system
+        """
+        _conjure_encoder = ConjureEncoder()
+
+        _headers: Dict[str, Any] = {
+            'Accept': 'application/json',
+        }
+
+        _params: Dict[str, Any] = {
+        }
+
+        _path_params: Dict[str, str] = {
+            'fileSystemId': quote(str(_conjure_encoder.default(file_system_id)), safe=''),
+        }
+
+        _json: Any = None
+
+        _path = '/datasets/fileSystem/{fileSystemId}'
+        _path = _path.format(**_path_params)
+
+        _response: Response = self._request(
+            'GET',
+            self._uri + _path,
+            params=_params,
+            headers=_headers,
+            json=_json)
+
+        _decoder = ConjureDecoder()
+        return _decoder.decode(_response.json(), List[product_Dataset], self._return_none_for_unknown_union_types)
+
+
+product_DatasetService.__name__ = "DatasetService"
+product_DatasetService.__qualname__ = "DatasetService"
+product_DatasetService.__module__ = "package_name.product"
+
+
+class product_InvalidFileSystemId(ConjureHTTPError):
+    """Thrown when a file system identifier is invalid
     """
 
     ERROR_CODE = "INVALID_ARGUMENT"
-    ERROR_NAMESPACE = "Recipe"
-    ERROR_NAME = "InvalidIngredient"
+    ERROR_NAMESPACE = "Datasets"
+    ERROR_NAME = "InvalidFileSystemId"
 
     class SafeArgs(TypedDict):
-        ingredient_name: str
+        file_system_id: str
 
     class UnsafeArgs(TypedDict):
         user_id: str
@@ -89,99 +155,29 @@ class product_InvalidIngredient(ConjureHTTPError):
             error_instance_id=base_error.error_instance_id,
             parameters=base_error.parameters
         )
-        self.safe_args: product_InvalidIngredient.SafeArgs = {
-            'ingredient_name': base_error.parameters['ingredientName']
+        self.safe_args: product_InvalidFileSystemId.SafeArgs = {
+            'file_system_id': base_error.parameters['fileSystemId']
         }
-        self.unsafe_args: product_InvalidIngredient.UnsafeArgs = {
+        self.unsafe_args: product_InvalidFileSystemId.UnsafeArgs = {
             'user_id': base_error.parameters['userId']
         }
 
     @classmethod
     def is_instance(cls, error: ConjureHTTPError) -> bool:
-        """Check if a ConjureHTTPError is this specific error type"""
         return (
             error.error_name == cls.ERROR_NAME and
             error.error_code == cls.ERROR_CODE
         )
 
     @classmethod
-    def from_error(cls, error: ConjureHTTPError) -> 'product_InvalidIngredient':
-        """Convert a generic ConjureHTTPError to this typed error"""
+    def from_error(cls, error: ConjureHTTPError) -> 'product_InvalidFileSystemId':
         if not cls.is_instance(error):
             raise ValueError(f"Error is not a {cls.ERROR_NAME}")
         return cls(error)
 
 
-product_InvalidIngredient.__name__ = "InvalidIngredient"
-product_InvalidIngredient.__qualname__ = "InvalidIngredient"
-product_InvalidIngredient.__module__ = "package_name.product"
-
-
-class product_Recipe(ConjureBeanType):
-
-    @builtins.classmethod
-    def _fields(cls) -> Dict[str, ConjureFieldDefinition]:
-        return {
-            'name': ConjureFieldDefinition('name', str),
-            'ingredients': ConjureFieldDefinition('ingredients', List[str])
-        }
-
-    __slots__: List[str] = ['_name', '_ingredients']
-
-    def __init__(self, ingredients: List[str], name: str) -> None:
-        self._name = name
-        self._ingredients = ingredients
-
-    @builtins.property
-    def name(self) -> str:
-        return self._name
-
-    @builtins.property
-    def ingredients(self) -> List[str]:
-        return self._ingredients
-
-
-product_Recipe.__name__ = "Recipe"
-product_Recipe.__qualname__ = "Recipe"
-product_Recipe.__module__ = "package_name.product"
-
-
-class product_RecipeService(Service):
-
-    def get_recipes_by_category(self, category_id: str) -> List["product_Recipe"]:
-        """Get recipes by category
-        """
-        _conjure_encoder = ConjureEncoder()
-
-        _headers: Dict[str, Any] = {
-            'Accept': 'application/json',
-        }
-
-        _params: Dict[str, Any] = {
-        }
-
-        _path_params: Dict[str, str] = {
-            'categoryId': quote(str(_conjure_encoder.default(category_id)), safe=''),
-        }
-
-        _json: Any = None
-
-        _path = '/recipes/category/{categoryId}'
-        _path = _path.format(**_path_params)
-
-        _response: Response = self._request(
-            'GET',
-            self._uri + _path,
-            params=_params,
-            headers=_headers,
-            json=_json)
-
-        _decoder = ConjureDecoder()
-        return _decoder.decode(_response.json(), List[product_Recipe], self._return_none_for_unknown_union_types)
-
-
-product_RecipeService.__name__ = "RecipeService"
-product_RecipeService.__qualname__ = "RecipeService"
-product_RecipeService.__module__ = "package_name.product"
+product_InvalidFileSystemId.__name__ = "InvalidFileSystemId"
+product_InvalidFileSystemId.__qualname__ = "InvalidFileSystemId"
+product_InvalidFileSystemId.__module__ = "package_name.product"
 
 

@@ -148,7 +148,6 @@ public interface ErrorSnippet extends PythonSnippet {
         poetWriter.writeIndentedLine("@classmethod");
         poetWriter.writeIndentedLine("def is_instance(cls, error: ConjureHTTPError) -> bool:");
         poetWriter.increaseIndent();
-        poetWriter.writeIndentedLine("\"\"\"Check if a ConjureHTTPError is this specific error type\"\"\"");
         poetWriter.writeIndentedLine("return (");
         poetWriter.increaseIndent();
         poetWriter.writeIndentedLine("error.error_name == cls.ERROR_NAME and");
@@ -164,7 +163,6 @@ public interface ErrorSnippet extends PythonSnippet {
         poetWriter.writeIndentedLine(
                 String.format("def from_error(cls, error: ConjureHTTPError) -> '%s':", className()));
         poetWriter.increaseIndent();
-        poetWriter.writeIndentedLine("\"\"\"Convert a generic ConjureHTTPError to this typed error\"\"\"");
         poetWriter.writeIndentedLine("if not cls.is_instance(error):");
         poetWriter.increaseIndent();
         poetWriter.writeIndentedLine("raise ValueError(f\"Error is not a {cls.ERROR_NAME}\")");

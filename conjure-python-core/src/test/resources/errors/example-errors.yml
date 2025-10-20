@@ -2,37 +2,37 @@ types:
   definitions:
     default-package: com.palantir.product
     objects:
-      Recipe:
+      Dataset:
         fields:
-          name: string
-          ingredients: list<string>
+          fileSystemId: string
+          rid: string
     errors:
-      CategoryNotFound:
-        namespace: Recipe
+      DatasetNotFound:
+        namespace: Datasets
         code: NOT_FOUND
         safe-args:
-          categoryId: string
-          availableCategories: list<string>
-        docs: Thrown when the requested recipe category doesn't exist
+          datasetRid: string
+          availableDatasets: list<string>
+        docs: Thrown when the requested dataset does not exist
 
-      InvalidIngredient:
-        namespace: Recipe
+      InvalidFileSystemId:
+        namespace: Datasets
         code: INVALID_ARGUMENT
         safe-args:
-          ingredientName: string
+          fileSystemId: string
         unsafe-args:
           userId: string
-        docs: Thrown when an ingredient is invalid for the recipe
+        docs: Thrown when a file system identifier is invalid
 
 services:
-  RecipeService:
-    name: Recipe Service
+  DatasetService:
+    name: Dataset Service
     package: com.palantir.product
-    base-path: /recipes
+    base-path: /datasets
     endpoints:
-      getRecipesByCategory:
-        http: GET /category/{categoryId}
+      getDatasetsByFileSystem:
+        http: GET /fileSystem/{fileSystemId}
         args:
-          categoryId: string
-        returns: list<Recipe>
-        docs: Get recipes by category
+          fileSystemId: string
+        returns: list<Dataset>
+        docs: Get datasets by file system
