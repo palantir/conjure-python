@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2018 Palantir Technologies Inc. All rights reserved.
+ * (c) Copyright 2025 Palantir Technologies Inc. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -73,14 +73,13 @@ public interface ErrorSnippet extends PythonSnippet {
 
         poetWriter.writeLine();
 
-        // TypedDicts for args
+        // args
         emitTypedDict(poetWriter, "SafeArgs", safeArgs());
         emitTypedDict(poetWriter, "UnsafeArgs", unsafeArgs());
 
-        // Constructor
         emitConstructor(poetWriter);
 
-        // Classmethods
+        // classmethods
         emitIsInstanceMethod(poetWriter);
         emitFromErrorMethod(poetWriter);
 
@@ -93,16 +92,17 @@ public interface ErrorSnippet extends PythonSnippet {
     }
 
     default void emitTypedDict(PythonPoetWriter poetWriter, String typedDictName, List<PythonField> fields) {
-        if (!fields.isEmpty()) {
-            poetWriter.writeIndentedLine(String.format("class %s(TypedDict):", typedDictName));
-            poetWriter.increaseIndent();
-            for (PythonField field : fields) {
-                poetWriter.writeIndentedLine(String.format(
-                        "%s: %s", PythonIdentifierSanitizer.sanitize(field.attributeName()), field.myPyType()));
-            }
-            poetWriter.decreaseIndent();
-            poetWriter.writeLine();
+        if (fields.isEmpty()) {
+            return;
         }
+        poetWriter.writeIndentedLine(String.format("class %s(TypedDict):", typedDictName));
+        poetWriter.increaseIndent();
+        for (PythonField field : fields) {
+            poetWriter.writeIndentedLine(String.format(
+                    "%s: %s", PythonIdentifierSanitizer.sanitize(field.attributeName()), field.myPyType()));
+        }
+        poetWriter.decreaseIndent();
+        poetWriter.writeLine();
     }
 
     default void emitConstructor(PythonPoetWriter poetWriter) {
@@ -111,6 +111,7 @@ public interface ErrorSnippet extends PythonSnippet {
         poetWriter.writeIndentedLine("super().__init__(");
         poetWriter.increaseIndent();
         poetWriter.writeIndentedLine("status_code=base_error.status_code,");
+        // TODO(bzhang): Use enum once https://github.com/palantir/conjure-python-client/pull/171 is merged
         poetWriter.writeIndentedLine("error_code=base_error.error_code,");
         poetWriter.writeIndentedLine("error_name=base_error.error_name,");
         poetWriter.writeIndentedLine("error_instance_id=base_error.error_instance_id,");
@@ -127,19 +128,20 @@ public interface ErrorSnippet extends PythonSnippet {
 
     default void emitArgsParser(
             PythonPoetWriter poetWriter, String fieldName, String typeName, List<PythonField> fields) {
-        if (!fields.isEmpty()) {
-            poetWriter.writeIndentedLine(String.format("self.%s: %s.%s = {", fieldName, className(), typeName));
-            poetWriter.increaseIndent();
-            for (int i = 0; i < fields.size(); i++) {
-                PythonField field = fields.get(i);
-                String comma = i == fields.size() - 1 ? "" : ",";
-                poetWriter.writeIndentedLine(String.format(
-                        "'%s': base_error.parameters['%s']%s",
-                        PythonIdentifierSanitizer.sanitize(field.attributeName()), field.jsonIdentifier(), comma));
-            }
-            poetWriter.decreaseIndent();
-            poetWriter.writeIndentedLine("}");
+        if (fields.isEmpty()) {
+            return;
         }
+        poetWriter.writeIndentedLine(String.format("self.%s: %s.%s = {", fieldName, className(), typeName));
+        poetWriter.increaseIndent();
+        for (int i = 0; i < fields.size(); i++) {
+            PythonField field = fields.get(i);
+            String comma = i == fields.size() - 1 ? "" : ",";
+            poetWriter.writeIndentedLine(String.format(
+                    "'%s': base_error.parameters['%s']%s",
+                    PythonIdentifierSanitizer.sanitize(field.attributeName()), field.jsonIdentifier(), comma));
+        }
+        poetWriter.decreaseIndent();
+        poetWriter.writeIndentedLine("}");
     }
 
     default void emitIsInstanceMethod(PythonPoetWriter poetWriter) {
