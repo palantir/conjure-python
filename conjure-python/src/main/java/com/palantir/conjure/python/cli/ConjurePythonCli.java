@@ -89,6 +89,12 @@ public final class ConjurePythonCli implements Runnable {
                 description = "Generate a `conda_recipe/meta.yaml`")
         private boolean writeCondaRecipe;
 
+        @CommandLine.Option(
+                names = "--generateErrorTypes",
+                defaultValue = "false",
+                description = "Generate typed error classes from Conjure error definitions")
+        private boolean generateErrorTypes;
+
         @CommandLine.Unmatched
         @SuppressWarnings("StrictUnusedVariable")
         private List<String> unmatchedOptions;
@@ -118,6 +124,7 @@ public final class ConjurePythonCli implements Runnable {
                     .packageUrl(Optional.ofNullable(packageUrl))
                     .generateRawSource(rawSource)
                     .shouldWriteCondaRecipe(writeCondaRecipe)
+                    .generateErrorTypes(generateErrorTypes)
                     .build();
         }
 
@@ -134,6 +141,7 @@ public final class ConjurePythonCli implements Runnable {
                     .packageUrl(cliConfig.packageUrl())
                     .shouldWriteCondaRecipe(cliConfig.shouldWriteCondaRecipe())
                     .generateRawSource(cliConfig.generateRawSource())
+                    .generateErrorTypes(cliConfig.generateErrorTypes())
                     .build();
         }
     }

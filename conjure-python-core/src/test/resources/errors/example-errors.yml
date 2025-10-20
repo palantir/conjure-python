@@ -1,0 +1,38 @@
+types:
+  definitions:
+    default-package: com.palantir.product
+    objects:
+      Recipe:
+        fields:
+          name: string
+          ingredients: list<string>
+    errors:
+      CategoryNotFound:
+        namespace: Recipe
+        code: NOT_FOUND
+        safe-args:
+          categoryId: string
+          availableCategories: list<string>
+        docs: Thrown when the requested recipe category doesn't exist
+
+      InvalidIngredient:
+        namespace: Recipe
+        code: INVALID_ARGUMENT
+        safe-args:
+          ingredientName: string
+        unsafe-args:
+          userId: string
+        docs: Thrown when an ingredient is invalid for the recipe
+
+services:
+  RecipeService:
+    name: Recipe Service
+    package: com.palantir.product
+    base-path: /recipes
+    endpoints:
+      getRecipesByCategory:
+        http: GET /category/{categoryId}
+        args:
+          categoryId: string
+        returns: list<Recipe>
+        docs: Get recipes by category
