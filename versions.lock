@@ -52,7 +52,7 @@ info.picocli:picocli:4.7.7 (1 constraints: 14051b36)
 
 javax.ws.rs:javax.ws.rs-api:2.1.1 (2 constraints: f915eae9)
 
-org.apache.commons:commons-lang3:3.19.0 (2 constraints: 04145a83)
+org.apache.commons:commons-lang3:3.20.0 (2 constraints: fc13eb81)
 
 org.eclipse.collections:eclipse-collections:11.1.0 (1 constraints: 1b108aa9)
 
