@@ -18,6 +18,8 @@ package com.palantir.conjure.python;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.palantir.conjure.defs.Conjure;
 import com.palantir.conjure.spec.ConjureDefinition;
 import java.io.File;
@@ -35,23 +37,19 @@ import org.junit.runner.RunWith;
 @RunWith(ConjureSubfolderRunner.class)
 public final class ConjurePythonGeneratorTest {
 
-    private final ConjurePythonGenerator generator = new ConjurePythonGenerator(GeneratorConfiguration.builder()
-            .packageName("package-name")
-            .packageVersion("0.0.0")
-            .packageDescription("project description")
-            .minConjureClientVersion("2.8.0")
-            .maxConjureClientVersion("4")
-            .generatorVersion("0.0.0")
-            .shouldWriteCondaRecipe(true)
-            .generateRawSource(false)
-            .build());
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper().registerModule(new Jdk8Module());
+
     private final InMemoryPythonFileWriter pythonFileWriter = new InMemoryPythonFileWriter();
 
     @ConjureSubfolderRunner.Test
     public void assertThatFilesRenderAsExpected(Path folder) throws IOException {
+        Path configPath = folder.resolve("generator-config.json");
+        GeneratorConfiguration config = OBJECT_MAPPER.readValue(configPath.toFile(), GeneratorConfiguration.class);
+        ConjurePythonGenerator generator = new ConjurePythonGenerator(config);
+
         Path expected = folder.resolve("expected");
         ConjureDefinition definition = getInputDefinitions(folder);
-        maybeResetExpectedDirectory(expected, definition);
+        maybeResetExpectedDirectory(expected, definition, generator);
 
         generator.write(definition, pythonFileWriter);
         assertFoldersEqual(expected);
@@ -76,7 +74,8 @@ public final class ConjurePythonGeneratorTest {
         System.out.println(count + " files checked");
     }
 
-    private void maybeResetExpectedDirectory(Path expected, ConjureDefinition definition) throws IOException {
+    private void maybeResetExpectedDirectory(
+            Path expected, ConjureDefinition definition, ConjurePythonGenerator generator) throws IOException {
         if (Boolean.parseBoolean(System.getProperty("recreate", "false"))
                 || !expected.toFile().isDirectory()) {
             Files.createDirectories(expected);

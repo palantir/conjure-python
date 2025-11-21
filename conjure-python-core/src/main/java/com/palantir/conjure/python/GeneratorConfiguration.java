@@ -16,6 +16,7 @@
 
 package com.palantir.conjure.python;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.common.base.Splitter;
 import com.palantir.tokens.auth.ImmutablesStyle;
 import java.util.Optional;
@@ -23,6 +24,7 @@ import org.immutables.value.Value;
 
 @Value.Immutable
 @ImmutablesStyle
+@JsonDeserialize(as = ImmutableGeneratorConfiguration.class)
 public interface GeneratorConfiguration {
 
     Optional<String> packageName();

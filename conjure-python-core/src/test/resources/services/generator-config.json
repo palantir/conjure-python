@@ -1,0 +1,11 @@
+{
+  "packageName": "package-name",
+  "packageVersion": "0.0.0",
+  "packageDescription": "project description",
+  "minConjureClientVersion": "2.8.0",
+  "maxConjureClientVersion": "4",
+  "generatorVersion": "0.0.0",
+  "shouldWriteCondaRecipe": false,
+  "shouldWritePyprojectToml": true,
+  "generateRawSource": false
+}
