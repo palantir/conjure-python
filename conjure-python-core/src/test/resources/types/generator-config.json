@@ -6,5 +6,6 @@
   "maxConjureClientVersion": "4",
   "generatorVersion": "0.0.0",
   "shouldWriteCondaRecipe": true,
+  "shouldWritePyprojectToml": false,
   "generateRawSource": false
 }

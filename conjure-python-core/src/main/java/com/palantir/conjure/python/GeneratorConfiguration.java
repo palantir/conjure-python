@@ -43,10 +43,7 @@ public interface GeneratorConfiguration {
 
     boolean shouldWriteCondaRecipe();
 
-    @Value.Default
-    default boolean shouldWritePyprojectToml() {
-        return false;
-    }
+    boolean shouldWritePyprojectToml();
 
     boolean generateRawSource();
 
