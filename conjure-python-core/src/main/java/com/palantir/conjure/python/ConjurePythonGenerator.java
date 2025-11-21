@@ -30,6 +30,7 @@ import com.palantir.conjure.python.poet.PythonImport;
 import com.palantir.conjure.python.poet.PythonLine;
 import com.palantir.conjure.python.poet.PythonMetaYaml;
 import com.palantir.conjure.python.poet.PythonPackage;
+import com.palantir.conjure.python.poet.PythonPyprojectToml;
 import com.palantir.conjure.python.poet.PythonSetup;
 import com.palantir.conjure.python.poet.PythonSnippet;
 import com.palantir.conjure.python.processors.packagename.CompoundPackageNameProcessor;
@@ -78,7 +79,11 @@ public final class ConjurePythonGenerator {
 
         PythonPackage rootPackage = PythonPackage.of(buildPackageNameProcessor().process(""));
         if (!config.generateRawSource()) {
-            writer.writePythonFile(buildPythonSetupFile(rootPackage));
+            if (config.shouldWritePyprojectToml()) {
+                writer.writePythonFile(buildPyprojectTomlFile(rootPackage));
+            } else {
+                writer.writePythonFile(buildPythonSetupFile(rootPackage));
+            }
             writer.writePythonFile(buildPyTypedFile());
         }
         if (config.shouldWriteCondaRecipe()) {
@@ -270,6 +275,26 @@ public final class ConjurePythonGenerator {
         return PythonFile.builder()
                 .pythonPackage(PythonPackage.of("."))
                 .fileName("setup.py")
+                .addContents(builder.build())
+                .build();
+    }
+
+    private PythonFile buildPyprojectTomlFile(PythonPackage rootPackage) {
+        PythonPyprojectToml.Builder builder = PythonPyprojectToml.builder()
+                .pythonPackage(rootPackage)
+                .putOptions("name", config.packageName().get())
+                .putOptions("version", config.packageVersion().get())
+                .putOptions("requires-python", ">=3.8")
+                .addInstallDependencies("requests")
+                .addInstallDependencies(String.format(
+                        "conjure-python-client>=%s,<%s",
+                        config.minConjureClientVersion(), config.maxConjureClientVersion()));
+        config.packageDescription().ifPresent(value -> builder.putOptions("description", value));
+        config.packageUrl().ifPresent(url -> builder.putUrlOptions("Homepage", url));
+
+        return PythonFile.builder()
+                .pythonPackage(PythonPackage.of("."))
+                .fileName("pyproject.toml")
                 .addContents(builder.build())
                 .build();
     }

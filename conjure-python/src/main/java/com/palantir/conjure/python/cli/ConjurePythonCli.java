@@ -89,6 +89,12 @@ public final class ConjurePythonCli implements Runnable {
                 description = "Generate a `conda_recipe/meta.yaml`")
         private boolean writeCondaRecipe;
 
+        @CommandLine.Option(
+                names = "--writePyprojectToml",
+                defaultValue = "false",
+                description = "Generate a `pyproject.toml` file using Hatch instead of `setup.py`")
+        private boolean writePyprojectToml;
+
         @CommandLine.Unmatched
         @SuppressWarnings("StrictUnusedVariable")
         private List<String> unmatchedOptions;
@@ -118,6 +124,7 @@ public final class ConjurePythonCli implements Runnable {
                     .packageUrl(Optional.ofNullable(packageUrl))
                     .generateRawSource(rawSource)
                     .shouldWriteCondaRecipe(writeCondaRecipe)
+                    .shouldWritePyprojectToml(writePyprojectToml)
                     .build();
         }
 
@@ -133,6 +140,7 @@ public final class ConjurePythonCli implements Runnable {
                     .packageVersion(cliConfig.packageVersion())
                     .packageUrl(cliConfig.packageUrl())
                     .shouldWriteCondaRecipe(cliConfig.shouldWriteCondaRecipe())
+                    .shouldWritePyprojectToml(cliConfig.shouldWritePyprojectToml())
                     .generateRawSource(cliConfig.generateRawSource())
                     .build();
         }

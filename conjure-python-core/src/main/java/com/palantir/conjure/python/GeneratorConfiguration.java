@@ -41,6 +41,8 @@ public interface GeneratorConfiguration {
 
     boolean shouldWriteCondaRecipe();
 
+    boolean shouldWritePyprojectToml();
+
     boolean generateRawSource();
 
     default Optional<String> pythonicPackageName() {
