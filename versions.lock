@@ -22,7 +22,7 @@ com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava (1 c
 
 com.google.j2objc:j2objc-annotations:3.1 (1 constraints: b809f1a0)
 
-com.palantir.common:streams:2.5.0 (1 constraints: 09050436)
+com.palantir.common:streams:2.6.0 (1 constraints: 0a050736)
 
 com.palantir.conjure:conjure-api-objects:4.53.0 (2 constraints: 5f225ee4)
 
@@ -62,7 +62,7 @@ org.immutables:value:2.12.1 (2 constraints: 0515c1c1)
 
 org.jetbrains:annotations:26.0.2 (3 constraints: 6d32abca)
 
-org.jspecify:jspecify:1.0.0 (9 constraints: 2490610d)
+org.jspecify:jspecify:1.0.0 (10 constraints: 749c7aaf)
 
 org.slf4j:slf4j-api:2.0.17 (5 constraints: 4b3c6510)
 
