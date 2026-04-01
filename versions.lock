@@ -2,9 +2,9 @@
 
 com.fasterxml.jackson.core:jackson-annotations:2.21 (6 constraints: 6f5609f2)
 
-com.fasterxml.jackson.core:jackson-core:2.21.1 (4 constraints: 6850e5e6)
+com.fasterxml.jackson.core:jackson-core:2.21.1 (4 constraints: 6950e6e6)
 
-com.fasterxml.jackson.core:jackson-databind:2.21.1 (8 constraints: 0a810aae)
+com.fasterxml.jackson.core:jackson-databind:2.21.1 (8 constraints: 0d818dae)
 
 com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.21.1 (2 constraints: f713fe81)
 
@@ -12,7 +12,7 @@ com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.21.1 (2 constraints: f713
 
 com.google.code.findbugs:jsr305:3.0.2 (2 constraints: 9e14e59e)
 
-com.google.errorprone:error_prone_annotations:2.41.0 (10 constraints: 0889baa4)
+com.google.errorprone:error_prone_annotations:2.43.0 (10 constraints: 0c89aca8)
 
 com.google.guava:failureaccess:1.0.3 (1 constraints: 160ae3b4)
 
@@ -24,29 +24,29 @@ com.google.j2objc:j2objc-annotations:3.1 (1 constraints: b809f1a0)
 
 com.palantir.common:streams:2.8.0 (1 constraints: 0c050d36)
 
-com.palantir.conjure:conjure-api-objects:4.55.0 (2 constraints: 6322d8e4)
+com.palantir.conjure:conjure-api-objects:4.56.0 (2 constraints: 652215e5)
 
-com.palantir.conjure:conjure-generator-common:4.55.0 (2 constraints: 07149c83)
+com.palantir.conjure:conjure-generator-common:4.56.0 (2 constraints: 0914cd83)
 
-com.palantir.conjure.java:conjure-lib:8.70.0 (1 constraints: 711146e5)
+com.palantir.conjure.java:conjure-lib:8.75.0 (1 constraints: 761155e5)
 
-com.palantir.conjure.java.api:errors:2.69.0 (1 constraints: 2910b9a9)
+com.palantir.conjure.java.api:errors:2.70.0 (1 constraints: 2110a2a9)
 
-com.palantir.ri:resource-identifier:2.13.0 (1 constraints: 1e1093a9)
+com.palantir.ri:resource-identifier:2.14.0 (1 constraints: 1f1096a9)
 
-com.palantir.safe-logging:logger:3.11.0 (2 constraints: 891cefeb)
+com.palantir.safe-logging:logger:3.12.0 (2 constraints: 8b1c1fec)
 
-com.palantir.safe-logging:logger-slf4j:3.11.0 (1 constraints: 300e8a50)
+com.palantir.safe-logging:logger-slf4j:3.12.0 (1 constraints: 310e8d50)
 
-com.palantir.safe-logging:logger-spi:3.11.0 (2 constraints: 6f1e0ab0)
+com.palantir.safe-logging:logger-spi:3.12.0 (2 constraints: 711e40b0)
 
-com.palantir.safe-logging:preconditions:3.11.0 (6 constraints: 355f1e15)
+com.palantir.safe-logging:preconditions:3.13.0 (6 constraints: 3c5fb718)
 
-com.palantir.safe-logging:safe-logging:3.11.0 (7 constraints: b471d8d4)
+com.palantir.safe-logging:safe-logging:3.13.0 (7 constraints: bd713ada)
 
-com.palantir.tokens:auth-tokens:3.22.0 (1 constraints: 1f109aa9)
+com.palantir.tokens:auth-tokens:4.2.0 (1 constraints: ee0f7a99)
 
-com.palantir.tritium:tritium-ids:0.124.0 (1 constraints: fa0f8ea6)
+com.palantir.tritium:tritium-ids:0.125.0 (1 constraints: fb0f91a6)
 
 info.picocli:picocli:4.7.7 (1 constraints: 14051b36)
 
@@ -60,9 +60,9 @@ org.eclipse.collections:eclipse-collections-api:13.0.0 (2 constraints: fa22df26)
 
 org.immutables:value:2.12.1 (2 constraints: 0015bec1)
 
-org.jetbrains:annotations:26.1.0 (3 constraints: 6c324dca)
+org.jetbrains:annotations:26.1.0 (3 constraints: 6a321eca)
 
-org.jspecify:jspecify:1.0.0 (10 constraints: 749c7aaf)
+org.jspecify:jspecify:1.0.0 (11 constraints: 43aab9df)
 
 org.slf4j:slf4j-api:2.0.17 (5 constraints: 4b3c6510)
 
@@ -74,9 +74,9 @@ org.yaml:snakeyaml:2.5 (1 constraints: 3f178e10)
 
 [Test dependencies]
 
-com.palantir.conjure:conjure-core:4.55.0 (1 constraints: 40055a3b)
+com.palantir.conjure:conjure-core:4.56.0 (1 constraints: 41055d3b)
 
-com.palantir.syntactic-paths:syntactic-paths:0.13.0 (1 constraints: be0e7066)
+com.palantir.syntactic-paths:syntactic-paths:0.14.0 (1 constraints: bf0e7366)
 
 javax.annotation:javax.annotation-api:1.3.2 (1 constraints: f410f2c2)
 
