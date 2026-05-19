@@ -106,11 +106,11 @@ org.junit.jupiter:junit-jupiter-engine:6.0.3 (1 constraints: 060ecd3b)
 
 org.junit.jupiter:junit-jupiter-params:6.0.3 (1 constraints: 060ecd3b)
 
-org.junit.platform:junit-platform-commons:6.0.3 (2 constraints: d920ad4a)
+org.junit.platform:junit-platform-commons:6.1.0 (2 constraints: d720ad4a)
 
-org.junit.platform:junit-platform-engine:6.0.3 (3 constraints: 6f33fa22)
+org.junit.platform:junit-platform-engine:6.1.0 (3 constraints: 6d339c22)
 
-org.junit.platform:junit-platform-launcher:6.0.3 (1 constraints: 0b050c36)
+org.junit.platform:junit-platform-launcher:6.1.0 (1 constraints: 09050c36)
 
 org.junit.vintage:junit-vintage-engine:6.0.3 (1 constraints: 0b050c36)
 
