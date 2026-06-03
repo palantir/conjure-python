@@ -6,6 +6,7 @@ from conjure_python_client import (
     ConjureEncoder,
     ConjureFieldDefinition,
     ConjureHTTPError,
+    OptionalTypeWrapper,
     Service,
 )
 from requests.adapters import (
@@ -15,6 +16,7 @@ from typing import (
     Any,
     Dict,
     List,
+    Optional,
     TypedDict,
 )
 from urllib.parse import (
@@ -56,7 +58,7 @@ class product_DatasetNotFound(ConjureHTTPError):
 
     ERROR_CODE = "NOT_FOUND"
     ERROR_NAMESPACE = "Datasets"
-    ERROR_NAME = "DatasetNotFound"
+    ERROR_NAME = "Datasets:DatasetNotFound"
 
     class SafeArgs(TypedDict):
         dataset_rid: str
@@ -75,17 +77,17 @@ class product_DatasetNotFound(ConjureHTTPError):
             'available_datasets': base_error.parameters['availableDatasets']
         }
 
-    @classmethod
+    @builtins.classmethod
     def is_instance(cls, error: ConjureHTTPError) -> bool:
         return (
             error.error_name == cls.ERROR_NAME and
             error.error_code == cls.ERROR_CODE
         )
 
-    @classmethod
+    @builtins.classmethod
     def from_error(cls, error: ConjureHTTPError) -> 'product_DatasetNotFound':
         if not cls.is_instance(error):
-            raise ValueError(f"Error is not a {cls.ERROR_NAME}")
+            raise ValueError(f"Error '{error.error_name}' is not a {cls.ERROR_NAME}")
         return cls(error)
 
 
@@ -139,10 +141,11 @@ class product_InvalidFileSystemId(ConjureHTTPError):
 
     ERROR_CODE = "INVALID_ARGUMENT"
     ERROR_NAMESPACE = "Datasets"
-    ERROR_NAME = "InvalidFileSystemId"
+    ERROR_NAME = "Datasets:InvalidFileSystemId"
 
     class SafeArgs(TypedDict):
         file_system_id: str
+        reason: Optional[str]
 
     class UnsafeArgs(TypedDict):
         user_id: str
@@ -156,23 +159,24 @@ class product_InvalidFileSystemId(ConjureHTTPError):
             parameters=base_error.parameters
         )
         self.safe_args: product_InvalidFileSystemId.SafeArgs = {
-            'file_system_id': base_error.parameters['fileSystemId']
+            'file_system_id': base_error.parameters['fileSystemId'],
+            'reason': base_error.parameters.get('reason')
         }
         self.unsafe_args: product_InvalidFileSystemId.UnsafeArgs = {
             'user_id': base_error.parameters['userId']
         }
 
-    @classmethod
+    @builtins.classmethod
     def is_instance(cls, error: ConjureHTTPError) -> bool:
         return (
             error.error_name == cls.ERROR_NAME and
             error.error_code == cls.ERROR_CODE
         )
 
-    @classmethod
+    @builtins.classmethod
     def from_error(cls, error: ConjureHTTPError) -> 'product_InvalidFileSystemId':
         if not cls.is_instance(error):
-            raise ValueError(f"Error is not a {cls.ERROR_NAME}")
+            raise ValueError(f"Error '{error.error_name}' is not a {cls.ERROR_NAME}")
         return cls(error)
 
 

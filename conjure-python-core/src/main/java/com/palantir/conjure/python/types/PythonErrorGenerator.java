@@ -24,11 +24,13 @@ import com.palantir.conjure.python.poet.PythonPackage;
 import com.palantir.conjure.python.processors.packagename.PackageNameProcessor;
 import com.palantir.conjure.python.processors.typename.TypeNameProcessor;
 import com.palantir.conjure.spec.ErrorDefinition;
+import com.palantir.conjure.spec.FieldDefinition;
 import com.palantir.conjure.visitor.DealiasingTypeVisitor;
 import com.palantir.conjure.visitor.TypeVisitor;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public final class PythonErrorGenerator {
 
@@ -59,41 +61,12 @@ public final class PythonErrorGenerator {
         ImportTypeVisitor importVisitor =
                 new ImportTypeVisitor(errorDef.getErrorName(), implTypeNameProcessor, implPackageNameProcessor);
 
-        // Collect imports from all field types
-        Set<PythonImport> imports = errorDef.getSafeArgs().stream()
+        Set<PythonImport> imports = Stream.concat(errorDef.getSafeArgs().stream(), errorDef.getUnsafeArgs().stream())
                 .flatMap(entry -> entry.getType().accept(importVisitor).stream())
                 .collect(Collectors.toSet());
-        imports.addAll(errorDef.getUnsafeArgs().stream()
-                .flatMap(entry -> entry.getType().accept(importVisitor).stream())
-                .collect(Collectors.toSet()));
 
-        // Convert safe args to PythonFields
-        List<PythonField> safeArgs = errorDef.getSafeArgs().stream()
-                .map(entry -> PythonField.builder()
-                        .attributeName(CaseConverter.toCase(entry.getFieldName().get(), CaseConverter.Case.SNAKE_CASE))
-                        .jsonIdentifier(entry.getFieldName().get())
-                        .docs(entry.getDocs())
-                        .pythonType(entry.getType().accept(pythonTypeNameVisitor))
-                        .myPyType(entry.getType().accept(myPyTypeNameVisitor))
-                        .isOptional(dealiasingTypeVisitor
-                                .dealias(entry.getType())
-                                .fold(_typeDefinition -> false, type -> type.accept(TypeVisitor.IS_OPTIONAL)))
-                        .build())
-                .collect(Collectors.toList());
-
-        // Convert unsafe args to PythonFields
-        List<PythonField> unsafeArgs = errorDef.getUnsafeArgs().stream()
-                .map(entry -> PythonField.builder()
-                        .attributeName(CaseConverter.toCase(entry.getFieldName().get(), CaseConverter.Case.SNAKE_CASE))
-                        .jsonIdentifier(entry.getFieldName().get())
-                        .docs(entry.getDocs())
-                        .pythonType(entry.getType().accept(pythonTypeNameVisitor))
-                        .myPyType(entry.getType().accept(myPyTypeNameVisitor))
-                        .isOptional(dealiasingTypeVisitor
-                                .dealias(entry.getType())
-                                .fold(_typeDefinition -> false, type -> type.accept(TypeVisitor.IS_OPTIONAL)))
-                        .build())
-                .collect(Collectors.toList());
+        List<PythonField> safeArgs = toPythonFields(errorDef.getSafeArgs());
+        List<PythonField> unsafeArgs = toPythonFields(errorDef.getUnsafeArgs());
 
         return ErrorSnippet.builder()
                 .pythonPackage(PythonPackage.of(
@@ -110,5 +83,20 @@ public final class PythonErrorGenerator {
                 .safeArgs(safeArgs)
                 .unsafeArgs(unsafeArgs)
                 .build();
+    }
+
+    private List<PythonField> toPythonFields(List<FieldDefinition> fields) {
+        return fields.stream()
+                .map(entry -> PythonField.builder()
+                        .attributeName(CaseConverter.toCase(entry.getFieldName().get(), CaseConverter.Case.SNAKE_CASE))
+                        .jsonIdentifier(entry.getFieldName().get())
+                        .docs(entry.getDocs())
+                        .pythonType(entry.getType().accept(pythonTypeNameVisitor))
+                        .myPyType(entry.getType().accept(myPyTypeNameVisitor))
+                        .isOptional(dealiasingTypeVisitor
+                                .dealias(entry.getType())
+                                .fold(_typeDefinition -> false, type -> type.accept(TypeVisitor.IS_OPTIONAL)))
+                        .build())
+                .collect(Collectors.toList());
     }
 }

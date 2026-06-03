@@ -31,6 +31,7 @@ public interface ErrorSnippet extends PythonSnippet {
                     .moduleSpecifier(ImportTypeVisitor.CONJURE_PYTHON_CLIENT)
                     .addNamedImports(NamedImport.of("ConjureHTTPError"))
                     .build(),
+            PythonImport.of("builtins"),
             PythonImport.builder()
                     .moduleSpecifier(ImportTypeVisitor.TYPING)
                     .addNamedImports(NamedImport.of("TypedDict"))
@@ -66,10 +67,11 @@ public interface ErrorSnippet extends PythonSnippet {
 
         poetWriter.writeLine();
 
-        // Error constants
+        // Error constants. ERROR_NAME is the fully-qualified wire form (e.g. "Datasets:DatasetNotFound") and
+        // matches the value of ConjureHTTPError.error_name parsed from the response body.
         poetWriter.writeIndentedLine(String.format("ERROR_CODE = \"%s\"", errorCode()));
         poetWriter.writeIndentedLine(String.format("ERROR_NAMESPACE = \"%s\"", namespace()));
-        poetWriter.writeIndentedLine(String.format("ERROR_NAME = \"%s\"", definitionName()));
+        poetWriter.writeIndentedLine(String.format("ERROR_NAME = \"%s:%s\"", namespace(), definitionName()));
 
         poetWriter.writeLine();
 
@@ -136,16 +138,18 @@ public interface ErrorSnippet extends PythonSnippet {
         for (int i = 0; i < fields.size(); i++) {
             PythonField field = fields.get(i);
             String comma = i == fields.size() - 1 ? "" : ",";
+            String lookup = field.isOptional()
+                    ? String.format("base_error.parameters.get('%s')", field.jsonIdentifier())
+                    : String.format("base_error.parameters['%s']", field.jsonIdentifier());
             poetWriter.writeIndentedLine(String.format(
-                    "'%s': base_error.parameters['%s']%s",
-                    PythonIdentifierSanitizer.sanitize(field.attributeName()), field.jsonIdentifier(), comma));
+                    "'%s': %s%s", PythonIdentifierSanitizer.sanitize(field.attributeName()), lookup, comma));
         }
         poetWriter.decreaseIndent();
         poetWriter.writeIndentedLine("}");
     }
 
     default void emitIsInstanceMethod(PythonPoetWriter poetWriter) {
-        poetWriter.writeIndentedLine("@classmethod");
+        poetWriter.writeIndentedLine("@builtins.classmethod");
         poetWriter.writeIndentedLine("def is_instance(cls, error: ConjureHTTPError) -> bool:");
         poetWriter.increaseIndent();
         poetWriter.writeIndentedLine("return (");
@@ -159,13 +163,13 @@ public interface ErrorSnippet extends PythonSnippet {
     }
 
     default void emitFromErrorMethod(PythonPoetWriter poetWriter) {
-        poetWriter.writeIndentedLine("@classmethod");
+        poetWriter.writeIndentedLine("@builtins.classmethod");
         poetWriter.writeIndentedLine(
                 String.format("def from_error(cls, error: ConjureHTTPError) -> '%s':", className()));
         poetWriter.increaseIndent();
         poetWriter.writeIndentedLine("if not cls.is_instance(error):");
         poetWriter.increaseIndent();
-        poetWriter.writeIndentedLine("raise ValueError(f\"Error is not a {cls.ERROR_NAME}\")");
+        poetWriter.writeIndentedLine("raise ValueError(f\"Error '{error.error_name}' is not a {cls.ERROR_NAME}\")");
         poetWriter.decreaseIndent();
         poetWriter.writeIndentedLine("return cls(error)");
         poetWriter.decreaseIndent();

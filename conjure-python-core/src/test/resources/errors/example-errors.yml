@@ -20,6 +20,7 @@ types:
         code: INVALID_ARGUMENT
         safe-args:
           fileSystemId: string
+          reason: optional<string>
         unsafe-args:
           userId: string
         docs: Thrown when a file system identifier is invalid
