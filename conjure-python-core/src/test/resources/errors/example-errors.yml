@@ -11,7 +11,9 @@ types:
         namespace: Datasets
         code: NOT_FOUND
         safe-args:
-          datasetRid: string
+          datasetRid:
+            type: string
+            docs: The resource identifier of the dataset that was requested.
           availableDatasets: list<string>
         docs: Thrown when the requested dataset does not exist
 

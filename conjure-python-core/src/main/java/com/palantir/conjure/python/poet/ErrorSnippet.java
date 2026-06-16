@@ -31,11 +31,12 @@ public interface ErrorSnippet extends PythonSnippet {
                     .moduleSpecifier(ImportTypeVisitor.CONJURE_PYTHON_CLIENT)
                     .addNamedImports(NamedImport.of("ConjureHTTPError"))
                     .build(),
-            PythonImport.of("builtins"),
-            PythonImport.builder()
-                    .moduleSpecifier(ImportTypeVisitor.TYPING)
-                    .addNamedImports(NamedImport.of("TypedDict"))
-                    .build());
+            PythonImport.of("builtins"));
+
+    PythonImport TYPED_DICT_IMPORT = PythonImport.builder()
+            .moduleSpecifier(ImportTypeVisitor.TYPING)
+            .addNamedImports(NamedImport.of("TypedDict"))
+            .build();
 
     @Override
     @Value.Default
@@ -113,7 +114,6 @@ public interface ErrorSnippet extends PythonSnippet {
         poetWriter.writeIndentedLine("super().__init__(");
         poetWriter.increaseIndent();
         poetWriter.writeIndentedLine("status_code=base_error.status_code,");
-        // TODO(bzhang): Use enum once https://github.com/palantir/conjure-python-client/pull/171 is merged
         poetWriter.writeIndentedLine("error_code=base_error.error_code,");
         poetWriter.writeIndentedLine("error_name=base_error.error_name,");
         poetWriter.writeIndentedLine("error_instance_id=base_error.error_instance_id,");
@@ -152,12 +152,7 @@ public interface ErrorSnippet extends PythonSnippet {
         poetWriter.writeIndentedLine("@builtins.classmethod");
         poetWriter.writeIndentedLine("def is_instance(cls, error: ConjureHTTPError) -> bool:");
         poetWriter.increaseIndent();
-        poetWriter.writeIndentedLine("return (");
-        poetWriter.increaseIndent();
-        poetWriter.writeIndentedLine("error.error_name == cls.ERROR_NAME and");
-        poetWriter.writeIndentedLine("error.error_code == cls.ERROR_CODE");
-        poetWriter.decreaseIndent();
-        poetWriter.writeIndentedLine(")");
+        poetWriter.writeIndentedLine("return error.error_name == cls.ERROR_NAME");
         poetWriter.decreaseIndent();
         poetWriter.writeLine();
     }

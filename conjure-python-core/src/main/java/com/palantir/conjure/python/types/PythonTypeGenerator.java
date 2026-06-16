@@ -31,6 +31,7 @@ import com.palantir.conjure.python.processors.packagename.PackageNameProcessor;
 import com.palantir.conjure.python.processors.typename.TypeNameProcessor;
 import com.palantir.conjure.spec.AliasDefinition;
 import com.palantir.conjure.spec.EnumDefinition;
+import com.palantir.conjure.spec.FieldDefinition;
 import com.palantir.conjure.spec.ObjectDefinition;
 import com.palantir.conjure.spec.Type;
 import com.palantir.conjure.spec.TypeDefinition;
@@ -95,6 +96,23 @@ public final class PythonTypeGenerator {
         });
     }
 
+    static PythonField generateField(
+            FieldDefinition field,
+            PythonTypeNameVisitor pythonTypeNameVisitor,
+            MyPyTypeNameVisitor myPyTypeNameVisitor,
+            DealiasingTypeVisitor dealiasingTypeVisitor) {
+        return PythonField.builder()
+                .attributeName(CaseConverter.toCase(field.getFieldName().get(), CaseConverter.Case.SNAKE_CASE))
+                .jsonIdentifier(field.getFieldName().get())
+                .docs(field.getDocs())
+                .pythonType(field.getType().accept(pythonTypeNameVisitor))
+                .myPyType(field.getType().accept(myPyTypeNameVisitor))
+                .isOptional(dealiasingTypeVisitor
+                        .dealias(field.getType())
+                        .fold(_typeDefinition -> false, type -> type.accept(TypeVisitor.IS_OPTIONAL)))
+                .build();
+    }
+
     private BeanSnippet generateBean(ObjectDefinition typeDef) {
         ImportTypeVisitor importVisitor =
                 new ImportTypeVisitor(typeDef.getTypeName(), implTypeNameProcessor, implPackageNameProcessor);
@@ -104,16 +122,7 @@ public final class PythonTypeGenerator {
                 .collect(Collectors.toSet());
 
         List<PythonField> fields = typeDef.getFields().stream()
-                .map(entry -> PythonField.builder()
-                        .attributeName(CaseConverter.toCase(entry.getFieldName().get(), CaseConverter.Case.SNAKE_CASE))
-                        .jsonIdentifier(entry.getFieldName().get())
-                        .docs(entry.getDocs())
-                        .pythonType(entry.getType().accept(pythonTypeNameVisitor))
-                        .myPyType(entry.getType().accept(myPyTypeNameVisitor))
-                        .isOptional(dealiasingTypeVisitor
-                                .dealias(entry.getType())
-                                .fold(_typeDefinition -> false, type -> type.accept(TypeVisitor.IS_OPTIONAL)))
-                        .build())
+                .map(entry -> generateField(entry, pythonTypeNameVisitor, myPyTypeNameVisitor, dealiasingTypeVisitor))
                 .collect(Collectors.toList());
 
         return BeanSnippet.builder()

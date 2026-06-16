@@ -79,10 +79,7 @@ class product_DatasetNotFound(ConjureHTTPError):
 
     @builtins.classmethod
     def is_instance(cls, error: ConjureHTTPError) -> bool:
-        return (
-            error.error_name == cls.ERROR_NAME and
-            error.error_code == cls.ERROR_CODE
-        )
+        return error.error_name == cls.ERROR_NAME
 
     @builtins.classmethod
     def from_error(cls, error: ConjureHTTPError) -> 'product_DatasetNotFound':
@@ -168,10 +165,7 @@ class product_InvalidFileSystemId(ConjureHTTPError):
 
     @builtins.classmethod
     def is_instance(cls, error: ConjureHTTPError) -> bool:
-        return (
-            error.error_name == cls.ERROR_NAME and
-            error.error_code == cls.ERROR_CODE
-        )
+        return error.error_name == cls.ERROR_NAME
 
     @builtins.classmethod
     def from_error(cls, error: ConjureHTTPError) -> 'product_InvalidFileSystemId':
