@@ -28,7 +28,7 @@ types:
         docs: Thrown when a file system identifier is invalid
 
       ContextWindowExceeded:
-        namespace: MioMl
+        namespace: Datasets
         code: INVALID_ARGUMENT
         safe-args:
           inputTokenCount: integer

@@ -27,8 +27,8 @@ class product_ContextWindowExceeded(Exception):
     """
 
     ERROR_CODE = "INVALID_ARGUMENT"
-    ERROR_NAMESPACE = "MioMl"
-    ERROR_NAME = "MioMl:ContextWindowExceeded"
+    ERROR_NAMESPACE = "Datasets"
+    ERROR_NAME = "Datasets:ContextWindowExceeded"
 
     def __init__(self, input_token_count: int, max_tokens: int, error_instance_id: Optional[str] = None) -> None:
         self.input_token_count = input_token_count

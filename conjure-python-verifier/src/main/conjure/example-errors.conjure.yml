@@ -3,7 +3,7 @@ types:
     default-package: com.palantir.product
     errors:
       ContextWindowExceeded:
-        namespace: MioMl
+        namespace: Datasets
         code: INVALID_ARGUMENT
         safe-args:
           inputTokenCount: integer

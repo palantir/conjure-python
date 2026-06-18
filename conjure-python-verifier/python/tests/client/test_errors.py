@@ -19,7 +19,7 @@ from generated_integration.product import ContextWindowExceeded, InvalidFileSyst
 def test_encode_produces_serializable_error():
     err = ContextWindowExceeded(input_token_count=5, max_tokens=4096)
     encoded = err.encode()
-    assert encoded["errorName"] == "MioMl:ContextWindowExceeded"
+    assert encoded["errorName"] == "Datasets:ContextWindowExceeded"
     assert encoded["errorCode"] == "INVALID_ARGUMENT"
     assert encoded["parameters"] == {"inputTokenCount": 5, "maxTokens": 4096}
     assert len(encoded["errorInstanceId"]) == 36
