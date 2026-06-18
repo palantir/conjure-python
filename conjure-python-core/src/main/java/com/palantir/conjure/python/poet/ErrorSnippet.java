@@ -29,14 +29,17 @@ public interface ErrorSnippet extends PythonSnippet {
     ImmutableList<PythonImport> DEFAULT_IMPORTS = ImmutableList.of(
             PythonImport.builder()
                     .moduleSpecifier(ImportTypeVisitor.CONJURE_PYTHON_CLIENT)
-                    .addNamedImports(NamedImport.of("ConjureHTTPError"))
+                    .addNamedImports(NamedImport.of("ConjureEncoder"))
+                    .addNamedImports(NamedImport.of("ConjureDecoder"))
                     .build(),
-            PythonImport.of("builtins"));
-
-    PythonImport TYPED_DICT_IMPORT = PythonImport.builder()
-            .moduleSpecifier(ImportTypeVisitor.TYPING)
-            .addNamedImports(NamedImport.of("TypedDict"))
-            .build();
+            PythonImport.of("builtins"),
+            PythonImport.of("uuid"),
+            PythonImport.builder()
+                    .moduleSpecifier(ImportTypeVisitor.TYPING)
+                    .addNamedImports(NamedImport.of("Any"))
+                    .addNamedImports(NamedImport.of("Dict"))
+                    .addNamedImports(NamedImport.of("Optional"))
+                    .build());
 
     @Override
     @Value.Default
@@ -60,33 +63,31 @@ public interface ErrorSnippet extends PythonSnippet {
 
     List<PythonField> unsafeArgs();
 
+    default List<PythonField> args() {
+        return ImmutableList.<PythonField>builder()
+                .addAll(safeArgs())
+                .addAll(unsafeArgs())
+                .build();
+    }
+
     @Override
     default void emit(PythonPoetWriter poetWriter) {
-        poetWriter.writeIndentedLine(String.format("class %s(ConjureHTTPError):", className()));
+        poetWriter.writeIndentedLine(String.format("class %s(Exception):", className()));
         poetWriter.increaseIndent();
         docs().ifPresent(poetWriter::writeDocs);
 
         poetWriter.writeLine();
 
-        // Error constants. ERROR_NAME is the fully-qualified wire form (e.g. "Datasets:DatasetNotFound") and
-        // matches the value of ConjureHTTPError.error_name parsed from the response body.
         poetWriter.writeIndentedLine(String.format("ERROR_CODE = \"%s\"", errorCode()));
         poetWriter.writeIndentedLine(String.format("ERROR_NAMESPACE = \"%s\"", namespace()));
         poetWriter.writeIndentedLine(String.format("ERROR_NAME = \"%s:%s\"", namespace(), definitionName()));
 
         poetWriter.writeLine();
 
-        // args
-        emitTypedDict(poetWriter, "SafeArgs", safeArgs());
-        emitTypedDict(poetWriter, "UnsafeArgs", unsafeArgs());
-
         emitConstructor(poetWriter);
+        emitEncode(poetWriter);
+        emitDecode(poetWriter);
 
-        // classmethods
-        emitIsInstanceMethod(poetWriter);
-        emitFromErrorMethod(poetWriter);
-
-        // end of class def
         poetWriter.decreaseIndent();
         poetWriter.writeLine();
         poetWriter.writeLine();
@@ -94,79 +95,81 @@ public interface ErrorSnippet extends PythonSnippet {
         PythonClassRenamer.renameClass(poetWriter, className(), definitionPackage(), definitionName());
     }
 
-    default void emitTypedDict(PythonPoetWriter poetWriter, String typedDictName, List<PythonField> fields) {
-        if (fields.isEmpty()) {
-            return;
-        }
-        poetWriter.writeIndentedLine(String.format("class %s(TypedDict):", typedDictName));
-        poetWriter.increaseIndent();
-        for (PythonField field : fields) {
-            poetWriter.writeIndentedLine(String.format(
-                    "%s: %s", PythonIdentifierSanitizer.sanitize(field.attributeName()), field.myPyType()));
-        }
-        poetWriter.decreaseIndent();
-        poetWriter.writeLine();
-    }
-
     default void emitConstructor(PythonPoetWriter poetWriter) {
-        poetWriter.writeIndentedLine("def __init__(self, base_error: ConjureHTTPError) -> None:");
-        poetWriter.increaseIndent();
-        poetWriter.writeIndentedLine("super().__init__(");
-        poetWriter.increaseIndent();
-        poetWriter.writeIndentedLine("status_code=base_error.status_code,");
-        poetWriter.writeIndentedLine("error_code=base_error.error_code,");
-        poetWriter.writeIndentedLine("error_name=base_error.error_name,");
-        poetWriter.writeIndentedLine("error_instance_id=base_error.error_instance_id,");
-        poetWriter.writeIndentedLine("parameters=base_error.parameters");
-        poetWriter.decreaseIndent();
-        poetWriter.writeIndentedLine(")");
+        StringBuilder signature = new StringBuilder("def __init__(self");
+        for (PythonField field : args()) {
+            signature.append(String.format(
+                    ", %s: %s", PythonIdentifierSanitizer.sanitize(field.attributeName()), field.myPyType()));
+        }
+        signature.append(", error_instance_id: Optional[str] = None) -> None:");
+        poetWriter.writeIndentedLine(signature.toString());
 
-        emitArgsParser(poetWriter, "safe_args", "SafeArgs", safeArgs());
-        emitArgsParser(poetWriter, "unsafe_args", "UnsafeArgs", unsafeArgs());
-
+        poetWriter.increaseIndent();
+        for (PythonField field : args()) {
+            String attribute = PythonIdentifierSanitizer.sanitize(field.attributeName());
+            poetWriter.writeIndentedLine(String.format("self.%s = %s", attribute, attribute));
+        }
+        poetWriter.writeIndentedLine("self.error_instance_id = error_instance_id if error_instance_id is not None "
+                + "else str(uuid.uuid4())");
+        poetWriter.writeIndentedLine("super().__init__(self.ERROR_NAME)");
         poetWriter.decreaseIndent();
         poetWriter.writeLine();
     }
 
-    default void emitArgsParser(
-            PythonPoetWriter poetWriter, String fieldName, String typeName, List<PythonField> fields) {
-        if (fields.isEmpty()) {
-            return;
-        }
-        poetWriter.writeIndentedLine(String.format("self.%s: %s.%s = {", fieldName, className(), typeName));
+    default void emitEncode(PythonPoetWriter poetWriter) {
+        poetWriter.writeIndentedLine("def encode(self) -> Dict[str, Any]:");
         poetWriter.increaseIndent();
-        for (int i = 0; i < fields.size(); i++) {
-            PythonField field = fields.get(i);
-            String comma = i == fields.size() - 1 ? "" : ",";
-            String lookup = field.isOptional()
-                    ? String.format("base_error.parameters.get('%s')", field.jsonIdentifier())
-                    : String.format("base_error.parameters['%s']", field.jsonIdentifier());
+        poetWriter.writeIndentedLine("return {");
+        poetWriter.increaseIndent();
+        poetWriter.writeIndentedLine("'errorCode': self.ERROR_CODE,");
+        poetWriter.writeIndentedLine("'errorName': self.ERROR_NAME,");
+        poetWriter.writeIndentedLine("'errorInstanceId': self.error_instance_id,");
+        poetWriter.writeIndentedLine("'parameters': {");
+        poetWriter.increaseIndent();
+        List<PythonField> args = args();
+        for (int i = 0; i < args.size(); i++) {
+            PythonField field = args.get(i);
+            String comma = i == args.size() - 1 ? "" : ",";
             poetWriter.writeIndentedLine(String.format(
-                    "'%s': %s%s", PythonIdentifierSanitizer.sanitize(field.attributeName()), lookup, comma));
+                    "'%s': ConjureEncoder.do_encode(self.%s)%s",
+                    field.jsonIdentifier(), PythonIdentifierSanitizer.sanitize(field.attributeName()), comma));
         }
         poetWriter.decreaseIndent();
         poetWriter.writeIndentedLine("}");
-    }
-
-    default void emitIsInstanceMethod(PythonPoetWriter poetWriter) {
-        poetWriter.writeIndentedLine("@builtins.classmethod");
-        poetWriter.writeIndentedLine("def is_instance(cls, error: ConjureHTTPError) -> bool:");
-        poetWriter.increaseIndent();
-        poetWriter.writeIndentedLine("return error.error_name == cls.ERROR_NAME");
+        poetWriter.decreaseIndent();
+        poetWriter.writeIndentedLine("}");
         poetWriter.decreaseIndent();
         poetWriter.writeLine();
     }
 
-    default void emitFromErrorMethod(PythonPoetWriter poetWriter) {
+    default void emitDecode(PythonPoetWriter poetWriter) {
         poetWriter.writeIndentedLine("@builtins.classmethod");
+        poetWriter.writeIndentedLine(String.format("def decode(cls, error: Dict[str, Any]) -> '%s':", className()));
+        poetWriter.increaseIndent();
+        poetWriter.writeIndentedLine("if error.get('errorName') != cls.ERROR_NAME:");
+        poetWriter.increaseIndent();
         poetWriter.writeIndentedLine(
-                String.format("def from_error(cls, error: ConjureHTTPError) -> '%s':", className()));
-        poetWriter.increaseIndent();
-        poetWriter.writeIndentedLine("if not cls.is_instance(error):");
-        poetWriter.increaseIndent();
-        poetWriter.writeIndentedLine("raise ValueError(f\"Error '{error.error_name}' is not a {cls.ERROR_NAME}\")");
+                "raise ValueError(f\"Error '{error.get('errorName')}' is not a {cls.ERROR_NAME}\")");
         poetWriter.decreaseIndent();
-        poetWriter.writeIndentedLine("return cls(error)");
+
+        List<PythonField> args = args();
+        if (!args.isEmpty()) {
+            poetWriter.writeIndentedLine("decoder = ConjureDecoder()");
+            poetWriter.writeIndentedLine("parameters = error.get('parameters', {})");
+        }
+
+        poetWriter.writeIndentedLine("return cls(");
+        poetWriter.increaseIndent();
+        for (PythonField field : args) {
+            poetWriter.writeIndentedLine(String.format(
+                    "%s=decoder.decode(parameters.get('%s'), %s),",
+                    PythonIdentifierSanitizer.sanitize(field.attributeName()),
+                    field.jsonIdentifier(),
+                    field.pythonType()));
+        }
+        poetWriter.writeIndentedLine("error_instance_id=error.get('errorInstanceId')");
+        poetWriter.decreaseIndent();
+        poetWriter.writeIndentedLine(")");
         poetWriter.decreaseIndent();
     }
 

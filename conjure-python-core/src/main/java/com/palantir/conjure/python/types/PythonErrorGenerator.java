@@ -66,7 +66,7 @@ public final class PythonErrorGenerator {
         List<PythonField> safeArgs = toPythonFields(errorDef.getSafeArgs());
         List<PythonField> unsafeArgs = toPythonFields(errorDef.getUnsafeArgs());
 
-        ErrorSnippet.Builder builder = ErrorSnippet.builder()
+        return ErrorSnippet.builder()
                 .pythonPackage(PythonPackage.of(
                         implPackageNameProcessor.process(errorDef.getErrorName().getPackage())))
                 .className(implTypeNameProcessor.process(errorDef.getErrorName()))
@@ -79,13 +79,8 @@ public final class PythonErrorGenerator {
                 .errorCode(errorDef.getCode().toString())
                 .namespace(errorDef.getNamespace().toString())
                 .safeArgs(safeArgs)
-                .unsafeArgs(unsafeArgs);
-
-        if (!safeArgs.isEmpty() || !unsafeArgs.isEmpty()) {
-            builder.addImports(ErrorSnippet.TYPED_DICT_IMPORT);
-        }
-
-        return builder.build();
+                .unsafeArgs(unsafeArgs)
+                .build();
     }
 
     private List<PythonField> toPythonFields(List<FieldDefinition> fields) {

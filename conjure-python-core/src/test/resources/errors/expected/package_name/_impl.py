@@ -5,7 +5,6 @@ from conjure_python_client import (
     ConjureDecoder,
     ConjureEncoder,
     ConjureFieldDefinition,
-    ConjureHTTPError,
     OptionalTypeWrapper,
     Service,
 )
@@ -17,11 +16,54 @@ from typing import (
     Dict,
     List,
     Optional,
-    TypedDict,
 )
 from urllib.parse import (
     quote,
 )
+import uuid
+
+class product_ContextWindowExceeded(Exception):
+    """The supplied input exceeded the model's maximum context window.
+    """
+
+    ERROR_CODE = "INVALID_ARGUMENT"
+    ERROR_NAMESPACE = "MioMl"
+    ERROR_NAME = "MioMl:ContextWindowExceeded"
+
+    def __init__(self, input_token_count: int, max_tokens: int, error_instance_id: Optional[str] = None) -> None:
+        self.input_token_count = input_token_count
+        self.max_tokens = max_tokens
+        self.error_instance_id = error_instance_id if error_instance_id is not None else str(uuid.uuid4())
+        super().__init__(self.ERROR_NAME)
+
+    def encode(self) -> Dict[str, Any]:
+        return {
+            'errorCode': self.ERROR_CODE,
+            'errorName': self.ERROR_NAME,
+            'errorInstanceId': self.error_instance_id,
+            'parameters': {
+                'inputTokenCount': ConjureEncoder.do_encode(self.input_token_count),
+                'maxTokens': ConjureEncoder.do_encode(self.max_tokens)
+            }
+        }
+
+    @builtins.classmethod
+    def decode(cls, error: Dict[str, Any]) -> 'product_ContextWindowExceeded':
+        if error.get('errorName') != cls.ERROR_NAME:
+            raise ValueError(f"Error '{error.get('errorName')}' is not a {cls.ERROR_NAME}")
+        decoder = ConjureDecoder()
+        parameters = error.get('parameters', {})
+        return cls(
+            input_token_count=decoder.decode(parameters.get('inputTokenCount'), int),
+            max_tokens=decoder.decode(parameters.get('maxTokens'), int),
+            error_instance_id=error.get('errorInstanceId')
+        )
+
+
+product_ContextWindowExceeded.__name__ = "ContextWindowExceeded"
+product_ContextWindowExceeded.__qualname__ = "ContextWindowExceeded"
+product_ContextWindowExceeded.__module__ = "package_name.product"
+
 
 class product_Dataset(ConjureBeanType):
 
@@ -52,7 +94,7 @@ product_Dataset.__qualname__ = "Dataset"
 product_Dataset.__module__ = "package_name.product"
 
 
-class product_DatasetNotFound(ConjureHTTPError):
+class product_DatasetNotFound(Exception):
     """Thrown when the requested dataset does not exist
     """
 
@@ -60,32 +102,34 @@ class product_DatasetNotFound(ConjureHTTPError):
     ERROR_NAMESPACE = "Datasets"
     ERROR_NAME = "Datasets:DatasetNotFound"
 
-    class SafeArgs(TypedDict):
-        dataset_rid: str
-        available_datasets: List[str]
+    def __init__(self, dataset_rid: str, available_datasets: List[str], error_instance_id: Optional[str] = None) -> None:
+        self.dataset_rid = dataset_rid
+        self.available_datasets = available_datasets
+        self.error_instance_id = error_instance_id if error_instance_id is not None else str(uuid.uuid4())
+        super().__init__(self.ERROR_NAME)
 
-    def __init__(self, base_error: ConjureHTTPError) -> None:
-        super().__init__(
-            status_code=base_error.status_code,
-            error_code=base_error.error_code,
-            error_name=base_error.error_name,
-            error_instance_id=base_error.error_instance_id,
-            parameters=base_error.parameters
-        )
-        self.safe_args: product_DatasetNotFound.SafeArgs = {
-            'dataset_rid': base_error.parameters['datasetRid'],
-            'available_datasets': base_error.parameters['availableDatasets']
+    def encode(self) -> Dict[str, Any]:
+        return {
+            'errorCode': self.ERROR_CODE,
+            'errorName': self.ERROR_NAME,
+            'errorInstanceId': self.error_instance_id,
+            'parameters': {
+                'datasetRid': ConjureEncoder.do_encode(self.dataset_rid),
+                'availableDatasets': ConjureEncoder.do_encode(self.available_datasets)
+            }
         }
 
     @builtins.classmethod
-    def is_instance(cls, error: ConjureHTTPError) -> bool:
-        return error.error_name == cls.ERROR_NAME
-
-    @builtins.classmethod
-    def from_error(cls, error: ConjureHTTPError) -> 'product_DatasetNotFound':
-        if not cls.is_instance(error):
-            raise ValueError(f"Error '{error.error_name}' is not a {cls.ERROR_NAME}")
-        return cls(error)
+    def decode(cls, error: Dict[str, Any]) -> 'product_DatasetNotFound':
+        if error.get('errorName') != cls.ERROR_NAME:
+            raise ValueError(f"Error '{error.get('errorName')}' is not a {cls.ERROR_NAME}")
+        decoder = ConjureDecoder()
+        parameters = error.get('parameters', {})
+        return cls(
+            dataset_rid=decoder.decode(parameters.get('datasetRid'), str),
+            available_datasets=decoder.decode(parameters.get('availableDatasets'), List[str]),
+            error_instance_id=error.get('errorInstanceId')
+        )
 
 
 product_DatasetNotFound.__name__ = "DatasetNotFound"
@@ -132,7 +176,7 @@ product_DatasetService.__qualname__ = "DatasetService"
 product_DatasetService.__module__ = "package_name.product"
 
 
-class product_InvalidFileSystemId(ConjureHTTPError):
+class product_InvalidFileSystemId(Exception):
     """Thrown when a file system identifier is invalid
     """
 
@@ -140,38 +184,37 @@ class product_InvalidFileSystemId(ConjureHTTPError):
     ERROR_NAMESPACE = "Datasets"
     ERROR_NAME = "Datasets:InvalidFileSystemId"
 
-    class SafeArgs(TypedDict):
-        file_system_id: str
-        reason: Optional[str]
+    def __init__(self, file_system_id: str, reason: Optional[str], user_id: str, error_instance_id: Optional[str] = None) -> None:
+        self.file_system_id = file_system_id
+        self.reason = reason
+        self.user_id = user_id
+        self.error_instance_id = error_instance_id if error_instance_id is not None else str(uuid.uuid4())
+        super().__init__(self.ERROR_NAME)
 
-    class UnsafeArgs(TypedDict):
-        user_id: str
+    def encode(self) -> Dict[str, Any]:
+        return {
+            'errorCode': self.ERROR_CODE,
+            'errorName': self.ERROR_NAME,
+            'errorInstanceId': self.error_instance_id,
+            'parameters': {
+                'fileSystemId': ConjureEncoder.do_encode(self.file_system_id),
+                'reason': ConjureEncoder.do_encode(self.reason),
+                'userId': ConjureEncoder.do_encode(self.user_id)
+            }
+        }
 
-    def __init__(self, base_error: ConjureHTTPError) -> None:
-        super().__init__(
-            status_code=base_error.status_code,
-            error_code=base_error.error_code,
-            error_name=base_error.error_name,
-            error_instance_id=base_error.error_instance_id,
-            parameters=base_error.parameters
+    @builtins.classmethod
+    def decode(cls, error: Dict[str, Any]) -> 'product_InvalidFileSystemId':
+        if error.get('errorName') != cls.ERROR_NAME:
+            raise ValueError(f"Error '{error.get('errorName')}' is not a {cls.ERROR_NAME}")
+        decoder = ConjureDecoder()
+        parameters = error.get('parameters', {})
+        return cls(
+            file_system_id=decoder.decode(parameters.get('fileSystemId'), str),
+            reason=decoder.decode(parameters.get('reason'), OptionalTypeWrapper[str]),
+            user_id=decoder.decode(parameters.get('userId'), str),
+            error_instance_id=error.get('errorInstanceId')
         )
-        self.safe_args: product_InvalidFileSystemId.SafeArgs = {
-            'file_system_id': base_error.parameters['fileSystemId'],
-            'reason': base_error.parameters.get('reason')
-        }
-        self.unsafe_args: product_InvalidFileSystemId.UnsafeArgs = {
-            'user_id': base_error.parameters['userId']
-        }
-
-    @builtins.classmethod
-    def is_instance(cls, error: ConjureHTTPError) -> bool:
-        return error.error_name == cls.ERROR_NAME
-
-    @builtins.classmethod
-    def from_error(cls, error: ConjureHTTPError) -> 'product_InvalidFileSystemId':
-        if not cls.is_instance(error):
-            raise ValueError(f"Error '{error.error_name}' is not a {cls.ERROR_NAME}")
-        return cls(error)
 
 
 product_InvalidFileSystemId.__name__ = "InvalidFileSystemId"

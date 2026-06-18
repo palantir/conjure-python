@@ -27,6 +27,14 @@ types:
           userId: string
         docs: Thrown when a file system identifier is invalid
 
+      ContextWindowExceeded:
+        namespace: MioMl
+        code: INVALID_ARGUMENT
+        safe-args:
+          inputTokenCount: integer
+          maxTokens: integer
+        docs: The supplied input exceeded the model's maximum context window.
+
 services:
   DatasetService:
     name: Dataset Service
