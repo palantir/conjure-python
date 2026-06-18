@@ -59,7 +59,8 @@ task generateIntegrationTests(type: JavaExec, dependsOn: [compileIr, ':conjure-p
             'build/conjure-ir/conjure-python-verifier.conjure.json',
             'python/tests',
             '--packageName', 'generated_integration',
-            '--packageVersion', '0.0.0'
+            '--packageVersion', '0.0.0',
+            '--generateErrorTypes'
 
     inputs.files configurations.verificationApi
     doLast { delete "python/tests/setup.py" }
