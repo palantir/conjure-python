@@ -33,6 +33,7 @@ public interface ErrorSnippet extends PythonSnippet {
                     .addNamedImports(NamedImport.of("ConjureDecoder"))
                     .build(),
             PythonImport.of("builtins"),
+            PythonImport.of("json"),
             PythonImport.of("uuid"),
             PythonImport.builder()
                     .moduleSpecifier(ImportTypeVisitor.TYPING)
@@ -85,6 +86,9 @@ public interface ErrorSnippet extends PythonSnippet {
         poetWriter.writeLine();
 
         emitConstructor(poetWriter);
+        if (!args().isEmpty()) {
+            emitProperties(poetWriter);
+        }
         emitEncode(poetWriter);
         emitDecode(poetWriter);
 
@@ -107,13 +111,25 @@ public interface ErrorSnippet extends PythonSnippet {
         poetWriter.increaseIndent();
         for (PythonField field : args()) {
             String attribute = PythonIdentifierSanitizer.sanitize(field.attributeName());
-            poetWriter.writeIndentedLine(String.format("self.%s = %s", attribute, attribute));
+            poetWriter.writeIndentedLine(String.format("self._%s = %s", attribute, attribute));
         }
         poetWriter.writeIndentedLine("self.error_instance_id = error_instance_id if error_instance_id is not None "
                 + "else str(uuid.uuid4())");
         poetWriter.writeIndentedLine("super().__init__(self.ERROR_NAME)");
         poetWriter.decreaseIndent();
         poetWriter.writeLine();
+    }
+
+    default void emitProperties(PythonPoetWriter poetWriter) {
+        for (PythonField field : args()) {
+            String attribute = PythonIdentifierSanitizer.sanitize(field.attributeName());
+            poetWriter.writeIndentedLine("@builtins.property");
+            poetWriter.writeIndentedLine(String.format("def %s(self) -> %s:", attribute, field.myPyType()));
+            poetWriter.increaseIndent();
+            poetWriter.writeIndentedLine(String.format("return self._%s", attribute));
+            poetWriter.decreaseIndent();
+            poetWriter.writeLine();
+        }
     }
 
     default void emitEncode(PythonPoetWriter poetWriter) {
@@ -143,6 +159,28 @@ public interface ErrorSnippet extends PythonSnippet {
     }
 
     default void emitDecode(PythonPoetWriter poetWriter) {
+        List<PythonField> args = args();
+        if (!args.isEmpty()) {
+            poetWriter.writeIndentedLine("@builtins.staticmethod");
+            poetWriter.writeIndentedLine(
+                    "def _decode_parameter(decoder: ConjureDecoder, value: Any, conjure_type: Any) -> Any:");
+            poetWriter.increaseIndent();
+            poetWriter.writeIndentedLine("if isinstance(value, str) and conjure_type is not str:");
+            poetWriter.increaseIndent();
+            poetWriter.writeIndentedLine("try:");
+            poetWriter.increaseIndent();
+            poetWriter.writeIndentedLine("value = json.loads(value)");
+            poetWriter.decreaseIndent();
+            poetWriter.writeIndentedLine("except (ValueError, TypeError):");
+            poetWriter.increaseIndent();
+            poetWriter.writeIndentedLine("pass");
+            poetWriter.decreaseIndent();
+            poetWriter.decreaseIndent();
+            poetWriter.writeIndentedLine("return decoder.decode(value, conjure_type)");
+            poetWriter.decreaseIndent();
+            poetWriter.writeLine();
+        }
+
         poetWriter.writeIndentedLine("@builtins.classmethod");
         poetWriter.writeIndentedLine(String.format("def decode(cls, error: Dict[str, Any]) -> '%s':", className()));
         poetWriter.increaseIndent();
@@ -152,7 +190,6 @@ public interface ErrorSnippet extends PythonSnippet {
                 "raise ValueError(f\"Error '{error.get('errorName')}' is not a {cls.ERROR_NAME}\")");
         poetWriter.decreaseIndent();
 
-        List<PythonField> args = args();
         if (!args.isEmpty()) {
             poetWriter.writeIndentedLine("decoder = ConjureDecoder()");
             poetWriter.writeIndentedLine("parameters = error.get('parameters', {})");
@@ -162,7 +199,7 @@ public interface ErrorSnippet extends PythonSnippet {
         poetWriter.increaseIndent();
         for (PythonField field : args) {
             poetWriter.writeIndentedLine(String.format(
-                    "%s=decoder.decode(parameters.get('%s'), %s),",
+                    "%s=cls._decode_parameter(decoder, parameters.get('%s'), %s),",
                     PythonIdentifierSanitizer.sanitize(field.attributeName()),
                     field.jsonIdentifier(),
                     field.pythonType()));

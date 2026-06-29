@@ -13,23 +13,24 @@
 # limitations under the License.
 
 import pytest
-from generated_integration.product import ContextWindowExceeded, InvalidFileSystemId
+from conjure_python_client import ConjureDecoder
+from generated_integration.product import DatasetNotFound, InvalidFileSystemId
 
 
 def test_encode_produces_serializable_error():
-    err = ContextWindowExceeded(input_token_count=5, max_tokens=4096)
+    err = DatasetNotFound(dataset_rid="ri.dataset.1", available_datasets=["ri.dataset.2"])
     encoded = err.encode()
-    assert encoded["errorName"] == "Datasets:ContextWindowExceeded"
-    assert encoded["errorCode"] == "INVALID_ARGUMENT"
-    assert encoded["parameters"] == {"inputTokenCount": 5, "maxTokens": 4096}
+    assert encoded["errorName"] == "Datasets:DatasetNotFound"
+    assert encoded["errorCode"] == "NOT_FOUND"
+    assert encoded["parameters"] == {"datasetRid": "ri.dataset.1", "availableDatasets": ["ri.dataset.2"]}
     assert len(encoded["errorInstanceId"]) == 36
 
 
 def test_encode_decode_round_trip():
-    err = ContextWindowExceeded(input_token_count=5, max_tokens=4096)
-    decoded = ContextWindowExceeded.decode(err.encode())
-    assert decoded.input_token_count == 5
-    assert decoded.max_tokens == 4096
+    err = DatasetNotFound(dataset_rid="ri.dataset.1", available_datasets=["ri.dataset.2"])
+    decoded = DatasetNotFound.decode(err.encode())
+    assert decoded.dataset_rid == "ri.dataset.1"
+    assert decoded.available_datasets == ["ri.dataset.2"]
     assert decoded.error_instance_id == err.error_instance_id
 
 
@@ -40,6 +41,13 @@ def test_optional_argument_round_trips_absent_and_present():
     assert InvalidFileSystemId.decode(present.encode()).reason == "bad"
 
 
+def test_decode_recovers_legacy_stringified_scalar_params():
+    decoder = ConjureDecoder()
+    assert DatasetNotFound._decode_parameter(decoder, "5", int) == 5
+    assert DatasetNotFound._decode_parameter(decoder, "true", bool) is True
+    assert DatasetNotFound._decode_parameter(decoder, "ri.dataset.1", str) == "ri.dataset.1"
+
+
 def test_decode_rejects_mismatched_error_name():
     with pytest.raises(ValueError):
-        ContextWindowExceeded.decode({"errorName": "MioMl:SomethingElse", "parameters": {}})
+        DatasetNotFound.decode({"errorName": "Datasets:SomethingElse", "parameters": {}})

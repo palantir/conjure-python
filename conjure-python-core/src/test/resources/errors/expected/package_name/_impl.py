@@ -8,6 +8,7 @@ from conjure_python_client import (
     OptionalTypeWrapper,
     Service,
 )
+import json
 from requests.adapters import (
     Response,
 )
@@ -21,49 +22,6 @@ from urllib.parse import (
     quote,
 )
 import uuid
-
-class product_ContextWindowExceeded(Exception):
-    """The supplied input exceeded the model's maximum context window.
-    """
-
-    ERROR_CODE = "INVALID_ARGUMENT"
-    ERROR_NAMESPACE = "Datasets"
-    ERROR_NAME = "Datasets:ContextWindowExceeded"
-
-    def __init__(self, input_token_count: int, max_tokens: int, error_instance_id: Optional[str] = None) -> None:
-        self.input_token_count = input_token_count
-        self.max_tokens = max_tokens
-        self.error_instance_id = error_instance_id if error_instance_id is not None else str(uuid.uuid4())
-        super().__init__(self.ERROR_NAME)
-
-    def encode(self) -> Dict[str, Any]:
-        return {
-            'errorCode': self.ERROR_CODE,
-            'errorName': self.ERROR_NAME,
-            'errorInstanceId': self.error_instance_id,
-            'parameters': {
-                'inputTokenCount': ConjureEncoder.do_encode(self.input_token_count),
-                'maxTokens': ConjureEncoder.do_encode(self.max_tokens)
-            }
-        }
-
-    @builtins.classmethod
-    def decode(cls, error: Dict[str, Any]) -> 'product_ContextWindowExceeded':
-        if error.get('errorName') != cls.ERROR_NAME:
-            raise ValueError(f"Error '{error.get('errorName')}' is not a {cls.ERROR_NAME}")
-        decoder = ConjureDecoder()
-        parameters = error.get('parameters', {})
-        return cls(
-            input_token_count=decoder.decode(parameters.get('inputTokenCount'), int),
-            max_tokens=decoder.decode(parameters.get('maxTokens'), int),
-            error_instance_id=error.get('errorInstanceId')
-        )
-
-
-product_ContextWindowExceeded.__name__ = "ContextWindowExceeded"
-product_ContextWindowExceeded.__qualname__ = "ContextWindowExceeded"
-product_ContextWindowExceeded.__module__ = "package_name.product"
-
 
 class product_Dataset(ConjureBeanType):
 
@@ -103,10 +61,18 @@ class product_DatasetNotFound(Exception):
     ERROR_NAME = "Datasets:DatasetNotFound"
 
     def __init__(self, dataset_rid: str, available_datasets: List[str], error_instance_id: Optional[str] = None) -> None:
-        self.dataset_rid = dataset_rid
-        self.available_datasets = available_datasets
+        self._dataset_rid = dataset_rid
+        self._available_datasets = available_datasets
         self.error_instance_id = error_instance_id if error_instance_id is not None else str(uuid.uuid4())
         super().__init__(self.ERROR_NAME)
+
+    @builtins.property
+    def dataset_rid(self) -> str:
+        return self._dataset_rid
+
+    @builtins.property
+    def available_datasets(self) -> List[str]:
+        return self._available_datasets
 
     def encode(self) -> Dict[str, Any]:
         return {
@@ -119,6 +85,15 @@ class product_DatasetNotFound(Exception):
             }
         }
 
+    @builtins.staticmethod
+    def _decode_parameter(decoder: ConjureDecoder, value: Any, conjure_type: Any) -> Any:
+        if isinstance(value, str) and conjure_type is not str:
+            try:
+                value = json.loads(value)
+            except (ValueError, TypeError):
+                pass
+        return decoder.decode(value, conjure_type)
+
     @builtins.classmethod
     def decode(cls, error: Dict[str, Any]) -> 'product_DatasetNotFound':
         if error.get('errorName') != cls.ERROR_NAME:
@@ -126,8 +101,8 @@ class product_DatasetNotFound(Exception):
         decoder = ConjureDecoder()
         parameters = error.get('parameters', {})
         return cls(
-            dataset_rid=decoder.decode(parameters.get('datasetRid'), str),
-            available_datasets=decoder.decode(parameters.get('availableDatasets'), List[str]),
+            dataset_rid=cls._decode_parameter(decoder, parameters.get('datasetRid'), str),
+            available_datasets=cls._decode_parameter(decoder, parameters.get('availableDatasets'), List[str]),
             error_instance_id=error.get('errorInstanceId')
         )
 
@@ -185,11 +160,23 @@ class product_InvalidFileSystemId(Exception):
     ERROR_NAME = "Datasets:InvalidFileSystemId"
 
     def __init__(self, file_system_id: str, reason: Optional[str], user_id: str, error_instance_id: Optional[str] = None) -> None:
-        self.file_system_id = file_system_id
-        self.reason = reason
-        self.user_id = user_id
+        self._file_system_id = file_system_id
+        self._reason = reason
+        self._user_id = user_id
         self.error_instance_id = error_instance_id if error_instance_id is not None else str(uuid.uuid4())
         super().__init__(self.ERROR_NAME)
+
+    @builtins.property
+    def file_system_id(self) -> str:
+        return self._file_system_id
+
+    @builtins.property
+    def reason(self) -> Optional[str]:
+        return self._reason
+
+    @builtins.property
+    def user_id(self) -> str:
+        return self._user_id
 
     def encode(self) -> Dict[str, Any]:
         return {
@@ -203,6 +190,15 @@ class product_InvalidFileSystemId(Exception):
             }
         }
 
+    @builtins.staticmethod
+    def _decode_parameter(decoder: ConjureDecoder, value: Any, conjure_type: Any) -> Any:
+        if isinstance(value, str) and conjure_type is not str:
+            try:
+                value = json.loads(value)
+            except (ValueError, TypeError):
+                pass
+        return decoder.decode(value, conjure_type)
+
     @builtins.classmethod
     def decode(cls, error: Dict[str, Any]) -> 'product_InvalidFileSystemId':
         if error.get('errorName') != cls.ERROR_NAME:
@@ -210,9 +206,9 @@ class product_InvalidFileSystemId(Exception):
         decoder = ConjureDecoder()
         parameters = error.get('parameters', {})
         return cls(
-            file_system_id=decoder.decode(parameters.get('fileSystemId'), str),
-            reason=decoder.decode(parameters.get('reason'), OptionalTypeWrapper[str]),
-            user_id=decoder.decode(parameters.get('userId'), str),
+            file_system_id=cls._decode_parameter(decoder, parameters.get('fileSystemId'), str),
+            reason=cls._decode_parameter(decoder, parameters.get('reason'), OptionalTypeWrapper[str]),
+            user_id=cls._decode_parameter(decoder, parameters.get('userId'), str),
             error_instance_id=error.get('errorInstanceId')
         )
 

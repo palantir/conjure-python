@@ -2,13 +2,13 @@ types:
   definitions:
     default-package: com.palantir.product
     errors:
-      ContextWindowExceeded:
+      DatasetNotFound:
         namespace: Datasets
-        code: INVALID_ARGUMENT
+        code: NOT_FOUND
         safe-args:
-          inputTokenCount: integer
-          maxTokens: integer
-        docs: The supplied input exceeded the model's maximum context window.
+          datasetRid: string
+          availableDatasets: list<string>
+        docs: Thrown when the requested dataset does not exist
 
       InvalidFileSystemId:
         namespace: Datasets
