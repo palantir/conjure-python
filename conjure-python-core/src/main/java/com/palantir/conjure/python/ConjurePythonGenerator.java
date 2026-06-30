@@ -74,6 +74,7 @@ public final class ConjurePythonGenerator {
     }
 
     public void write(ConjureDefinition conjureDefinition, PythonFileWriter writer) {
+        GeneratorInputValidator.validate(conjureDefinition);
         generate(conjureDefinition).forEach(writer::writePythonFile);
 
         PythonPackage rootPackage = PythonPackage.of(buildPackageNameProcessor().process(""));
