@@ -13,7 +13,6 @@
 # limitations under the License.
 
 import pytest
-from conjure_python_client import ConjureDecoder
 from generated_integration.product import DatasetNotFound, InvalidFileSystemId
 
 
@@ -39,13 +38,6 @@ def test_optional_argument_round_trips_absent_and_present():
     assert InvalidFileSystemId.decode(absent.encode()).reason is None
     present = InvalidFileSystemId(file_system_id="fs1", reason="bad", user_id="u1")
     assert InvalidFileSystemId.decode(present.encode()).reason == "bad"
-
-
-def test_decode_recovers_legacy_stringified_scalar_params():
-    decoder = ConjureDecoder()
-    assert DatasetNotFound._decode_parameter(decoder, "5", int) == 5
-    assert DatasetNotFound._decode_parameter(decoder, "true", bool) is True
-    assert DatasetNotFound._decode_parameter(decoder, "ri.dataset.1", str) == "ri.dataset.1"
 
 
 def test_decode_rejects_mismatched_error_name():

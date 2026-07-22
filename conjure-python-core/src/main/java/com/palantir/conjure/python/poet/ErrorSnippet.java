@@ -33,7 +33,6 @@ public interface ErrorSnippet extends PythonSnippet {
                     .addNamedImports(NamedImport.of("ConjureDecoder"))
                     .build(),
             PythonImport.of("builtins"),
-            PythonImport.of("json"),
             PythonImport.of("uuid"),
             PythonImport.builder()
                     .moduleSpecifier(ImportTypeVisitor.TYPING)
@@ -160,27 +159,6 @@ public interface ErrorSnippet extends PythonSnippet {
 
     default void emitDecode(PythonPoetWriter poetWriter) {
         List<PythonField> args = args();
-        if (!args.isEmpty()) {
-            poetWriter.writeIndentedLine("@builtins.staticmethod");
-            poetWriter.writeIndentedLine(
-                    "def _decode_parameter(decoder: ConjureDecoder, value: Any, conjure_type: Any) -> Any:");
-            poetWriter.increaseIndent();
-            poetWriter.writeIndentedLine("if isinstance(value, str) and conjure_type is not str:");
-            poetWriter.increaseIndent();
-            poetWriter.writeIndentedLine("try:");
-            poetWriter.increaseIndent();
-            poetWriter.writeIndentedLine("value = json.loads(value)");
-            poetWriter.decreaseIndent();
-            poetWriter.writeIndentedLine("except (ValueError, TypeError):");
-            poetWriter.increaseIndent();
-            poetWriter.writeIndentedLine("pass");
-            poetWriter.decreaseIndent();
-            poetWriter.decreaseIndent();
-            poetWriter.writeIndentedLine("return decoder.decode(value, conjure_type)");
-            poetWriter.decreaseIndent();
-            poetWriter.writeLine();
-        }
-
         poetWriter.writeIndentedLine("@builtins.classmethod");
         poetWriter.writeIndentedLine(String.format("def decode(cls, error: Dict[str, Any]) -> '%s':", className()));
         poetWriter.increaseIndent();
@@ -199,7 +177,7 @@ public interface ErrorSnippet extends PythonSnippet {
         poetWriter.increaseIndent();
         for (PythonField field : args) {
             poetWriter.writeIndentedLine(String.format(
-                    "%s=cls._decode_parameter(decoder, parameters.get('%s'), %s),",
+                    "%s=decoder.decode(parameters.get('%s'), %s),",
                     PythonIdentifierSanitizer.sanitize(field.attributeName()),
                     field.jsonIdentifier(),
                     field.pythonType()));

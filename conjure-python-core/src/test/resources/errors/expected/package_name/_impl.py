@@ -8,7 +8,6 @@ from conjure_python_client import (
     OptionalTypeWrapper,
     Service,
 )
-import json
 from requests.adapters import (
     Response,
 )
@@ -85,15 +84,6 @@ class product_DatasetNotFound(Exception):
             }
         }
 
-    @builtins.staticmethod
-    def _decode_parameter(decoder: ConjureDecoder, value: Any, conjure_type: Any) -> Any:
-        if isinstance(value, str) and conjure_type is not str:
-            try:
-                value = json.loads(value)
-            except (ValueError, TypeError):
-                pass
-        return decoder.decode(value, conjure_type)
-
     @builtins.classmethod
     def decode(cls, error: Dict[str, Any]) -> 'product_DatasetNotFound':
         if error.get('errorName') != cls.ERROR_NAME:
@@ -101,8 +91,8 @@ class product_DatasetNotFound(Exception):
         decoder = ConjureDecoder()
         parameters = error.get('parameters', {})
         return cls(
-            dataset_rid=cls._decode_parameter(decoder, parameters.get('datasetRid'), str),
-            available_datasets=cls._decode_parameter(decoder, parameters.get('availableDatasets'), List[str]),
+            dataset_rid=decoder.decode(parameters.get('datasetRid'), str),
+            available_datasets=decoder.decode(parameters.get('availableDatasets'), List[str]),
             error_instance_id=error.get('errorInstanceId')
         )
 
@@ -190,15 +180,6 @@ class product_InvalidFileSystemId(Exception):
             }
         }
 
-    @builtins.staticmethod
-    def _decode_parameter(decoder: ConjureDecoder, value: Any, conjure_type: Any) -> Any:
-        if isinstance(value, str) and conjure_type is not str:
-            try:
-                value = json.loads(value)
-            except (ValueError, TypeError):
-                pass
-        return decoder.decode(value, conjure_type)
-
     @builtins.classmethod
     def decode(cls, error: Dict[str, Any]) -> 'product_InvalidFileSystemId':
         if error.get('errorName') != cls.ERROR_NAME:
@@ -206,9 +187,9 @@ class product_InvalidFileSystemId(Exception):
         decoder = ConjureDecoder()
         parameters = error.get('parameters', {})
         return cls(
-            file_system_id=cls._decode_parameter(decoder, parameters.get('fileSystemId'), str),
-            reason=cls._decode_parameter(decoder, parameters.get('reason'), OptionalTypeWrapper[str]),
-            user_id=cls._decode_parameter(decoder, parameters.get('userId'), str),
+            file_system_id=decoder.decode(parameters.get('fileSystemId'), str),
+            reason=decoder.decode(parameters.get('reason'), OptionalTypeWrapper[str]),
+            user_id=decoder.decode(parameters.get('userId'), str),
             error_instance_id=error.get('errorInstanceId')
         )
 
