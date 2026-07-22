@@ -61,6 +61,11 @@ public interface UnionSnippet extends PythonSnippet {
 
     List<PythonField> options();
 
+    @Value.Default
+    default boolean forceKeywordArgs() {
+        return false;
+    }
+
     /** The name of the option as a constructor / method parameter. */
     static String parameterName(PythonField option) {
         return PythonIdentifierSanitizer.sanitize(option.attributeName());
@@ -120,6 +125,9 @@ public interface UnionSnippet extends PythonSnippet {
             poetWriter.increaseIndent();
             poetWriter.increaseIndent();
             poetWriter.writeIndentedLine("self,");
+            if (forceKeywordArgs() && !options().isEmpty()) {
+                poetWriter.writeIndentedLine("*,");
+            }
             for (int i = 0; i < options().size(); i++) {
                 PythonField option = options().get(i);
 

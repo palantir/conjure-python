@@ -48,18 +48,21 @@ public final class ClientGenerator {
     private final DealiasingTypeVisitor dealiasingTypeVisitor;
     private final PythonTypeNameVisitor pythonTypeNameVisitor;
     private final MyPyTypeNameVisitor myPyTypeNameVisitor;
+    private final boolean forceKeywordArgs;
 
     public ClientGenerator(
             PackageNameProcessor implPackageNameProcessor,
             TypeNameProcessor implTypeNameProcessor,
             PackageNameProcessor definitionPackageNameProcessor,
             TypeNameProcessor definitionTypeNameProcessor,
-            DealiasingTypeVisitor dealiasingTypeVisitor) {
+            DealiasingTypeVisitor dealiasingTypeVisitor,
+            boolean forceKeywordArgs) {
         this.implPackageNameProcessor = implPackageNameProcessor;
         this.implTypeNameProcessor = implTypeNameProcessor;
         this.definitionPackageNameProcessor = definitionPackageNameProcessor;
         this.definitionTypeNameProcessor = definitionTypeNameProcessor;
         this.dealiasingTypeVisitor = dealiasingTypeVisitor;
+        this.forceKeywordArgs = forceKeywordArgs;
         pythonTypeNameVisitor = new PythonTypeNameVisitor(implTypeNameProcessor);
         myPyTypeNameVisitor = new MyPyTypeNameVisitor(dealiasingTypeVisitor, implTypeNameProcessor);
     }
@@ -154,6 +157,7 @@ public final class ClientGenerator {
                                 .dealias(rt)
                                 .fold(_typeDefinition -> false, type -> type.accept(TypeVisitor.IS_OPTIONAL)))
                         .orElse(false))
+                .forceKeywordArgs(forceKeywordArgs)
                 .build();
     }
 }

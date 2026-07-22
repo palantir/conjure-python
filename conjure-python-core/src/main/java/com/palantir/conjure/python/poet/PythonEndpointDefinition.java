@@ -62,6 +62,11 @@ public interface PythonEndpointDefinition extends Emittable {
 
     Optional<String> myPyReturnType();
 
+    @Value.Default
+    default boolean forceKeywordArgs() {
+        return false;
+    }
+
     @Value.Check
     default void check() {
         checkState(
@@ -90,22 +95,27 @@ public interface PythonEndpointDefinition extends Emittable {
                             .build()
                     : params();
 
-            poetWriter.writeIndentedLine(
-                    "def %s(self, %s) -> %s:",
-                    pythonMethodName(),
-                    Joiner.on(", ")
-                            .join(paramsWithHeader.stream()
-                                    .sorted(new PythonEndpointParamComparator())
-                                    .map(param -> {
-                                        String typedParam =
-                                                String.format("%s: %s", param.pythonParamName(), param.myPyType());
-                                        if (param.isOptional() || param.isCollection()) {
-                                            return String.format("%s = None", typedParam);
-                                        }
-                                        return typedParam;
-                                    })
-                                    .collect(Collectors.toList())),
-                    myPyReturnType().orElse("None"));
+            String paramsString = Joiner.on(", ")
+                    .join(paramsWithHeader.stream()
+                            .sorted(new PythonEndpointParamComparator())
+                            .map(param -> {
+                                String typedParam = String.format("%s: %s", param.pythonParamName(), param.myPyType());
+                                if (param.isOptional() || param.isCollection()) {
+                                    return String.format("%s = None", typedParam);
+                                }
+                                return typedParam;
+                            })
+                            .collect(Collectors.toList()));
+
+            String methodSignature = forceKeywordArgs() && !paramsWithHeader.isEmpty()
+                    ? String.format(
+                            "def %s(self, *, %s) -> %s:",
+                            pythonMethodName(), paramsString, myPyReturnType().orElse("None"))
+                    : String.format(
+                            "def %s(self, %s) -> %s:",
+                            pythonMethodName(), paramsString, myPyReturnType().orElse("None"));
+
+            poetWriter.writeIndentedLine(methodSignature);
             poetWriter.increaseIndent();
             docs().ifPresent(poetWriter::writeDocs);
 
