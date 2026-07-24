@@ -20,6 +20,7 @@ import static com.google.common.base.Preconditions.checkState;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
+import com.palantir.conjure.python.processors.PythonIdentifierSanitizer;
 import com.palantir.conjure.spec.AuthType;
 import com.palantir.conjure.spec.Documentation;
 import com.palantir.conjure.spec.HeaderParameterType;
@@ -67,6 +68,8 @@ public interface PythonEndpointDefinition extends Emittable {
         checkState(
                 pythonReturnType().isPresent() == myPyReturnType().isPresent(),
                 "expected both return types or neither");
+        PythonIdentifierSanitizer.checkValidIdentifier(pythonMethodName());
+        params().forEach(param -> PythonIdentifierSanitizer.checkValidIdentifier(param.pythonParamName()));
     }
 
     @SuppressWarnings({"CyclomaticComplexity", "MethodLength"})

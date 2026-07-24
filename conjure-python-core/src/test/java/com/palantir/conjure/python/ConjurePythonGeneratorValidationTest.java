@@ -28,11 +28,9 @@ import java.util.List;
 import org.junit.Test;
 
 /**
- * Verifies that {@link ConjurePythonGenerator} validates IR-supplied identifiers before emitting Python source.
- *
- * <p>The definitions here are built directly via the spec builders rather than through {@code Conjure.parse}: the
- * Conjure compiler validates identifiers while parsing, so an invalid identifier only reaches the generator when a
- * definition is constructed (or deserialized) without going through the compiler.
+ * Verifies that the generator rejects IR-supplied identifiers that would not be valid Python identifiers, before
+ * emitting any source. Definitions are built directly via the spec builders (not {@code Conjure.parse}), matching how
+ * a deserialized definition reaches the generator.
  */
 public final class ConjurePythonGeneratorValidationTest {
 
@@ -50,17 +48,28 @@ public final class ConjurePythonGeneratorValidationTest {
 
     @Test
     public void rejectsEnumValueThatIsNotAValidIdentifier() {
-        // An enum value outside the enum-identifier grammar would otherwise be emitted verbatim as the left-hand
-        // side of a `NAME = 'NAME'` assignment, with the trailing " #" commenting out the rest of the line.
         ConjureDefinition definition = ConjureDefinition.builder()
                 .version(1)
                 .types(List.of(TypeDefinition.enum_(EnumDefinition.builder()
                         .typeName(ENUM_NAME)
                         .values(List.of(
                                 EnumValueDefinition.builder().value("RED").build(),
-                                EnumValueDefinition.builder()
-                                        .value("INJECTED = 1 #")
-                                        .build()))
+                                EnumValueDefinition.builder().value("GREEN = 1").build()))
+                        .build())))
+                .build();
+
+        assertThatThrownBy(() -> generator.write(definition, new InMemoryPythonFileWriter()))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    public void rejectsTypeNameThatIsNotAValidIdentifier() {
+        ConjureDefinition definition = ConjureDefinition.builder()
+                .version(1)
+                .types(List.of(TypeDefinition.enum_(EnumDefinition.builder()
+                        .typeName(TypeName.of("Bad Name", "com.example.product"))
+                        .values(List.of(
+                                EnumValueDefinition.builder().value("RED").build()))
                         .build())))
                 .build();
 

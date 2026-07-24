@@ -1,7 +1,7 @@
 type: fix
 fix:
-  description: Validate identifiers in the input Conjure IR before generating code;
-    identifiers that violate Conjure's grammar (for example enum values or type names)
-    are now rejected rather than emitted verbatim into the generated Python.
+  description: Ensure identifiers emitted into the generated Python are valid Python
+    identifiers; code generation now fails fast if a type, field, or enum identifier
+    would not be a valid Python identifier.
   links:
   - https://github.com/palantir/conjure-python/pull/1323

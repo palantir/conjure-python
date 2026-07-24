@@ -16,11 +16,17 @@
 
 package com.palantir.conjure.python.processors;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
 import java.util.Collections;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 public final class PythonIdentifierSanitizer {
+
+    // A valid Python identifier: ASCII letter or underscore, then letters/digits/underscores.
+    // Intentionally stricter than CPython's Unicode-permitting str.isidentifier(); Conjure names are ASCII.
+    private static final Pattern VALID_IDENTIFIER = Pattern.compile("^[A-Za-z_][A-Za-z0-9_]*$");
 
     // Includes python keywords https://docs.python.org/3/reference/lexical_analysis.html#keywords.
     private static final ImmutableSet<String> pythonKeywords = ImmutableSet.of(
@@ -81,6 +87,19 @@ public final class PythonIdentifierSanitizer {
 
     public static boolean isKeyword(String identifier) {
         return pythonKeywords.contains(identifier);
+    }
+
+    public static boolean isValidIdentifier(String identifier) {
+        return identifier != null && VALID_IDENTIFIER.matcher(identifier).matches();
+    }
+
+    /**
+     * Throws {@link IllegalArgumentException} if {@code identifier} is not a valid Python identifier. Returns the
+     * identifier unchanged when valid, so it can be used inline.
+     */
+    public static String checkValidIdentifier(String identifier) {
+        Preconditions.checkArgument(isValidIdentifier(identifier), "Not a valid Python identifier: %s", identifier);
+        return identifier;
     }
 
     private PythonIdentifierSanitizer() {}

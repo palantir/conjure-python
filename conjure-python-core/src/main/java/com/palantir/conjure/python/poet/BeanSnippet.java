@@ -57,6 +57,11 @@ public interface BeanSnippet extends PythonSnippet {
 
     List<PythonField> fields();
 
+    @Value.Check
+    default void check() {
+        PythonIdentifierSanitizer.checkValidIdentifier(className());
+    }
+
     @Override
     default void emit(PythonPoetWriter poetWriter) {
         poetWriter.writeIndentedLine(String.format("class %s(ConjureBeanType):", className()));

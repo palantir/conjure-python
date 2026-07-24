@@ -16,6 +16,7 @@
 
 package com.palantir.conjure.python.poet;
 
+import com.palantir.conjure.python.processors.PythonIdentifierSanitizer;
 import com.palantir.conjure.spec.Documentation;
 import java.util.Comparator;
 import java.util.Optional;
@@ -40,6 +41,11 @@ public interface PythonField {
     boolean isOptional();
 
     Optional<Documentation> docs();
+
+    @Value.Check
+    default void check() {
+        PythonIdentifierSanitizer.checkValidIdentifier(attributeName());
+    }
 
     final class PythonFieldComparator implements Comparator<PythonField> {
         @Override

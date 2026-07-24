@@ -16,6 +16,7 @@
 
 package com.palantir.conjure.python.poet;
 
+import com.palantir.conjure.python.processors.PythonIdentifierSanitizer;
 import com.palantir.conjure.spec.AliasDefinition;
 import com.palantir.tokens.auth.ImmutablesStyle;
 import org.immutables.value.Value;
@@ -35,6 +36,11 @@ public interface AliasSnippet extends PythonSnippet {
     String aliasName();
 
     AliasDefinition aliasType();
+
+    @Value.Check
+    default void check() {
+        PythonIdentifierSanitizer.checkValidIdentifier(className());
+    }
 
     @Override
     default void emit(PythonPoetWriter poetWriter) {
