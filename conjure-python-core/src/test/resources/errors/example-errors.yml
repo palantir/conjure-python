@@ -1,0 +1,38 @@
+types:
+  definitions:
+    default-package: com.palantir.product
+    objects:
+      Dataset:
+        fields:
+          fileSystemId: string
+          rid: string
+    errors:
+      DatasetNotFound:
+        namespace: Datasets
+        code: NOT_FOUND
+        safe-args:
+          datasetRid: string
+          availableDatasets: list<string>
+        docs: Thrown when the requested dataset does not exist
+
+      InvalidFileSystemId:
+        namespace: Datasets
+        code: INVALID_ARGUMENT
+        safe-args:
+          fileSystemId: string
+        unsafe-args:
+          userId: string
+        docs: Thrown when a file system identifier is invalid
+
+services:
+  DatasetService:
+    name: Dataset Service
+    package: com.palantir.product
+    base-path: /datasets
+    endpoints:
+      getDatasetsByFileSystem:
+        http: GET /fileSystem/{fileSystemId}
+        args:
+          fileSystemId: string
+        returns: list<Dataset>
+        docs: Get datasets by file system
