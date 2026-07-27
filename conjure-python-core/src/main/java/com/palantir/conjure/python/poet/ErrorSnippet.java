@@ -17,6 +17,7 @@
 package com.palantir.conjure.python.poet;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import com.palantir.conjure.python.processors.PythonIdentifierSanitizer;
 import com.palantir.conjure.python.types.ImportTypeVisitor;
 import com.palantir.conjure.spec.Documentation;
@@ -40,6 +41,8 @@ public interface ErrorSnippet extends PythonSnippet {
                     .addNamedImports(NamedImport.of("Dict"))
                     .addNamedImports(NamedImport.of("Optional"))
                     .build());
+    ImmutableSet<String> PROTECTED_FIELDS =
+            ImmutableSet.of("add_note", "args", "decode", "encode", "error_instance_id", "with_traceback");
 
     @Override
     @Value.Default
@@ -101,15 +104,14 @@ public interface ErrorSnippet extends PythonSnippet {
     default void emitConstructor(PythonPoetWriter poetWriter) {
         StringBuilder signature = new StringBuilder("def __init__(self");
         for (PythonField field : args()) {
-            signature.append(String.format(
-                    ", %s: %s", PythonIdentifierSanitizer.sanitize(field.attributeName()), field.myPyType()));
+            signature.append(String.format(", %s: %s", argName(field), field.myPyType()));
         }
         signature.append(", error_instance_id: Optional[str] = None) -> None:");
         poetWriter.writeIndentedLine(signature.toString());
 
         poetWriter.increaseIndent();
         for (PythonField field : args()) {
-            String attribute = PythonIdentifierSanitizer.sanitize(field.attributeName());
+            String attribute = argName(field);
             poetWriter.writeIndentedLine(String.format("self._%s = %s", attribute, attribute));
         }
         poetWriter.writeIndentedLine("self.error_instance_id = error_instance_id if error_instance_id is not None "
@@ -121,7 +123,7 @@ public interface ErrorSnippet extends PythonSnippet {
 
     default void emitProperties(PythonPoetWriter poetWriter) {
         for (PythonField field : args()) {
-            String attribute = PythonIdentifierSanitizer.sanitize(field.attributeName());
+            String attribute = argName(field);
             poetWriter.writeIndentedLine("@builtins.property");
             poetWriter.writeIndentedLine(String.format("def %s(self) -> %s:", attribute, field.myPyType()));
             poetWriter.increaseIndent();
@@ -146,8 +148,7 @@ public interface ErrorSnippet extends PythonSnippet {
             PythonField field = args.get(i);
             String comma = i == args.size() - 1 ? "" : ",";
             poetWriter.writeIndentedLine(String.format(
-                    "'%s': ConjureEncoder.do_encode(self.%s)%s",
-                    field.jsonIdentifier(), PythonIdentifierSanitizer.sanitize(field.attributeName()), comma));
+                    "'%s': ConjureEncoder.do_encode(self.%s)%s", field.jsonIdentifier(), argName(field), comma));
         }
         poetWriter.decreaseIndent();
         poetWriter.writeIndentedLine("}");
@@ -178,14 +179,16 @@ public interface ErrorSnippet extends PythonSnippet {
         for (PythonField field : args) {
             poetWriter.writeIndentedLine(String.format(
                     "%s=decoder.decode(parameters.get('%s'), %s),",
-                    PythonIdentifierSanitizer.sanitize(field.attributeName()),
-                    field.jsonIdentifier(),
-                    field.pythonType()));
+                    argName(field), field.jsonIdentifier(), field.pythonType()));
         }
         poetWriter.writeIndentedLine("error_instance_id=error.get('errorInstanceId')");
         poetWriter.decreaseIndent();
         poetWriter.writeIndentedLine(")");
         poetWriter.decreaseIndent();
+    }
+
+    static String argName(PythonField field) {
+        return PythonIdentifierSanitizer.sanitize(field.attributeName(), PROTECTED_FIELDS);
     }
 
     class Builder extends ImmutableErrorSnippet.Builder {}
