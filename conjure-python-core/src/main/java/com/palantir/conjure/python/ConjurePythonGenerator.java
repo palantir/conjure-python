@@ -42,6 +42,7 @@ import com.palantir.conjure.python.processors.typename.NameOnlyTypeNameProcessor
 import com.palantir.conjure.python.processors.typename.PackagePrependingTypeNameProcessor;
 import com.palantir.conjure.python.processors.typename.TypeNameProcessor;
 import com.palantir.conjure.python.types.DefinitionImportTypeDefinitionVisitor;
+import com.palantir.conjure.python.types.PythonErrorGenerator;
 import com.palantir.conjure.python.types.PythonTypeGenerator;
 import com.palantir.conjure.spec.ConjureDefinition;
 import com.palantir.conjure.spec.TypeName;
@@ -146,6 +147,12 @@ public final class ConjurePythonGenerator {
                 definitionPackageNameProcessor,
                 definitionTypeNameProcessor,
                 dealiasingTypeVisitor);
+        PythonErrorGenerator errorGenerator = new PythonErrorGenerator(
+                implPackageNameProcessor,
+                implTypeNameProcessor,
+                definitionPackageNameProcessor,
+                definitionTypeNameProcessor,
+                dealiasingTypeVisitor);
 
         List<PythonSnippet> snippets = new ArrayList<>();
         snippets.addAll(conjureDefinition.getTypes().stream()
@@ -154,6 +161,11 @@ public final class ConjurePythonGenerator {
         snippets.addAll(conjureDefinition.getServices().stream()
                 .map(clientGenerator::generateClient)
                 .toList());
+        if (config.generateErrorTypes()) {
+            snippets.addAll(conjureDefinition.getErrors().stream()
+                    .map(errorGenerator::generateError)
+                    .toList());
+        }
 
         Map<PythonPackage, List<PythonSnippet>> snippetsByPackage =
                 snippets.stream().collect(Collectors.groupingBy(PythonSnippet::pythonPackage));
@@ -202,6 +214,19 @@ public final class ConjurePythonGenerator {
                             definitionTypeNameProcessor.process(serviceDefinition.getServiceName())));
             importsByPackage.put(pythonPackage, pythonImport);
         });
+
+        if (config.generateErrorTypes()) {
+            conjureDefinition.getErrors().forEach(errorDefinition -> {
+                PythonPackage pythonPackage = PythonPackage.of(definitionPackageNameProcessor.process(
+                        errorDefinition.getErrorName().getPackage()));
+                PythonImport pythonImport = PythonImport.of(
+                        moduleSpecifier,
+                        NamedImport.of(
+                                implTypeNameProcessor.process(errorDefinition.getErrorName()),
+                                definitionTypeNameProcessor.process(errorDefinition.getErrorName())));
+                importsByPackage.put(pythonPackage, pythonImport);
+            });
+        }
 
         return KeyedStream.stream(importsByPackage.build().asMap())
                 .map((pythonPackage, imports) -> {

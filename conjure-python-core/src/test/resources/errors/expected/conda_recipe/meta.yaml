@@ -1,0 +1,23 @@
+# coding=utf-8
+package:
+    name: package-name
+    version: 0.0.0
+
+source:
+    path: ../
+
+build:
+    noarch: python
+    script: python setup.py install --single-version-externally-managed --record=record.txt
+
+requirements:
+    build:
+        - python
+        - setuptools
+        - requests
+        - conjure-python-client >=2.8.0,<4
+
+    run:
+        - python
+        - requests
+        - conjure-python-client >=2.8.0,<4

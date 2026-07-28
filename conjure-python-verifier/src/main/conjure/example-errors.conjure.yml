@@ -1,0 +1,21 @@
+types:
+  definitions:
+    default-package: com.palantir.product
+    errors:
+      DatasetNotFound:
+        namespace: Datasets
+        code: NOT_FOUND
+        safe-args:
+          datasetRid: string
+          availableDatasets: list<string>
+        docs: Thrown when the requested dataset does not exist
+
+      InvalidFileSystemId:
+        namespace: Datasets
+        code: INVALID_ARGUMENT
+        safe-args:
+          fileSystemId: string
+          reason: optional<string>
+        unsafe-args:
+          userId: string
+        docs: Thrown when a file system identifier is invalid

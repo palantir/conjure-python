@@ -43,6 +43,8 @@ public interface GeneratorConfiguration {
 
     boolean generateRawSource();
 
+    boolean generateErrorTypes();
+
     default Optional<String> pythonicPackageName() {
         return packageName().map(packageName -> packageName.replace('-', '_'));
     }
