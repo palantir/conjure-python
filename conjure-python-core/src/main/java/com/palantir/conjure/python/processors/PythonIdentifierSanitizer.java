@@ -47,6 +47,13 @@ public final class PythonIdentifierSanitizer {
     // here cannot escape one.
     private static final Pattern VALID_TYPE_ANNOTATION = Pattern.compile("[A-Za-z0-9_., \\[\\]\"]+");
 
+    // A module specifier is emitted as bare code too ("import <spec>" / "from <spec> import ("), but it is a dotted
+    // module path rather than a type expression: it may begin with dots for a relative import, as in "..__impl".
+    // Restricting it to identifier characters and dots leaves no way to end the import statement and start another,
+    // since a space, semicolon or newline would be required. This deliberately does not enforce the full module-path
+    // grammar; a malformed path is a broken import, not injected code.
+    private static final Pattern VALID_MODULE_SPECIFIER = Pattern.compile("[A-Za-z0-9_.]+");
+
     // Includes python keywords https://docs.python.org/3/reference/lexical_analysis.html#keywords.
     private static final ImmutableSet<String> pythonKeywords = ImmutableSet.of(
             "False",
@@ -184,6 +191,28 @@ public final class PythonIdentifierSanitizer {
                 isSafeTypeAnnotation(value),
                 "Value is not safe to emit as a mypy type annotation (may only contain identifiers, dots, commas, "
                         + "spaces, square brackets and double quotes): %s",
+                value);
+        return value;
+    }
+
+    /**
+     * Returns {@code true} if {@code value} can be safely emitted as the module specifier of an import statement --
+     * identifier characters and dots only, which covers both absolute paths such as {@code urllib.parse} and relative
+     * ones such as {@code .._impl}.
+     */
+    public static boolean isSafeModuleSpecifier(String value) {
+        return value != null && VALID_MODULE_SPECIFIER.matcher(value).matches();
+    }
+
+    /**
+     * Throws {@link IllegalArgumentException} if {@code value} is not safe to emit as an import module specifier.
+     * Returns the value unchanged when safe, so it can be used inline.
+     */
+    public static String checkSafeModuleSpecifier(String value) {
+        Preconditions.checkArgument(
+                isSafeModuleSpecifier(value),
+                "Value is not safe to emit as an import module specifier "
+                        + "(may only contain identifier characters and dots): %s",
                 value);
         return value;
     }

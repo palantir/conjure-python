@@ -340,6 +340,36 @@ public final class PoetIdentifierValidationTest {
     }
 
     @Test
+    public void pythonImportRejectsModuleSpecifierThatCouldEndTheStatement() {
+        // The specifier is emitted as bare code: "from <spec> import (".
+        assertThatThrownBy(() -> PythonImport.builder()
+                        .moduleSpecifier("evil; x")
+                        .addNamedImports(NamedImport.of("Foo"))
+                        .build())
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    public void namedImportRejectsNameThatIsNotAnIdentifier() {
+        assertThatThrownBy(() -> NamedImport.of("Bad(Name)")).isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    public void namedImportRejectsAliasThatIsNotAnIdentifier() {
+        // For a cross-package reference both halves of "<name> as <alias>" come from IR type names.
+        assertThatThrownBy(() -> NamedImport.of("Foo", "Bad(Name)")).isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    public void pythonImportAcceptsRelativeSpecifierAndAliasedImport() {
+        assertThatCode(() -> PythonImport.builder()
+                        .moduleSpecifier(".._impl")
+                        .addNamedImports(NamedImport.of("Widget", "product_Widget"))
+                        .build())
+                .doesNotThrowAnyException();
+    }
+
+    @Test
     public void pythonEndpointAcceptsTemplatedPathAndPathParam() {
         // A legitimate templated path and a clean path param must not be rejected.
         assertThatCode(() -> PythonEndpointDefinition.builder()

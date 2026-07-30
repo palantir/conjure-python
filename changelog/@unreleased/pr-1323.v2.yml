@@ -3,6 +3,7 @@ fix:
   description: Validate the values emitted into the generated Python; code generation
     now fails fast if a value would not be a valid Python identifier, if a value emitted
     inside a Python string literal would close that literal, or if a value emitted as
-    a bare type expression could express a call.
+    bare code -- a type expression, an annotation or an import -- could express a call
+    or end the statement it appears in.
   links:
   - https://github.com/palantir/conjure-python/pull/1323

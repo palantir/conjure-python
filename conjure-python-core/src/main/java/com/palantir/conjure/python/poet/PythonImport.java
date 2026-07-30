@@ -16,6 +16,7 @@
 
 package com.palantir.conjure.python.poet;
 
+import com.palantir.conjure.python.processors.PythonIdentifierSanitizer;
 import java.util.Set;
 import org.immutables.value.Value;
 
@@ -24,6 +25,13 @@ public interface PythonImport extends Emittable {
     String moduleSpecifier();
 
     Set<NamedImport> namedImports();
+
+    @Value.Check
+    default void check() {
+        // The specifier is emitted as bare code ("import <spec>" / "from <spec> import ("). For a cross-package
+        // reference it is derived from the IR package name, so it is gated here rather than trusted.
+        PythonIdentifierSanitizer.checkSafeModuleSpecifier(moduleSpecifier());
+    }
 
     static PythonImport of(String moduleSpecifier) {
         return builder().moduleSpecifier(moduleSpecifier).build();

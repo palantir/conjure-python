@@ -151,4 +151,37 @@ public final class PythonIdentifierSanitizerTest {
         assertThatThrownBy(() -> PythonIdentifierSanitizer.checkSafeTypeAnnotation("Bad(Name)"))
                 .isInstanceOf(IllegalArgumentException.class);
     }
+
+    @Test
+    public void allowsAbsoluteAndRelativeModuleSpecifiers() {
+        // Every specifier the generator actually emits, absolute and relative.
+        assertThat(PythonIdentifierSanitizer.isSafeModuleSpecifier("typing")).isTrue();
+        assertThat(PythonIdentifierSanitizer.isSafeModuleSpecifier("conjure_python_client"))
+                .isTrue();
+        assertThat(PythonIdentifierSanitizer.isSafeModuleSpecifier("urllib.parse")).isTrue();
+        assertThat(PythonIdentifierSanitizer.isSafeModuleSpecifier(".._impl")).isTrue();
+        assertThat(PythonIdentifierSanitizer.isSafeModuleSpecifier(".")).isTrue();
+    }
+
+    @Test
+    public void rejectsModuleSpecifiersThatCouldEndTheStatement() {
+        // Ending the import and starting another statement needs a space, semicolon or newline.
+        assertThat(PythonIdentifierSanitizer.isSafeModuleSpecifier("os; x")).isFalse();
+        assertThat(PythonIdentifierSanitizer.isSafeModuleSpecifier("os x")).isFalse();
+        assertThat(PythonIdentifierSanitizer.isSafeModuleSpecifier("os\nx")).isFalse();
+        assertThat(PythonIdentifierSanitizer.isSafeModuleSpecifier("Bad(Name)")).isFalse();
+        assertThat(PythonIdentifierSanitizer.isSafeModuleSpecifier("")).isFalse();
+        assertThat(PythonIdentifierSanitizer.isSafeModuleSpecifier(null)).isFalse();
+    }
+
+    @Test
+    public void checkSafeModuleSpecifierThrowsOnBadInput() {
+        assertThatThrownBy(() -> PythonIdentifierSanitizer.checkSafeModuleSpecifier("os; x"))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    public void checkSafeModuleSpecifierReturnsInputOnGoodInput() {
+        assertThat(PythonIdentifierSanitizer.checkSafeModuleSpecifier(".._impl")).isEqualTo(".._impl");
+    }
 }
