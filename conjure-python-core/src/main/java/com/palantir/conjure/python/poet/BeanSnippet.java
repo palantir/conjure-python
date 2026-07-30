@@ -60,6 +60,9 @@ public interface BeanSnippet extends PythonSnippet {
     @Value.Check
     default void check() {
         PythonIdentifierSanitizer.checkValidIdentifier(className());
+        // definitionName/definitionPackage are emitted inside string literals by PythonClassRenamer.
+        PythonIdentifierSanitizer.checkSafeStringLiteral(definitionName());
+        PythonIdentifierSanitizer.checkSafeStringLiteral(definitionPackage().get());
     }
 
     @Override

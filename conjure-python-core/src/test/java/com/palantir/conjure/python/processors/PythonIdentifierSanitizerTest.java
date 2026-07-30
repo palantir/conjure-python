@@ -57,4 +57,98 @@ public final class PythonIdentifierSanitizerTest {
     public void checkValidIdentifierReturnsInputOnGoodInput() {
         assertThat(PythonIdentifierSanitizer.checkValidIdentifier("foo")).isEqualTo("foo");
     }
+
+    @Test
+    public void rejectsValuesThatEscapeAStringLiteral() {
+        // A quote or backslash closes/opens an escape; control chars (newline, carriage return, tab, NUL) end the line.
+        assertThat(PythonIdentifierSanitizer.isSafeStringLiteral("a'b")).isFalse();
+        assertThat(PythonIdentifierSanitizer.isSafeStringLiteral("a\"b")).isFalse();
+        assertThat(PythonIdentifierSanitizer.isSafeStringLiteral("a\\b")).isFalse();
+        assertThat(PythonIdentifierSanitizer.isSafeStringLiteral("a\nb")).isFalse();
+        assertThat(PythonIdentifierSanitizer.isSafeStringLiteral("a\rb")).isFalse();
+        assertThat(PythonIdentifierSanitizer.isSafeStringLiteral("a\tb")).isFalse();
+        assertThat(PythonIdentifierSanitizer.isSafeStringLiteral(null)).isFalse();
+    }
+
+    @Test
+    public void allowsPathsPackagesAndParamIds() {
+        // Values that legitimately reach a string-literal sink: HTTP paths (with '/' and '{}'), dotted package names,
+        // kebab/camel parameter ids, and ordinary text with spaces. A space is not a control character, so it is safe.
+        assertThat(PythonIdentifierSanitizer.isSafeStringLiteral("/registry/{id}/versions/{version}"))
+                .isTrue();
+        assertThat(PythonIdentifierSanitizer.isSafeStringLiteral("com.example.product")).isTrue();
+        assertThat(PythonIdentifierSanitizer.isSafeStringLiteral("Upper-Kebab-Header")).isTrue();
+        assertThat(PythonIdentifierSanitizer.isSafeStringLiteral("has space")).isTrue();
+        assertThat(PythonIdentifierSanitizer.isSafeStringLiteral("GET")).isTrue();
+    }
+
+    @Test
+    public void checkSafeStringLiteralThrowsOnBadInput() {
+        assertThatThrownBy(() -> PythonIdentifierSanitizer.checkSafeStringLiteral("a'b"))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    public void checkSafeStringLiteralReturnsInputOnGoodInput() {
+        assertThat(PythonIdentifierSanitizer.checkSafeStringLiteral("/foo/{bar}")).isEqualTo("/foo/{bar}");
+    }
+
+    @Test
+    public void allowsGenericTypeExpressions() {
+        // Everything PythonTypeNameVisitor can compose has to keep passing.
+        assertThat(PythonIdentifierSanitizer.isSafeTypeExpression("str")).isTrue();
+        assertThat(PythonIdentifierSanitizer.isSafeTypeExpression("List[int]")).isTrue();
+        assertThat(PythonIdentifierSanitizer.isSafeTypeExpression("Dict[str, List[int]]")).isTrue();
+        assertThat(PythonIdentifierSanitizer.isSafeTypeExpression("OptionalTypeWrapper[BinaryType]"))
+                .isTrue();
+        assertThat(PythonIdentifierSanitizer.isSafeTypeExpression("com.example.product_Widget"))
+                .isTrue();
+    }
+
+    @Test
+    public void rejectsTypeExpressionsThatCouldRunCode() {
+        // No parentheses means no call can be expressed; no '=' or ';' means no assignment or extra statement.
+        assertThat(PythonIdentifierSanitizer.isSafeTypeExpression("Bad(Name)")).isFalse();
+        assertThat(PythonIdentifierSanitizer.isSafeTypeExpression("a = b")).isFalse();
+        assertThat(PythonIdentifierSanitizer.isSafeTypeExpression("a; b")).isFalse();
+        assertThat(PythonIdentifierSanitizer.isSafeTypeExpression("a\nb")).isFalse();
+        assertThat(PythonIdentifierSanitizer.isSafeTypeExpression("")).isFalse();
+        assertThat(PythonIdentifierSanitizer.isSafeTypeExpression(null)).isFalse();
+        // A bare type expression, unlike an annotation, is never quoted.
+        assertThat(PythonIdentifierSanitizer.isSafeTypeExpression("\"Foo\"")).isFalse();
+    }
+
+    @Test
+    public void allowsMyPyForwardReferences() {
+        // MyPyTypeNameVisitor quotes a resolved reference, so annotations must permit double quotes.
+        assertThat(PythonIdentifierSanitizer.isSafeTypeAnnotation("\"MyObject\"")).isTrue();
+        assertThat(PythonIdentifierSanitizer.isSafeTypeAnnotation("Optional[\"MyObject\"]"))
+                .isTrue();
+        assertThat(PythonIdentifierSanitizer.isSafeTypeAnnotation("Dict[str, \"Foo\"]")).isTrue();
+    }
+
+    @Test
+    public void rejectsAnnotationsThatCouldRunCode() {
+        assertThat(PythonIdentifierSanitizer.isSafeTypeAnnotation("Bad(Name)")).isFalse();
+        assertThat(PythonIdentifierSanitizer.isSafeTypeAnnotation("a = b")).isFalse();
+        assertThat(PythonIdentifierSanitizer.isSafeTypeAnnotation("a\nb")).isFalse();
+        assertThat(PythonIdentifierSanitizer.isSafeTypeAnnotation(null)).isFalse();
+    }
+
+    @Test
+    public void checkSafeTypeExpressionThrowsOnBadInput() {
+        assertThatThrownBy(() -> PythonIdentifierSanitizer.checkSafeTypeExpression("Bad(Name)"))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    public void checkSafeTypeExpressionReturnsInputOnGoodInput() {
+        assertThat(PythonIdentifierSanitizer.checkSafeTypeExpression("Dict[str, int]")).isEqualTo("Dict[str, int]");
+    }
+
+    @Test
+    public void checkSafeTypeAnnotationThrowsOnBadInput() {
+        assertThatThrownBy(() -> PythonIdentifierSanitizer.checkSafeTypeAnnotation("Bad(Name)"))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
 }

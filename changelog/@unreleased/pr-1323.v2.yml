@@ -1,7 +1,8 @@
 type: fix
 fix:
-  description: Ensure identifiers emitted into the generated Python are valid Python
-    identifiers; code generation now fails fast if a type, field, or enum identifier
-    would not be a valid Python identifier.
+  description: Validate the values emitted into the generated Python; code generation
+    now fails fast if a value would not be a valid Python identifier, if a value emitted
+    inside a Python string literal would close that literal, or if a value emitted as
+    a bare type expression could express a call.
   links:
   - https://github.com/palantir/conjure-python/pull/1323
