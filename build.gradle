@@ -33,7 +33,7 @@ buildscript {
         classpath 'com.palantir.baseline:gradle-baseline-java:7.5.0'
         classpath 'com.palantir.gradle.conjure:gradle-conjure:6.3.0'
         classpath 'com.palantir.gradle.gitversion:gradle-git-version:5.0.0'
-        classpath 'com.palantir.gradle.idea-configuration:gradle-idea-configuration:0.10.0'
+        classpath 'com.palantir.gradle.idea-configuration:gradle-idea-configuration:0.11.0'
     }
 }
 
