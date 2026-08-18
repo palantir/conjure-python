@@ -12,17 +12,17 @@ com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.22.1 (2 constraints: f913
 
 com.google.code.findbugs:jsr305:3.0.2 (2 constraints: 9e14e59e)
 
-com.google.errorprone:error_prone_annotations:2.50.0 (10 constraints: 1e89fdbb)
+com.google.errorprone:error_prone_annotations:2.50.0 (10 constraints: 188984b4)
 
 com.google.guava:failureaccess:1.0.3 (1 constraints: 160ae3b4)
 
-com.google.guava:guava:33.7.0-jre (6 constraints: 885eb395)
+com.google.guava:guava:33.7.0-jre (6 constraints: 895e8c96)
 
 com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava (1 constraints: bd17c918)
 
 com.google.j2objc:j2objc-annotations:3.1 (1 constraints: b809f1a0)
 
-com.palantir.common:streams:2.13.0 (1 constraints: 3805383b)
+com.palantir.common:streams:2.14.0 (1 constraints: 39053b3b)
 
 com.palantir.conjure:conjure-api-objects:4.61.0 (2 constraints: 5d2223e4)
 
@@ -40,9 +40,9 @@ com.palantir.safe-logging:logger-slf4j:3.16.0 (1 constraints: 350e9950)
 
 com.palantir.safe-logging:logger-spi:3.16.0 (2 constraints: 791e18b1)
 
-com.palantir.safe-logging:preconditions:3.17.0 (7 constraints: df6bc1a6)
+com.palantir.safe-logging:preconditions:3.18.0 (7 constraints: e06bd7a7)
 
-com.palantir.safe-logging:safe-logging:3.17.0 (8 constraints: 667e2313)
+com.palantir.safe-logging:safe-logging:3.18.0 (8 constraints: 687ea814)
 
 com.palantir.tokens:auth-tokens:4.7.0 (1 constraints: f30f8999)
 
@@ -62,7 +62,7 @@ org.immutables:value:2.12.2 (2 constraints: 0215eec1)
 
 org.jetbrains:annotations:26.1.0 (3 constraints: 6a321eca)
 
-org.jspecify:jspecify:1.0.1 (11 constraints: 44aa81e1)
+org.jspecify:jspecify:1.0.1 (11 constraints: 45aa25e3)
 
 org.slf4j:slf4j-api:2.0.17 (5 constraints: 4b3c6510)
 
