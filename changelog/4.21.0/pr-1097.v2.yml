@@ -1,5 +1,0 @@
-type: fix
-fix:
-  description: Sanitize object names with upper case identifiers
-  links:
-  - https://github.com/palantir/conjure-python/pull/1097

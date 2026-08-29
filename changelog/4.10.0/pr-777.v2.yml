@@ -1,5 +1,0 @@
-type: improvement
-improvement:
-  description: Wrap indent docstring in newlines for UnionSnippet
-  links:
-  - https://github.com/palantir/conjure-python/pull/777
