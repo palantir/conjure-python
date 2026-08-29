@@ -1,5 +1,0 @@
-type: improvement
-improvement:
-  description: Bump Conjure dependency to support single name variables.
-  links:
-  - https://github.com/palantir/conjure-python/pull/454
