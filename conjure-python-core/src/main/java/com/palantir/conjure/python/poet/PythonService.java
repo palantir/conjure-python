@@ -17,6 +17,7 @@
 package com.palantir.conjure.python.poet;
 
 import com.google.common.collect.ImmutableList;
+import com.palantir.conjure.python.processors.PythonIdentifierSanitizer;
 import com.palantir.conjure.python.types.ImportTypeVisitor;
 import com.palantir.conjure.spec.Documentation;
 import java.util.List;
@@ -62,6 +63,14 @@ public interface PythonService extends PythonSnippet {
     Optional<Documentation> docs();
 
     List<PythonEndpointDefinition> endpointDefinitions();
+
+    @Value.Check
+    default void check() {
+        PythonIdentifierSanitizer.checkValidIdentifier(className());
+        // definitionName/definitionPackage are emitted inside string literals by PythonClassRenamer.
+        PythonIdentifierSanitizer.checkSafeStringLiteral(definitionName());
+        PythonIdentifierSanitizer.checkSafeStringLiteral(definitionPackage().get());
+    }
 
     @Override
     default void emit(PythonPoetWriter poetWriter) {
