@@ -40,8 +40,7 @@ public final class DefaultPythonFileWriter implements PythonFileWriter {
         try {
             Files.createDirectories(filePath.getParent());
             try (OutputStream os = Files.newOutputStream(filePath);
-                    @SuppressWarnings("for-rollout:JdkObsolete")
-                            PrintStream ps = new PrintStream(os, false, StandardCharsets.UTF_8.toString())) {
+                    PrintStream ps = new PrintStream(os, false, StandardCharsets.UTF_8.toString())) {
                 PythonPoetWriter writer = new PythonPoetWriter(ps);
                 writer.emit(file);
             }
