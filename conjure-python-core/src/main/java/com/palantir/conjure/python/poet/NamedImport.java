@@ -16,6 +16,7 @@
 
 package com.palantir.conjure.python.poet;
 
+import com.palantir.conjure.python.processors.PythonIdentifierSanitizer;
 import java.util.Optional;
 import org.immutables.value.Value;
 
@@ -27,6 +28,15 @@ public interface NamedImport {
 
     @Value.Parameter
     Optional<String> alias();
+
+    @Value.Check
+    default void check() {
+        // Both halves are emitted as bare code in the import list, as "<name>" or "<name> as <alias>", and both are
+        // derived from IR type names for a cross-package reference. Each must be a plain Python identifier, which is
+        // stricter than checking the rendered line and needs no parsing.
+        PythonIdentifierSanitizer.checkValidIdentifier(name());
+        alias().ifPresent(PythonIdentifierSanitizer::checkValidIdentifier);
+    }
 
     static NamedImport of(String name) {
         return ImmutableNamedImport.of(name, Optional.empty());

@@ -17,6 +17,7 @@
 package com.palantir.conjure.python.poet;
 
 import com.google.common.collect.ImmutableList;
+import com.palantir.conjure.python.processors.PythonIdentifierSanitizer;
 import com.palantir.conjure.python.types.ImportTypeVisitor;
 import com.palantir.conjure.spec.Documentation;
 import java.util.List;
@@ -45,6 +46,15 @@ public interface EnumSnippet extends PythonSnippet {
     Optional<Documentation> docs();
 
     List<PythonEnumValue> values();
+
+    @Value.Check
+    default void check() {
+        PythonIdentifierSanitizer.checkValidIdentifier(className());
+        // definitionName/definitionPackage are emitted inside string literals by PythonClassRenamer.
+        PythonIdentifierSanitizer.checkSafeStringLiteral(definitionName());
+        PythonIdentifierSanitizer.checkSafeStringLiteral(definitionPackage().get());
+        values().forEach(value -> PythonIdentifierSanitizer.checkValidIdentifier(value.name()));
+    }
 
     @Override
     default void emit(PythonPoetWriter poetWriter) {
