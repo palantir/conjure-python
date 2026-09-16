@@ -82,7 +82,7 @@ javax.annotation:javax.annotation-api:1.3.2 (1 constraints: f410f2c2)
 
 javax.inject:javax.inject:1 (1 constraints: f410fcc2)
 
-junit:junit:4.13.2 (2 constraints: eb154ef7)
+junit:junit:4.13.2 (1 constraints: b010e9c0)
 
 net.bytebuddy:byte-buddy:1.18.3 (2 constraints: 9c16b43e)
 
