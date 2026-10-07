@@ -16,6 +16,7 @@
 
 package com.palantir.conjure.python.poet;
 
+import com.palantir.conjure.python.processors.PythonIdentifierSanitizer;
 import com.palantir.conjure.spec.Documentation;
 import java.util.Comparator;
 import java.util.Optional;
@@ -40,6 +41,17 @@ public interface PythonField {
     boolean isOptional();
 
     Optional<Documentation> docs();
+
+    @Value.Check
+    default void check() {
+        PythonIdentifierSanitizer.checkValidIdentifier(attributeName());
+        // jsonIdentifier is emitted inside a string literal in the generated _fields()/_options() and union _type.
+        PythonIdentifierSanitizer.checkSafeStringLiteral(jsonIdentifier());
+        // Both types are emitted as bare code: pythonType as an argument to ConjureFieldDefinition, myPyType as a
+        // parameter, attribute or return annotation. Only myPyType may contain quotes (mypy forward references).
+        PythonIdentifierSanitizer.checkSafeTypeExpression(pythonType());
+        PythonIdentifierSanitizer.checkSafeTypeAnnotation(myPyType());
+    }
 
     final class PythonFieldComparator implements Comparator<PythonField> {
         @Override

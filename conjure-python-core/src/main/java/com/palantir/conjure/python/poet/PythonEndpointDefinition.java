@@ -20,6 +20,7 @@ import static com.google.common.base.Preconditions.checkState;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
+import com.palantir.conjure.python.processors.PythonIdentifierSanitizer;
 import com.palantir.conjure.spec.AuthType;
 import com.palantir.conjure.spec.Documentation;
 import com.palantir.conjure.spec.HeaderParameterType;
@@ -62,11 +63,24 @@ public interface PythonEndpointDefinition extends Emittable {
 
     Optional<String> myPyReturnType();
 
+    /**
+     * The HTTP path with Conjure path-parameter regex suffixes stripped (for example {@code {id:.+}} becomes
+     * {@code {id}}), as emitted into the generated {@code _path}. A plain default method -- deliberately not an
+     * Immutables attribute -- so both {@link #emit} and {@link #check} share one definition.
+     */
+    default String fixedPath() {
+        return httpPath().toString().replaceAll("\\{(.*):[^}]*}", "{$1}");
+    }
+
     @Value.Check
     default void check() {
         checkState(
                 pythonReturnType().isPresent() == myPyReturnType().isPresent(),
                 "expected both return types or neither");
+        PythonIdentifierSanitizer.checkValidIdentifier(pythonMethodName());
+        // httpPath and httpMethod are emitted verbatim inside Python string literals (_path = '...', '<METHOD>',).
+        PythonIdentifierSanitizer.checkSafeStringLiteral(fixedPath());
+        PythonIdentifierSanitizer.checkSafeStringLiteral(httpMethod().toString());
     }
 
     @SuppressWarnings({"CyclomaticComplexity", "MethodLength"})
@@ -202,9 +216,7 @@ public interface PythonEndpointDefinition extends Emittable {
             // fix the path, add path params
             poetWriter.writeLine();
 
-            HttpPath fullPath = httpPath();
-            String fixedPath = fullPath.toString().replaceAll("\\{(.*):[^}]*}", "{$1}");
-            poetWriter.writeIndentedLine("_path = '%s'", fixedPath);
+            poetWriter.writeIndentedLine("_path = '%s'", fixedPath());
             poetWriter.writeIndentedLine("_path = _path.format(**_path_params)");
 
             poetWriter.writeLine();
@@ -268,6 +280,25 @@ public interface PythonEndpointDefinition extends Emittable {
         boolean isOptional();
 
         boolean isCollection();
+
+        @Value.Check
+        default void check() {
+            PythonIdentifierSanitizer.checkValidIdentifier(pythonParamName());
+            // paramName reaches a string-literal sink for path params ('%s': quote(...)); gate it for every kind.
+            PythonIdentifierSanitizer.checkSafeStringLiteral(paramName());
+            // myPyType is emitted as bare code in the method signature ("<name>: <myPyType>").
+            PythonIdentifierSanitizer.checkSafeTypeAnnotation(myPyType());
+            ParameterType paramType = paramType();
+            if (paramType.accept(ParameterTypeVisitor.IS_HEADER)) {
+                // header ParameterId is emitted as the key of _headers ('%s': ...).
+                PythonIdentifierSanitizer.checkSafeStringLiteral(
+                        paramType.accept(ParameterTypeVisitor.HEADER).getParamId().get());
+            } else if (paramType.accept(ParameterTypeVisitor.IS_QUERY)) {
+                // query ParameterId is emitted as the key of _params ('%s': ...).
+                PythonIdentifierSanitizer.checkSafeStringLiteral(
+                        paramType.accept(ParameterTypeVisitor.QUERY).getParamId().get());
+            }
+        }
 
         class Builder extends ImmutablePythonEndpointParam.Builder {}
 

@@ -16,6 +16,7 @@
 
 package com.palantir.conjure.python.poet;
 
+import com.palantir.conjure.python.processors.PythonIdentifierSanitizer;
 import java.util.List;
 import org.immutables.value.Value;
 
@@ -27,6 +28,13 @@ public interface AllSnippet extends PythonSnippet {
     }
 
     List<String> contents();
+
+    // Defense in depth: __all__ entries are emitted inside string literals ('%s',). Every entry is a class name
+    // that is already identifier-gated at its own snippet, so this should never fire -- but it removes the reliance.
+    @Value.Check
+    default void check() {
+        contents().forEach(PythonIdentifierSanitizer::checkSafeStringLiteral);
+    }
 
     @Override
     default void emit(PythonPoetWriter poetWriter) {
