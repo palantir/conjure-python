@@ -31,6 +31,7 @@ import com.palantir.conjure.python.types.ImportTypeVisitor;
 import com.palantir.conjure.python.types.MyPyTypeNameVisitor;
 import com.palantir.conjure.python.types.PythonTypeNameVisitor;
 import com.palantir.conjure.spec.EndpointDefinition;
+import com.palantir.conjure.spec.PrimitiveType;
 import com.palantir.conjure.spec.ServiceDefinition;
 import com.palantir.conjure.spec.Type;
 import com.palantir.conjure.visitor.DealiasingTypeVisitor;
@@ -106,6 +107,13 @@ public final class ClientGenerator {
                         .isOptional(dealiasingTypeVisitor
                                 .dealias(argEntry.getType())
                                 .fold(_typeDefinition -> false, type -> type.accept(TypeVisitor.IS_OPTIONAL)))
+                        .isBoolean(dealiasingTypeVisitor
+                                .dealias(argEntry.getType())
+                                .fold(
+                                        _typeDefinition -> false,
+                                        type -> type.accept(TypeVisitor.IS_PRIMITIVE)
+                                                && type.accept(TypeVisitor.PRIMITIVE)
+                                                        .equals(PrimitiveType.BOOLEAN)))
                         .isCollection(dealiasingTypeVisitor
                                 .dealias(argEntry.getType())
                                 .fold(
