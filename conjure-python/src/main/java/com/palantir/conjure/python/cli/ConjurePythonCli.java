@@ -52,7 +52,6 @@ public final class ConjurePythonCli implements Runnable {
             mixinStandardHelpOptions = true,
             usageHelpWidth = 120)
     public static final class GenerateCommand implements Runnable {
-        @SuppressWarnings("for-rollout:deprecation")
         private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper()
                 .registerModule(new Jdk8Module())
                 .setSerializationInclusion(JsonInclude.Include.NON_ABSENT);
