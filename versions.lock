@@ -16,13 +16,13 @@ com.google.errorprone:error_prone_annotations:2.50.0 (10 constraints: 0889bea4)
 
 com.google.guava:failureaccess:1.0.3 (1 constraints: 160ae3b4)
 
-com.google.guava:guava:33.7.2-jre (6 constraints: 925ea69c)
+com.google.guava:guava:33.7.2-jre (6 constraints: 935e7d9d)
 
 com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava (1 constraints: bd17c918)
 
 com.google.j2objc:j2objc-annotations:3.1 (1 constraints: b809f1a0)
 
-com.palantir.common:streams:2.15.0 (1 constraints: 3a053e3b)
+com.palantir.common:streams:2.16.0 (1 constraints: 3b05413b)
 
 com.palantir.conjure:conjure-api-objects:4.66.0 (2 constraints: 672254e5)
 
@@ -40,9 +40,9 @@ com.palantir.safe-logging:logger-slf4j:3.20.0 (1 constraints: 300e8b50)
 
 com.palantir.safe-logging:logger-spi:3.20.0 (2 constraints: 6f1e0cb0)
 
-com.palantir.safe-logging:preconditions:3.21.0 (7 constraints: c56bec99)
+com.palantir.safe-logging:preconditions:3.21.0 (7 constraints: bd6b3d91)
 
-com.palantir.safe-logging:safe-logging:3.21.0 (8 constraints: 427ec3ff)
+com.palantir.safe-logging:safe-logging:3.21.0 (8 constraints: 3a7e64f5)
 
 com.palantir.tokens:auth-tokens:4.12.0 (1 constraints: 1f109ca9)
 
