@@ -6,7 +6,7 @@ palantir_aliases:
       tags:
         only: /.*/
 
-version: 2
+version: 2.1
 jobs:
   build:
     docker:
@@ -133,7 +133,7 @@ jobs:
           key: gradle-cache-{{ checksum "versions.props" }}-{{ checksum "build.gradle" }}
       - attach_workspace:
           at: '.'
-      - deploy:
+      - run:
           command: ./gradlew --stacktrace --continue publish
   circle-all:
     docker:
