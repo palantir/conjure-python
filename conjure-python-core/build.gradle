@@ -26,7 +26,6 @@ dependencies {
     implementation 'org.slf4j:slf4j-api'
 
     testImplementation 'com.palantir.conjure:conjure-core'
-    testImplementation 'junit:junit'
     testImplementation 'org.assertj:assertj-core'
     testImplementation 'org.mockito:mockito-core'
 
