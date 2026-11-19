@@ -84,6 +84,34 @@ task checkToxIni() {
     }
 }
 
+// Run the python verifier tests (tox envs py3 and mypy3) as part of `check`. uv provides tox and a pinned Python, so
+// the build only needs bash and curl, not a system Python.
+def uvVersion = '0.7.14'
+def toxPythonVersion = '3.8'
+def uvDir = file("${buildDir}/uv")
+
+task installUv(type: Exec) {
+    description = "Installs uv ${uvVersion} into ${uvDir}"
+    outputs.dir uvDir
+    onlyIf { !new File(uvDir, 'uv').exists() }
+    commandLine 'bash', '-c',
+            "curl -LsSf https://astral.sh/uv/${uvVersion}/install.sh | env UV_UNMANAGED_INSTALL='${uvDir}' sh"
+}
+
+['py3', 'mypy3'].each { toxEnv ->
+    def toxTask = tasks.register("tox${toxEnv.capitalize()}", Exec) {
+        description = "Runs the python verifier tox env ${toxEnv}"
+        group = 'verification'
+        dependsOn installUv, generate, unpackVerificationServer, copyTestCases
+        workingDir 'python'
+        doFirst { mkdir 'python/build' }
+        // tox 3 builds the sdist (`setup.py sdist`) with its own interpreter, so setuptools must sit next to tox
+        commandLine "${uvDir}/uv", 'tool', 'run', '--python', toxPythonVersion, '--from', 'tox==3.24.5',
+                '--with', 'setuptools', 'tox', '-e', toxEnv
+    }
+    tasks.check.dependsOn toxTask
+}
+
 tasks.check.dependsOn checkPipFile, checkToxIni
 tasks.idea.dependsOn unpackVerificationServer, generate
 tasks.build.dependsOn unpackVerificationServer, generate
