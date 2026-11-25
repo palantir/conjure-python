@@ -57,6 +57,14 @@ public interface BeanSnippet extends PythonSnippet {
 
     List<PythonField> fields();
 
+    @Value.Check
+    default void check() {
+        PythonIdentifierSanitizer.checkValidIdentifier(className());
+        // definitionName/definitionPackage are emitted inside string literals by PythonClassRenamer.
+        PythonIdentifierSanitizer.checkSafeStringLiteral(definitionName());
+        PythonIdentifierSanitizer.checkSafeStringLiteral(definitionPackage().get());
+    }
+
     @Override
     default void emit(PythonPoetWriter poetWriter) {
         poetWriter.writeIndentedLine(String.format("class %s(ConjureBeanType):", className()));

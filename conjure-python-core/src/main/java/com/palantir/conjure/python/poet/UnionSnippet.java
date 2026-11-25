@@ -61,6 +61,14 @@ public interface UnionSnippet extends PythonSnippet {
 
     List<PythonField> options();
 
+    @Value.Check
+    default void check() {
+        PythonIdentifierSanitizer.checkValidIdentifier(className());
+        // definitionName/definitionPackage are emitted inside string literals by PythonClassRenamer.
+        PythonIdentifierSanitizer.checkSafeStringLiteral(definitionName());
+        PythonIdentifierSanitizer.checkSafeStringLiteral(definitionPackage().get());
+    }
+
     /** The name of the option as a constructor / method parameter. */
     static String parameterName(PythonField option) {
         return PythonIdentifierSanitizer.sanitize(option.attributeName());

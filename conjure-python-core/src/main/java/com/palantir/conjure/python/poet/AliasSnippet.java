@@ -16,6 +16,7 @@
 
 package com.palantir.conjure.python.poet;
 
+import com.palantir.conjure.python.processors.PythonIdentifierSanitizer;
 import com.palantir.conjure.spec.AliasDefinition;
 import com.palantir.tokens.auth.ImmutablesStyle;
 import org.immutables.value.Value;
@@ -35,6 +36,16 @@ public interface AliasSnippet extends PythonSnippet {
     String aliasName();
 
     AliasDefinition aliasType();
+
+    @Value.Check
+    default void check() {
+        PythonIdentifierSanitizer.checkValidIdentifier(className());
+        // aliasName is emitted as bare code ("<className> = <aliasName>"), so it runs at import time. When the alias
+        // target is a type the IR also declares, that type's own className() check rejects a hostile name first; but a
+        // reference to an undeclared type in the same package produces no snippet and no import, so nothing else
+        // inspects it. Gate it here rather than relying on the IR being well formed.
+        PythonIdentifierSanitizer.checkSafeTypeExpression(aliasName());
+    }
 
     @Override
     default void emit(PythonPoetWriter poetWriter) {
