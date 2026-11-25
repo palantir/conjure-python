@@ -83,6 +83,7 @@ public interface PythonEndpointDefinition extends Emittable {
                                     .myPyType("str")
                                     .isOptional(false)
                                     .isCollection(false)
+                                    .isBoolean(false)
                                     .paramType(ParameterType.header(
                                             HeaderParameterType.of(ParameterId.of("Authorization"))))
                                     .build())
@@ -178,8 +179,12 @@ public interface PythonEndpointDefinition extends Emittable {
             paramsWithHeader.stream()
                     .filter(param -> param.paramType().accept(ParameterTypeVisitor.IS_PATH))
                     .forEach(param -> poetWriter.writeIndentedLine(
-                            "'%s': quote(str(_conjure_encoder.default(%s)), safe=''),",
-                            param.paramName(), param.pythonParamName()));
+                            // Conjure serializes booleans in paths as "true" and "false", but str(True) is "True".
+                            param.isBoolean()
+                                    ? "'%s': quote(str(_conjure_encoder.default(%s)).lower(), safe=''),"
+                                    : "'%s': quote(str(_conjure_encoder.default(%s)), safe=''),",
+                            param.paramName(),
+                            param.pythonParamName()));
             poetWriter.decreaseIndent();
             poetWriter.writeIndentedLine("}");
 
@@ -268,6 +273,9 @@ public interface PythonEndpointDefinition extends Emittable {
         boolean isOptional();
 
         boolean isCollection();
+
+        /** True iff the de-aliased type is boolean. */
+        boolean isBoolean();
 
         class Builder extends ImmutablePythonEndpointParam.Builder {}
 

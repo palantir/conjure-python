@@ -117,10 +117,6 @@ client:
   singleHeaderService: {}
 
   singlePathParamService:
-    pathParamBoolean:
-    - 'true'
-    - 'false'
-
     pathParamString:
     - '""' # The server doesn't accept empty path params
 
